@@ -1,0 +1,177 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{163315C4-D4D6-4342-B386-F6D80975CF95}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StatLight.Client.Silverlight</RootNamespace>
+    <AssemblyName>StatLight.Client.Silverlight</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SilverlightApplication>true</SilverlightApplication>
+    <SupportedCultures>
+    </SupportedCultures>
+    <XapOutputs>true</XapOutputs>
+    <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
+    <XapFilename>StatLight.Client.Silverlight.xap</XapFilename>
+    <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
+    <SilverlightAppEntry>StatLight.Client.Silverlight.App</SilverlightAppEntry>
+    <TestPageFileName>TestPage.html</TestPageFileName>
+    <CreateTestPage>true</CreateTestPage>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>false</ThrowErrorsInValidation>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\StatLight.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <UsePlatformExtensions>false</UsePlatformExtensions>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Silverlight\Microsoft\July2009\Microsoft.Silverlight.Testing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Silverlight\Microsoft\July2009\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows" />
+    <Reference Include="mscorlib" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Controls, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Windows.Browser" />
+    <Reference Include="System.Xml.Linq, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Serialization, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\CommonExtensions.cs">
+      <Link>Core\CommonExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Reporting\Messages\LogMessageType.cs">
+      <Link>Core\Reporting\Messages\LogMessageType.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Reporting\Messages\MobilOtherMessageType.cs">
+      <Link>Core\Reporting\Messages\MobilOtherMessageType.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Reporting\Messages\MobilScenarioResult.cs">
+      <Link>Core\Reporting\Messages\MobilScenarioResult.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Reporting\Messages\TestOutcome.cs">
+      <Link>Core\Reporting\Messages\TestOutcome.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\UnitTestProviders\UnitTestProviderTypes.cs">
+      <Link>Core\UnitTestProviders\UnitTestProviderTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\WebServer\StatLightServiceRestApi.cs">
+      <Link>Core\WebServer\StatLightServiceRestApi.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\WebServer\TestRunConfiguration.cs">
+      <Link>Core\WebServer\TestRunConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AssemblyInfo.This.cs" />
+    <Compile Include="HttpResponseCompleteEventArgs.cs" />
+    <Compile Include="HttpResponseCompleteEventHandler.cs" />
+    <Compile Include="HttpWebRequest.cs" />
+    <Compile Include="Core\LogMessageHandling\LogMessageHandlerFactory.cs" />
+    <Compile Include="Core\LogMessageHandling\ScenarioResultLogMessageHandler.cs" />
+    <Compile Include="Core\LogMessageHandling\ILogMessageHandler.cs" />
+    <Compile Include="UnitTestProviders\UnitDriven\ExpectedException.cs" />
+    <Compile Include="UnitTestProviders\UnitDriven\Priority.cs" />
+    <Compile Include="UnitTestProviders\UnitDriven\ProviderAttributes.cs" />
+    <Compile Include="UnitTestProviders\UnitDriven\TestClass.cs" />
+    <Compile Include="UnitTestProviders\UnitDriven\TestMethod.cs" />
+    <Compile Include="UnitTestProviders\UnitDriven\UnitTestFrameworkAssembly.cs" />
+    <Compile Include="UnitTestProviders\UnitDriven\UnitDrivenTestProvider.cs" />
+    <Compile Include="UnitTestProviders\DynamicAttributeHelper.cs" />
+    <Compile Include="UnitTestProviders\LazyDynamicAssemblyMethodInfo.cs" />
+    <Compile Include="UnitTestProviders\LazyDynamicMethodInfo.cs" />
+    <Compile Include="UnitTestProviders\MSTest\ExpectedException.cs" />
+    <Compile Include="UnitTestProviders\MSTest\Priority.cs" />
+    <Compile Include="UnitTestProviders\MSTest\ProviderAttributes.cs" />
+    <Compile Include="UnitTestProviders\MSTest\TestClass.cs" />
+    <Compile Include="UnitTestProviders\MSTest\TestMethod.cs" />
+    <Compile Include="UnitTestProviders\MSTest\UnitTestFrameworkAssembly.cs" />
+    <Compile Include="UnitTestProviders\MSTest\VsttProvider.cs" />
+    <Compile Include="UnitTestProviders\NUnit\ExpectedException.cs" />
+    <Compile Include="UnitTestProviders\NUnit\NUnitAttributes.cs" />
+    <Compile Include="UnitTestProviders\NUnit\TestClass.cs" />
+    <Compile Include="UnitTestProviders\NUnit\TestMethod.cs" />
+    <Compile Include="UnitTestProviders\NUnit\NUnitTestProvider.cs" />
+    <Compile Include="UnitTestProviders\NUnit\UnitTestFrameworkAssembly.cs" />
+    <Compile Include="UnitTestProviders\Xunit\TestClass.cs" />
+    <Compile Include="UnitTestProviders\Xunit\TestMethod.cs" />
+    <Compile Include="UnitTestProviders\Xunit\UnitTestFrameworkAssembly.cs" />
+    <Compile Include="UnitTestProviders\Xunit\XUnitTestProvider.cs" />
+    <Compile Include="UnitTestResultProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\StatLight.snk">
+      <Link>StatLight.snk</Link>
+    </None>
+    <None Include="Properties\AppManifest.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>copy $(ProjectDir)$(OutDir)$(TargetName).xap $(ProjectDir)..\build\$(TargetName).xap
+copy $(ProjectDir)$(OutDir)$(TargetName).xap $(ProjectDir)..\build\StatLight.Client.For.July2009.xap
+copy $(ProjectDir)$(OutDir)$(TargetName).xap $(ProjectDir)..\build\bin\$(ConfigurationName)\StatLight.Client.For.July2009.xap</PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,31 @@
+using System.Reflection;
+using StatLight.Core.Common;
+
+namespace StatLight.Core.WebServer.XapHost
+{
+	using System.IO;
+
+	public class DiskXapHostFileLoader : IXapHostFileLoader
+	{
+		private readonly ILogger _logger;
+		private readonly string _fileName;
+
+		public DiskXapHostFileLoader(ILogger logger, string fileName)
+		{
+			_logger = logger;
+			var pathToThisExe = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			_fileName = Path.Combine(pathToThisExe, fileName);
+		}
+
+		public byte[] LoadXapHost()
+		{
+			_logger.Debug("Loading XapHost [" + _fileName + "]");
+
+			var fileInfo = new FileInfo(_fileName);
+			var file = fileInfo.OpenRead();
+			var stuff = new byte[file.Length];
+			file.Read(stuff, 0, (int)file.Length);
+			return stuff;
+		}
+	}
+}
