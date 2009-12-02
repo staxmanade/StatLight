@@ -125,11 +125,10 @@ namespace StatLight.IntegrationTests
 		}
 
 		[Test]
-		[Ignore]
-		public void Should_TODO_tie_the_logic_into_the_console_program_to_auto_detect()
+		public void Should_TODO_tie_the_logic_into_the_console_program_to_auto_detect_xap_type()
 		{	
 			//#error NOTE: TODO: tie this logic into the console - to "auto-detect" xap if no parameter is specified explicetly
-			//Assert.Fail("TODOD:");
+			Assert.Fail("TODOD:");
 		}
 	}
 
