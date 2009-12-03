@@ -8,7 +8,7 @@ $buildPath = ".\src\build\bin\$build_configuration"
 $ErrorActionPreference = "Stop"
 ################## 
 
-[System.Reflection.Assembly]::LoadFrom("C:\Program Files\NUnit 2.5.2\bin\net-2.0\framework\nunit.framework.dll") | Out-Null
+[System.Reflection.Assembly]::LoadFrom((Get-Item .\tools\NUnit\nunit.framework.dll).FullName) | Out-Null
 
 function Remove-If-Exist {
 	param($file)
