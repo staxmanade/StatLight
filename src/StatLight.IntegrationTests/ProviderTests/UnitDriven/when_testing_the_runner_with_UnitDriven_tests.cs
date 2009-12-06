@@ -40,7 +40,7 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
 		[Test]
 		public void Should_have_correct_TotalPassed_count()
 		{
-			_testReport.TotalPassed.ShouldEqual(6);
+			_testReport.TotalPassed.ShouldEqual(7);
 		}
 
 		[Test]

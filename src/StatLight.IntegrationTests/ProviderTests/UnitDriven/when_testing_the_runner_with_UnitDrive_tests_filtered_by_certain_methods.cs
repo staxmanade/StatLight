@@ -36,12 +36,5 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
 
 			TestResults = base.Runner.Run();
 		}
-
-		[Test]
-		public void UnitDrivenFailTest()
-		{
-			Assert.Fail("TestResults.Results.Count=" + TestResults.Results.Count);
-		}
-
 	}
 }
