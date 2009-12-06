@@ -12,6 +12,8 @@
 	using StatLight.Core.Runners;
 	using StatLight.Core.WebServer;
 	using StatLight.Core.WebServer.XapHost;
+	using StatLight.Core.UnitTestProviders;
+	using StatLight.Core.WebServer.XapInspection;
 
 	class Program
 	{
@@ -55,13 +57,20 @@
 
 					if (options.ShowHelp)
 					{
-						ArgOptions.ShowHelpMessage(System.Console.Out);
+						ArgOptions.ShowHelpMessage(System.Console.Out, options);
 						return;
+					}
+
+					var unitTestProviderType = options.UnitTestProviderType;
+
+					if(unitTestProviderType == UnitTestProviderType.Undefined)
+					{
+						unitTestProviderType = DetermineUnitTestProviderType(xapPath);
 					}
 
 					var config = TestRunConfiguration.CreateDefault();
 					config.TagFilter = options.TagFilters;
-					config.UnitTestProviderType = options.UnitTestProviderType;
+					config.UnitTestProviderType = unitTestProviderType;
 
 					var testReport = RunTestAndGetTestReport(logger, xapPath, continuousIntegrationMode, showTestingBrowserHost, useTeamCity, startWebServerOnly, config, microsoftTestingFrameworkVersion);
 
@@ -103,6 +112,14 @@ Try: (the following two steps that should allow StatLight to start a web server 
 					WriteErrorToConsole(argParseException.Message);
 				}
 			}
+		}
+
+		private static UnitTestProviderType DetermineUnitTestProviderType(string xapPath)
+		{
+			//TODO: Print message telling the user what the type is - and if they give it
+			// we don't have to "reflect" on the xap to determine the test provider type.
+			var xapReadItems = new XapReader().GetTestAssembly(xapPath);
+			return xapReadItems.UnitTestProvider;
 		}
 
 		private static void WriteErrorToConsole(string errorMessage)

@@ -4,7 +4,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 {
 	using StatLight.Core.Reporting.Messages;
 
-	internal class TeamCityTestResultHandler : ITestResultHandler
+	public class TeamCityTestResultHandler : ITestResultHandler
 	{
 		private readonly ICommandWriter messageWriter;
 		private readonly string assemblyName;

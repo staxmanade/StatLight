@@ -4,7 +4,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 	using System.Collections.Specialized;
 	using System.Text;
 
-	internal class Command
+	public class Command
 	{
 		public const string CommandStart = "##teamcity[";
 		public const string CommandEnd = "]";

@@ -144,19 +144,19 @@
 
 
             [Test]
-            public void the_default_UnitTestProviderType_should_be_MSTest()
+            public void the_default_UnitTestProviderType_should_be_Undefined()
             {
                 _statLightService.GetTestRunConfiguration().UnitTestProviderType
                     .ShouldEqual(UnitTestProviderType.Undefined);
             }
 
-            [Test]
-            public void should_be_able_to_override_the_default_UnitTestProviderType()
-            {
-                _statLightService.GetTestRunConfiguration().UnitTestProviderType = StatLight.Core.UnitTestProviders.UnitTestProviderType.XUnit;
-                _statLightService.GetTestRunConfiguration().UnitTestProviderType
-                    .ShouldEqual(UnitTestProviderType.XUnit);
-            }
+			//[Test]
+			//public void should_be_able_to_override_the_default_UnitTestProviderType()
+			//{
+			//    _statLightService.GetTestRunConfiguration().UnitTestProviderType = StatLight.Core.UnitTestProviders.UnitTestProviderType.XUnit;
+			//    _statLightService.GetTestRunConfiguration().UnitTestProviderType
+			//        .ShouldEqual(UnitTestProviderType.XUnit);
+			//}
 
         }
 

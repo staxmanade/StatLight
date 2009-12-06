@@ -1,7 +1,7 @@
 ﻿
 namespace StatLight.Core.Reporting.Providers.TeamCity
 {
-	internal interface ICommandWriter
+	public interface ICommandWriter
 	{
 		void Write(Command command);
 	}

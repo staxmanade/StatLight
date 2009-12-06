@@ -34,7 +34,7 @@ namespace StatLight.Console
 
 		public bool ShowHelp { get; set; }
 
-		public bool IsValid { get; private set; }
+		//public bool IsValid { get; private set; }
 
 		public bool ShowTestingBrowserHost { get; private set; }
 
@@ -58,7 +58,7 @@ namespace StatLight.Console
 			this.optionSet = GetOptions();
 
 			_args = args;
-			IsValid = true;
+			//IsValid = true;
 			List<string> extra;
 
 			try
@@ -131,16 +131,11 @@ namespace StatLight.Console
 					})
 				.Add<string>("teamcity", "Changes the console output to generate the teamcity message spec.", v => OutputForTeamCity = true)
 				.Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
-				.Add("key", "Give the license key to validate registration of StatLight", v =>
-					{
-						v = v ?? string.Empty;
-						LicenseKey = v;
-					})
 				.Add<string>("?|help", "displays the help message", v => ShowHelp = true)
 				;
 		}
 
-		public static void ShowHelpMessage(System.IO.TextWriter @out)
+		public static void ShowHelpMessage(TextWriter @out)
 		{
 			@out.WriteLine("Usage: statlight -x=<PathTo/UnitTests.xap> [OPTIONS]");
 			@out.WriteLine("");
@@ -173,5 +168,25 @@ namespace StatLight.Console
 			@out.WriteLine("                                                 tests.[Great for needing to ");
 			@out.WriteLine("                                                 attaching a debugger] ");
 		}
+
+		public static void ShowHelpMessage(TextWriter @out, ArgOptions options)
+		{
+			ShowHelpMessage(@out);
+
+			/* 
+			 * DEBUG - maybe some work and could add value (for when a user inputs bad data - display to them what statlight "sees")
+			 */
+
+			//@out.WriteLine("---------- options ----------");
+			//@out.WriteLine("--- Continuous             - {0}".FormatWith(options.ContinuousIntegrationMode));
+			//@out.WriteLine("--- XapPath                - '{0}'".FormatWith(options.XapPath));
+			//@out.WriteLine("--- TagFilters             - '{0}'".FormatWith(options.TagFilters));
+			//@out.WriteLine("--- ShowTestingBrowserHost - {0}".FormatWith(options.ShowTestingBrowserHost));
+			//@out.WriteLine("--- TestProvider           - {0}".FormatWith(options.UnitTestProviderType));
+			//@out.WriteLine("--- ReportOutputFile       - '{0}'".FormatWith(options.XmlReportOutputPath));
+			//@out.WriteLine("--- teamcity               - {0}".FormatWith(options.OutputForTeamCity));
+			//@out.WriteLine("--- webserveronly          - {0}".FormatWith(options.StartWebServerOnly));
+		}
+
 	}
 }

@@ -76,31 +76,4 @@ namespace StatLight.Client.Silverlight.Tests.UnitTestProviders.NUnit
 		}
 
 	}
-
-	[TestClass]
-	public class when_validating_an_method_with_a_skip_fact_attribute : FixtureBase
-	{
-		ITestMethod testMethod;
-		MethodInfo methodInfo;
-
-		protected override void Before_each_test()
-		{
-			base.Before_each_test();
-
-			methodInfo = MockNUnitTestClass.GetIgnoreTest();
-			testMethod = new TestMethod(methodInfo);
-		}
-
-		[TestMethod]
-		public void test_method_should_be_ignored()
-		{
-			testMethod.Ignore.ShouldBeTrue();
-		}
-
-		[TestMethod]
-		public void the_timeout_value_should_be_correct()
-		{
-			testMethod.Timeout.ShouldBeEqualTo(1);
-		}
-	}
 }

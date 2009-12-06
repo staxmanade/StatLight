@@ -24,10 +24,9 @@ namespace StatLight.Core.Tests.WebServer
 
 		}
 
-		[TestFixture]
 		public class when_the_XapWatcher_has_been_initialized_with_a_file_and_it_has_been_loaded : using_a_random_temp_file_for_testing
 		{
-			XapFileBuildChangedMonitor _xapWatcher;
+			protected XapFileBuildChangedMonitor _xapWatcher;
 
 			protected override void Before_each_test()
 			{
@@ -35,7 +34,12 @@ namespace StatLight.Core.Tests.WebServer
 
 				_xapWatcher = new XapFileBuildChangedMonitor(PathToTempXapFile);
 			}
+		}
 
+		[TestFixture]
+		public class should_1 :
+			when_the_XapWatcher_has_been_initialized_with_a_file_and_it_has_been_loaded
+		{
 			[Test]
 			public void Should_raise_file_refreshed_event_when_existing_file_changes()
 			{
@@ -52,8 +56,12 @@ namespace StatLight.Core.Tests.WebServer
 
 				wasXapFileRefreshed.ShouldBeTrue();
 			}
+		}
 
-
+		[TestFixture]
+		public class should_2 :
+			when_the_XapWatcher_has_been_initialized_with_a_file_and_it_has_been_loaded
+		{
 			[Test]
 			public void when_simulating_a_build_the_changed_event_should_only_be_raised_once_in_a_short_amount_of_time()
 			{

@@ -17,25 +17,25 @@ properties {
 	$integration_test_assembly_path = "src\StatLight.IntegrationTests\bin\x86\$build_configuration\StatLight.IntegrationTests.dll"
 	
 	$microsoft_silverlight_testing_versions = @('December2008', 'March2009', 'July2009', 'October2009')	
-	#$microsoft_silverlight_testing_versions = @('July2009')	
+	#$microsoft_silverlight_testing_versions = @('July2009')
 }
 
-Task build-start -depends clean, writeProperties, nantBuildProject, buildStatLightSolution, buildStatLight, buildStatLightIntegrationTests
-{
+Task help {
+	Dump-Tasks
 }
 
-Task build-full-Release -depends build-start, run-tests, run-integrationTests, createReleasePackage
-{
+
+Task build-Debug -depends build-all, test-all {
 }
 
-Task build-Debug -depends build-start, run-tests, run-integrationTests
-{
+Task build-full-Release -depends build-all, test-all, package-release {
 }
 
-Task build-Debug-Fast -depends build-start, run-tests
-{
+Task test-all -depends run-tests, run-statlight-silverlight-tests, run-integrationTests {
 }
 
+Task build-all -depends clean, writeProperties, buildStatLightSolution, buildStatLight, buildStatLightIntegrationTests {
+}
 
 
 # Is this a Win64 machine regardless of whether or not we are currently 
@@ -44,13 +44,12 @@ function global:Test-Win64Machine() {
     return test-path (join-path $env:WinDir "SysWow64")
 }
 
-function global:Rename-Extensions {
+function global:rename-file-extensions {
 	param([string]$itemsPath, [string]$fromExtension, [string]$toExtension)
 	Get-Item "$itemsPath" | foreach{ Move-Item $_.FullName $_.FullName.Replace($fromExtension, $toExtension) }
 }
 
-function get-assembly-version()
-{
+function get-assembly-version() {
 	param([string] $file)
 	
 	$assembly = [System.Reflection.Assembly]::LoadFrom($file)
@@ -253,7 +252,6 @@ function global:Remove-If-Exist {
 	}
 }
 
-
 function global:Build-And-Package-StatLight {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
 	
@@ -350,10 +348,6 @@ Task writeProperties {
 	Dump-Properties
 }
 
-Task help {
-	Dump-Tasks
-}
-
 Task clean {
 	#-ErrorAction SilentlyContinue --- because of the *.vshost which is locked and we can't delete.
 	Remove-Item $build_dir\* -Force -ErrorAction SilentlyContinue
@@ -362,47 +356,30 @@ Task clean {
 	mkdir $build_dir -Force
 }
 
-Task nantBuildProject {
-
-#	if(Is-Release-Build)
-#	{
-#		& .\tools\NAnt\nant.exe build-release
-#	}
-#	else
-#	{
-#		& .\tools\NAnt\nant.exe build
-#	}
-}
-
-Task init-release {
-
-}
-
 Task buildStatLight {
 
-	Rename-Extensions -itemsPath "$build_dir\*.xap" -fromExtension ".xap" -toExtension ".zip"
+	rename-file-extensions -itemsPath "$build_dir\*.xap" -fromExtension ".xap" -toExtension ".zip"
 
 	$microsoft_silverlight_testing_versions | foreach { Build-And-Package-StatLight $_ }
 
-	Rename-Extensions -itemsPath "$build_dir\*.zip" -fromExtension ".zip" -toExtension ".xap"
+	rename-file-extensions -itemsPath "$build_dir\*.zip" -fromExtension ".zip" -toExtension ".xap"
 }
 
 Task buildStatLightIntegrationTests {
 	
-	Rename-Extensions -itemsPath "$build_dir\*.xap" -fromExtension ".xap" -toExtension ".zip"
+	rename-file-extensions -itemsPath "$build_dir\*.xap" -fromExtension ".xap" -toExtension ".zip"
 
 	$microsoft_silverlight_testing_versions | foreach { Build-And-Package-StatLight-IntegrationTests $_ }
 
-	Rename-Extensions -itemsPath "$build_dir\*.zip" -fromExtension ".zip" -toExtension ".xap"
+	rename-file-extensions -itemsPath "$build_dir\*.zip" -fromExtension ".zip" -toExtension ".xap"
 }
 
-Task createReleasePackage {
+Task package-release {
 	if(-not (Test-Path $release_dir))
 	{
 		New-Item $release_dir -type directory -force
 	}
 	Remove-If-Exist "$release_dir\*"
-
 
 	$filesToInclude = @(
 		Get-ChildItem "$build_dir\*.xap" | where{ -not $_.FullName.Contains("Integration") }
@@ -440,6 +417,16 @@ Task run-integrationTests {
 
 	if($LastExitCode)
 	{
-		throw 'Integration Tests Failed'
+		throw 'run-integrationTests Failed'
+	}
+}
+
+Task run-statlight-silverlight-tests {
+
+	exec "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Silverlight.Tests\Bin\$build_configuration\StatLight.Client.Silverlight.Tests.xap" "-o=MSTest"
+
+	if($LastExitCode)
+	{
+		throw 'run-statlight-silverlight-tests Failed'
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System;
+using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;
 using Microsoft.Practices.Composite.Events;
@@ -18,15 +19,21 @@ namespace StatLight.Core.Tests
 		public ILogger TestLogger { get; set; }
 		public IEventAggregator TestEventAggregator { get; set; }
 
-		[SetUp]
+		[TestFixtureSetUp]
 		public void SetupContext()
 		{
 			TestEventAggregator = new EventAggregator();
 
 			Before_each_test();
+			Because();
 		}
 
-		[TearDown]
+		protected virtual void Because()
+		{
+			
+		}
+
+		[TestFixtureTearDown]
 		public void TearDownContext()
 		{
 			After_each_test();

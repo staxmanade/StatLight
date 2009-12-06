@@ -4,13 +4,13 @@ namespace StatLight.Client.Silverlight.Tests
 {
 	public class FixtureBase
 	{
-		[TestInitialize]
+		[ClassInitialize]
 		public void SetupContext()
 		{
 			Before_each_test();
 		}
 
-		[TestCleanup]
+		[ClassCleanup]
 		public void TearDownContext()
 		{
 			After_each_test();
