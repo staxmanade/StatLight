@@ -1,4 +1,6 @@
-﻿namespace StatLight.Console
+﻿using System.IO;
+
+namespace StatLight.Console
 {
 	using System;
 	using System.Diagnostics;
@@ -81,18 +83,18 @@
 
 					if (!string.IsNullOrEmpty(options.XmlReportOutputPath))
 					{
+						var xmlReport = new XmlReport(testReport, xapPath);
+						xmlReport.WriteXmlReport(options.XmlReportOutputPath);
+
 						"*********************************"
 							.WrapConsoleMessageWithColor(ConsoleColor.White, true);
 
-						"Writing XML report to: {0}"
-							.FormatWith(options.XmlReportOutputPath)
+						"Wrote XML report to:{0}{1}"
+							.FormatWith(Environment.NewLine, new FileInfo(options.XmlReportOutputPath).FullName)
 							.WrapConsoleMessageWithColor(ConsoleColor.Yellow, true);
 
 						"*********************************"
 							.WrapConsoleMessageWithColor(ConsoleColor.White, true);
-
-						var xmlReport = new XmlReport(testReport, xapPath);
-						xmlReport.WriteXmlReport(options.XmlReportOutputPath);
 					}
 
 					if (testReport.FinalResult == RunCompletedState.Failure)
