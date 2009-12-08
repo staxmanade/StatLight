@@ -53,7 +53,10 @@
 						options.MicrosoftTestingFrameworkVersion;
 
 					if (string.IsNullOrEmpty(xapPath))
+					{
 						options.ShowHelp = true;
+						Environment.ExitCode = ExitFailed;
+					}
 
 					if (options.ShowHelp)
 					{
@@ -78,7 +81,16 @@
 
 					if (!string.IsNullOrEmpty(options.XmlReportOutputPath))
 					{
-						WriteErrorToConsole("Writing XML report to: {0}".FormatWith(options.XmlReportOutputPath));
+						"*********************************"
+							.WrapConsoleMessageWithColor(ConsoleColor.White, true);
+
+						"Writing XML report to: {0}"
+							.FormatWith(options.XmlReportOutputPath)
+							.WrapConsoleMessageWithColor(ConsoleColor.Yellow, true);
+
+						"*********************************"
+							.WrapConsoleMessageWithColor(ConsoleColor.White, true);
+
 						var xmlReport = new XmlReport(testReport, xapPath);
 						xmlReport.WriteXmlReport(options.XmlReportOutputPath);
 					}

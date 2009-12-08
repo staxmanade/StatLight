@@ -31,7 +31,7 @@ Task build-Debug -depends build-all, test-all {
 Task build-full-Release -depends build-all, test-all, package-release {
 }
 
-Task test-all -depends run-tests, run-statlight-silverlight-tests, run-integrationTests {
+Task test-all -depends run-tests, run-statlight-silverlight-tests, run-integrationTests, run-all-mstest-version-acceptance-tests {
 }
 
 Task build-all -depends clean, writeProperties, buildStatLightSolution, buildStatLight, buildStatLightIntegrationTests {
@@ -333,6 +333,31 @@ function global:Get-Not-Build-Configuration {
 	$not_build_configuration;
 }
 
+function Execute-MSTest-Version-Acceptance-Tests {
+	param([string]$microsoft_Silverlight_Testing_Version_Name)
+	
+	$tempFileGuid = ([System.Guid]::NewGuid())
+	$scriptFile = ".\temp_statlight-integration-output-$tempFileGuid.ps1"
+	Remove-If-Exist $scriptFile
+	
+	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
+	
+	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
+	$file = get-item $scriptFile
+	$doc = [System.Xml.Linq.XDocument]::Load($file)
+	
+	$passingTests = $doc.Descendants('test') | where{ $_.Attribute('passed').Value -eq 'true' }
+	$passingTests.Count.ShouldEqual(4);
+
+	$ignoredTests = @($doc.Descendants('test') | where{ $_.Attribute('passed').Value -eq 'false' } | where { $_.Value.Contains('Ignoring') })
+	$ignoredTests.Count.ShouldEqual(1);
+
+	$failedTests = @($doc.Descendants('test') | where{ $_.Attribute('passed').Value -eq 'false' } | where { ! $_.Value.Contains('Ignoring') })
+	$failedTests.Count.ShouldEqual(1);
+
+	Remove-If-Exist $scriptFile
+}
+
 
 Task writeProperties { 
 
@@ -429,4 +454,26 @@ Task run-statlight-silverlight-tests {
 	{
 		throw 'run-statlight-silverlight-tests Failed'
 	}
+}
+
+
+function test-variable
+{# return $false if variable:\$name is missing or $null
+	param( [string]$name )
+	$isMissingOrNull = (!(test-path ('variable:'+$name)) -or ((get-variable -name $name -value) -eq $null))
+	return !$isMissingOrNull
+}
+
+Task load-nunit-assembly {
+	if(!(Test-Path ('variable:hasLoadedNUnitSpecificationExtensions')))
+	{
+		echo 'loading NUnitSpecificationExtensions...'
+		Update-TypeData -prependPath .\tools\PowerShell\NUnitSpecificationExtensions.ps1xml
+		[System.Reflection.Assembly]::LoadFrom((Get-Item .\tools\NUnit\nunit.framework.dll).FullName) | Out-Null
+		$global:hasLoadedNUnitSpecificationExtensions = $true;
+	}
+}
+
+Task run-all-mstest-version-acceptance-tests -depends load-nunit-assembly {
+	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests $_ }	
 }
