@@ -1,7 +1,6 @@
-include tools\PowerShell\zip.ps1
 
 properties {
-	# NOTE: the $build_configuration property must be set...
+	# NOTE: the $build_configuration property must be set prior to calling anything in here... default.ps1 for example
 	
 	$not_build_configuration = Get-Not-Build-Configuration
 	$build_dir = ".\src\build\bin\$build_configuration"
@@ -11,10 +10,11 @@ properties {
 	$statlight_xap_for_prefix = "StatLight.Client.For" 
 
 	$release_dir = 'Release'
-	$release_zip_path = "$release_dir\StatLight.zip"
 	
 	$nunit_console_path = 'Tools\NUnit\nunit-console-x86.exe'
 
+	$statLightSourcesFilePrefix = 'StatLight.Sources.'
+	$core_assembly_path = "$build_dir\StatLight.Core.dll"
 	$test_assembly_path = "src\StatLight.Core.Tests\bin\x86\$build_configuration\StatLight.Core.Tests.dll"
 	$integration_test_assembly_path = "src\StatLight.IntegrationTests\bin\x86\$build_configuration\StatLight.IntegrationTests.dll"
 	
@@ -35,21 +35,10 @@ properties {
 		)
 }
 
-Task help {
-	Dump-Tasks
-}
-
-
 Task build-Debug -depends build-all, test-all {
 }
 
 Task build-full-Release -depends build-all, test-all, package-release {
-}
-
-Task test-all -depends run-tests, run-statlight-silverlight-tests, run-integrationTests, run-all-mstest-version-acceptance-tests {
-}
-
-Task build-all -depends clean, writeProperties, buildStatLightSolution, buildStatLight, buildStatLightIntegrationTests {
 }
 
 
@@ -67,8 +56,20 @@ function global:rename-file-extensions {
 function get-assembly-version() {
 	param([string] $file)
 	
-	$assembly = [System.Reflection.Assembly]::LoadFrom($file)
-	$version = $assembly.GetName().Version;
+	$fileStream = ([System.IO.FileInfo] (Get-Item $file)).OpenRead()
+	$assemblyBytes = new-object byte[] $fileStream.Length
+	$fileStream.Read($assemblyBytes, 0, $fileStream.Length) | Out-Null #out null this because this function should only return the version & this call was outputting some garbage number
+	$fileStream.Close()
+	$version = [System.Reflection.Assembly]::Load($assemblyBytes).GetName().Version;
+	
+	#format the version and output it...
+	$version
+}
+
+function get-formatted-assembly-version() {
+	param([string] $file)
+	
+	$version = get-assembly-version $file
 	"v$($version.Major).$($version.Minor).$($version.Build).$($version.Revision)"
 }
 
@@ -117,7 +118,7 @@ function global:Execute-Command-String {
 
 	$tempFileGuid = ([System.Guid]::NewGuid())
 	$scriptFile = ".\temp_build_csc_command-$tempFileGuid.ps1"
-	Remove-If-Exist $scriptFile
+	Remove-If-Exists $scriptFile
 
 	Write-Host ''
 	Write-Host '*********** Executing Command ***********'
@@ -128,7 +129,7 @@ function global:Execute-Command-String {
 
 	$cmd >> $scriptFile
 	& $scriptFile
-	Remove-If-Exist $scriptFile
+	Remove-If-Exists $scriptFile
 }
 
 function global:StatLightReferences {
@@ -259,7 +260,7 @@ function global:CompileStatLightIntegrationTests {
 	Execute-Command-String $cmd
 }
 
-function global:Remove-If-Exist {
+function global:Remove-If-Exists {
 	param($file)
 	if(Test-Path $file)
 	{
@@ -292,7 +293,7 @@ function global:Build-And-Package-StatLight-IntegrationTests {
 	$dllName = 'StatLight.IntegrationTests.Silverlight.MSTest.dll'
 	$dllPath = "$build_dir\$dllName"
 
-	Remove-If-Exist $dllPath
+	Remove-If-Exists $dllPath
 
 	CompileStatLightIntegrationTests $microsoft_Silverlight_Testing_Version_Name .\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name $dllPath
 	
@@ -310,8 +311,8 @@ function global:Build-And-Package-StatLight-IntegrationTests {
 
 function global:Create-Xap {
 	param($newZipFileName, $filesToInclude)
-	Remove-If-Exist $newZipFileName
-	$filesToInclude | Add-Zip $newZipFileName
+	Remove-If-Exists $newZipFileName
+	$filesToInclude | Zip-Files-From-Pipeline $newZipFileName
 	Move-Item $newZipFileName $newZipFileName.Replace(".zip", ".xap")
 }
 
@@ -353,7 +354,7 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	$tempFileGuid = ([System.Guid]::NewGuid())
 	$scriptFile = ".\temp_statlight-integration-output-$tempFileGuid.ps1"
-	Remove-If-Exist $scriptFile
+	Remove-If-Exists $scriptFile
 	
 	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
 	
@@ -370,9 +371,101 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	$failedTests = @($doc.Descendants('test') | where{ $_.Attribute('passed').Value -eq 'false' } | where { ! $_.Value.Contains('Ignoring') })
 	$failedTests.Count.ShouldEqual(1);
 
-	Remove-If-Exist $scriptFile
+	Remove-If-Exists $scriptFile
 }
 
+
+function LoadZipAssembly {
+	if(!(Test-Path ('variable:hasLoadedIonicZipDll')))
+	{
+		$scriptDir = ".\lib\Desktop\DotNetZip"
+		$zippingAssembly = (Get-Item "$scriptDir\Ionic.Zip.Reduced.dll").FullName
+
+		echo "loading Zipping assembly [$zippingAssembly]..."
+		[System.Reflection.Assembly]::LoadFrom($zippingAssembly) | Out-Null
+		$global:hasLoadedIonicZipDll = $true;
+	}
+}
+
+function Zip-Files-From-Pipeline
+{
+    param([string]$zipfilename, [bool] $addAllZipsToRoot = $true)
+	
+	BEGIN {
+		
+		LoadZipAssembly;
+	
+		$pwdPath = $PWD.Path;
+	
+		$zipfile =  new-object Ionic.Zip.ZipFile
+	}
+	PROCESS {
+		[string] $fileFullName;
+		$isDirectory = $false
+		$file = $_
+
+		if($file.GetType() -eq [string])
+		{
+			$fileFullName = $file
+		}
+		elseif($file.GetType() -eq [System.IO.FileInfo])
+		{
+			$fileInfo = [System.IO.FileInfo]$file
+			$fileFullName = $fileInfo.FullName
+		}
+		elseif($file.GetType() -eq [System.IO.DirectoryInfo])
+		{
+			$directoryToZip = "$($file.FullName)".Replace("\", "\\")
+			echo "Zipping Directory $directoryToZip"
+			$zipfile.AddDirectory($directoryToZip, "")
+			echo "Directory added..."
+			$isDirectory = $true
+		}
+		else
+		{
+			echo "DEBUG: PSIsContainer = $($file.PSIsContainer)"
+			echo "DEBUG: PSPath = $($file.PSPath)"
+			echo "DEBUG: FullName = $($file.FullName)"
+			
+			$unknownTypeName = $file.GetType();
+			throw "Zip-Files-From-Pipeline - Can only work with [string] and [System.IO.FileInfo] items. Cannot use unknown type - [$unknownTypeName]"
+		}
+		
+		if(!$isDirectory)
+		{
+			if($addAllZipsToRoot -eq $true)
+			{
+				$zipfile.AddFile($fileFullName, "") | Out-Null
+			}
+			else
+			{
+				if($fileFullName.Substring(0, $pwdPath.Length) -eq $pwdPath)
+				{
+					$hackedFileName = $fileFullName.Substring($pwdPath.Length);
+				}
+				else
+				{
+					$hackedFileName = $fileFullName
+				}
+		
+				$hackedFileName = Split-Path $hackedFileName -Parent
+	
+				$zipfile.AddFile($fileFullName, $hackedFileName) | Out-Null
+			}
+		}
+	}	
+	END {
+		echo "Saving zip to $pwdPath\$zipfilename"
+		$zipfile.Save("$pwdPath\$zipfilename")
+		$zipfile.Dispose()
+	}
+}
+
+#########################################
+#
+# build script misc pre-build tasks
+#
+#########################################
 
 Task writeProperties { 
 
@@ -396,6 +489,12 @@ Task clean {
 	mkdir $build_dir -Force
 }
 
+#########################################
+#
+# Building/Compilation tasks
+#
+#########################################
+
 Task buildStatLight {
 
 	rename-file-extensions -itemsPath "$build_dir\*.xap" -fromExtension ".xap" -toExtension ".zip"
@@ -414,26 +513,6 @@ Task buildStatLightIntegrationTests {
 	rename-file-extensions -itemsPath "$build_dir\*.zip" -fromExtension ".zip" -toExtension ".xap"
 }
 
-Task package-release {
-	if(-not (Test-Path $release_dir))
-	{
-		New-Item $release_dir -type directory -force
-	}
-	Remove-If-Exist "$release_dir\*"
-
-	$filesToInclude = @(
-		Get-ChildItem "$build_dir\*.xap" | where{ -not $_.FullName.Contains("Integration") }
-		Get-ChildItem $build_dir\* -Include *.dll, *.txt, StatLight.exe
-		Get-ChildItem ".\StatLight.EULA.txt"
-	)
-	
-	$dllFile = Get-Item '.\src\build\bin\Debug\StatLight.Core.dll'
-	$versionBuildPath = "$release_dir\$(get-assembly-version $dllFile.FullName)"
-	New-Item -Path $versionBuildPath -ItemType directory
-	$filesToInclude | foreach{ Copy-Item $_ "$versionBuildPath\$($_.Name)"  }
-	Get-Item $versionBuildPath | Add-Zip $release_zip_path
-}
-
 Task buildStatLightSolution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe'
 	& $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86
@@ -442,6 +521,14 @@ Task buildStatLightSolution {
 		throw 'msbuild failed on StatLight.sln'
 	}
 }
+
+
+#########################################
+#
+# Unit/Integration tests
+#
+#########################################
+
 
 Task run-tests {
 	& $nunit_console_path $test_assembly_path
@@ -471,14 +558,6 @@ Task run-statlight-silverlight-tests {
 	}
 }
 
-
-function test-variable
-{# return $false if variable:\$name is missing or $null
-	param( [string]$name )
-	$isMissingOrNull = (!(test-path ('variable:'+$name)) -or ((get-variable -name $name -value) -eq $null))
-	return !$isMissingOrNull
-}
-
 Task load-nunit-assembly {
 	if(!(Test-Path ('variable:hasLoadedNUnitSpecificationExtensions')))
 	{
@@ -490,5 +569,82 @@ Task load-nunit-assembly {
 }
 
 Task run-all-mstest-version-acceptance-tests -depends load-nunit-assembly {
-	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests $_ }	
+	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests $_ }
+}
+
+
+#########################################
+#
+# Release packaging
+#
+#########################################
+
+Task package-release-clean {
+	if(-not (Test-Path $release_dir))
+	{
+		New-Item $release_dir -type directory -force | Out-Null
+	}
+	Remove-If-Exists "$release_dir\*" | Out-Null
+}
+
+Task zip-snapshot-project-sources {
+	# files to zip ... (Get all files & run all the files thought this exclusion logic)...
+	$files = (Get-ChildItem -Path .\ -Recurse | `
+		where { !($_.PSIsContainer) } | `
+		where { !($_.GetType() -eq [System.IO.DirectoryInfo])} | `
+		where { ($_.FullName -notlike "*\obj\*") } | `
+		where { ($_.FullName -notlike "*\bin\*") } | `
+		where { ($_.FullName -notlike "*\src\build\*") } | `
+		where { ($_.FullName -notlike "*\_Resharper*") } | `
+		where { ($_.FullName -notlike "*\.git*") } | `
+		where { ($_.FullName -notlike "*TestResult.xml") } | `
+		where { ($_.FullName -notlike "*.sln.cache") } | `
+		where { ($_.FullName -notlike "*.user") } | `
+		where { ($_.FullName -notlike "*\Release\*") })
+
+	$versionString = get-formatted-assembly-version $core_assembly_path
+	$sourceZipFile = "$statLightSourcesFilePrefix$versionString.zip"
+	
+	echo "Remove-If-Exists $sourceZipFile"
+	Remove-If-Exists $sourceZipFile | Out-Null
+
+	#DEBUG: $files | foreach{ echo "$($_.GetType()) - $_" }
+
+	echo "Zipping up the source files"
+	$files | Zip-Files-From-Pipeline $sourceZipFile $false | Out-Null
+	
+	echo "Moving the zipped source into the $release_dir folder."
+	mv $sourceZipFile $release_dir\$sourceZipFile -Force | Out-Null
+}
+
+Task package-release -depends package-release-clean, zip-snapshot-project-sources {
+
+	$filesToInclude = @(
+		Get-ChildItem "$build_dir\*.xap" | where{ -not $_.FullName.Contains("Integration") }
+		Get-ChildItem $build_dir\* -Include *.dll, *.txt, StatLight.exe
+		Get-ChildItem ".\StatLight.EULA.txt"
+	)
+		
+	$versionBuildPath = "$release_dir\$(get-formatted-assembly-version $core_assembly_path)"
+	New-Item -Path $versionBuildPath -ItemType directory | Out-Null
+	$filesToInclude | foreach{ Copy-Item $_ "$versionBuildPath\$($_.Name)"  }
+
+	Move-Item (Get-ChildItem $release_dir\$statLightSourcesFilePrefix*) "$versionBuildPath\$($_.Name)"
+
+	$version = get-assembly-version $core_assembly_path
+
+	$release_zip_path = "$release_dir\StatLight.v$($version.Major).$($version.Minor).zip"
+	
+	Get-Item $versionBuildPath | Zip-Files-From-Pipeline $release_zip_path
+}
+
+
+Task help {
+	Dump-Tasks
+}
+
+Task test-all -depends run-tests, run-statlight-silverlight-tests, run-integrationTests, run-all-mstest-version-acceptance-tests {
+}
+
+Task build-all -depends clean, writeProperties, buildStatLightSolution, buildStatLight, buildStatLightIntegrationTests {
 }

@@ -14,7 +14,12 @@ StatLight build infrastructure is put together with a number of psake tasks [htt
 
 
 TODO:
-
 	- Look at updating to Silverlight 4 Beta
+        - In the xap reader - if we determine it's an MSTest xap - figure out what version.
 	- Investigate new S.L. toolkit integration build support
-	-
+
+
+DONE:
+	- replace powershell zipping util script... (now using DotNetZip - faster than older method)
+	- add to build script zip of src on release build
+	- Added support UnitDriven testing.
