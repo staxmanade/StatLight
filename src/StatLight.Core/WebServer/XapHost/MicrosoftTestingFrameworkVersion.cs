@@ -7,5 +7,6 @@ namespace StatLight.Core.WebServer.XapHost
 		March2009,
 		July2009,
 		October2009,
+		November2009,
 	}
 }

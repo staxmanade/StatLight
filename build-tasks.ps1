@@ -1,6 +1,8 @@
 include tools\PowerShell\zip.ps1
 
 properties {
+	# NOTE: the $build_configuration property must be set...
+	
 	$not_build_configuration = Get-Not-Build-Configuration
 	$build_dir = ".\src\build\bin\$build_configuration"
 	$program_files_dir = Get-x86-ProgramFiles-Location
@@ -11,13 +13,26 @@ properties {
 	$release_dir = 'Release'
 	$release_zip_path = "$release_dir\StatLight.zip"
 	
-	$nunit_exe = 'Tools\NUnit\nunit-console-x86.exe'
+	$nunit_console_path = 'Tools\NUnit\nunit-console-x86.exe'
 
 	$test_assembly_path = "src\StatLight.Core.Tests\bin\x86\$build_configuration\StatLight.Core.Tests.dll"
 	$integration_test_assembly_path = "src\StatLight.IntegrationTests\bin\x86\$build_configuration\StatLight.IntegrationTests.dll"
 	
-	$microsoft_silverlight_testing_versions = @('December2008', 'March2009', 'July2009', 'October2009')	
-	#$microsoft_silverlight_testing_versions = @('July2009')
+	
+	# All of the versions that this script will create compatible 
+	# builds of the statlight silverlight client for...
+	#
+	# How to add a new version
+	#  - 1. Create the new version in the libs path .\libs\Silverlight\Microsoft\<version>\*.dll
+	#  - 2. Add the version below 
+	#  - 3. Add the version to the MicrosoftTestingFrameworkVersion enum in the project
+	$microsoft_silverlight_testing_versions = @(
+		'December2008',
+		'March2009',
+		'July2009',
+		'October2009',
+		'November2009'
+		)
 }
 
 Task help {
@@ -429,7 +444,7 @@ Task buildStatLightSolution {
 }
 
 Task run-tests {
-	& $nunit_exe $test_assembly_path
+	& $nunit_console_path $test_assembly_path
 
 	if($LastExitCode)
 	{
@@ -438,7 +453,7 @@ Task run-tests {
 }
 
 Task run-integrationTests {
-	& $nunit_exe $integration_test_assembly_path /noshadow
+	& $nunit_console_path $integration_test_assembly_path /noshadow
 
 	if($LastExitCode)
 	{
