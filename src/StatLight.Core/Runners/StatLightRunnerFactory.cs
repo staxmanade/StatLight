@@ -1,9 +1,11 @@
 ﻿
+using System.Threading;
+using StatLight.Core.Events.Aggregation;
+
 namespace StatLight.Core.Runners
 {
 	using System;
 	using System.Collections.Generic;
-	using Microsoft.Practices.Composite.Events;
 	using StatLight.Core.Common;
 	using StatLight.Core.Monitoring;
 	using StatLight.Core.Reporting.Providers.Console;
@@ -14,7 +16,7 @@ namespace StatLight.Core.Runners
 
 	public static class StatLightRunnerFactory
 	{
-		private static readonly IEventAggregator EventAggregator = new EventAggregator();
+		private static readonly IEventAggregator EventAggregator = new EventAggregator(new SynchronizationContext());
 		private static BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
 
 		public static IRunner CreateContinuousTestRunner(ILogger logger, string xapPath, TestRunConfiguration testRunConfiguration, bool showTestingBrowserHost, ServerTestRunConfiguration serverTestRunConfiguration)

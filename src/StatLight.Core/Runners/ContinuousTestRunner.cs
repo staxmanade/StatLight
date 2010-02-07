@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.Events.Aggregation;
+
 namespace StatLight.Core.Runners
 {
     using System;
@@ -7,11 +9,10 @@ namespace StatLight.Core.Runners
     using StatLight.Core.Reporting;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
-    using Microsoft.Practices.Composite.Events;
     using StatLight.Core.Events;
     using StatLight.Core.Reporting.Providers.Console;
 
-	internal class ContinuousTestRunner: IDisposable
+    internal class ContinuousTestRunner : IDisposable
     {
         private readonly IBrowserFormHost _browserFormHost;
         private readonly IStatLightService _statLightService;
@@ -50,8 +51,7 @@ namespace StatLight.Core.Runners
             };
 
             eventAggregator
-                .GetEvent<TestRunCompletedEvent>()
-                .Subscribe((payload) => Stop());
+                .AddListener<TestRunCompletedEvent>(e => Stop());
 
             Start();
         }
@@ -87,18 +87,18 @@ namespace StatLight.Core.Runners
             Start();
         }
 
-		protected virtual void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				_testResultAggregator.Dispose();
-			}
-		}
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _testResultAggregator.Dispose();
+            }
+        }
 
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-	}
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+    }
 }

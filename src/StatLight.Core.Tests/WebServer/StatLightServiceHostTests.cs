@@ -6,7 +6,6 @@
 		using NUnit.Framework;
 		using StatLight.Core.Common;
 		using StatLight.Core.WebServer;
-		using Microsoft.Practices.Composite.Events;
 		using StatLight.Core.Tests.WebServer.XapMonitorTests;
 		using System.ServiceModel;
 

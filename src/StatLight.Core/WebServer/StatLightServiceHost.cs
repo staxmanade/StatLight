@@ -1,11 +1,12 @@
 ﻿
+using StatLight.Core.Events.Aggregation;
+
 namespace StatLight.Core.WebServer
 {
 	using System;
 	using System.ServiceModel;
 	using System.ServiceModel.Description;
 	using StatLight.Core.Common;
-	using Microsoft.Practices.Composite.Events;
 	using System.ServiceModel.Web;
 
 	public class StatLightServiceHost : IDisposable, IWebServer

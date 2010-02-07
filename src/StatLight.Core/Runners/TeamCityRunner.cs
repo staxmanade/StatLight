@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.Events.Aggregation;
+
 namespace StatLight.Core.Runners
 {
 	using StatLight.Core.Common;
@@ -6,9 +8,8 @@ namespace StatLight.Core.Runners
 	using StatLight.Core.WebBrowser;
 	using StatLight.Core.WebServer;
 	using StatLight.Core.Reporting;
-	using Microsoft.Practices.Composite.Events;
 
-	internal class TeamCityRunner : OnetimeRunner
+    internal class TeamCityRunner : OnetimeRunner
 	{
 		TeamCityTestResultHandler teamCityCommandPublisher;
 

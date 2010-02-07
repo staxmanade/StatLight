@@ -60,10 +60,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Desktop\DotNetZip\Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Composite, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Desktop\Composite\Microsoft.Practices.Composite.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -109,7 +105,8 @@
     <Compile Include="Common\ILogger.cs" />
     <Compile Include="Common\Resources.cs" />
     <Compile Include="CommonExtensions.Desktop.cs" />
-    <Compile Include="Events\CompositeEvent.cs" />
+    <Compile Include="Events\Aggregation\EventAggregator.cs" />
+    <Compile Include="Events\PayloadEvent.cs" />
     <Compile Include="Events\TestServiceEvents.cs" />
     <Compile Include="Monitoring\BrowserCommunicationTimeoutMonitor.cs" />
     <Compile Include="Monitoring\DialogMonitorResult.cs" />

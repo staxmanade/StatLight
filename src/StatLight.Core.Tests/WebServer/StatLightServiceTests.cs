@@ -1,4 +1,6 @@
-﻿namespace StatLight.Core.Tests.WebServer
+﻿using System;
+
+namespace StatLight.Core.Tests.WebServer
 {
     namespace StatLightServiceTests
     {
@@ -11,11 +13,10 @@
         using StatLight.Core.Tests.Mocks;
         using StatLight.Core.UnitTestProviders;
         using StatLight.Core.WebServer;
-        using Microsoft.Practices.Composite.Events;
         using StatLight.Core.Events;
         using StatLight.Core.Reporting.Messages;
-		using TestOutcome = Core.Reporting.Messages.TestOutcome;
-		using LogMessageType = Core.Reporting.Messages.LogMessageType;
+        using TestOutcome = Core.Reporting.Messages.TestOutcome;
+        using LogMessageType = Core.Reporting.Messages.LogMessageType;
 
         public class with_an_instance_of_the_StatLightService : using_a_random_temp_file_for_testing
         {
@@ -40,7 +41,7 @@
 
                 _hostXap = serverConfig.HostXap;
 
-                _statLightService = new StatLightService(new NullLogger(), base.TestEventAggregator, base.PathToTempXapFile, TestRunConfiguration.CreateDefault(), serverConfig);
+                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, PathToTempXapFile, TestRunConfiguration.CreateDefault(), serverConfig);
             }
         }
 
@@ -59,18 +60,14 @@
 
                 base.Before_all_tests();
 
+                TestEventAggregator
+                    .AddListener<TestRunCompletedEvent>(e => WasTestCompleteSignalSent = true);
 
-                base.TestEventAggregator
-                    .GetEvent<TestRunCompletedEvent>()
-                    .Subscribe((e) => WasTestCompleteSignalSent = true);
+                TestEventAggregator
+                    .AddListener<TestResultEvent>(e => _testMobilScenarioResult.Add(e.Payload));
 
-                base.TestEventAggregator
-                    .GetEvent<TestResultEvent>()
-                    .Subscribe((e) => _testMobilScenarioResult.Add(e));
-
-                base.TestEventAggregator
-                    .GetEvent<TestHarnessOtherMessageEvent>()
-                    .Subscribe((e) => _testMobilOtherMessageType.Add(e));
+                TestEventAggregator
+                    .AddListener<TestHarnessOtherMessageEvent>(e => _testMobilOtherMessageType.Add(e.Payload));
 
                 var postCount = PostMessagesToService();
 
@@ -81,15 +78,26 @@
             {
                 return 0;
             }
+
+            public void Handle(TestRunCompletedEvent message)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Handle(TestResultEvent message)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Handle(TestHarnessOtherMessageEvent message)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         [TestFixture]
         public class when_testing_messages_posted_to_the_service : with_the_TestCompleted_event_wired_to_trap_the_TestCompletedArgs
         {
-            protected override void Before_all_tests()
-            {
-                base.Before_all_tests();
-            }
             protected override int PostMessagesToService()
             {
                 StatLightService.PostMessage(MessageFactory.CreateOtherMessageTypeStream(LogMessageType.Error));
@@ -130,10 +138,9 @@
             {
                 base.Before_all_tests();
 
-                var config = new TestRunConfiguration();
-                config.TagFilter = _tagFilter;
+                var config = new TestRunConfiguration { TagFilter = _tagFilter };
 
-                _statLightService = new StatLightService(new NullLogger(), base.TestEventAggregator, base.PathToTempXapFile, config, MockServerTestRunConfiguration);
+                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, PathToTempXapFile, config, MockServerTestRunConfiguration);
             }
 
             [Test]
@@ -150,13 +157,13 @@
                     .ShouldEqual(UnitTestProviderType.Undefined);
             }
 
-			//[Test]
-			//public void should_be_able_to_override_the_default_UnitTestProviderType()
-			//{
-			//    _statLightService.GetTestRunConfiguration().UnitTestProviderType = StatLight.Core.UnitTestProviders.UnitTestProviderType.XUnit;
-			//    _statLightService.GetTestRunConfiguration().UnitTestProviderType
-			//        .ShouldEqual(UnitTestProviderType.XUnit);
-			//}
+            //[Test]
+            //public void should_be_able_to_override_the_default_UnitTestProviderType()
+            //{
+            //    _statLightService.GetTestRunConfiguration().UnitTestProviderType = StatLight.Core.UnitTestProviders.UnitTestProviderType.XUnit;
+            //    _statLightService.GetTestRunConfiguration().UnitTestProviderType
+            //        .ShouldEqual(UnitTestProviderType.XUnit);
+            //}
 
         }
 
@@ -167,7 +174,7 @@
             [Test]
             public void should_throw_FileNotFoundException_when_given_bad_file_path()
             {
-                typeof(FileNotFoundException).ShouldBeThrownBy(() => new StatLightService(new NullLogger(), base.TestEventAggregator, "missingFile", TestRunConfiguration.CreateDefault(), MockServerTestRunConfiguration));
+                typeof(FileNotFoundException).ShouldBeThrownBy(() => new StatLightService(new NullLogger(), TestEventAggregator, "missingFile", TestRunConfiguration.CreateDefault(), MockServerTestRunConfiguration));
             }
 
             [Test]
@@ -201,7 +208,8 @@
             {
                 bool wasSignaledTestComplete = false;
 
-                TestEventAggregator.GetEvent<TestRunCompletedEvent>().Subscribe(o => wasSignaledTestComplete = true);
+                TestEventAggregator
+                    .AddListener<TestRunCompletedEvent>(o => wasSignaledTestComplete = true);
 
                 StatLightService.SignalTestComplete(0);
 
@@ -213,7 +221,8 @@
             {
                 bool wasSignaledTestComplete = false;
 
-                TestEventAggregator.GetEvent<TestRunCompletedEvent>().Subscribe(o => wasSignaledTestComplete = true);
+                TestEventAggregator
+                    .AddListener<TestRunCompletedEvent>(o => wasSignaledTestComplete = true);
 
                 // Signal completion of the test with a total of 2 messages 
                 // (that should have been posted to the server)
@@ -239,7 +248,8 @@
             public void when_one_message_was_posted_for_two_seperate_test_runs()
             {
                 bool wasSignaledTestComplete = false;
-                TestEventAggregator.GetEvent<TestRunCompletedEvent>().Subscribe(o => wasSignaledTestComplete = true);
+                TestEventAggregator
+                    .AddListener<TestRunCompletedEvent>(o => wasSignaledTestComplete = true);
 
                 StatLightService.PostMessage(MessageFactory.CreateResultStream(TestOutcome.Passed));
                 StatLightService.SignalTestComplete(1);
@@ -272,8 +282,8 @@
                 base.Before_all_tests();
             }
 
-            List<TestOutcome> outcomes = new List<TestOutcome>()
-			{
+            readonly List<TestOutcome> outcomes = new List<TestOutcome>
+                                                      {
 				TestOutcome.Passed,
 				TestOutcome.Failed,
 				TestOutcome.Passed,
@@ -284,7 +294,7 @@
 				TestOutcome.Failed,
 			};
 
-            List<LogMessageType> otherMessageTypes = new List<LogMessageType>()
+            readonly List<LogMessageType> otherMessageTypes = new List<LogMessageType>
 			{
 				LogMessageType.Error,
 				LogMessageType.Error,
@@ -312,7 +322,7 @@
             [Test]
             public void should_have_received_the_TestCompletedArgs()
             {
-                base.WasTestCompleteSignalSent.ShouldBeTrue();
+                WasTestCompleteSignalSent.ShouldBeTrue();
             }
         }
     }

@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.Events.Aggregation;
+
 namespace StatLight.Core.Runners
 {
 	using System;
@@ -7,9 +9,8 @@ namespace StatLight.Core.Runners
 	using StatLight.Core.Common;
 	using StatLight.Core.Reporting;
 	using StatLight.Core.WebServer;
-	using Microsoft.Practices.Composite.Events;
 
-	internal class WebServerOnlyRunner : IRunner, IDisposable
+    internal class WebServerOnlyRunner : IRunner, IDisposable
 	{
 		private readonly IWebServer webServer;
 		private readonly Thread continuousRunnerThread;

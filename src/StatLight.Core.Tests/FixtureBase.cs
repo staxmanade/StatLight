@@ -1,9 +1,8 @@
-﻿using System;
+﻿using System.IO;
 using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;
-using Microsoft.Practices.Composite.Events;
-using System.IO;
+using StatLight.Core.Events.Aggregation;
 using StatLight.Core.WebServer;
 using StatLight.Core.WebServer.XapHost;
 
