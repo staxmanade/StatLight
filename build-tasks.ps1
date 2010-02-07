@@ -5,8 +5,10 @@ properties {
 	$not_build_configuration = Get-Not-Build-Configuration
 	$build_dir = ".\src\build\bin\$build_configuration"
 	$program_files_dir = Get-x86-ProgramFiles-Location
-	$silverlight_core_assemblies_location = "$program_files_dir\Microsoft Silverlight\3.0.40818.0"
+#	$silverlight_core_assemblies_location = "$program_files_dir\Microsoft Silverlight\3.0.40818.0"
+	$silverlight_core_assemblies_location = "$program_files_dir\Reference Assemblies\Microsoft\Framework\Silverlight\v3.0"
 	$silverlight_libraries_client_assemblies = "$program_files_dir\Microsoft SDKs\Silverlight\v3.0\Libraries\Client"
+#C:\Program Files\Reference Assemblies\Microsoft\Framework\Silverlight\v3.0	
 	$statlight_xap_for_prefix = "StatLight.Client.For" 
 
 	$release_dir = 'Release'

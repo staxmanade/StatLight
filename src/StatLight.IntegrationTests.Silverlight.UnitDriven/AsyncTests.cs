@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using UnitDriven;
+using System.Threading;
 
 #if MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -50,25 +51,46 @@ namespace StatLight.IntegrationTests.Silverlight.UnitDriven
 			}
 		}
 
-		[TestMethod]
-		[ExpectedException(typeof(InvalidOperationException))]
-		public void ExpectedExceptionExample()
-		{
-			using (UnitTestContext context = GetContext())
-			{
-				BackgroundWorker worker = new BackgroundWorker();
-				worker.RunWorkerCompleted += (o, e) =>
-				                             	{
-				                             		// catches exception here and passes to the context.
-				                             		context.Assert.Try(() => { throw new InvalidOperationException(); });
-				                             		context.Assert.Fail();
-				                             	};
-				worker.RunWorkerAsync();
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ExpectedExceptionExample()
+        {
+            using (UnitTestContext context = GetContext())
+            {
+                BackgroundWorker worker = new BackgroundWorker();
+                worker.RunWorkerCompleted += (o, e) =>
+                {
+                    // catches exception here and passes to the context.
+                    context.Assert.Try(() => { throw new InvalidOperationException(); });
+                    context.Assert.Fail();
+                };
+                worker.RunWorkerAsync();
 
-				// When the context is disposed it will find the exception and re-throw it in .NET
-				// and simply pass it back in Silverlight.
-			}
-		}
+                // When the context is disposed it will find the exception and re-throw it in .NET
+                // and simply pass it back in Silverlight.
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ExpectedException_After_some_time_Example()
+        {
+            using (UnitTestContext context = GetContext())
+            {
+                BackgroundWorker worker = new BackgroundWorker();
+                worker.RunWorkerCompleted += (o, e) =>
+                {
+                    //Thread.Sleep(1000);
+                    // catches exception here and passes to the context.
+                    context.Assert.Try(() => { throw new InvalidOperationException(); });
+                    context.Assert.Fail();
+                };
+                worker.RunWorkerAsync();
+
+                // When the context is disposed it will find the exception and re-throw it in .NET
+                // and simply pass it back in Silverlight.
+            }
+        }
 
 		[TestMethod]
 		public void FailureExample()
