@@ -75,20 +75,20 @@
     </Compile>
     <Compile Include="FluentSpecificationExtensions.cs" />
     <Compile Include="FixtureBase.cs" />
-    <Compile Include="Silverlight\LogMessageHandling\LogMessageHandlerFactoryTests.cs" />
-    <Compile Include="Silverlight\LogMessageHandling\ScenarioResultLogMessageHandlerTests.cs" />
-    <Compile Include="Silverlight\LogMessageHandling\when_the_LogMessages_is_a_ScenarioResult.cs" />
-    <Compile Include="Silverlight\Mocks\MockTestClass.cs" />
-    <Compile Include="Silverlight\Mocks\MockTestMethod.cs" />
+    <Compile Include="Harness\LogMessageHandling\LogMessageHandlerFactoryTests.cs" />
+    <Compile Include="Harness\LogMessageHandling\ScenarioResultLogMessageHandlerTests.cs" />
+    <Compile Include="Harness\LogMessageHandling\when_the_LogMessages_is_a_ScenarioResult.cs" />
+    <Compile Include="Harness\Mocks\MockTestClass.cs" />
+    <Compile Include="Harness\Mocks\MockTestMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\ClientEventTests.cs" />
     <Compile Include="Model\DTOTests.cs" />
-    <Compile Include="Silverlight\UnitTestProviders\NUnit\TestAttribute.cs" />
-    <Compile Include="Silverlight\UnitTestProviders\NUnit\TestMethodTests.cs" />
-    <Compile Include="Silverlight\UnitTestProviders\NUnit\NUnitTestProviderTests.cs" />
-    <Compile Include="Silverlight\UnitTestProviders\Xunit\FactAttribute.cs" />
-    <Compile Include="Silverlight\UnitTestProviders\Xunit\TestMethodTests.cs" />
-    <Compile Include="Silverlight\UnitTestProviders\Xunit\XUnitTestProviderTests.cs" />
+    <Compile Include="Harness\UnitTestProviders\NUnit\TestAttribute.cs" />
+    <Compile Include="Harness\UnitTestProviders\NUnit\TestMethodTests.cs" />
+    <Compile Include="Harness\UnitTestProviders\NUnit\NUnitTestProviderTests.cs" />
+    <Compile Include="Harness\UnitTestProviders\Xunit\FactAttribute.cs" />
+    <Compile Include="Harness\UnitTestProviders\Xunit\TestMethodTests.cs" />
+    <Compile Include="Harness\UnitTestProviders\Xunit\XUnitTestProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
