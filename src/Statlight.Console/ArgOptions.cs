@@ -137,7 +137,7 @@ namespace StatLight.Console
 
 		public static void ShowHelpMessage(TextWriter @out)
 		{
-			@out.WriteLine("Usage: statlight -x=<PathTo/UnitTests.xap> [OPTIONS]");
+            @out.WriteLine("Usage: statlight -x=\"PathTo/UnitTests.xap\" [OPTIONS]");
 			@out.WriteLine("");
 			@out.WriteLine("More documentation: http://www.StatLight.net");
 			@out.WriteLine("");
@@ -148,19 +148,19 @@ namespace StatLight.Console
 			@out.WriteLine("");
 			@out.WriteLine("Examples:");
 			@out.WriteLine("");
-			@out.WriteLine(" > statlight -x=<Tests.xap>                 .. Run all tests in the xap.");
-			@out.WriteLine(" > statlight -x=<Tests.xap> -b              .. Display the browser window");
+            @out.WriteLine(" > statlight -x=\"Tests.xap\"                 .. Run all tests in the xap.");
+            @out.WriteLine(" > statlight -x=\"Tests.xap\" -b              .. Display the browser window");
 			@out.WriteLine("                                                 while running the tests.");
-			@out.WriteLine(" > statlight -x=<Tests.xap> -t=Integration  .. Only run the tests that were ");
+            @out.WriteLine(" > statlight -x=\"Tests.xap\" -t=Integration  .. Only run the tests that were ");
 			@out.WriteLine("                                                 tagged with \"Integration\".");
-			@out.WriteLine(" > statlight -x=<Tests.xap> -c              .. One time run + continuously ");
+            @out.WriteLine(" > statlight -x=\"Tests.xap\" -c              .. One time run + continuously ");
 			@out.WriteLine("                                                 monitor and re-run tests");
 			@out.WriteLine("                                                 after build.");
-			@out.WriteLine(" > statlight -x=<Tests.xap> --teamcity      .. One time run + communication");
+            @out.WriteLine(" > statlight -x=\"Tests.xap\" --teamcity      .. One time run + communication");
 			@out.WriteLine("                                                 needed for running C.I. under ");
 			@out.WriteLine("                                                 TeamCity.");
-			@out.WriteLine(" > statlight -x=<Tests.xap> -o=xunit        .. Run using the xunit provider");
-			@out.WriteLine(" > statlight -x=<Tests.xap> --webserveronly .. This will start up the statlight ");
+            @out.WriteLine(" > statlight -x=\"Tests.xap\" -o=xunit        .. Run using the xunit provider");
+            @out.WriteLine(" > statlight -x=\"Tests.xap\" --webserveronly .. This will start up the statlight ");
 			@out.WriteLine("                                                 webserver. Print a url to the ");
 			@out.WriteLine("                                                 console and remain running. You");
 			@out.WriteLine("                                                 can then take the url and paste");
