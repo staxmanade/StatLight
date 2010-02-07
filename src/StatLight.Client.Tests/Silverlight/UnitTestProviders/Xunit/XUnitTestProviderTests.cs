@@ -1,19 +1,18 @@
 ﻿using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StatLight.Client.Silverlight.Tests;
+using StatLight.Client.Tests;
 
-namespace StatLight.Client.Silverlight.UnitTestProviders.NUnit
+namespace StatLight.Client.Silverlight.UnitTestProviders.Xunit
 {
     [TestClass]
-    [Ignore]
-    public class NUnitTestProviderTests : FixtureBase
+    public class XUnitTestProviderTests : FixtureBase
     {
         IUnitTestProvider provider;
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
 
-            provider = new NUnitTestProvider();
+            provider = new XUnitTestProvider();
         }
 
         [TestMethod]

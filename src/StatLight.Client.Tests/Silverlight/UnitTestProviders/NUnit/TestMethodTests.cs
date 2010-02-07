@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Reflection;
 using NUnit.Framework;
-using StatLight.Client.Silverlight.Tests;
+using StatLight.Client.Tests;
 
 namespace StatLight.Client.Silverlight.UnitTestProviders.NUnit
 {

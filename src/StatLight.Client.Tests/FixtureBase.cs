@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace StatLight.Client.Silverlight.Tests
+namespace StatLight.Client.Tests
 {
 	public class FixtureBase
 	{

@@ -11,7 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Silverlight.Testing;
 
-namespace StatLight.Client.Silverlight.Tests
+namespace StatLight.Client.Tests
 {
 	public partial class App : Application
 	{

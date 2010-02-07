@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Silverligh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Console", "Statlight.Console\StatLight.Console.csproj", "{930EED4B-3D52-42A2-BE34-D4AF4C50C1BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Silverlight.Tests", "StatLight.Client.Silverlight.Tests\StatLight.Client.Silverlight.Tests.csproj", "{CDC6A5B3-5AED-489A-9CD2-4B8C528301B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Tests", "StatLight.Client.Tests\StatLight.Client.Tests.csproj", "{CDC6A5B3-5AED-489A-9CD2-4B8C528301B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests", "StatLight.IntegrationTests\StatLight.IntegrationTests.csproj", "{B4460341-8AA6-4D93-8166-92865623D86C}"
 	ProjectSection(ProjectDependencies) = postProject

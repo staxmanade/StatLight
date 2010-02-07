@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace StatLight.Client.Silverlight.Tests
+namespace StatLight.Client.Tests
 {
 	public static class FluentSpecificationExtensions
 	{

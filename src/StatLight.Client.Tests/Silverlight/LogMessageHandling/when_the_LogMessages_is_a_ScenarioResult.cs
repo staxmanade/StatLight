@@ -1,7 +1,7 @@
 ﻿using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using StatLight.Client.Silverlight.Mocks;
-using StatLight.Client.Silverlight.Tests;
+using StatLight.Client.Tests;
 
 namespace StatLight.Client.Silverlight.LogMessageHandling
 {

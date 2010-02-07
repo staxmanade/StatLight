@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Silverlight.Testing;
-using StatLight.Client.Silverlight.Tests;
+using StatLight.Client.Tests;
 
 namespace StatLight.Client.Silverlight.LogMessageHandling
 {

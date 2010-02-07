@@ -554,7 +554,7 @@ Task run-integrationTests {
 
 Task run-statlight-silverlight-tests {
 
-	exec "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Silverlight.Tests\Bin\$build_configuration\StatLight.Client.Silverlight.Tests.xap" "-o=MSTest"
+	exec "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" "-o=MSTest"
 
 	if($LastExitCode)
 	{
