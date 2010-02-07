@@ -53,9 +53,9 @@ namespace StatLight.Core.Tests.Common
 
 		protected LogChatterLevels LogChatterLevel;
 
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
-			base.Before_each_test();
+			base.Before_all_tests();
 
 			logger = new TestLogger();
 			logger.LogChatterLevel = LogChatterLevel;
@@ -75,11 +75,11 @@ namespace StatLight.Core.Tests.Common
 	[TestFixture]
 	public class when_verifying_an_Error_only_LogChatterLevel : with_a_logger
 	{
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
 			LogChatterLevel = LogChatterLevels.Error;
 
-			base.Before_each_test();
+			base.Before_all_tests();
 		}
 
 		[Test]
@@ -109,11 +109,11 @@ namespace StatLight.Core.Tests.Common
 	[TestFixture]
 	public class when_verifying_a_warning_only_LogChatterLevel : with_a_logger
 	{
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
 			LogChatterLevel = LogChatterLevels.Warning;
 
-			base.Before_each_test();
+			base.Before_all_tests();
 		}
 
 		[Test]
@@ -144,11 +144,11 @@ namespace StatLight.Core.Tests.Common
 
 	public class when_verifying_a_information_only_LogChatterLevel : with_a_logger
 	{
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
 			LogChatterLevel = LogChatterLevels.Information;
 
-			base.Before_each_test();
+			base.Before_all_tests();
 		}
 
 		[Test]
@@ -178,11 +178,11 @@ namespace StatLight.Core.Tests.Common
 
 	public class when_verifying_a_debug_only_LogChatterLevel : with_a_logger
 	{
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
 			LogChatterLevel = LogChatterLevels.Debug;
 
-			base.Before_each_test();
+			base.Before_all_tests();
 		}
 
 		[Test]
@@ -212,11 +212,11 @@ namespace StatLight.Core.Tests.Common
 
 	public class when_verifying_a_Full_LogChatterLevel : with_a_logger
 	{
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
 			LogChatterLevel = LogChatterLevels.Full;
 
-			base.Before_each_test();
+			base.Before_all_tests();
 		}
 
 		[Test]
@@ -246,11 +246,11 @@ namespace StatLight.Core.Tests.Common
 
 	public class when_verifying_a_None_LogChatterLevel : with_a_logger
 	{
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
 			LogChatterLevel = LogChatterLevels.None;
 
-			base.Before_each_test();
+			base.Before_all_tests();
 		}
 
 		[Test]
@@ -280,10 +280,10 @@ namespace StatLight.Core.Tests.Common
 
 	public class when_verifying_a_Information_or_Warning_or_Error_LogChatterLevel : with_a_logger
 	{
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
 			LogChatterLevel = LogChatterLevels.Information | LogChatterLevels.Warning | LogChatterLevels.Error;
-			base.Before_each_test();
+			base.Before_all_tests();
 		}
 
 		[Test]

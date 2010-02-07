@@ -7,9 +7,9 @@
 	public class when_creating_a_team_city_command : FixtureBase
 	{
 		Command command;
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
-			base.Before_each_test();
+			base.Before_all_tests();
 
 			command = CommandFactory.TestSuiteStarted("asemblyName");
 		}

@@ -17,9 +17,9 @@ namespace StatLight.Core.Tests.Reporting
 
 			public Mock<ITestResultHandler> TestResultHandler { get; private set; }
 
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 
 				TestResultHandler = new Mock<ITestResultHandler>();
 
@@ -30,9 +30,9 @@ namespace StatLight.Core.Tests.Reporting
 		[TestFixture]
 		public class when_a_MobileScenerioResult_has_been_published : with_a_TestResultAggregator
 		{
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 
 				RaisePassingTest();
 			}
@@ -60,9 +60,9 @@ namespace StatLight.Core.Tests.Reporting
 		[TestFixture]
 		public class when_a_MobilOtherMessageType_has_been_published : with_a_TestResultAggregator
 		{
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 
 				base.TestEventAggregator
 					.GetEvent<TestHarnessOtherMessageEvent>()
@@ -80,9 +80,9 @@ namespace StatLight.Core.Tests.Reporting
 		[TestFixture]
 		public class when_a_BrowserHostCommunicationTimeout_has_been_published : with_a_TestResultAggregator
 		{
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 
 				base.TestEventAggregator
 					.GetEvent<BrowserHostCommunicationTimeoutEvent>()

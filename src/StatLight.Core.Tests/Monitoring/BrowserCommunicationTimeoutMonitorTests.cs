@@ -15,9 +15,9 @@ namespace StatLight.Core.Tests.Monitoring
 
 			public BrowserCommunicationTimeoutMonitor Monitor { get; private set; }
 
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 
 				MockTimer = new Mock<ITimer>();
 
@@ -25,7 +25,7 @@ namespace StatLight.Core.Tests.Monitoring
 																  new TimeSpan(0, 0, 0, 1, 0));
 			}
 
-			protected void PublishTimerFiredEvent()
+			protected virtual void PublishTimerFiredEvent()
 			{
 				MockTimer.Raise((t) => t.Elapsed += null, new TimerWrapperElapsedEventArgs(DateTime.Now.AddSeconds(2)));
 			}
@@ -45,9 +45,9 @@ namespace StatLight.Core.Tests.Monitoring
 		public class for_a_BrowserHostCommunicationTimeoutEvent_xX :
 			when_a_verifying_test_messages_arriving_from_the_xap_INSIDE_the_timeout_period
 		{
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 				base.SetupEventToSeeIfPublished<BrowserHostCommunicationTimeoutEvent>();
 				base.TestEventAggregator
 					.GetEvent<TestRunCompletedEvent>()
@@ -67,9 +67,9 @@ namespace StatLight.Core.Tests.Monitoring
 		public class for_a_BrowserHostCommunicationTimeoutEvent_x :
 			when_a_verifying_test_messages_arriving_from_the_xap_INSIDE_the_timeout_period
 		{
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 				base.TestEventAggregator
 					.GetEvent<TestResultEvent>()
 					.Publish(null);
@@ -87,7 +87,7 @@ namespace StatLight.Core.Tests.Monitoring
 		public class when_a_verifying_test_messages_arriving_from_the_xap_INSIDE_the_timeout_period
 			: with_a_BrowserCommunicationTimeoutMonitor
 		{
-			private void PublishTimerFiredEvent()
+		    protected override void PublishTimerFiredEvent()
 			{
 				MockTimer.Raise((t) => t.Elapsed += null, new TimerWrapperElapsedEventArgs(DateTime.Now));
 			}
@@ -116,9 +116,9 @@ namespace StatLight.Core.Tests.Monitoring
 		{
 			private int _publishedEventsCount = 0;
 
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 
 				base.TestEventAggregator
 					.GetEvent<BrowserHostCommunicationTimeoutEvent>()
@@ -144,9 +144,9 @@ namespace StatLight.Core.Tests.Monitoring
 		public class for_a_BrowserHostCommunicationTimeoutEvent :
 			when_a_verifying_test_messages_arriving_from_the_xap_OUTSIDE_the_timeout_period
 		{
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 				base.SetupEventToSeeIfPublished<BrowserHostCommunicationTimeoutEvent>();
 			}
 
@@ -162,9 +162,9 @@ namespace StatLight.Core.Tests.Monitoring
 		public class for_a_TestRunCompletedEvent :
 			when_a_verifying_test_messages_arriving_from_the_xap_OUTSIDE_the_timeout_period
 		{
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 				base.SetupEventToSeeIfPublished<TestRunCompletedEvent>();
 			}
 

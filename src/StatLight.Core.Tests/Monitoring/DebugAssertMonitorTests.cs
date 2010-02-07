@@ -22,9 +22,9 @@ namespace StatLight.Core.Tests.WebBrowser
 
 	////    bool timerEnabled = false;
 
-	////    protected override void Before_each_test()
+	////    protected override void Before_all_tests()
 	////    {
-	////        base.Before_each_test();
+	////        base.Before_all_tests();
 
 	////        currentTime = new DateTime(2009, 1, 1);
 	////        mockStatLightService = new Mock<IStatLightService>();

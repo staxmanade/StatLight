@@ -27,9 +27,9 @@ namespace StatLight.Core.Tests.Reporting
 	public class when_viewing_a_TestReport_for_a_specific_set_of_results : FixtureBase
 	{
 		TestReport _result;
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
-			base.Before_each_test();
+			base.Before_all_tests();
 
 			_result = new TestReport();
 

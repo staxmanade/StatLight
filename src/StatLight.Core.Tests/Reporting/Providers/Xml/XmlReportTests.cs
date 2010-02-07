@@ -57,9 +57,9 @@ namespace StatLight.Core.Tests.Reporting.Providers.XmlTests
 
 //        protected const string TestXapFileName = "Test.xap";
 
-//        protected override void Before_each_test()
+//        protected override void Before_all_tests()
 //        {
-//            base.Before_each_test();
+//            base.Before_all_tests();
 
 //            report = new TestReport()
 //                .AddResult(MessageFactory.CreateResult(TestOutcome.Passed))
@@ -149,9 +149,9 @@ namespace StatLight.Core.Tests.Reporting.Providers.XmlTests
 //    {
 //        XElement testSuiteElement;
 
-//        protected override void Before_each_test()
+//        protected override void Before_all_tests()
 //        {
-//            base.Before_each_test();
+//            base.Before_all_tests();
 
 //            testSuiteElement = base.RootReport.Elements().First();
 //        }
@@ -201,9 +201,9 @@ namespace StatLight.Core.Tests.Reporting.Providers.XmlTests
 //    {
 //        XElement element;
 //        MobilScenarioResult passingResult;
-//        protected override void Before_each_test()
+//        protected override void Before_all_tests()
 //        {
-//            base.Before_each_test();
+//            base.Before_all_tests();
 
 //            passingResult = base.Report.Results
 //                .Where(w => w.Result == TestOutcome.Passed)
@@ -270,9 +270,9 @@ namespace StatLight.Core.Tests.Reporting.Providers.XmlTests
 //    {
 //        XElement element;
 //        MobilScenarioResult failingResult;
-//        protected override void Before_each_test()
+//        protected override void Before_all_tests()
 //        {
-//            base.Before_each_test();
+//            base.Before_all_tests();
 
 //            failingResult = base.Report.Results
 //                .Where(w => w.Result == TestOutcome.Failed)
@@ -380,9 +380,9 @@ namespace StatLight.Core.Tests.Reporting.Providers.XmlTests
 //        XElement element;
 //        MobilOtherMessageType ignoreResult;
 
-//        protected override void Before_each_test()
+//        protected override void Before_all_tests()
 //        {
-//            base.Before_each_test();
+//            base.Before_all_tests();
 
 //            ignoreResult = base.Report.OtherMessages
 //                .Where(w => w.IsIgnoreMessage())

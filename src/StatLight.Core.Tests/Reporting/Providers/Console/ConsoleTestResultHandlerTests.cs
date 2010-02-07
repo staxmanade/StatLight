@@ -9,9 +9,9 @@ namespace StatLight.Core.Tests.Reporting.Providers.Console
 	{
 		ConsoleResultHandler handler;
 
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
-			base.Before_each_test();
+			base.Before_all_tests();
 
 			handler = new ConsoleResultHandler();
 		}

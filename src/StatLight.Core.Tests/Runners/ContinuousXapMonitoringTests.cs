@@ -55,13 +55,13 @@ namespace StatLight.Core.Tests.Runners
 		Mock<IXapFileBuildChangedMonitor> _xapFileBuildChangedMonitor;
 		ContinuousTestRunner _continuousTestRunner;
 
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
 			_mockStatLightService = new Mock<IStatLightService>();
 			_browserFormHost = new Mock<IBrowserFormHost>();
 			_xapFileBuildChangedMonitor = new Mock<IXapFileBuildChangedMonitor>();
 
-			base.Before_each_test();
+			base.Before_all_tests();
 
 			_continuousTestRunner = new ContinuousTestRunner(TestLogger, base.TestEventAggregator, _browserFormHost.Object, _mockStatLightService.Object, _xapFileBuildChangedMonitor.Object, new Mock<ITestResultHandler>().Object);
 

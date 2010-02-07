@@ -16,9 +16,9 @@
 
 			public StatLightService StatLightServiceInstance { get { return _statLightService; } }
 
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 
 				_statLightService = new StatLightService(
 					new NullLogger(),
@@ -33,18 +33,18 @@
 		public class when_working_with_the_StatLightServiceHost : when_using_an_instance_of_the_StatLightService_for_use_in_the_service_host
 		{
 			protected StatLightServiceHost _statLightServiceHost;
-			protected override void Before_each_test()
+			protected override void Before_all_tests()
 			{
-				base.Before_each_test();
+				base.Before_all_tests();
 
 				Uri baseUri = (new WebServerLocation()).BaseUrl;
 
 				_statLightServiceHost = new StatLightServiceHost(TestLogger, StatLightServiceInstance, baseUri);
 			}
 
-			protected override void After_each_test()
+			protected override void After_all_tests()
 			{
-				base.After_each_test();
+				base.After_all_tests();
 
 				if (_statLightServiceHost.State == System.ServiceModel.CommunicationState.Opened)
 					_statLightServiceHost.Stop();

@@ -32,9 +32,9 @@
                 get { return _hostXap.ToStream(); }
             }
 
-            protected override void Before_each_test()
+            protected override void Before_all_tests()
             {
-                base.Before_each_test();
+                base.Before_all_tests();
 
                 var serverConfig = MockServerTestRunConfiguration;
 
@@ -52,12 +52,12 @@
             protected List<MobilOtherMessageType> TestMobilOtherMessageType { get { return _testMobilOtherMessageType; } }
             protected bool WasTestCompleteSignalSent { get; private set; }
 
-            protected override void Before_each_test()
+            protected override void Before_all_tests()
             {
                 _testMobilScenarioResult = new List<MobilScenarioResult>();
                 _testMobilOtherMessageType = new List<MobilOtherMessageType>();
 
-                base.Before_each_test();
+                base.Before_all_tests();
 
 
                 base.TestEventAggregator
@@ -86,9 +86,9 @@
         [TestFixture]
         public class when_testing_messages_posted_to_the_service : with_the_TestCompleted_event_wired_to_trap_the_TestCompletedArgs
         {
-            protected override void Before_each_test()
+            protected override void Before_all_tests()
             {
-                base.Before_each_test();
+                base.Before_all_tests();
             }
             protected override int PostMessagesToService()
             {
@@ -126,9 +126,9 @@
             private const string _tagFilter = "TEST";
             IStatLightService _statLightService;
 
-            protected override void Before_each_test()
+            protected override void Before_all_tests()
             {
-                base.Before_each_test();
+                base.Before_all_tests();
 
                 var config = new TestRunConfiguration();
                 config.TagFilter = _tagFilter;
@@ -266,10 +266,10 @@
         {
             private int _messagesSent;
 
-            protected override void Before_each_test()
+            protected override void Before_all_tests()
             {
                 _messagesSent = 0;
-                base.Before_each_test();
+                base.Before_all_tests();
             }
 
             List<TestOutcome> outcomes = new List<TestOutcome>()

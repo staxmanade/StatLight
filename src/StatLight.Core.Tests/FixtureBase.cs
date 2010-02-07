@@ -24,26 +24,25 @@ namespace StatLight.Core.Tests
 		{
 			TestEventAggregator = new EventAggregator();
 
-			Before_each_test();
+			Before_all_tests();
 			Because();
-		}
-
-		protected virtual void Because()
-		{
-			
 		}
 
 		[TestFixtureTearDown]
 		public void TearDownContext()
 		{
-			After_each_test();
+			After_all_tests();
 		}
 
-		protected virtual void Before_each_test()
+		protected virtual void Before_all_tests()
 		{
 		}
 
-		protected virtual void After_each_test()
+        protected virtual void Because()
+        {
+        }
+
+        protected virtual void After_all_tests()
 		{
 		}
 	}
@@ -64,9 +63,9 @@ namespace StatLight.Core.Tests
 			get { return _mockServerTestRunConfiguration; }
 		}
 
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
-			base.Before_each_test();
+			base.Before_all_tests();
 
 			_pathToTempXapFile = Path.GetTempFileName();
 
@@ -85,9 +84,9 @@ namespace StatLight.Core.Tests
 		}
 
 
-		protected override void After_each_test()
+		protected override void After_all_tests()
 		{
-			base.After_each_test();
+			base.After_all_tests();
 			if (File.Exists(_pathToTempXapFile))
 				File.Delete(_pathToTempXapFile);
 		}

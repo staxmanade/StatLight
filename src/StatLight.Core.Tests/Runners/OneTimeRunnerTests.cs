@@ -23,9 +23,9 @@ namespace StatLight.Core.Tests.Runners
 	//    OneTimeRunner runner;
 
 
-	//    protected override void Before_each_test()
+	//    protected override void Before_all_tests()
 	//    {
-	//        base.Before_each_test();
+	//        base.Before_all_tests();
 
 	//        runner = new OneTimeRunner(
 	//            new NullLogger(),
