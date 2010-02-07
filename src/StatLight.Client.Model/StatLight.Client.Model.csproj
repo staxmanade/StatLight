@@ -51,7 +51,6 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="DTO\ExceptionInfo.cs" />
-    <Compile Include="DTO\ExecutedTestInfo.cs" />
     <Compile Include="Events\EventFactory.cs" />
     <Compile Include="Events\TestFailedEvent.cs" />
   </ItemGroup>

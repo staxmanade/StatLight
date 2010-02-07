@@ -3,33 +3,61 @@ using StatLight.Client.Model.DTO;
 
 namespace StatLight.Client.Model.Events
 {
-	public abstract class ClientEvent
-	{
-		public int MessageOrder { get; set; }
-	}
+    public abstract class ClientEvent
+    {
+        public int ClientEventOrder { get; set; }
+        public DateTime ClientEventCreatedTime { get; set; }
+    }
 
-	public abstract class TestResultCompletedEvent : ClientEvent
-	{
-		public ExecutedTestInfo ExecutedTestInfo { get; set; }
-		public DateTime EndTime { get; set; }
-	}
+    public class TraceEvent : ClientEvent
+    {
+        public string Message { get; set; }
+    }
+
+    public class InitializationOfUnitTestHarness : ClientEvent { }
 
 
 
+    public abstract class TestExecutionClass : ClientEvent
+    {
+        public string NamespaceName { get; set; }
+        public string ClassName { get; set; }
+    }
 
+    public class TestExecutionClassBeginEvent : TestExecutionClass
+    { }
 
-	public class TestBeginEvent : ClientEvent
-	{
-		public ExecutedTestInfo ExecutedTestInfo { get; set; }
-		public DateTime StartTime { get; set; }
-	}
+    public class TestExecutionClassCompletedEvent : TestExecutionClass
+    { }
 
-	public class TestFailedEvent : TestResultCompletedEvent
-	{
-		public ExceptionInfo ExceptionInfo { get; set; }
-	}
+    public abstract class TestExecutionMethod : TestExecutionClass
+    {
+        public string MethodName { get; set; }
+    }
 
-	public class TestPassedEvent : TestResultCompletedEvent
-	{
-	}
+    public class TestExecutionMethodBeginEvent : TestExecutionMethod
+    {
+        public DateTime Started { get; set; }
+    }
+
+    public class TestExecutionMethodIgnoredEvent : TestExecutionMethod
+    {
+        public string Message { get; set; }
+        public DateTime Started { get; set; }
+        public DateTime Finished { get; set; }
+    }
+
+    public class TestExecutionMethodFailedEvent : TestExecutionMethod
+    {
+        public ExceptionInfo ExceptionInfo { get; set; }
+        public DateTime Started { get; set; }
+        public DateTime Finished { get; set; }
+    }
+
+    public class TestExecutionMethodPassedEvent : TestExecutionMethod
+    {
+        public DateTime Started { get; set; }
+        public DateTime Finished { get; set; }
+    }
+
 }

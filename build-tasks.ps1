@@ -152,6 +152,7 @@ function global:StatLightReferences {
 		"$silverlight_libraries_client_assemblies\System.Xml.Serialization.dll",
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.Silverlight.Testing.dll"
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"
+		".\src\StatLight.Client.Model\Bin\$build_configuration\StatLight.Client.Model.dll"
 	)
 	$references;
 }
@@ -174,6 +175,7 @@ function global:StatLightIntegrationTestsReferences {
 		"$silverlight_libraries_client_assemblies\System.Xml.Serialization.dll",
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.Silverlight.Testing.dll"
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"
+		".\src\StatLight.Client.Model\Bin\$build_configuration\StatLight.Client.Model.dll"
 	)
 
 	$references;

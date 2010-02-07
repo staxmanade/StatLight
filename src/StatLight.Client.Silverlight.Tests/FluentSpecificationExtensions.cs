@@ -15,13 +15,19 @@ namespace StatLight.Client.Silverlight.Tests
 			Assert.IsFalse(condition);
 		}
 
-		public static T ShouldBeEqualTo<T>(this T actual, T expected)
-		{
-			Assert.AreEqual(expected, actual);
-			return actual;
-		}
+        public static T ShouldBeEqualTo<T>(this T actual, T expected)
+        {
+            Assert.AreEqual(expected, actual);
+            return actual;
+        }
 
-		public static T ShouldNotBeNull<T>(this T actual)
+        public static T ShouldNotBeEqualTo<T>(this T actual, T expected)
+        {
+            Assert.AreNotEqual(expected, actual);
+            return actual;
+        }
+
+        public static T ShouldNotBeNull<T>(this T actual)
 		{
 			Assert.IsNotNull(actual);
 			return actual;

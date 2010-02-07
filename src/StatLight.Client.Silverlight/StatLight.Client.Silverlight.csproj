@@ -154,6 +154,12 @@
     </None>
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StatLight.Client.Model\StatLight.Client.Model.csproj">
+      <Project>{75B5F356-6AB9-4BF0-B1BD-7CBD55B32EC5}</Project>
+      <Name>StatLight.Client.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
