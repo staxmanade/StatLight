@@ -7,20 +7,25 @@ namespace StatLight.Client.Silverlight.Tests
 		[ClassInitialize]
 		public void SetupContext()
 		{
-			Before_each_test();
+			Before_all_tests();
+			Because();
 		}
 
 		[ClassCleanup]
 		public void TearDownContext()
 		{
-			After_each_test();
+			After_all_tests();
 		}
 
-		protected virtual void Before_each_test()
+		protected virtual void Because()
 		{
 		}
 
-		protected virtual void After_each_test()
+		protected virtual void Before_all_tests()
+		{
+		}
+
+		protected virtual void After_all_tests()
 		{
 		}
 	}

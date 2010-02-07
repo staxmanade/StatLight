@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("StatLight")]
-[assembly: AssemblyCopyright("Copyright © 2009")]
+[assembly: AssemblyCopyright("Copyright © 2009-2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -35,3 +35,5 @@ using System.Resources;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.9.*")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
+
+//TODO: [assembly: AssemblyKeyFile("StatLight.snk")]

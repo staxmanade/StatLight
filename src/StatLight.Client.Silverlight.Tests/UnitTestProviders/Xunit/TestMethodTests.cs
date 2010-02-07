@@ -50,9 +50,9 @@ namespace StatLight.Client.Silverlight.Tests.UnitTestProviders.Xunit
 		ITestMethod testMethod;
 		MethodInfo methodInfo;
 
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
-			base.Before_each_test();
+			base.Before_all_tests();
 
 			methodInfo = MockXunitTestClass.GetPassingTest();
 			testMethod = new TestMethod(methodInfo);
@@ -78,9 +78,9 @@ namespace StatLight.Client.Silverlight.Tests.UnitTestProviders.Xunit
 		ITestMethod testMethod;
 		MethodInfo methodInfo;
 
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
-			base.Before_each_test();
+			base.Before_all_tests();
 
 			methodInfo = MockXunitTestClass.GetIgnoreTest();
 			testMethod = new TestMethod(methodInfo);

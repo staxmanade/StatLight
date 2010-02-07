@@ -21,7 +21,6 @@ namespace StatLight.Client.Silverlight
 	{
 		public static string DecoratorDictionaryToString(this DecoratorDictionary d)
 		{
-
 			var sb = new StringBuilder();
 			foreach (var k in d)
 			{

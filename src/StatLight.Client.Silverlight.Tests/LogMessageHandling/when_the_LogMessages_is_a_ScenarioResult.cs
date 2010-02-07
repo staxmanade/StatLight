@@ -9,9 +9,9 @@ namespace StatLight.Client.Silverlight.Tests.LogMessageHandling
 	{
 		LogMessage _logMessage;
 		protected LogMessage LogMessage { get { return _logMessage; } }
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
-			base.Before_each_test();
+			base.Before_all_tests();
 
 			var mockTestMethod = new MockTestMethod();
 			var mockTestClass = new MockTestClass();

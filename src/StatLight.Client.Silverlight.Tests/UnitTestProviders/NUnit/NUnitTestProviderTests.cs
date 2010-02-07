@@ -10,9 +10,9 @@ namespace StatLight.Client.Silverlight.Tests.UnitTestProviders.NUnit
 	public class NUnitTestProviderTests : FixtureBase
 	{
 		IUnitTestProvider provider;
-		protected override void Before_each_test()
+		protected override void Before_all_tests()
 		{
-			base.Before_each_test();
+			base.Before_all_tests();
 
 			provider = new NUnitTestProvider();
 		}
