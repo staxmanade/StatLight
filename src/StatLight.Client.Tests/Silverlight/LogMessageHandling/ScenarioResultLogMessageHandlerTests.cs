@@ -2,7 +2,7 @@
 using Microsoft.Silverlight.Testing;
 using StatLight.Client.Tests;
 
-namespace StatLight.Client.Silverlight.LogMessageHandling
+namespace StatLight.Client.Harness.LogMessageHandling
 {
     [TestClass]
     [Tag("ScenarioResult")]

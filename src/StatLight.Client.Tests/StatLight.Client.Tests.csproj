@@ -18,7 +18,7 @@
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
     <XapFilename>StatLight.Client.Tests.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
-    <SilverlightAppEntry>StatLight.Client.Silverlight.Tests.App</SilverlightAppEntry>
+    <SilverlightAppEntry>StatLight.Client.Tests.App</SilverlightAppEntry>
     <TestPageFileName>TestPage.html</TestPageFileName>
     <CreateTestPage>true</CreateTestPage>
     <ValidateXaml>true</ValidateXaml>
@@ -107,9 +107,9 @@
       <Project>{75B5F356-6AB9-4BF0-B1BD-7CBD55B32EC5}</Project>
       <Name>StatLight.Client.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\StatLight.Client.Silverlight\StatLight.Client.Silverlight.csproj">
+    <ProjectReference Include="..\StatLight.Client.Harness\StatLight.Client.Harness.csproj">
       <Project>{163315C4-D4D6-4342-B386-F6D80975CF95}</Project>
-      <Name>StatLight.Client.Silverlight</Name>
+      <Name>StatLight.Client.Harness</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="" />

@@ -185,7 +185,7 @@ function global:CompileStatLight {
 	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$microsoft_silverlight_testing_version_path, [string]$outAssemblyName)
 
 	$resources = @(
-		"src\StatLight.Client.Silverlight\obj\$build_configuration\StatLight.Client.Silverlight.g.resources"
+		"src\StatLight.Client.Harness\obj\$build_configuration\StatLight.Client.Harness.g.resources"
 	)
 
 	$references = StatLightReferences $microsoft_Silverlight_Testing_Version_Name
@@ -202,7 +202,7 @@ function global:CompileStatLight {
 		"src\StatLight.Core\WebServer\TestRunConfiguration.cs"
 	)
 
-	$sourceFiles += Get-ChildItem 'src\StatLight.Client.Silverlight\' -recurse `
+	$sourceFiles += Get-ChildItem 'src\StatLight.Client.Harness\' -recurse `
 		| where{$_.Extension -like "*.cs"} `
 		| foreach {$_.FullName} `
 		| where{!$_.Contains($not_build_configuration)}
@@ -275,7 +275,7 @@ function global:Remove-If-Exists {
 function global:Build-And-Package-StatLight {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
 	
-	$statlightBuildFilePath = "$build_dir\StatLight.Client.Silverlight.dll"
+	$statlightBuildFilePath = "$build_dir\StatLight.Client.Harness.dll"
 	
 	CompileStatLight $microsoft_Silverlight_Testing_Version_Name ".\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name" $statlightBuildFilePath
 	
@@ -285,7 +285,7 @@ function global:Build-And-Package-StatLight {
 				| Where-Object { -not $_.Contains($silverlight_core_assemblies_location) } `
 				| foreach{ Get-Item $_}
 	$zipFiles += @(
-					Get-Item ".\src\StatLight.Client.Silverlight\Bin\$build_configuration\AppManifest.xaml"
+					Get-Item ".\src\StatLight.Client.Harness\Bin\$build_configuration\AppManifest.xaml"
 					Get-Item $statlightBuildFilePath
 				)
 	Create-Xap $zippedName $zipFiles

@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StatLight.Client.Tests;
 using Xunit;
 
-namespace StatLight.Client.Silverlight.UnitTestProviders.Xunit
+namespace StatLight.Client.Harness.UnitTestProviders.Xunit
 {
     public class MockXunitTestClass
     {

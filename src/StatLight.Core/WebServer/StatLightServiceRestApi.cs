@@ -11,7 +11,7 @@ namespace StatLight.Core.WebServer
 		public const string LogNonTestException = "LogNonTestException";
 		public const string GetHtmlTestPage = "GetHtmlTestPage";
 		public const string GetTestRunConfiguration = "GetTestRunConfiguration";
-		public const string GetTestPageHostXap = "StatLight.Client.Silverlight.xap";
+		public const string GetTestPageHostXap = "StatLight.Client.Harness.xap";
 
 
 #if SILVERLIGHT

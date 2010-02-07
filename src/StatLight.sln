@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Core", "StatLight
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Core.Tests", "StatLight.Core.Tests\StatLight.Core.Tests.csproj", "{CC69A75A-84FA-4B17-B5D0-97DC1930A6C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Silverlight", "StatLight.Client.Silverlight\StatLight.Client.Silverlight.csproj", "{163315C4-D4D6-4342-B386-F6D80975CF95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Harness", "StatLight.Client.Harness\StatLight.Client.Harness.csproj", "{163315C4-D4D6-4342-B386-F6D80975CF95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Console", "Statlight.Console\StatLight.Console.csproj", "{930EED4B-3D52-42A2-BE34-D4AF4C50C1BD}"
 EndProject

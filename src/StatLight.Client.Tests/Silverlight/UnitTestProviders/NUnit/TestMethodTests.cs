@@ -4,7 +4,7 @@ using System.Reflection;
 using NUnit.Framework;
 using StatLight.Client.Tests;
 
-namespace StatLight.Client.Silverlight.UnitTestProviders.NUnit
+namespace StatLight.Client.Harness.UnitTestProviders.NUnit
 {
     public class MockNUnitTestClass
     {
