@@ -110,9 +110,6 @@
     <Compile Include="HttpResponseCompleteEventArgs.cs" />
     <Compile Include="HttpResponseCompleteEventHandler.cs" />
     <Compile Include="HttpWebRequest.cs" />
-    <Compile Include="Core\LogMessageHandling\LogMessageHandlerFactory.cs" />
-    <Compile Include="Core\LogMessageHandling\ScenarioResultLogMessageHandler.cs" />
-    <Compile Include="Core\LogMessageHandling\ILogMessageHandler.cs" />
     <Compile Include="UnitTestProviders\UnitDriven\ExpectedException.cs" />
     <Compile Include="UnitTestProviders\UnitDriven\Priority.cs" />
     <Compile Include="UnitTestProviders\UnitDriven\ProviderAttributes.cs" />

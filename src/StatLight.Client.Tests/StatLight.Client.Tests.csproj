@@ -75,8 +75,6 @@
     </Compile>
     <Compile Include="FluentSpecificationExtensions.cs" />
     <Compile Include="FixtureBase.cs" />
-    <Compile Include="Harness\LogMessageHandling\LogMessageHandlerFactoryTests.cs" />
-    <Compile Include="Harness\LogMessageHandling\ScenarioResultLogMessageHandlerTests.cs" />
     <Compile Include="Harness\LogMessageHandling\when_the_LogMessages_is_a_ScenarioResult.cs" />
     <Compile Include="Harness\Mocks\MockTestClass.cs" />
     <Compile Include="Harness\Mocks\MockTestMethod.cs" />
