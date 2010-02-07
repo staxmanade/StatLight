@@ -7,3 +7,4 @@ _ReSharper.*/
 TestResult.xml
 *.sln.cache
 *.VisualState.xml
+*.csproj.user
