@@ -16,8 +16,8 @@ namespace StatLight.Client.Model
             [TestMethod]
             public void Should_be_able_to_serialize_all_types()
             {
-                //(new TraceEvent()).Serialize().ShouldNotBeNull();
-                //System.Windows.MessageBox.s() Activator.CreateInstance(typeof(TraceEvent)).Serialize();
+                //(new TraceClientEvent()).Serialize().ShouldNotBeNull();
+                //System.Windows.MessageBox.s() Activator.CreateInstance(typeof(TraceClientEvent)).Serialize();
 
                 foreach (var type in GetAllClientEventTypes())
                 {

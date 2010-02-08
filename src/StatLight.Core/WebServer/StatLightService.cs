@@ -1,5 +1,7 @@
-﻿using StatLight.Core.Events.Aggregation;
+﻿using StatLight.Client.Model.Events;
+using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Reporting.Messages;
+using StatLight.Core.WebServer.HelperExtensions;
 
 namespace StatLight.Core.WebServer
 {
@@ -66,7 +68,7 @@ namespace StatLight.Core.WebServer
             try
             {
                 var xmlMessage = GetPostedMessage(stream);
-                _logger.Debug(xmlMessage);
+                //_logger.Debug(xmlMessage);
 
                 if (xmlMessage.Contains(typeof(MobilOtherMessageType).Name))
                 {
@@ -84,11 +86,17 @@ namespace StatLight.Core.WebServer
                     var result = xmlMessage.Deserialize<MobilScenarioResult>();
                     _eventAggregator.SendMessage(new TestResultEvent { Payload = result });
                 }
+                else if (xmlMessage.Is<InitializationOfUnitTestHarnessClientEvent>())
+                {
+                    var result = xmlMessage.Deserialize<InitializationOfUnitTestHarnessClientEvent>();
+                    _eventAggregator.SendMessage(result);
+                }
                 else
                 {
                     _logger.Error("Unknown message posted...");
                     _logger.Error(xmlMessage);
                 }
+
             }
             catch (Exception ex)
             {
@@ -159,7 +167,7 @@ namespace StatLight.Core.WebServer
 
         private void ResetTestRunStatistics()
         {
-            this._totalMessagesPostedCount = 0;
+            _totalMessagesPostedCount = 0;
             _currentMessagesPostedCount = 0;
         }
 
@@ -179,5 +187,20 @@ namespace StatLight.Core.WebServer
             return _testRunConfiguration;
         }
 
+    }
+
+    namespace HelperExtensions
+    {
+        public static class Extensions
+        {
+            public static bool Is<T>(this string xmlMessage)
+            {
+                if (xmlMessage.StartsWith("<" + typeof(T).Name + " xmlns"))
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
     }
 }

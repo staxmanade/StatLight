@@ -41,15 +41,13 @@ namespace StatLight.Core.Events.Aggregation
         }
     }
 
+    
     public class EventAggregator : IEventAggregator
     {
         private readonly SynchronizationContext _context;
         private readonly List<object> _listeners = new List<object>();
         private readonly object _locker = new object();
 
-        public EventAggregator()
-            : this(new SynchronizationContext())
-        { }
         public EventAggregator(SynchronizationContext context)
         {
             _context = context;

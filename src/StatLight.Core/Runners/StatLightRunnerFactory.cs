@@ -16,7 +16,7 @@ namespace StatLight.Core.Runners
 
 	public static class StatLightRunnerFactory
 	{
-		private static readonly IEventAggregator EventAggregator = new EventAggregator(new SynchronizationContext());
+        internal static IEventAggregator EventAggregator = new EventAggregator(new SynchronizationContext());
 		private static BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
 
 		public static IRunner CreateContinuousTestRunner(ILogger logger, string xapPath, TestRunConfiguration testRunConfiguration, bool showTestingBrowserHost, ServerTestRunConfiguration serverTestRunConfiguration)
@@ -66,7 +66,7 @@ namespace StatLight.Core.Runners
 
 		public static IRunner CreateOnetimeConsoleRunner(ILogger logger, string xapPath, TestRunConfiguration testRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration, bool showTestingBrowserHost)
 		{
-			StatLightService statLightService;
+            StatLightService statLightService;
 			StatLightServiceHost statLightServiceHost;
 			BrowserFormHost browserFormHost;
 
@@ -118,7 +118,7 @@ namespace StatLight.Core.Runners
 
 		public static IRunner CreateWebServerOnlyRunner(ILogger logger, string xapPath, TestRunConfiguration testRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
 		{
-			var location = new WebServerLocation();
+            var location = new WebServerLocation();
 
 			var statLightService = new StatLightService(logger, EventAggregator, xapPath, testRunConfiguration, serverTestRunConfiguration);
 			var statLightServiceHost = new StatLightServiceHost(logger, statLightService, location.BaseUrl);

@@ -16,12 +16,38 @@ namespace StatLight.Client.Harness
             var serializedString = message.Serialize();
             StatLightPostbackManager.PostMessage(serializedString);
 
-            string traceMessage = TraceLogMessage(message).Serialize();
-            StatLightPostbackManager.PostMessage(traceMessage);
+            //string traceMessage = TraceLogMessage(message).Serialize();
+            //StatLightPostbackManager.PostMessage(traceMessage);
 
+            ClientEvent clientEvent;
+            if (TryTranslateIntoClientEvent(message, out clientEvent))
+            {
+                string traceMessage = clientEvent.Serialize();
+                StatLightPostbackManager.PostMessage(traceMessage);
+            }
         }
 
-        private TraceEvent TraceLogMessage(LogMessage message)
+        private static int clientEventOrder = 0;
+        private static bool TryTranslateIntoClientEvent(LogMessage message, out ClientEvent clientEvent)
+        {
+            if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestInfrastructure)
+            {
+                if (message.Message.Equals("Initialization of UnitTestHarness", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    clientEvent = new InitializationOfUnitTestHarnessClientEvent()
+                                      {
+                                          ClientEventOrder = clientEventOrder++,
+                                      };
+                    return true;
+                }
+            }
+
+            clientEvent = null;
+
+            return false;
+        }
+
+        private TraceClientEvent TraceLogMessage(LogMessage message)
         {
             string msg = "";
             msg += "MessageType={0}".FormatWith(message.MessageType);
@@ -32,7 +58,7 @@ namespace StatLight.Client.Harness
             msg += Environment.NewLine;
             msg += GetDecorators(message.Decorators);
             msg += Environment.NewLine;
-            return new TraceEvent() { Message = msg };
+            return new TraceClientEvent() { Message = msg };
         }
 
         private string GetDecorators(DecoratorDictionary decorators)

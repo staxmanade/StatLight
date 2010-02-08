@@ -5,16 +5,21 @@ namespace StatLight.Client.Model.Events
 {
     public abstract class ClientEvent
     {
+        public ClientEvent()
+        {
+            ClientEventCreatedTime = DateTime.Now;
+        }
+
         public int ClientEventOrder { get; set; }
         public DateTime ClientEventCreatedTime { get; set; }
     }
 
-    public class TraceEvent : ClientEvent
+    public class TraceClientEvent : ClientEvent
     {
         public string Message { get; set; }
     }
 
-    public class InitializationOfUnitTestHarness : ClientEvent { }
+    public class InitializationOfUnitTestHarnessClientEvent : ClientEvent { }
 
 
 
@@ -24,10 +29,10 @@ namespace StatLight.Client.Model.Events
         public string ClassName { get; set; }
     }
 
-    public class TestExecutionClassBeginEvent : TestExecutionClass
+    public class TestExecutionClassBeginClientEvent : TestExecutionClass
     { }
 
-    public class TestExecutionClassCompletedEvent : TestExecutionClass
+    public class TestExecutionClassCompletedClientEvent : TestExecutionClass
     { }
 
     public abstract class TestExecutionMethod : TestExecutionClass
@@ -35,26 +40,26 @@ namespace StatLight.Client.Model.Events
         public string MethodName { get; set; }
     }
 
-    public class TestExecutionMethodBeginEvent : TestExecutionMethod
+    public class TestExecutionMethodBeginClientEvent : TestExecutionMethod
     {
         public DateTime Started { get; set; }
     }
 
-    public class TestExecutionMethodIgnoredEvent : TestExecutionMethod
+    public class TestExecutionMethodIgnoredClientEvent : TestExecutionMethod
     {
         public string Message { get; set; }
         public DateTime Started { get; set; }
         public DateTime Finished { get; set; }
     }
 
-    public class TestExecutionMethodFailedEvent : TestExecutionMethod
+    public class TestExecutionMethodFailedClientEvent : TestExecutionMethod
     {
         public ExceptionInfo ExceptionInfo { get; set; }
         public DateTime Started { get; set; }
         public DateTime Finished { get; set; }
     }
 
-    public class TestExecutionMethodPassedEvent : TestExecutionMethod
+    public class TestExecutionMethodPassedClientEvent : TestExecutionMethod
     {
         public DateTime Started { get; set; }
         public DateTime Finished { get; set; }

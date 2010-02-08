@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading;
 using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;
@@ -21,7 +22,7 @@ namespace StatLight.Core.Tests
 		[TestFixtureSetUp]
 		public void SetupContext()
 		{
-			TestEventAggregator = new EventAggregator();
+			TestEventAggregator = new EventAggregator(new SynchronizationContext());
 
 			Before_all_tests();
 			Because();
