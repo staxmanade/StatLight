@@ -6,6 +6,7 @@ using StatLight.Client.Model.Events;
 using StatLight.Core.Reporting.Messages;
 using StatLight.Core.Serialization;
 using LogMessageType = StatLight.Core.Reporting.Messages.LogMessageType;
+using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
 namespace StatLight.Client.Harness
 {
@@ -19,31 +20,109 @@ namespace StatLight.Client.Harness
             //string traceMessage = TraceLogMessage(message).Serialize();
             //StatLightPostbackManager.PostMessage(traceMessage);
 
-            ClientEvent clientEvent;
-            if (TryTranslateIntoClientEvent(message, out clientEvent))
+            try
             {
-                string traceMessage = clientEvent.Serialize();
-                StatLightPostbackManager.PostMessage(traceMessage);
+
+                ClientEvent clientEvent;
+                if (TryTranslateIntoClientEvent(message, out clientEvent))
+                {
+                    string clientEventSerialized = clientEvent.Serialize();
+                    StatLightPostbackManager.PostMessage(clientEventSerialized);
+                }
+            }
+            catch (Exception ex)
+            {
+                var messageObject = new MobilOtherMessageType();
+                messageObject.Message = ex.ToString();
+                messageObject.MessageType = LogMessageType.Error;
+                var serializedStringX = messageObject.Serialize();
+                StatLightPostbackManager.PostMessage(serializedStringX);
             }
         }
 
         private static int clientEventOrder = 0;
         private static bool TryTranslateIntoClientEvent(LogMessage message, out ClientEvent clientEvent)
         {
+            if (TryGet_InitializationOfUnitTestHarnessClientEvent(message, out clientEvent))
+                return true;
+
+            if (TryGet_TestExecutionClassBeginClientEvent(message, out clientEvent))
+                return true;
+
+            if (TryGet_TestExecutionClassCompletedClientEvent(message, out clientEvent))
+                return true;
+
+            clientEvent = null;
+
+            return false;
+        }
+
+        private static bool TryGet_TestExecutionClassBeginClientEvent(LogMessage message, out ClientEvent clientEvent)
+        {
+            if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestExecution)
+            {
+                if (message.DecoratorMatches(LogDecorator.TestStage, v => (TestStage)v == TestStage.Starting)
+                    && message.DecoratorMatches(LogDecorator.TestGranularity, v => (TestGranularity)v == TestGranularity.TestGroup)
+                    && message.DecoratorMatches(LogDecorator.NameProperty, v => true)
+                    )
+                {
+                    var name = (string)message.Decorators[LogDecorator.NameProperty];
+                    var clientEventX = new TestExecutionClassBeginClientEvent
+                    {
+                        ClientEventOrder = clientEventOrder++,
+                    };
+                    ParseClassAndNamespace(name, clientEventX);
+                    clientEvent = clientEventX;
+                    return true;
+                }
+            }
+            clientEvent = null;
+            return false;
+        }
+
+        private static bool TryGet_TestExecutionClassCompletedClientEvent(LogMessage message, out ClientEvent clientEvent)
+        {
+            if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestExecution)
+            {
+                if (message.DecoratorMatches(LogDecorator.TestStage, v => (TestStage)v == TestStage.Finishing)
+                    && message.DecoratorMatches(LogDecorator.TestGranularity, v => (TestGranularity)v == TestGranularity.TestGroup)
+                    && message.DecoratorMatches(LogDecorator.NameProperty, v => true)
+                    )
+                {
+                    var name = (string)message.Decorators[LogDecorator.NameProperty];
+                    var clientEventX = new TestExecutionClassCompletedClientEvent
+                    {
+                        ClientEventOrder = clientEventOrder++,
+                    };
+                    ParseClassAndNamespace(name, clientEventX);
+                    clientEvent = clientEventX;
+                    return true;
+                }
+            }
+            clientEvent = null;
+            return false;
+        }
+
+        private static void ParseClassAndNamespace(string name, TestExecutionClass e)
+        {
+            e.ClassName = name.Substring(name.LastIndexOf('.')+1);
+            e.NamespaceName = name.Substring(0, name.LastIndexOf('.'));
+        }
+
+        private static bool TryGet_InitializationOfUnitTestHarnessClientEvent(LogMessage message, out ClientEvent clientEvent)
+        {
             if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestInfrastructure)
             {
                 if (message.Message.Equals("Initialization of UnitTestHarness", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    clientEvent = new InitializationOfUnitTestHarnessClientEvent()
+                    clientEvent = new InitializationOfUnitTestHarnessClientEvent
                                       {
                                           ClientEventOrder = clientEventOrder++,
                                       };
                     return true;
                 }
             }
-
             clientEvent = null;
-
             return false;
         }
 
@@ -58,17 +137,29 @@ namespace StatLight.Client.Harness
             msg += Environment.NewLine;
             msg += GetDecorators(message.Decorators);
             msg += Environment.NewLine;
-            return new TraceClientEvent() { Message = msg };
+            return new TraceClientEvent { Message = msg };
         }
 
-        private string GetDecorators(DecoratorDictionary decorators)
+        private static string GetDecorators(DecoratorDictionary decorators)
         {
             var sb = new StringBuilder();
             foreach (var k in decorators)
             {
-                sb.AppendFormat("KeyType={0}, ValueType={1}{2}", k.Key, k.Value, Environment.NewLine);
+                sb.AppendFormat("KeyType(typeof,string)={0}, {1}, ValueType={2}, {3}{4}",
+                    k.Key.GetType(), k.Key,
+                    k.Value.GetType(), k.Value, Environment.NewLine);
             }
             return sb.ToString();
+        }
+
+
+        public static void Trace(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+                message = "{StatLight - Trace Message: trace string is NULL or empty}";
+            var traceClientEvent = new TraceClientEvent { Message = message };
+            string traceMessage = traceClientEvent.Serialize();
+            StatLightPostbackManager.PostMessage(traceMessage);
         }
     }
 
@@ -122,6 +213,16 @@ namespace StatLight.Client.Harness
                 messageObject.MessageType = (LogMessageType)logMessage.MessageType;
                 return messageObject.Serialize();
             }
+        }
+
+        public static bool DecoratorMatches(this LogMessage logMessage, object key, Predicate<object> value)
+        {
+            if (logMessage.Decorators.ContainsKey(key))
+            {
+                if (value(logMessage.Decorators[key]))
+                    return true;
+            }
+            return false;
         }
     }
 }

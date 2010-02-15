@@ -5,7 +5,7 @@ namespace StatLight.Client.Model.Events
 {
     public abstract class ClientEvent
     {
-        public ClientEvent()
+        protected ClientEvent()
         {
             ClientEventCreatedTime = DateTime.Now;
         }

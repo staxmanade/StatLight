@@ -61,6 +61,13 @@ namespace StatLight.Core.WebServer
             ResetTestRunStatistics();
         }
 
+        private void PublishIt<T>(string xmlMessage)
+        {
+            //_logger.Warning(xmlMessage);
+            var result = xmlMessage.Deserialize<T>();
+            _eventAggregator.SendMessage(result);
+        }
+
         public void PostMessage(Stream stream)
         {
             _currentMessagesPostedCount++;
@@ -88,8 +95,15 @@ namespace StatLight.Core.WebServer
                 }
                 else if (xmlMessage.Is<InitializationOfUnitTestHarnessClientEvent>())
                 {
-                    var result = xmlMessage.Deserialize<InitializationOfUnitTestHarnessClientEvent>();
-                    _eventAggregator.SendMessage(result);
+                    PublishIt<InitializationOfUnitTestHarnessClientEvent>(xmlMessage);
+                }
+                else if (xmlMessage.Is<TestExecutionClassBeginClientEvent>())
+                {
+                    PublishIt<TestExecutionClassBeginClientEvent>(xmlMessage);
+                }
+                else if (xmlMessage.Is<TestExecutionClassCompletedClientEvent>())
+                {
+                    PublishIt<TestExecutionClassCompletedClientEvent>(xmlMessage);
                 }
                 else
                 {

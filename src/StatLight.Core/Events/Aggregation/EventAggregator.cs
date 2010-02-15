@@ -14,9 +14,9 @@ namespace StatLight.Core.Events.Aggregation
 
         // Explicit registration
         //void AddListener(object listener);
-        void AddListener<T>(Action<T> handler);
-        void AddListener<T>(Action handler);
-        void RemoveListener(object listener);
+        IEventAggregator AddListener<T>(Action<T> handler);
+        IEventAggregator AddListener<T>(Action handler);
+        IEventAggregator RemoveListener(object listener);
 
         // Filtered registration, experimental
         //If<T> If<T>(Func<T, bool> filter);
@@ -74,24 +74,27 @@ namespace StatLight.Core.Events.Aggregation
             }
         }
 
-        public void AddListener<T>(Action<T> handler)
+        public IEventAggregator AddListener<T>(Action<T> handler)
         {
             var delegateListener = new DelegateListener<T>(handler);
             AddListener(delegateListener);
+            return this;
         }
 
-        public void AddListener<T>(Action handler)
+        public IEventAggregator AddListener<T>(Action handler)
         {
             var delegateListener = new DelegateListener<T>(msg => handler());
             AddListener(delegateListener);
+            return this;
         }
 
-        public void RemoveListener(object listener)
+        public IEventAggregator RemoveListener(object listener)
         {
             lock (_locker)
             {
                 _listeners.Remove(listener);
             }
+            return this;
         }
 
         //public If<T> If<T>(Func<T, bool> filter)

@@ -29,11 +29,14 @@ properties {
 	#  - 2. Add the version below 
 	#  - 3. Add the version to the MicrosoftTestingFrameworkVersion enum in the project
 	$microsoft_silverlight_testing_versions = @(
-		'December2008',
-		'March2009',
-		'July2009',
-		'October2009',
-		'November2009'
+#		'December2008',
+#		'March2009',
+#		'July2009',
+#		'October2009',
+#		'November2009'
+
+
+		'July2009'
 		)
 }
 
