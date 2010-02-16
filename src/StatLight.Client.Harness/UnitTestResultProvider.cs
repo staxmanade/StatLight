@@ -55,17 +55,45 @@ namespace StatLight.Client.Harness
             if (TryGet_TestExecutionMethodBeginClientEvent(message, out clientEvent))
                 return true;
 
+            if (TryGet_TestExecutionMethodIgnoredClientEvent(message, out clientEvent))
+                return true;
+            
             clientEvent = null;
 
             return false;
         }
 
+        private static bool TryGet_TestExecutionMethodIgnoredClientEvent(LogMessage message, out ClientEvent clientEvent)
+        {
+            if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestExecution)
+            {
+                if (message.Is(TestGranularity.TestScenario)
+                    && message.DecoratorMatches(UnitTestLogDecorator.IgnoreMessage, v => (bool)v == true)
+                    )
+                {
+                    var testName = (string)message.Decorators[LogDecorator.NameProperty];
+                    var clientEventX = new TestExecutionMethodIgnoredClientEvent()
+                    {
+                        ClientEventOrder = clientEventOrder++,
+                        ClassName = null,
+                        NamespaceName = null,
+                        MethodName = testName,
+                        Started = DateTime.Now,
+                    };
+
+                    clientEvent = clientEventX;
+                    return true;
+                }
+            }
+            clientEvent = null;
+            return false;        }
+
         private static bool TryGet_TestExecutionMethodBeginClientEvent(LogMessage message, out ClientEvent clientEvent)
         {
             if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestExecution)
             {
-                if (message.DecoratorMatches(LogDecorator.TestStage, v => (TestStage)v == TestStage.Starting)
-                    && message.DecoratorMatches(LogDecorator.TestGranularity, v => (TestGranularity)v == TestGranularity.TestScenario)
+                if (message.Is(TestStage.Starting)
+                    && message.Is(TestGranularity.TestScenario)
                     && message.DecoratorMatches(UnitTestLogDecorator.TestMethodMetadata, v => v is ITestMethod)
                     )
                 {
@@ -91,9 +119,8 @@ namespace StatLight.Client.Harness
         {
             if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestExecution)
             {
-                if (message.DecoratorMatches(LogDecorator.TestStage, v => (TestStage)v == TestStage.Starting)
-                    && message.DecoratorMatches(LogDecorator.TestGranularity, v => (TestGranularity)v == TestGranularity.Test)
-                    && message.DecoratorMatches(LogDecorator.NameProperty, v => true)
+                if (message.Is(TestStage.Starting)
+                    && message.Is(TestGranularity.Test)
                     && message.DecoratorMatches(UnitTestLogDecorator.TestClassMetadata, v => v is ITestClass)
                     )
                 {
@@ -115,9 +142,8 @@ namespace StatLight.Client.Harness
         {
             if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestExecution)
             {
-                if (message.DecoratorMatches(LogDecorator.TestStage, v => (TestStage)v == TestStage.Finishing)
-                    && message.DecoratorMatches(LogDecorator.TestGranularity, v => (TestGranularity)v == TestGranularity.Test)
-                    && message.DecoratorMatches(LogDecorator.NameProperty, v => true)
+                if (message.Is(TestStage.Finishing)
+                    && message.Is(TestGranularity.Test)
                     && message.DecoratorMatches(UnitTestLogDecorator.TestClassMetadata, v => v is ITestClass)
                     )
                 {
@@ -160,15 +186,17 @@ namespace StatLight.Client.Harness
 
         private TraceClientEvent TraceLogMessage(LogMessage message)
         {
+            const string newLine = "\n";
+
             string msg = "";
             msg += "MessageType={0}".FormatWith(message.MessageType);
-            msg += Environment.NewLine;
+            msg += newLine;
             msg += "Message={0}".FormatWith(message.Message);
-            msg += Environment.NewLine;
+            msg += newLine;
             msg += "Decorators:";
-            msg += Environment.NewLine;
+            msg += newLine;
             msg += GetDecorators(message.Decorators);
-            msg += Environment.NewLine;
+            msg += newLine;
             return new TraceClientEvent { Message = msg };
         }
 
@@ -197,6 +225,39 @@ namespace StatLight.Client.Harness
 
     internal static class UnitTestResultProviderExtensions
     {
+
+        public static bool DecoratorMatches(this LogMessage logMessage, object key, Predicate<object> value)
+        {
+            if (logMessage.Decorators.ContainsKey(key))
+            {
+                if (value(logMessage.Decorators[key]))
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool Is(this LogMessage logMessage, object value)
+        {
+            var decorators = logMessage.Decorators;
+            if (value is TestStage)
+            {
+                if (decorators.ContainsKey(LogDecorator.TestStage))
+                    if ((TestStage)decorators[LogDecorator.TestStage] == (TestStage)value)
+                    {
+                        return true;
+                    }
+            }
+            else if (value is TestGranularity)
+            {
+                if (decorators.ContainsKey(LogDecorator.TestGranularity))
+                    if ((TestGranularity)decorators[LogDecorator.TestGranularity] == (TestGranularity)value)
+                    {
+                        return true;
+                    }
+            }
+            return false;
+        }
+
         public static string DecoratorDictionaryToString(this DecoratorDictionary d)
         {
             var sb = new StringBuilder();
@@ -247,14 +308,5 @@ namespace StatLight.Client.Harness
             }
         }
 
-        public static bool DecoratorMatches(this LogMessage logMessage, object key, Predicate<object> value)
-        {
-            if (logMessage.Decorators.ContainsKey(key))
-            {
-                if (value(logMessage.Decorators[key]))
-                    return true;
-            }
-            return false;
-        }
     }
 }
