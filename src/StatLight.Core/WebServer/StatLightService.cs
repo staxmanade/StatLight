@@ -105,6 +105,10 @@ namespace StatLight.Core.WebServer
                 {
                     PublishIt<TestExecutionClassCompletedClientEvent>(xmlMessage);
                 }
+                else if (xmlMessage.Is<TestExecutionMethodBeginClientEvent>())
+                {
+                    PublishIt<TestExecutionMethodBeginClientEvent>(xmlMessage);
+                }
                 else
                 {
                     _logger.Error("Unknown message posted...");

@@ -52,8 +52,38 @@ namespace StatLight.Client.Harness
             if (TryGet_TestExecutionClassCompletedClientEvent(message, out clientEvent))
                 return true;
 
+            if (TryGet_TestExecutionMethodBeginClientEvent(message, out clientEvent))
+                return true;
+
             clientEvent = null;
 
+            return false;
+        }
+
+        private static bool TryGet_TestExecutionMethodBeginClientEvent(LogMessage message, out ClientEvent clientEvent)
+        {
+            if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestExecution)
+            {
+                if (message.DecoratorMatches(LogDecorator.TestStage, v => (TestStage)v == TestStage.Starting)
+                    && message.DecoratorMatches(LogDecorator.TestGranularity, v => (TestGranularity)v == TestGranularity.TestScenario)
+                    && message.DecoratorMatches(UnitTestLogDecorator.TestMethodMetadata, v => v is ITestMethod)
+                    )
+                {
+                    var testMethod = (ITestMethod)message.Decorators[UnitTestLogDecorator.TestMethodMetadata];
+                    var clientEventX = new TestExecutionMethodBeginClientEvent()
+                    {
+                        ClientEventOrder = clientEventOrder++,
+                        ClassName = testMethod.Method.DeclaringType.Name,
+                        NamespaceName = testMethod.Method.DeclaringType.Namespace,
+                        MethodName = testMethod.Method.Name,
+                        Started = DateTime.Now,
+                    };
+
+                    clientEvent = clientEventX;
+                    return true;
+                }
+            }
+            clientEvent = null;
             return false;
         }
 
@@ -62,16 +92,17 @@ namespace StatLight.Client.Harness
             if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestExecution)
             {
                 if (message.DecoratorMatches(LogDecorator.TestStage, v => (TestStage)v == TestStage.Starting)
-                    && message.DecoratorMatches(LogDecorator.TestGranularity, v => (TestGranularity)v == TestGranularity.TestGroup)
+                    && message.DecoratorMatches(LogDecorator.TestGranularity, v => (TestGranularity)v == TestGranularity.Test)
                     && message.DecoratorMatches(LogDecorator.NameProperty, v => true)
+                    && message.DecoratorMatches(UnitTestLogDecorator.TestClassMetadata, v => v is ITestClass)
                     )
                 {
-                    var name = (string)message.Decorators[LogDecorator.NameProperty];
+                    var testClass = (ITestClass)message.Decorators[UnitTestLogDecorator.TestClassMetadata];
                     var clientEventX = new TestExecutionClassBeginClientEvent
                     {
                         ClientEventOrder = clientEventOrder++,
                     };
-                    ParseClassAndNamespace(name, clientEventX);
+                    ParseClassAndNamespace(testClass, clientEventX);
                     clientEvent = clientEventX;
                     return true;
                 }
@@ -85,16 +116,17 @@ namespace StatLight.Client.Harness
             if (message.MessageType == Microsoft.Silverlight.Testing.Harness.LogMessageType.TestExecution)
             {
                 if (message.DecoratorMatches(LogDecorator.TestStage, v => (TestStage)v == TestStage.Finishing)
-                    && message.DecoratorMatches(LogDecorator.TestGranularity, v => (TestGranularity)v == TestGranularity.TestGroup)
+                    && message.DecoratorMatches(LogDecorator.TestGranularity, v => (TestGranularity)v == TestGranularity.Test)
                     && message.DecoratorMatches(LogDecorator.NameProperty, v => true)
+                    && message.DecoratorMatches(UnitTestLogDecorator.TestClassMetadata, v => v is ITestClass)
                     )
                 {
-                    var name = (string)message.Decorators[LogDecorator.NameProperty];
+                    var testClass = (ITestClass)message.Decorators[UnitTestLogDecorator.TestClassMetadata];
                     var clientEventX = new TestExecutionClassCompletedClientEvent
                     {
                         ClientEventOrder = clientEventOrder++,
                     };
-                    ParseClassAndNamespace(name, clientEventX);
+                    ParseClassAndNamespace(testClass, clientEventX);
                     clientEvent = clientEventX;
                     return true;
                 }
@@ -103,10 +135,10 @@ namespace StatLight.Client.Harness
             return false;
         }
 
-        private static void ParseClassAndNamespace(string name, TestExecutionClass e)
+        private static void ParseClassAndNamespace(ITestClass testClass, TestExecutionClass e)
         {
-            e.ClassName = name.Substring(name.LastIndexOf('.')+1);
-            e.NamespaceName = name.Substring(0, name.LastIndexOf('.'));
+            e.ClassName = testClass.Name;
+            e.NamespaceName = testClass.Type.Namespace;
         }
 
         private static bool TryGet_InitializationOfUnitTestHarnessClientEvent(LogMessage message, out ClientEvent clientEvent)

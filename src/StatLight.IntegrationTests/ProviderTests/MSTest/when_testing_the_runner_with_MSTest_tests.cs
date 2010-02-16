@@ -22,7 +22,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         private readonly IList<TestExecutionClassBeginClientEvent> _testExecutionClassBeginClientEvent =
             new List<TestExecutionClassBeginClientEvent>();
 
-        private readonly IList<TestExecutionClassCompletedClientEvent> _testExecutionClassCompletedClientEvent = 
+        private readonly IList<TestExecutionClassCompletedClientEvent> _testExecutionClassCompletedClientEvent =
             new List<TestExecutionClassCompletedClientEvent>();
         private readonly IList<TestExecutionMethodBeginClientEvent> _testExecutionMethodBeginClientEvent =
             new List<TestExecutionMethodBeginClientEvent>();
@@ -84,27 +84,33 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_receive_the_TestExecutionClassBeginClientEvent()
         {
-            _testExecutionClassBeginClientEvent.Count().ShouldEqual(1);
-            AssertTestExecutionClassData(_testExecutionClassBeginClientEvent.Single());
+            _testExecutionClassBeginClientEvent.Count().ShouldEqual(2);
+            _testExecutionClassBeginClientEvent.Each(AssertTestExecutionClassData);
         }
 
         [Test]
         public void Should_receive_the_TestExecutionClassCompletedClientEvent()
         {
-            _testExecutionClassCompletedClientEvent.Count().ShouldEqual(1);
-            AssertTestExecutionClassData(_testExecutionClassCompletedClientEvent.Single());
+            _testExecutionClassCompletedClientEvent.Count().ShouldEqual(2);
+            _testExecutionClassCompletedClientEvent.Each(AssertTestExecutionClassData);
         }
 
-        //[Test]
-        //public void Should_receive_the_TestExecutionMethodBeginClientEvent()
-        //{
-        //    _testExecutionMethodBeginClientEvent.Count().ShouldEqual(5);
-        //}
+        [Test]
+        public void Should_receive_the_TestExecutionMethodBeginClientEvent()
+        {
+            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(5);
+            foreach (var e in _testExecutionMethodBeginClientEvent)
+                AssertTestExecutionClassData(e);
+
+        }
 
         private static void AssertTestExecutionClassData(TestExecutionClass e)
         {
             e.NamespaceName.ShouldEqual("StatLight.IntegrationTests.Silverlight", "{0} - NamespaceName property should be correct.".FormatWith(e.GetType().FullName));
-            e.ClassName.ShouldEqual("MSTest", "{0} - ClassName property should be correct.".FormatWith(e.GetType().FullName));
+
+            var validClassNames = new List<string> { "MSTestNestedClassTests", "MSTestTests" };
+            if (!validClassNames.Contains(e.ClassName))
+                Assert.Fail("e.ClassName is not equal to MSTestNestedClassTests or MSTestTest - actual=" + e.ClassName);
         }
         #endregion
     }

@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace StatLight
 {
     using System;
@@ -35,6 +37,17 @@ namespace StatLight
         public static Stream ToStream(this byte[] byteArray)
         {
             return new MemoryStream(byteArray);
+        }
+
+        public static IEnumerable<T> Each<T>(this IEnumerable<T> items, Action<T> action)
+        {
+            if (items == null)
+                return null;
+
+            foreach (var item in items)
+                action(item);
+
+            return items;
         }
     }
 
