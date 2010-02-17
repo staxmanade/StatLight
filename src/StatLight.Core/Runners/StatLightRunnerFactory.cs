@@ -34,8 +34,8 @@ namespace StatLight.Core.Runners
 				out statLightService,
 				out statLightServiceHost,
 				out browserFormHost);
-
-			IRunner runner = new ContinuousConsoleRunner(logger, EventAggregator, xapPath, statLightService, statLightServiceHost, browserFormHost, new ConsoleResultHandler());
+            var consoleResultHandler = new ConsoleResultHandler(logger, EventAggregator);
+			IRunner runner = new ContinuousConsoleRunner(logger, EventAggregator, xapPath, statLightService, statLightServiceHost, browserFormHost, consoleResultHandler);
 			return runner;
 		}
 
@@ -80,7 +80,8 @@ namespace StatLight.Core.Runners
 				out statLightServiceHost,
 				out browserFormHost);
 
-			IRunner runner = new OnetimeRunner(logger, EventAggregator, statLightServiceHost, browserFormHost, new ConsoleResultHandler());
+            var consoleResultHandler = new ConsoleResultHandler(logger, EventAggregator);
+            IRunner runner = new OnetimeRunner(logger, EventAggregator, statLightServiceHost, browserFormHost, consoleResultHandler);
 			return runner;
 		}
 
@@ -123,7 +124,8 @@ namespace StatLight.Core.Runners
 			var statLightService = new StatLightService(logger, EventAggregator, xapPath, testRunConfiguration, serverTestRunConfiguration);
 			var statLightServiceHost = new StatLightServiceHost(logger, statLightService, location.BaseUrl);
 
-			IRunner runner = new WebServerOnlyRunner(logger, EventAggregator, statLightServiceHost, location.TestPageUrl, new ConsoleResultHandler());
+            var consoleResultHandler = new ConsoleResultHandler(logger, EventAggregator);
+            IRunner runner = new WebServerOnlyRunner(logger, EventAggregator, statLightServiceHost, location.TestPageUrl, consoleResultHandler);
 
 			return runner;
 		}

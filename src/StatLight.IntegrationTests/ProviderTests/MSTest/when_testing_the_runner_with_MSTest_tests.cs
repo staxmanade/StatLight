@@ -28,6 +28,8 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             new List<TestExecutionMethodBeginClientEvent>();
         private readonly IList<TestExecutionMethodIgnoredClientEvent> _testExecutionMethodIgnoredClientEvent =
             new List<TestExecutionMethodIgnoredClientEvent>();
+        private readonly IList<TestExecutionMethodFailedClientEvent> _testExecutionMethodFailedClientEvent =
+            new List<TestExecutionMethodFailedClientEvent>();
 
         protected override TestRunConfiguration TestRunConfiguration
         {
@@ -52,6 +54,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
                 .AddListener<TestExecutionClassCompletedClientEvent>(e => _testExecutionClassCompletedClientEvent.Add(e))
                 .AddListener<TestExecutionMethodBeginClientEvent>(e => _testExecutionMethodBeginClientEvent.Add(e))
                 .AddListener<TestExecutionMethodIgnoredClientEvent>(e => _testExecutionMethodIgnoredClientEvent.Add(e))
+                .AddListener<TestExecutionMethodFailedClientEvent>(e => _testExecutionMethodFailedClientEvent.Add(e))
                 ;
 
             _testReport = Runner.Run();
@@ -111,6 +114,12 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         {
             _testExecutionMethodIgnoredClientEvent.Count().ShouldEqual(1);
             _testExecutionMethodIgnoredClientEvent.First().MethodName.ShouldEqual("this_should_be_an_Ignored_test");
+        }
+
+        [Test]
+        public void Should_receive_the_TestExecutionMethodFailedClientEvent()
+        {
+            _testExecutionMethodFailedClientEvent.Count().ShouldEqual(1);
         }
 
         private static void AssertTestExecutionClassData(TestExecutionClass e)

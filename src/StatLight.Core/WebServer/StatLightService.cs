@@ -93,6 +93,10 @@ namespace StatLight.Core.WebServer
                     var result = xmlMessage.Deserialize<MobilScenarioResult>();
                     _eventAggregator.SendMessage(new TestResultEvent { Payload = result });
                 }
+                else if (xmlMessage.Is<TraceClientEvent>())
+                {
+                    PublishIt<TraceClientEvent>(xmlMessage);
+                }
                 else if (xmlMessage.Is<InitializationOfUnitTestHarnessClientEvent>())
                 {
                     PublishIt<InitializationOfUnitTestHarnessClientEvent>(xmlMessage);
@@ -112,6 +116,10 @@ namespace StatLight.Core.WebServer
                 else if (xmlMessage.Is<TestExecutionMethodIgnoredClientEvent>())
                 {
                     PublishIt<TestExecutionMethodIgnoredClientEvent>(xmlMessage);
+                }
+                else if (xmlMessage.Is<TestExecutionMethodFailedClientEvent>())
+                {
+                    PublishIt<TestExecutionMethodFailedClientEvent>(xmlMessage);
                 }
                 else
                 {
