@@ -19,17 +19,12 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         private TestReport _testReport;
         private InitializationOfUnitTestHarnessClientEvent _initializationOfUnitTestHarnessClientEvent;
 
-        private readonly IList<TestExecutionClassBeginClientEvent> _testExecutionClassBeginClientEvent =
-            new List<TestExecutionClassBeginClientEvent>();
-
-        private readonly IList<TestExecutionClassCompletedClientEvent> _testExecutionClassCompletedClientEvent =
-            new List<TestExecutionClassCompletedClientEvent>();
-        private readonly IList<TestExecutionMethodBeginClientEvent> _testExecutionMethodBeginClientEvent =
-            new List<TestExecutionMethodBeginClientEvent>();
-        private readonly IList<TestExecutionMethodIgnoredClientEvent> _testExecutionMethodIgnoredClientEvent =
-            new List<TestExecutionMethodIgnoredClientEvent>();
-        private readonly IList<TestExecutionMethodFailedClientEvent> _testExecutionMethodFailedClientEvent =
-            new List<TestExecutionMethodFailedClientEvent>();
+        private readonly IList<TestExecutionClassBeginClientEvent> _testExecutionClassBeginClientEvent = new List<TestExecutionClassBeginClientEvent>();
+        private readonly IList<TestExecutionClassCompletedClientEvent> _testExecutionClassCompletedClientEvent = new List<TestExecutionClassCompletedClientEvent>();
+        private readonly IList<TestExecutionMethodBeginClientEvent> _testExecutionMethodBeginClientEvent = new List<TestExecutionMethodBeginClientEvent>();
+        private readonly IList<TestExecutionMethodIgnoredClientEvent> _testExecutionMethodIgnoredClientEvent = new List<TestExecutionMethodIgnoredClientEvent>();
+        private readonly IList<TestExecutionMethodFailedClientEvent> _testExecutionMethodFailedClientEvent = new List<TestExecutionMethodFailedClientEvent>();
+        private readonly IList<TestExecutionMethodPassedClientEvent> _testExecutionMethodPassedClientEvent = new List<TestExecutionMethodPassedClientEvent>();
 
         protected override TestRunConfiguration TestRunConfiguration
         {
@@ -55,6 +50,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
                 .AddListener<TestExecutionMethodBeginClientEvent>(e => _testExecutionMethodBeginClientEvent.Add(e))
                 .AddListener<TestExecutionMethodIgnoredClientEvent>(e => _testExecutionMethodIgnoredClientEvent.Add(e))
                 .AddListener<TestExecutionMethodFailedClientEvent>(e => _testExecutionMethodFailedClientEvent.Add(e))
+                .AddListener<TestExecutionMethodPassedClientEvent>(e => _testExecutionMethodPassedClientEvent.Add(e))
                 ;
 
             _testReport = Runner.Run();
@@ -114,12 +110,20 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         {
             _testExecutionMethodIgnoredClientEvent.Count().ShouldEqual(1);
             _testExecutionMethodIgnoredClientEvent.First().MethodName.ShouldEqual("this_should_be_an_Ignored_test");
+            //TODO: figure out how to get the class/namespace for the ignored test.
         }
 
         [Test]
         public void Should_receive_the_TestExecutionMethodFailedClientEvent()
         {
             _testExecutionMethodFailedClientEvent.Count().ShouldEqual(1);
+            //TODO: assert other properties of the failed exception?
+        }
+
+        [Test]
+        public void Should_receive_the_TestExecutionMethodPassedClientEvent()
+        {
+            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(4);
         }
 
         private static void AssertTestExecutionClassData(TestExecutionClass e)

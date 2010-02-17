@@ -107,6 +107,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AssemblyInfo.This.cs" />
+    <Compile Include="ClientEventMapping\TestExecutionMethodPassedClientEventMap.cs" />
     <Compile Include="ClientEventMapping\LogMessageTranslator.cs" />
     <Compile Include="ClientEventMapping\TestExecutionClassBeginClientEventMap.cs" />
     <Compile Include="ClientEventMapping\TestExecutionClassCompletedClientEventMap.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="HttpWebRequest.cs" />
     <Compile Include="ClientEventMapping\ILogMessageToClientEventTranslation.cs" />
     <Compile Include="ClientEventMapping\InitializationOfUnitTestHarnessClientEventMap.cs" />
+    <Compile Include="Server.cs" />
     <Compile Include="UnitTestProviders\UnitDriven\ExpectedException.cs" />
     <Compile Include="UnitTestProviders\UnitDriven\Priority.cs" />
     <Compile Include="UnitTestProviders\UnitDriven\ProviderAttributes.cs" />

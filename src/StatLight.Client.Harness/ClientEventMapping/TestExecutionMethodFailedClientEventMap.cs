@@ -34,6 +34,8 @@ namespace StatLight.Client.Harness.ClientEventMapping
                                        ClassName = testMethod.Method.DeclaringType.Name,
                                        NamespaceName = testMethod.Method.DeclaringType.Namespace,
                                        MethodName = testMethod.Method.Name,
+                                       Finished = scenarioResult.Finished,
+                                       Started = scenarioResult.Started,
                                    };
 
             return clientEventX;

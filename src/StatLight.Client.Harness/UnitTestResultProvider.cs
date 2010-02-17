@@ -75,13 +75,5 @@ namespace StatLight.Client.Harness
             return sb.ToString();
         }
 
-        public static void Trace(string message)
-        {
-            if (string.IsNullOrEmpty(message))
-                message = "{StatLight - Trace Message: trace string is NULL or empty}";
-            var traceClientEvent = new TraceClientEvent { Message = message };
-            string traceMessage = traceClientEvent.Serialize();
-            StatLightPostbackManager.PostMessage(traceMessage);
-        }
     }
 }
