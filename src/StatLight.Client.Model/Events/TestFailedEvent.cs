@@ -1,17 +1,22 @@
 using System;
+using System.Threading;
 using StatLight.Client.Model.DTO;
 
 namespace StatLight.Client.Model.Events
 {
     public abstract class ClientEvent
     {
+        private static int _currentEventCreationOrder;
+
         protected ClientEvent()
         {
+            Interlocked.Increment(ref _currentEventCreationOrder);
+            ClientEventOrder = _currentEventCreationOrder;
             ClientEventCreatedTime = DateTime.Now;
         }
 
-        public int ClientEventOrder { get; set; }
-        public DateTime ClientEventCreatedTime { get; set; }
+        public int ClientEventOrder { get; private set; }
+        public DateTime ClientEventCreatedTime { get; private set; }
     }
 
     public class TraceClientEvent : ClientEvent
