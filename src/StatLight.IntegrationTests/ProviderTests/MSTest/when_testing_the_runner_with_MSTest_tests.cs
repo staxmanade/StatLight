@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -110,6 +111,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         {
             _testExecutionMethodIgnoredClientEvent.Count().ShouldEqual(1);
             _testExecutionMethodIgnoredClientEvent.First().MethodName.ShouldEqual("this_should_be_an_Ignored_test");
+            //AssertTestExecutionClassData(_testExecutionMethodIgnoredClientEvent.First());
             //TODO: figure out how to get the class/namespace for the ignored test.
         }
 
@@ -117,7 +119,14 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         public void Should_receive_the_TestExecutionMethodFailedClientEvent()
         {
             _testExecutionMethodFailedClientEvent.Count().ShouldEqual(1);
+
+            var e = _testExecutionMethodFailedClientEvent.First();
+
+            AssertTestExecutionClassData(e);
             //TODO: assert other properties of the failed exception?
+
+            e.Finished.ShouldNotEqual(new DateTime());
+            e.Started.ShouldNotEqual(new DateTime());
         }
 
         [Test]
