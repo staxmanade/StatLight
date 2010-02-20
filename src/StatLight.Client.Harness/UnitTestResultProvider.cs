@@ -15,10 +15,10 @@ namespace StatLight.Client.Harness
         protected override void ProcessRemainder(LogMessage message)
         {
             var serializedString = message.Serialize();
-            StatLightPostbackManager.PostMessage(serializedString);
+            Server.PostMessage(serializedString);
 
             //string traceMessage = TraceLogMessage(message).Serialize();
-            //StatLightPostbackManager.PostMessage(traceMessage);
+            //Server.PostMessage(traceMessage);
 
             try
             {
@@ -26,8 +26,7 @@ namespace StatLight.Client.Harness
                 ClientEvent clientEvent;
                 if (TryTranslateIntoClientEvent(message, out clientEvent))
                 {
-                    string clientEventSerialized = clientEvent.Serialize();
-                    StatLightPostbackManager.PostMessage(clientEventSerialized);
+                    Server.PostMessage(clientEvent);
                 }
             }
             catch (Exception ex)
@@ -35,8 +34,7 @@ namespace StatLight.Client.Harness
                 var messageObject = new MobilOtherMessageType();
                 messageObject.Message = ex.ToString();
                 messageObject.MessageType = LogMessageType.Error;
-                var serializedStringX = messageObject.Serialize();
-                StatLightPostbackManager.PostMessage(serializedStringX);
+                Server.PostMessage(messageObject);
             }
         }
 

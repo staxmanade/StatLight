@@ -152,7 +152,7 @@ namespace StatLight.Client.Harness
 
 		private static void CurrentHarness_TestHarnessCompleted(object sender, TestHarnessCompletedEventArgs e)
 		{
-			StatLightPostbackManager.SignalTestComplete();
+			Server.SignalTestComplete();
 		}
 
 		private class LoadedXapData
@@ -233,9 +233,8 @@ namespace StatLight.Client.Harness
 					Message = msg,
 					MessageType = LogMessageType.Error
 				};
-				var serializedString = messageObject.Serialize();
-				StatLightPostbackManager.PostMessage(serializedString);
-				StatLightPostbackManager.SignalTestComplete();
+				Server.PostMessage(messageObject);
+                Server.SignalTestComplete();
 			}
 			catch (Exception)
 			{

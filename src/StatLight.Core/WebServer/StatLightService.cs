@@ -125,6 +125,20 @@ namespace StatLight.Core.WebServer
                 {
                     PublishIt<TestExecutionMethodPassedClientEvent>(xmlMessage);
                 }
+                else if (xmlMessage.Is<SignalTestCompleteClientEvent>())
+                {
+                    _currentMessagesPostedCount--;
+
+                    var result = xmlMessage.Deserialize<SignalTestCompleteClientEvent>();
+                    _eventAggregator.SendMessage(result);
+                    var totalMessagsPostedCount = result.TotalMessagesPostedCount;
+
+                    _logger.Debug("");
+                    _logger.Debug("StatLightService.TestComplete() with {0} total messages posted - Currently have {1} registered".FormatWith(totalMessagsPostedCount, _currentMessagesPostedCount));
+                    _totalMessagesPostedCount = totalMessagsPostedCount;
+
+                    WaitingForMessagesToCompletePosting();
+                }
                 else
                 {
                     _logger.Error("Unknown message posted...");
@@ -178,15 +192,6 @@ namespace StatLight.Core.WebServer
         {
             _logger.Debug("StatLightService.GetTestPageHostXap()");
             return _serverTestRunConfiguration.HostXap.ToStream();
-        }
-
-        public void SignalTestComplete(int totalMessagesPostedCount)
-        {
-            _logger.Debug("");
-            _logger.Debug("StatLightService.TestComplete() with {0} total messages posted - Currently have {1} registered".FormatWith(totalMessagesPostedCount, _currentMessagesPostedCount));
-            _totalMessagesPostedCount = totalMessagesPostedCount;
-
-            WaitingForMessagesToCompletePosting();
         }
 
         private void WaitingForMessagesToCompletePosting()

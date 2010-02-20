@@ -37,10 +37,6 @@ namespace StatLight.Core.WebServer
 		Stream GetTestPageHostXap();
 
 		[OperationContract]
-		[WebGet(UriTemplate = StatLightServiceRestApi.SignalTestComplete, BodyStyle = WebMessageBodyStyle.Bare)]
-		void SignalTestComplete(int totalMessagesPostedCount);
-
-		[OperationContract]
 		[WebGet(UriTemplate = StatLightServiceRestApi.GetTestRunConfiguration, BodyStyle = WebMessageBodyStyle.Bare)]
 		TestRunConfiguration GetTestRunConfiguration();
 	}

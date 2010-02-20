@@ -43,6 +43,8 @@
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Browser" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
   </ItemGroup>
@@ -53,6 +55,9 @@
     <Compile Include="DTO\ExceptionInfo.cs" />
     <Compile Include="Events\EventFactory.cs" />
     <Compile Include="Events\TestFailedEvent.cs" />
+    <Compile Include="Messaging\HttpResponseCompleteEventArgs.cs" />
+    <Compile Include="Messaging\HttpResponseCompleteEventHandler.cs" />
+    <Compile Include="Messaging\HttpWebRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\StatLight.snk">

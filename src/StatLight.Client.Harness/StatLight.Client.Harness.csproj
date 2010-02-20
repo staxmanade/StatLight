@@ -115,9 +115,6 @@
     <Compile Include="ClientEventMapping\TestExecutionMethodFailedClientEventMap.cs" />
     <Compile Include="ClientEventMapping\TestExecutionMethodIgnoredClientEventMap.cs" />
     <Compile Include="ClientEventMapping\UnitTestResultProviderExtensions.cs" />
-    <Compile Include="HttpResponseCompleteEventArgs.cs" />
-    <Compile Include="HttpResponseCompleteEventHandler.cs" />
-    <Compile Include="HttpWebRequest.cs" />
     <Compile Include="ClientEventMapping\ILogMessageToClientEventTranslation.cs" />
     <Compile Include="ClientEventMapping\InitializationOfUnitTestHarnessClientEventMap.cs" />
     <Compile Include="Server.cs" />

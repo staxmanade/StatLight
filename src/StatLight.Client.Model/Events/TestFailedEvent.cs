@@ -25,6 +25,10 @@ namespace StatLight.Client.Model.Events
     }
 
     public class InitializationOfUnitTestHarnessClientEvent : ClientEvent { }
+    public class SignalTestCompleteClientEvent : ClientEvent
+    {
+        public int TotalMessagesPostedCount { get; set; }
+    }
 
 
 
