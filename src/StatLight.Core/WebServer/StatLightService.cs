@@ -1,4 +1,7 @@
-﻿using StatLight.Client.Model.Events;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+using StatLight.Client.Model.Events;
 using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Reporting.Messages;
 using StatLight.Core.WebServer.HelperExtensions;
@@ -7,6 +10,7 @@ namespace StatLight.Core.WebServer
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.ServiceModel;
     using System.ServiceModel.Web;
     using System.Web;
@@ -25,6 +29,7 @@ namespace StatLight.Core.WebServer
         private int _currentMessagesPostedCount;
         private int _totalMessagesPostedCount;
         private readonly ServerTestRunConfiguration _serverTestRunConfiguration;
+        private IDictionary<Type, MethodInfo> _publishMethods;
 
         public string TagFilters
         {
@@ -59,6 +64,14 @@ namespace StatLight.Core.WebServer
             _xapTestFile = new FileInfo(xapTestFile);
 
             ResetTestRunStatistics();
+
+            MethodInfo makeGenericMethod = GetType().GetMethod("PublishIt", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            Type clientEventType = typeof(ClientEvent);
+            _publishMethods = clientEventType
+                .Assembly.GetTypes()
+                .Where(w => w.Namespace == clientEventType.Namespace)
+                .ToDictionary(key => key, value => makeGenericMethod.MakeGenericMethod(value));
         }
 
         private void PublishIt<T>(string xmlMessage)
@@ -93,38 +106,6 @@ namespace StatLight.Core.WebServer
                     var result = xmlMessage.Deserialize<MobilScenarioResult>();
                     _eventAggregator.SendMessage(new TestResultEvent { Payload = result });
                 }
-                else if (xmlMessage.Is<TraceClientEvent>())
-                {
-                    PublishIt<TraceClientEvent>(xmlMessage);
-                }
-                else if (xmlMessage.Is<InitializationOfUnitTestHarnessClientEvent>())
-                {
-                    PublishIt<InitializationOfUnitTestHarnessClientEvent>(xmlMessage);
-                }
-                else if (xmlMessage.Is<TestExecutionClassBeginClientEvent>())
-                {
-                    PublishIt<TestExecutionClassBeginClientEvent>(xmlMessage);
-                }
-                else if (xmlMessage.Is<TestExecutionClassCompletedClientEvent>())
-                {
-                    PublishIt<TestExecutionClassCompletedClientEvent>(xmlMessage);
-                }
-                else if (xmlMessage.Is<TestExecutionMethodBeginClientEvent>())
-                {
-                    PublishIt<TestExecutionMethodBeginClientEvent>(xmlMessage);
-                }
-                else if (xmlMessage.Is<TestExecutionMethodIgnoredClientEvent>())
-                {
-                    PublishIt<TestExecutionMethodIgnoredClientEvent>(xmlMessage);
-                }
-                else if (xmlMessage.Is<TestExecutionMethodFailedClientEvent>())
-                {
-                    PublishIt<TestExecutionMethodFailedClientEvent>(xmlMessage);
-                }
-                else if (xmlMessage.Is<TestExecutionMethodPassedClientEvent>())
-                {
-                    PublishIt<TestExecutionMethodPassedClientEvent>(xmlMessage);
-                }
                 else if (xmlMessage.Is<SignalTestCompleteClientEvent>())
                 {
                     _currentMessagesPostedCount--;
@@ -141,10 +122,29 @@ namespace StatLight.Core.WebServer
                 }
                 else
                 {
-                    _logger.Error("Unknown message posted...");
-                    _logger.Error(xmlMessage);
+                    Action<string> _unknownMsg = (msg) =>
+                         {
+                             _logger.Error("Unknown message posted...");
+                             _logger.Error(xmlMessage);
+                         };
+                    if(xmlMessage.StartsWith("<") && xmlMessage.IndexOf(' ') != -1)
+                    {
+                        string eventName = xmlMessage.Substring(1, xmlMessage.IndexOf(' ')).Trim();
+                        if (_publishMethods.Any(w => w.Key.Name == eventName))
+                        {
+                            KeyValuePair<Type, MethodInfo> eventType = _publishMethods.Where(w => w.Key.Name == eventName).SingleOrDefault();
+                            eventType.Value.Invoke(this, new[] { xmlMessage });
+                        }
+                        else
+                        {
+                            _unknownMsg(xmlMessage);
+                        }
+                    }
+                    else
+                    {
+                        _unknownMsg(xmlMessage);
+                    }
                 }
-
             }
             catch (Exception ex)
             {

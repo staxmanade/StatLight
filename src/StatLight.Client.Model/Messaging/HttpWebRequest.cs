@@ -41,8 +41,6 @@ namespace StatLight.Client.Model.Messaging
             {
                 if (!string.IsNullOrEmpty(PostData))
                 {
-                    System.Windows.MessageBox.Show(PostData);
-
                     using (var writer = new StreamWriter(helper.Request.EndGetRequestStream(ar)))
                     {
                         writer.Write(HttpUtility.UrlEncode(PostData));
