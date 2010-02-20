@@ -1,11 +1,9 @@
 using System;
 using System.Text;
 using Microsoft.Silverlight.Testing.Harness;
-using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using StatLight.Client.Harness.ClientEventMapping;
 using StatLight.Client.Model.Events;
 using StatLight.Core.Reporting.Messages;
-using StatLight.Core.Serialization;
 using LogMessageType = StatLight.Core.Reporting.Messages.LogMessageType;
 
 namespace StatLight.Client.Harness
@@ -31,9 +29,11 @@ namespace StatLight.Client.Harness
             }
             catch (Exception ex)
             {
-                var messageObject = new MobilOtherMessageType();
-                messageObject.Message = ex.ToString();
-                messageObject.MessageType = LogMessageType.Error;
+                var messageObject = new MobilOtherMessageType
+                                        {
+                                            Message = ex.ToString(),
+                                            MessageType = LogMessageType.Error
+                                        };
                 Server.PostMessage(messageObject);
             }
         }

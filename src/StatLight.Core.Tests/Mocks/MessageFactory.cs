@@ -44,7 +44,7 @@ namespace StatLight.Core.Tests.Mocks
 
 		private static MobilScenarioResult StubMobilScenarioResult(TestOutcome testOutcome, string testClassName, string testName, int messageOrder)
 		{
-			return new MobilScenarioResult()
+			return new MobilScenarioResult
 			{
 				Started = DateTime.Now,
 				Finished = DateTime.Now.AddSeconds(1),
@@ -57,7 +57,7 @@ namespace StatLight.Core.Tests.Mocks
 
 		private static MobilScenarioResult CreateFailingResult(int messageOrder)
 		{
-			Exception ex = new Exception(RandomString(80, false));
+			var ex = new Exception(RandomString(80, false));
 			return CreateFailingResult(RandomString(10, false), RandomString(20, false), ex, messageOrder);
 		}
 
@@ -68,15 +68,14 @@ namespace StatLight.Core.Tests.Mocks
 
 		private static string RandomString(int size, bool lowerCase)
 		{
-			StringBuilder builder = new StringBuilder();
-			Random random = new Random();
-			char ch;
-			for (int i = 0; i < size; i++)
+			var builder = new StringBuilder();
+			var random = new Random();
+		    for (int i = 0; i < size; i++)
 			{
-				ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-				builder.Append(ch);
+			    char ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+			    builder.Append(ch);
 			}
-			if (lowerCase)
+		    if (lowerCase)
 				return builder.ToString().ToLower();
 			return builder.ToString();
 		}
@@ -106,7 +105,7 @@ namespace StatLight.Core.Tests.Mocks
 
 		public static MobilOtherMessageType CreateOtherMessageType(LogMessageType logMessageType, int messageOrder)
 		{
-			return new MobilOtherMessageType()
+			return new MobilOtherMessageType
 			{
 				Message = RandomString(30, false),
 				MessageType = logMessageType,

@@ -33,9 +33,9 @@ namespace StatLight.Client.Harness
 
 		public App()
 		{
-			this.Startup += this.Application_Startup;
-			this.Exit += this.Application_Exit;
-			this.UnhandledException += this.Application_UnhandledException;
+			Startup += Application_Startup;
+			Exit += Application_Exit;
+			UnhandledException += Application_UnhandledException;
 
 			InitializeComponent();
 		}
@@ -146,7 +146,7 @@ namespace StatLight.Client.Harness
 			{
 				SetupUnitTestProvider(_testRunConfiguration.UnitTestProviderType);
 
-				this.RootVisual = UnitTestSystem.CreateTestPage(_settings);
+				RootVisual = UnitTestSystem.CreateTestPage(_settings);
 			}
 		}
 
@@ -189,10 +189,9 @@ namespace StatLight.Client.Harness
 
 						foreach (var part in parts)
 						{
-							AssemblyPart assemblyPart = new AssemblyPart();
-							assemblyPart.Source = part;
+							var assemblyPart = new AssemblyPart {Source = part};
 
-							StreamResourceInfo assemblyStream = GetResourceStream(
+						    StreamResourceInfo assemblyStream = GetResourceStream(
 								new StreamResourceInfo(xapStream, "application/binary"),
 								new Uri(assemblyPart.Source, UriKind.Relative));
 
@@ -203,14 +202,14 @@ namespace StatLight.Client.Harness
 
 							if (part == entryPoint + ".dll")
 							{
-								this.TestAssembly = ass;
+								TestAssembly = ass;
 							}
 						}
 					}
 					else
 						throw new InvalidOperationException("The application manifest did not contain any assembly part xml nodes.");
 
-					if (this.TestAssembly == null)
+					if (TestAssembly == null)
 						throw new InvalidOperationException("Could not find the entry poing assembly [{0}].".FormatWith(entryPoint));
 				}
 				else
