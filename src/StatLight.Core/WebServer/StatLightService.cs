@@ -127,7 +127,7 @@ namespace StatLight.Core.WebServer
                              _logger.Error("Unknown message posted...");
                              _logger.Error(xmlMessage);
                          };
-                    if(xmlMessage.StartsWith("<") && xmlMessage.IndexOf(' ') != -1)
+                    if (xmlMessage.StartsWith("<") && xmlMessage.IndexOf(' ') != -1)
                     {
                         string eventName = xmlMessage.Substring(1, xmlMessage.IndexOf(' ')).Trim();
                         if (_publishMethods.Any(w => w.Key.Name == eventName))
@@ -173,8 +173,7 @@ namespace StatLight.Core.WebServer
         {
             _logger.Debug("StatLightService.GetCrossDomainPolicy()");
 
-            if (WebOperationContext.Current != null)
-                WebOperationContext.Current.OutgoingResponse.ContentType = "text/xml";
+            SetOutgoingResponceContentType("text/xml");
 
             return Resources.CrossDomain;
         }
@@ -182,10 +181,16 @@ namespace StatLight.Core.WebServer
         public Stream GetHtmlTestPage()
         {
             _logger.Debug("StatLightService.GetHtmlTestPage()");
-            if (WebOperationContext.Current != null)
-                WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
+
+            SetOutgoingResponceContentType("text/html");
 
             return Resources.TestPage.ToStream();
+        }
+
+        private void SetOutgoingResponceContentType(string contentType)
+        {
+            if (WebOperationContext.Current != null)
+                WebOperationContext.Current.OutgoingResponse.ContentType = contentType;
         }
 
         public Stream GetTestPageHostXap()
