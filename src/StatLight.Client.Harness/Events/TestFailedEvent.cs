@@ -18,11 +18,7 @@ namespace StatLight.Client.Harness.Events
         public DateTime ClientEventCreatedTime { get; private set; }
     }
 
-    public class TraceClientEvent : ClientEvent
-    {
-        public string Message { get; set; }
-    }
-
+    #region Test infrastructure events
     public class InitializationOfUnitTestHarnessClientEvent : ClientEvent { }
     public class SignalTestCompleteClientEvent : ClientEvent
     {
@@ -72,5 +68,19 @@ namespace StatLight.Client.Harness.Events
         public DateTime Started { get; set; }
         public DateTime Finished { get; set; }
     }
+    #endregion 
 
+    #region Non Test Result releated messages
+
+    public class UnhandledExceptionClientEvent : ClientEvent
+    {
+        public ExceptionInfo Exception { get; set; }
+    }
+
+    public class TraceClientEvent : ClientEvent
+    {
+        public string Message { get; set; }
+    }
+
+    #endregion
 }

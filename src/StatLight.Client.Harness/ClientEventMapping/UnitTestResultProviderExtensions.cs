@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
+using StatLight.Client.Harness.Events;
 using StatLight.Core.Reporting.Messages;
 using StatLight.Core.Serialization;
 using LogMessageType = Microsoft.Silverlight.Testing.Harness.LogMessageType;
@@ -62,22 +63,8 @@ namespace StatLight.Client.Harness.ClientEventMapping
                 return messageObject.Serialize();
             }
 
-            if (logMessage.MessageType == LogMessageType.Error)
             {
-                var messageObject = new MobilOtherMessageType
-                                        {
-                                            Message = logMessage.Message + " ---- " + ServerHandlingLogProvider.GetDecorators(logMessage.Decorators),
-                                            MessageType = (Core.Reporting.Messages.LogMessageType)logMessage.MessageType
-                                        };
-                return messageObject.Serialize();
-            }
-            else
-            {
-                var messageObject = new MobilOtherMessageType
-                                        {
-                                            Message = logMessage.Message,
-                                            MessageType = (Core.Reporting.Messages.LogMessageType)logMessage.MessageType
-                                        };
+                var messageObject = ServerHandlingLogProvider.TraceLogMessage(logMessage);
                 return messageObject.Serialize();
             }
         }

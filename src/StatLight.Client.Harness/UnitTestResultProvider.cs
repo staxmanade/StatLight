@@ -29,10 +29,9 @@ namespace StatLight.Client.Harness
             }
             catch (Exception ex)
             {
-                var messageObject = new MobilOtherMessageType
+                var messageObject = new UnhandledExceptionClientEvent
                                         {
-                                            Message = ex.ToString(),
-                                            MessageType = LogMessageType.Error
+                                            Exception = ex,
                                         };
                 Server.PostMessage(messageObject);
             }
@@ -45,7 +44,7 @@ namespace StatLight.Client.Harness
             return logMessageMapperDude.TryTranslate(message, out clientEvent);
         }
 
-        private TraceClientEvent TraceLogMessage(LogMessage message)
+        public static TraceClientEvent TraceLogMessage(LogMessage message)
         {
             const string newLine = "\n";
 

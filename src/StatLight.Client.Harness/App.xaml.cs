@@ -21,6 +21,7 @@ using StatLight.Core.WebServer;
 using StatLight.Core.Reporting.Messages;
 using LogMessageType=StatLight.Core.Reporting.Messages.LogMessageType;
 using StatLight.Client.Harness.UnitTestProviders.MSTest;
+using StatLight.Client.Harness.Events;
 
 namespace StatLight.Client.Harness
 {
@@ -227,10 +228,9 @@ namespace StatLight.Client.Harness
 				MessageBox.Show(msg);
 #endif
 
-				var messageObject = new MobilOtherMessageType
+				var messageObject = new UnhandledExceptionClientEvent
 				{
-					Message = msg,
-					MessageType = LogMessageType.Error
+					Exception = ex,
 				};
 				Server.PostMessage(messageObject);
                 Server.SignalTestComplete();

@@ -29,7 +29,7 @@ namespace StatLight.Client.Harness.ClientEventMapping
             var testMethod = (ITestMethod)message.Decorators[UnitTestLogDecorator.TestMethodMetadata];
             var clientEventX = new TestExecutionMethodFailedClientEvent
                                    {
-                                       ExceptionInfo = new ExceptionInfo(exception),
+                                       ExceptionInfo = exception,
                                        ClassName = testMethod.Method.DeclaringType.Name,
                                        NamespaceName = testMethod.Method.DeclaringType.Namespace,
                                        MethodName = testMethod.Method.Name,

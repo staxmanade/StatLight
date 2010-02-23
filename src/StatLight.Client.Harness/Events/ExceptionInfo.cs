@@ -30,5 +30,10 @@ namespace StatLight.Client.Harness.Events
         {
             return FullMessage;
         }
+
+        public static implicit operator ExceptionInfo(Exception ex)
+        {
+            return new ExceptionInfo(ex);
+        }
     }
 }

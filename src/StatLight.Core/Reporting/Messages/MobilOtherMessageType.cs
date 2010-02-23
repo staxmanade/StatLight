@@ -3,6 +3,7 @@ using System;
 
 namespace StatLight.Core.Reporting.Messages
 {
+#if !SILVERLIGHT
 	[DataContract]
 	public class MobilOtherMessageType
 	{
@@ -53,4 +54,5 @@ Message:
 			return false;
 		}
 	}
+#endif
 }
