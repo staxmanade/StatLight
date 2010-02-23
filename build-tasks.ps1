@@ -490,7 +490,7 @@ Task writeProperties {
 
 Task clean {
 	#-ErrorAction SilentlyContinue --- because of the *.vshost which is locked and we can't delete.
-	Remove-Item $build_dir\* -Force -ErrorAction SilentlyContinue
+	Remove-Item $build_dir\* -Force -ErrorAction SilentlyContinue -Recurse
 	Remove-Item $release_dir -Force -ErrorAction SilentlyContinue -Recurse
 	
 	mkdir $build_dir -Force

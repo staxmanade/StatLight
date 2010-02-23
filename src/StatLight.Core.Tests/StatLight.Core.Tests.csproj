@@ -86,6 +86,7 @@
     <Compile Include="CommonExtensionTests.cs" />
     <Compile Include="Common\LoggerBaseTests.cs" />
     <Compile Include="Console\ArgOptionsTests.cs" />
+    <Compile Include="Events\Aggregation\EventAggregatorTests.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlReportTests.cs" />
     <Compile Include="Runners\ContinuousXapMonitoringTests.cs" />
     <Compile Include="Monitoring\DebugAssertMonitorTests.cs" />
@@ -136,7 +137,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Events\" />
     <Folder Include="WebBrowser\" />
     <Folder Include="_ProjectEnforcements\" />
   </ItemGroup>
