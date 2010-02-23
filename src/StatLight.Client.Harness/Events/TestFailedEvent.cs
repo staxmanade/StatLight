@@ -1,8 +1,7 @@
 using System;
 using System.Threading;
-using StatLight.Client.Model.DTO;
 
-namespace StatLight.Client.Model.Events
+namespace StatLight.Client.Harness.Events
 {
     public abstract class ClientEvent
     {

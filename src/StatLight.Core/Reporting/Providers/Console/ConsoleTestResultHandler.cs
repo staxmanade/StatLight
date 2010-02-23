@@ -1,7 +1,7 @@
 ﻿using System;
+using StatLight.Client.Harness.Events;
 using StatLight.Core.Reporting.Messages;
 using StatLight.Core.Events.Aggregation;
-using StatLight.Client.Model.Events;
 using StatLight.Core.Common;
 
 namespace StatLight.Core.Reporting.Providers.Console

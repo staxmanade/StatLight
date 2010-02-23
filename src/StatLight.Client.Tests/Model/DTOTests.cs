@@ -1,6 +1,6 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StatLight.Client.Model.DTO;
+using StatLight.Client.Harness.Events;
 using StatLight.Client.Tests;
 
 namespace StatLight.Client.Model

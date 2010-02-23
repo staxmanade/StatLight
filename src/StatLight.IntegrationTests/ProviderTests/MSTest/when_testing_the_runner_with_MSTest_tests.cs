@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
-using StatLight.Client.Model.Events;
+using StatLight.Client.Harness.Events;
 using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Reporting;
 using StatLight.Core.Runners;

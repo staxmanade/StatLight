@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using Microsoft.Silverlight.Testing.Harness;
 using StatLight.Client.Harness.ClientEventMapping;
-using StatLight.Client.Model.Events;
+using StatLight.Client.Harness.Events;
 using StatLight.Core.Reporting.Messages;
 using LogMessageType = StatLight.Core.Reporting.Messages.LogMessageType;
 

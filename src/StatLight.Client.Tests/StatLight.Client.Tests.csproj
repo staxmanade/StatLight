@@ -101,10 +101,6 @@
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StatLight.Client.Model\StatLight.Client.Model.csproj">
-      <Project>{75B5F356-6AB9-4BF0-B1BD-7CBD55B32EC5}</Project>
-      <Name>StatLight.Client.Model</Name>
-    </ProjectReference>
     <ProjectReference Include="..\StatLight.Client.Harness\StatLight.Client.Harness.csproj">
       <Project>{163315C4-D4D6-4342-B386-F6D80975CF95}</Project>
       <Name>StatLight.Client.Harness</Name>

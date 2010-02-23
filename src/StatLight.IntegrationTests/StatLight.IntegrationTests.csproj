@@ -93,10 +93,6 @@
     <Compile Include="XapReaderTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StatLight.Client.Model\StatLight.Client.Model.csproj">
-      <Project>{75B5F356-6AB9-4BF0-B1BD-7CBD55B32EC5}</Project>
-      <Name>StatLight.Client.Model</Name>
-    </ProjectReference>
     <ProjectReference Include="..\StatLight.Core\StatLight.Core.csproj">
       <Project>{AA6F387F-BB41-4FA8-B38A-7037A7C59716}</Project>
       <Name>StatLight.Core</Name>

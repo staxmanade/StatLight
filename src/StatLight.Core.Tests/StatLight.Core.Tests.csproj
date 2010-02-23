@@ -111,10 +111,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StatLight.Client.Model\StatLight.Client.Model.csproj">
-      <Project>{75B5F356-6AB9-4BF0-B1BD-7CBD55B32EC5}</Project>
-      <Name>StatLight.Client.Model</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Statlight.Console\StatLight.Console.csproj">
       <Project>{930EED4B-3D52-42A2-BE34-D4AF4C50C1BD}</Project>
       <Name>StatLight.Console</Name>

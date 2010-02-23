@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Silverlight.Testing.Harness;
-using StatLight.Client.Model.Events;
+using StatLight.Client.Harness.Events;
 
 namespace StatLight.Client.Harness.ClientEventMapping
 {

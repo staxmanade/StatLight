@@ -1,5 +1,5 @@
 ﻿using System;
-using StatLight.Client.Model.Events;
+using StatLight.Client.Harness.Events;
 using StatLight.Client.Model.Messaging;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebServer;

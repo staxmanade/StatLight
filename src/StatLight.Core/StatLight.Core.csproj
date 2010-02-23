@@ -95,6 +95,12 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Events\ExceptionInfo.cs">
+      <Link>Events\ExceptionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Events\TestFailedEvent.cs">
+      <Link>Events\TestFailedEvent.cs</Link>
+    </Compile>
     <Compile Include="AssemblyInfo.Core.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="Common\ConsoleLogger.cs" />
@@ -192,12 +198,6 @@
   <ItemGroup>
     <None Include="Resources\FavIcon.ico" />
     <None Include="Resources\TestPage.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\StatLight.Client.Model\StatLight.Client.Model.csproj">
-      <Project>{75B5F356-6AB9-4BF0-B1BD-7CBD55B32EC5}</Project>
-      <Name>StatLight.Client.Model</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

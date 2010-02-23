@@ -1,7 +1,7 @@
 ﻿using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-using StatLight.Client.Model.Events;
+using StatLight.Client.Harness.Events;
 
 namespace StatLight.Client.Harness.ClientEventMapping
 {

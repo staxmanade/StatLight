@@ -1,4 +1,5 @@
-﻿namespace StatLight.Core.Tests.WebServer
+﻿
+namespace StatLight.Core.Tests.WebServer
 {
     namespace StatLightServiceTests
     {
@@ -6,7 +7,7 @@
         using System.IO;
         using System.Linq;
         using NUnit.Framework;
-        using StatLight.Client.Model.Events;
+        using StatLight.Client.Harness.Events;
         using StatLight.Core.Common;
         using StatLight.Core.Events;
         using StatLight.Core.Reporting.Messages;
