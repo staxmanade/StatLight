@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using StatLight.Core.Reporting.Providers.Console;
 
 namespace StatLight.Core.Events.Aggregation
 {
@@ -27,6 +28,8 @@ namespace StatLight.Core.Events.Aggregation
         // Listeners that apply a filter before handling
         IEventAggregator AddListener<T>(Action<T> handler, Predicate<T> filter);
         IEventAggregator AddListener<T>(Action handler, Predicate<T> filter);
+
+        IEventAggregator AddListener(object listener);
 
         IEventAggregator RemoveListener(object listener);
     }
@@ -60,14 +63,15 @@ namespace StatLight.Core.Events.Aggregation
             SendMessage(new T());
         }
 
-        public void AddListener(object listener)
+        public IEventAggregator AddListener(object listener)
         {
             lock (_locker)
             {
                 if (_listeners.Contains(listener))
-                    return;
+                    return this;
                 _listeners.Add(listener);
             }
+            return this;
         }
 
 

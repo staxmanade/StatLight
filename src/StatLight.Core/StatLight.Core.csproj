@@ -134,7 +134,6 @@
     <Compile Include="WebServer\IXapFileBuildChangedMonitor.cs" />
     <Compile Include="Reporting\Messages\MobilOtherMessageType.cs" />
     <Compile Include="Reporting\Providers\TeamCity\ConsoleMessageWriter.cs" />
-    <Compile Include="Reporting\ITestResultHandler.cs" />
     <Compile Include="Reporting\TestReport.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -162,7 +161,6 @@
     <Compile Include="WebBrowser\IBrowserFormHost.cs" />
     <Compile Include="WebServer\IWebServer.cs" />
     <Compile Include="WebServer\ServerTestRunConfiguration.cs" />
-    <Compile Include="WebServer\TestResultArgs.cs" />
     <Compile Include="WebServer\StatLightServiceRestApi.cs" />
     <Compile Include="WebServer\IStatLightService.cs" />
     <Compile Include="WebServer\StatLightService.cs" />

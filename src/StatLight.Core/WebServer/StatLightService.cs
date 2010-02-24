@@ -18,6 +18,7 @@ namespace StatLight.Core.WebServer
     using StatLight.Core.Events;
     using StatLight.Core.Properties;
     using StatLight.Core.Serialization;
+    using System.Threading;
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class StatLightService : IStatLightService
@@ -83,32 +84,19 @@ namespace StatLight.Core.WebServer
 
         public void PostMessage(Stream stream)
         {
-            _currentMessagesPostedCount++;
-
             try
             {
+                Interlocked.Increment(ref _currentMessagesPostedCount);
+
+                _eventAggregator.SendMessage<MessageReceivedFromClientServerEvent>();
+
                 var xmlMessage = GetPostedMessage(stream);
+
                 //_logger.Debug(xmlMessage);
 
-                if (xmlMessage.Contains(typeof(MobilOtherMessageType).Name))
+                if (xmlMessage.Is<SignalTestCompleteClientEvent>())
                 {
-                    var result = xmlMessage.Deserialize<MobilOtherMessageType>();
-                    _eventAggregator.SendMessage(new TestHarnessOtherMessageEvent { Payload = result });
-
-                    //TODO: Remove the logging here...
-
-                    if (result.MessageType == LogMessageType.Error
-                        && !result.Message.Contains("KeyType=TestGranularity, ValueType=TestScenario"))
-                        _logger.Error(result.TraceMessage());
-                }
-                else if (xmlMessage.Contains(typeof(MobilScenarioResult).Name))
-                {
-                    var result = xmlMessage.Deserialize<MobilScenarioResult>();
-                    _eventAggregator.SendMessage(new TestResultEvent { Payload = result });
-                }
-                else if (xmlMessage.Is<SignalTestCompleteClientEvent>())
-                {
-                    _currentMessagesPostedCount--;
+                    Interlocked.Decrement(ref _currentMessagesPostedCount);
 
                     var result = xmlMessage.Deserialize<SignalTestCompleteClientEvent>();
                     _eventAggregator.SendMessage(result);

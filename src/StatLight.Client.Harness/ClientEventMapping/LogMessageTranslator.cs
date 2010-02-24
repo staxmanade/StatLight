@@ -19,6 +19,7 @@ namespace StatLight.Client.Harness.ClientEventMapping
             logMessageTranslator.Add<TestExecutionMethodIgnoredClientEventMap>();
             logMessageTranslator.Add<TestExecutionMethodFailedClientEventMap>();
             logMessageTranslator.Add<TestExecutionMethodPassedClientEventMap>();
+            logMessageTranslator.Add<TestExecutionDoNotReportMessageMap>();
         }
 
         public bool TryTranslate(LogMessage message, out ClientEvent clientEvent)

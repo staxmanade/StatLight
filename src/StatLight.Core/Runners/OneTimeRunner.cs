@@ -24,14 +24,14 @@ namespace StatLight.Core.Runners
             ILogger logger,
             IEventAggregator eventAggregator,
             IWebServer statLightServiceHost,
-            IBrowserFormHost browserFormHost,
-            ITestResultHandler testResultHandler)
+            IBrowserFormHost browserFormHost)
         {
             this.logger = logger;
             this.statLightServiceHost = statLightServiceHost;
             this.browserFormHost = browserFormHost;
 
-            testResultAggregator = new TestResultAggregator(testResultHandler, eventAggregator);
+            testResultAggregator = new TestResultAggregator();
+            eventAggregator.AddListener(testResultAggregator);
 
             eventAggregator
                 .AddListener<TestRunCompletedEvent>(() => _browserThreadWaitHandle.Set());

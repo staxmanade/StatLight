@@ -27,13 +27,10 @@ namespace StatLight.Core.Monitoring
                 .AddListener<TestRunCompletedEvent>(e => _maxTimeoutTimer.Stop());
 
             _eventAggregator
-                .AddListener<TestResultEvent>(ResetTimer);
-
-            _eventAggregator
                 .AddListener<DialogAssertionEvent>(ResetTimer);
 
             _eventAggregator
-                .AddListener<TestHarnessOtherMessageEvent>(ResetTimer);
+                .AddListener<MessageReceivedFromClientServerEvent>(ResetTimer);
 
             _maxTimeoutTimer.Start();
         }

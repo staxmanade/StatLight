@@ -33,7 +33,8 @@
 
 		public string GetXmlReport()
 		{
-			var root =
+            throw new NotImplementedException();
+            var root =
 					new XElement("StatLightTestResults",
 						new XAttribute("xapFileName", _testXapFileName),
 						new XAttribute("total", this._report.TotalResults),
@@ -41,28 +42,28 @@
 						new XAttribute("failed", this._report.TotalFailed),
 						new XAttribute("dateRun", this._report.DateTimeRunCompleted.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture)),
 
-						new XElement("tests",
+                        new XElement("tests",
 								(from x in _report.Results
-								 select GetResult(x)),
-								(from x in _report.OtherMessages
-								 select GetOtherMessage(x))
+								 select GetResult(x))
+                                //(from x in _report.OtherMessages
+                                // select GetOtherMessage(x))
 						)
 					);
 			return root.ToString();
 		}
 
-		private static object GetOtherMessage(MobilOtherMessageType result)
-		{
-			if (result.IsIgnoreMessage())
-			{
-				return GetTestCaseElement(
-					new XAttribute("passed", "False"),
-					new XElement("failureMessage", new XCData(result.Message))
-					);
-			}
+        //private static object GetOtherMessage(MobilOtherMessageType result)
+        //{
+        //    if (result.IsIgnoreMessage())
+        //    {
+        //        return GetTestCaseElement(
+        //            new XAttribute("passed", "False"),
+        //            new XElement("failureMessage", new XCData(result.Message))
+        //            );
+        //    }
 
-			return null;
-		}
+        //    return null;
+        //}
 
 		private static XElement GetResult(MobilScenarioResult result)
 		{

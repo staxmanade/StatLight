@@ -23,15 +23,14 @@ namespace StatLight.Core.Runners
 			string xapPath,
 			IStatLightService statLightService,
 			IWebServer webServer,
-			IBrowserFormHost browserFormHost,
-			ITestResultHandler testResultHandler)
+			IBrowserFormHost browserFormHost)
 		{
 			this.webServer = webServer;
 			xapFileBuildChangedMonitor = new XapFileBuildChangedMonitor(xapPath);
 
 			this.continuousRunnerThread = new Thread(() =>
 			{
-				var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, statLightService, xapFileBuildChangedMonitor, testResultHandler);
+				var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, statLightService, xapFileBuildChangedMonitor);
 				string line;
 				while ((line = System.Console.ReadLine()).ToLower(CultureInfo.CurrentCulture) != "exit")
 				{

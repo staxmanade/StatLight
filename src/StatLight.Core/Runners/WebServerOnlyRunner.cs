@@ -22,15 +22,14 @@ namespace StatLight.Core.Runners
 			ILogger logger,
 			IEventAggregator eventAggregator,
 			IWebServer webServer,
-			Uri testHtmlPageUrl,
-			ITestResultHandler testResultHandler)
+			Uri testHtmlPageUrl)
 		{
 			this.logger = logger;
 			this.webServer = webServer;
 			this.testHtmlPageUrl = testHtmlPageUrl;
 
-			this._testResultAggregator = new TestResultAggregator(testResultHandler, eventAggregator);
-
+			this._testResultAggregator = new TestResultAggregator();
+		    eventAggregator.AddListener(_testResultAggregator);
 			this.continuousRunnerThread = new Thread(() =>
 			{
 				string line;

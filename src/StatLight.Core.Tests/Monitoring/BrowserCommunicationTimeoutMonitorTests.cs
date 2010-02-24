@@ -66,7 +66,7 @@ namespace StatLight.Core.Tests.Monitoring
             protected override void Before_all_tests()
             {
                 base.Before_all_tests();
-                TestEventAggregator.SendMessage(new TestResultEvent());
+                //TestEventAggregator.SendMessage(new TestResultEvent());
                 SetupEventToSeeIfPublished();
             }
 

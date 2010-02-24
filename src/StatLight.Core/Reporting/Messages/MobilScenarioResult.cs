@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 
 namespace StatLight.Core.Reporting.Messages
 {
+#if !SILVERLIGHT
 	[DataContract]
 	public class MobilScenarioResult
 	{
@@ -54,4 +55,5 @@ Exception Message:
 				);
 		}
 	}
+#endif
 }

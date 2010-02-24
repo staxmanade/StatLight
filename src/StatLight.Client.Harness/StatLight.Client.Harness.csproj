@@ -107,6 +107,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AssemblyInfo.This.cs" />
+    <Compile Include="ClientEventMapping\TestExecutionDoNotReportMessageMap.cs" />
     <Compile Include="ClientEventMapping\TestExecutionMethodPassedClientEventMap.cs" />
     <Compile Include="ClientEventMapping\LogMessageTranslator.cs" />
     <Compile Include="ClientEventMapping\TestExecutionClassBeginClientEventMap.cs" />

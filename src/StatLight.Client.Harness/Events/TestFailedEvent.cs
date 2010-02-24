@@ -54,6 +54,10 @@ namespace StatLight.Client.Harness.Events
         public string Message { get; set; }
         public DateTime Started { get; set; }
         public DateTime Finished { get; set; }
+        public TimeSpan TimeToComplete
+        {
+            get { return Finished - Started; }
+        }
     }
 
     public class TestExecutionMethodFailedClientEvent : TestExecutionMethod
@@ -61,12 +65,20 @@ namespace StatLight.Client.Harness.Events
         public ExceptionInfo ExceptionInfo { get; set; }
         public DateTime Started { get; set; }
         public DateTime Finished { get; set; }
+        public TimeSpan TimeToComplete
+        {
+            get { return Finished - Started; }
+        }
     }
 
     public class TestExecutionMethodPassedClientEvent : TestExecutionMethod
     {
         public DateTime Started { get; set; }
         public DateTime Finished { get; set; }
+        public TimeSpan TimeToComplete
+        {
+            get { return Finished - Started; }
+        }
     }
     #endregion 
 

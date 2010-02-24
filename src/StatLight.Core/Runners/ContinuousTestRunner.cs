@@ -19,7 +19,6 @@ namespace StatLight.Core.Runners
         private readonly IXapFileBuildChangedMonitor _xapFileBuildChangedMonitor;
         private readonly ILogger _logger;
         private TestResultAggregator _testResultAggregator;
-        private readonly ITestResultHandler _testResultHandler;
         private readonly IEventAggregator _eventAggregator;
 
         internal ContinuousTestRunner(
@@ -27,15 +26,13 @@ namespace StatLight.Core.Runners
             IEventAggregator eventAggregator,
             IBrowserFormHost browserFormHost,
             IStatLightService statLightService,
-            IXapFileBuildChangedMonitor xapFileBuildChangedMonitor,
-            ITestResultHandler testResultHandler)
+            IXapFileBuildChangedMonitor xapFileBuildChangedMonitor)
         {
             _logger = logger;
             _eventAggregator = eventAggregator;
             _browserFormHost = browserFormHost;
             _statLightService = statLightService;
             _xapFileBuildChangedMonitor = xapFileBuildChangedMonitor;
-            _testResultHandler = testResultHandler;
 
             _logger.Debug("ContinuousTestRunner.ctor()");
 
@@ -60,7 +57,8 @@ namespace StatLight.Core.Runners
 
         private void Start()
         {
-            _testResultAggregator = new TestResultAggregator(_testResultHandler, _eventAggregator);
+            _testResultAggregator = new TestResultAggregator();
+            _eventAggregator.AddListener(_testResultAggregator);
 
             _logger.Information("{1}{1}Starting Test Run: {0}{1}{1}"
                 .FormatWith(DateTime.Now, Environment.NewLine));
@@ -76,6 +74,8 @@ namespace StatLight.Core.Runners
             ConsoleTestCompleteMessage.WriteOutCompletionStatement(_testResultAggregator.CurrentReport);
             _browserFormHost.Stop();
             IsCurrentlyRunningTest = false;
+
+            _eventAggregator.RemoveListener(_testResultAggregator);
             _testResultAggregator.Dispose();
             _testResultAggregator = null;
         }

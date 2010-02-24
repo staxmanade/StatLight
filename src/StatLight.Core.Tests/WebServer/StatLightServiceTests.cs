@@ -1,4 +1,7 @@
 ﻿
+using System;
+using StatLight.Core.Reporting;
+
 namespace StatLight.Core.Tests.WebServer
 {
     namespace StatLightServiceTests
@@ -57,29 +60,25 @@ namespace StatLight.Core.Tests.WebServer
             }
         }
 
-        public class with_the_TestCompleted_event_wired_to_trap_the_TestCompletedArgs : with_an_instance_of_the_StatLightService
+        public class with_the_TestCompleted_event_wired_to_trap_the_TestCompletedArgs
+            : with_an_instance_of_the_StatLightService
         {
-            List<MobilScenarioResult> _testMobilScenarioResult;
-            List<MobilOtherMessageType> _testMobilOtherMessageType;
-            protected List<MobilScenarioResult> TestMobilScenarioResults { get { return _testMobilScenarioResult; } }
-            protected List<MobilOtherMessageType> TestMobilOtherMessageType { get { return _testMobilOtherMessageType; } }
+            protected readonly List<UnhandledExceptionClientEvent> _errors = new List<UnhandledExceptionClientEvent>();
             protected bool WasTestCompleteSignalSent { get; private set; }
-
+            protected TestResultAggregator TestResultAggregator { get; private set; }
             protected override void Before_all_tests()
             {
-                _testMobilScenarioResult = new List<MobilScenarioResult>();
-                _testMobilOtherMessageType = new List<MobilOtherMessageType>();
-
                 base.Before_all_tests();
+
+                TestResultAggregator = new TestResultAggregator();
+                TestEventAggregator.AddListener(TestResultAggregator);
 
                 TestEventAggregator
                     .AddListener<TestRunCompletedEvent>(e => WasTestCompleteSignalSent = true);
 
-                TestEventAggregator
-                    .AddListener<TestResultEvent>(e => _testMobilScenarioResult.Add(e.Payload));
 
                 TestEventAggregator
-                    .AddListener<TestHarnessOtherMessageEvent>(e => _testMobilOtherMessageType.Add(e.Payload));
+                    .AddListener<UnhandledExceptionClientEvent>(e => _errors.Add(e));
 
                 var postCount = PostMessagesToService();
 
@@ -97,9 +96,14 @@ namespace StatLight.Core.Tests.WebServer
         {
             protected override int PostMessagesToService()
             {
-                StatLightService.PostMessage(MessageFactory.CreateOtherMessageTypeStream(LogMessageType.Error));
-                StatLightService.PostMessage(MessageFactory.CreateResultStream(TestOutcome.Passed));
-                StatLightService.PostMessage(MessageFactory.CreateResultStream(TestOutcome.Failed));
+                var events = new ClientEvent[]
+                            {
+                                new UnhandledExceptionClientEvent(),
+                                new TestExecutionMethodPassedClientEvent(),
+                                new TestExecutionMethodFailedClientEvent(),
+                            };
+                foreach (var e in events)
+                    StatLightService.PostMessage(e.Serialize().ToStream());
 
                 return 3;
             }
@@ -107,22 +111,19 @@ namespace StatLight.Core.Tests.WebServer
             [Test]
             public void the_service_should_have_thrown_a_faild_test_event()
             {
-                TestMobilScenarioResults.Where(w => w.Result == TestOutcome.Failed)
-                    .Count().ShouldEqual(1);
+                TestResultAggregator.CurrentReport.TotalFailed.ShouldEqual(1);
             }
 
             [Test]
             public void the_service_should_have_thrown_a_passing_test_event()
             {
-                TestMobilScenarioResults.Where(w => w.Result == TestOutcome.Passed)
-                    .Count().ShouldEqual(1);
+                TestResultAggregator.CurrentReport.TotalPassed.ShouldEqual(1);
             }
 
             [Test]
             public void the_service_should_have_thrown_an_other_message_that_is_an_error()
             {
-                TestMobilOtherMessageType.Where(w => w.MessageType == LogMessageType.Error)
-                    .Count().ShouldEqual(1);
+                _errors.Count().ShouldEqual(1);
             }
         }
         [TestFixture]
@@ -227,13 +228,12 @@ namespace StatLight.Core.Tests.WebServer
                 wasSignaledTestComplete.ShouldBeFalse();
 
                 // Post the first 1
-                StatLightService.PostMessage(MessageFactory.CreateOtherMessageTypeStream(LogMessageType.Debug));
+                StatLightService.PostMessage(MessageFactory.Create<TraceClientEvent>());
                 wasSignaledTestComplete.ShouldBeFalse();
 
                 // Post the second one and the event should have been fired.
-                StatLightService.PostMessage(MessageFactory.CreateOtherMessageTypeStream(LogMessageType.Debug));
+                StatLightService.PostMessage(MessageFactory.Create<TraceClientEvent>());
                 wasSignaledTestComplete.ShouldBeTrue();
-
             }
 
         }
@@ -279,39 +279,39 @@ namespace StatLight.Core.Tests.WebServer
                 base.Before_all_tests();
             }
 
-            readonly List<TestOutcome> outcomes = new List<TestOutcome>
-                                                      {
-				TestOutcome.Passed,
-				TestOutcome.Failed,
-				TestOutcome.Passed,
-				TestOutcome.Passed,
-				TestOutcome.Passed,
-				TestOutcome.Passed,
-				TestOutcome.Failed,
-				TestOutcome.Failed,
-			};
-
-            readonly List<LogMessageType> otherMessageTypes = new List<LogMessageType>
-			{
-				LogMessageType.Error,
-				LogMessageType.Error,
-				LogMessageType.Error,
-			};
-
-            protected void PostMessage(Stream message)
+            protected void PostMessage(ClientEvent message)
             {
-                StatLightService.PostMessage(message);
+                StatLightService.PostMessage(message.Serialize().ToStream());
                 _messagesSent++;
             }
 
             protected override int PostMessagesToService()
             {
+                var otherMessages = new[]
+                {
+                    new TestExecutionMethodFailedClientEvent(),
+                    new TestExecutionMethodFailedClientEvent(),
+                    new TestExecutionMethodFailedClientEvent(),
+                };
 
-                foreach (var message in otherMessageTypes)
-                    PostMessage(MessageFactory.CreateOtherMessageTypeStream(message));
 
-                foreach (var outcome in outcomes)
-                    PostMessage(MessageFactory.CreateResultStream(outcome));
+                var scenarioResults = new ClientEvent[]
+                {
+                    new TestExecutionMethodPassedClientEvent(),
+                    new TestExecutionMethodFailedClientEvent(),
+                    new TestExecutionMethodPassedClientEvent(),
+                    new TestExecutionMethodPassedClientEvent(),
+                    new TestExecutionMethodPassedClientEvent(),
+                    new TestExecutionMethodPassedClientEvent(),
+                    new TestExecutionMethodFailedClientEvent(),
+                    new TestExecutionMethodFailedClientEvent(),
+                };
+
+                foreach (var message in scenarioResults)
+                    PostMessage(message);
+
+                foreach (var outcome in scenarioResults)
+                    PostMessage(outcome);
 
                 return _messagesSent;
             }
@@ -320,6 +320,27 @@ namespace StatLight.Core.Tests.WebServer
             public void should_have_received_the_TestCompletedArgs()
             {
                 WasTestCompleteSignalSent.ShouldBeTrue();
+            }
+        }
+
+        [TestFixture]
+        public class when_an_event_is_publshed_to_the_StatLightSerivce : with_an_instance_of_the_StatLightService
+        {
+            private bool _messageWasFired;
+
+            protected override void Before_all_tests()
+            {
+                base.Before_all_tests();
+
+                TestEventAggregator.AddListener<MessageReceivedFromClientServerEvent>(() => _messageWasFired = true);
+
+                base.StatLightService.PostMessage("hello world".ToStream());
+            }
+
+            [Test]
+            public void Should_have_received_the_message_posted_event()
+            {
+                _messageWasFired.ShouldBeTrue();
             }
         }
     }

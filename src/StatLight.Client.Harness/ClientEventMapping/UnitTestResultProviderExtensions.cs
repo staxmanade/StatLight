@@ -42,31 +42,5 @@ namespace StatLight.Client.Harness.ClientEventMapping
             }
             return false;
         }
-
-        public static string Serialize(this LogMessage logMessage)
-        {
-            if (logMessage.MessageType == LogMessageType.TestResult &&
-                logMessage.Decorators.ContainsKey(UnitTestLogDecorator.ScenarioResult))
-            {
-                var scenerioResult = (ScenarioResult)logMessage.Decorators[UnitTestLogDecorator.ScenarioResult];
-                var messageObject = new MobilScenarioResult
-                                        {
-                                            ExceptionMessage = scenerioResult.Exception != null
-                                                                   ? scenerioResult.Exception.ToString()
-                                                                   : string.Empty,
-                                            Finished = scenerioResult.Finished,
-                                            Result = (Core.Reporting.Messages.TestOutcome)scenerioResult.Result,
-                                            Started = scenerioResult.Started,
-                                            TestClassName = scenerioResult.TestClass.Type.FullName,
-                                            TestName = scenerioResult.TestMethod.Name
-                                        };
-                return messageObject.Serialize();
-            }
-
-            {
-                var messageObject = ServerHandlingLogProvider.TraceLogMessage(logMessage);
-                return messageObject.Serialize();
-            }
-        }
     }
 }

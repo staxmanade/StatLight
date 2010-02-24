@@ -19,7 +19,7 @@ namespace StatLight.Core.Runners
 			IWebServer webServer,
 			IBrowserFormHost browserFormHost,
 			TeamCityTestResultHandler teamCityCommandPublisher)
-			: base(logger, eventAggregator, webServer, browserFormHost, teamCityCommandPublisher)
+			: base(logger, eventAggregator, webServer, browserFormHost)
 		{
 			this.teamCityCommandPublisher = teamCityCommandPublisher;
 		}
