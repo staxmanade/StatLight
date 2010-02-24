@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.Silverlight.Testing.Harness;
 using StatLight.Client.Harness.ClientEventMapping;
 using StatLight.Client.Harness.Events;
+using StatLight.Core.Serialization;
 
 namespace StatLight.Client.Harness
 {
@@ -10,15 +11,8 @@ namespace StatLight.Client.Harness
     {
         protected override void ProcessRemainder(LogMessage message)
         {
-            //var serializedString = message.Serialize();
-            //Server.PostMessage(serializedString);
-
-            //string traceMessage = TraceLogMessage(message).Serialize();
-            //Server.PostMessage(traceMessage);
-
             try
             {
-
                 ClientEvent clientEvent;
                 if (TryTranslateIntoClientEvent(message, out clientEvent))
                 {

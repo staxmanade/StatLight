@@ -6,7 +6,6 @@ namespace StatLight.Core.Tests.Reporting
 {
     namespace TestResultAggregatorTests
     {
-        using Moq;
         using NUnit.Framework;
         using StatLight.Core.Events;
         using StatLight.Core.Reporting;

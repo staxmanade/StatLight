@@ -67,7 +67,11 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodIgnoredClientEvent message)
         {
-            //throw new NotImplementedException();
+            var msg = new TestCaseResult(ResultType.Ignored)
+                          {
+                              MethodName = message.Message,
+                          };
+            _currentReport.AddResult(msg);
         }
 
         public void Handle(TraceClientEvent message)

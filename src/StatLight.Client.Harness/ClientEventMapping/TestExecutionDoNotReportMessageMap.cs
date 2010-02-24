@@ -86,15 +86,6 @@ Decorators:
                 }
             }
 
-            if (message.MessageType == LogMessageType.TestInfrastructure)
-            {
-                if (message.DecoratorMatches(UnitTestLogDecorator.IsUnitTestMessage, v => (bool)v) &&
-                    message.DecoratorMatches(UnitTestLogDecorator.TestRunFilter, v => v != null))
-                {
-                    return true;
-                }
-            }
-
 
             /*
 MessageType=TestExecution
