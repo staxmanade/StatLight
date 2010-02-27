@@ -60,7 +60,7 @@ namespace StatLight.Core.Runners
                 out browserFormHost);
 
             var publisher = new TeamCityTestResultHandler(new ConsoleCommandWriter(), xapPath);
-
+            EventAggregator.AddListener(publisher);
             IRunner runner = new TeamCityRunner(new NullLogger(), EventAggregator, statLightServiceHost, browserFormHost, publisher);
 
             return runner;
@@ -136,7 +136,7 @@ namespace StatLight.Core.Runners
 
         private static void CreateAndAddConsoleResultHandlerToEventAggregator(ILogger logger)
         {
-            var consoleResultHandler = new ConsoleResultHandler(logger, EventAggregator);
+            var consoleResultHandler = new ConsoleResultHandler(logger);
             EventAggregator.AddListener(consoleResultHandler);
         }
     }

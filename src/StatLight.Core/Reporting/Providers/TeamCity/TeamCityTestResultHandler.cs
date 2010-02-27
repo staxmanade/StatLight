@@ -31,73 +31,23 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
                 CommandFactory.TestSuiteFinished(assemblyName));
         }
 
-        //public void HandleMessage(MobilScenarioResult result)
-        //{
-        //    var name = result.TestClassName + "." + result.TestName;
-        //    var durationMilliseconds = result.TimeToComplete.Milliseconds;
-
-        //    WrapMessageWithStartAndEnd(() =>
-        //    {
-        //        if (result.Result == TestOutcome.Failed ||
-        //            result.Result == TestOutcome.Aborted ||
-        //            result.Result == TestOutcome.Disconnected ||
-        //            result.Result == TestOutcome.Error ||
-        //            result.Result == TestOutcome.Inconclusive ||
-        //            result.Result == TestOutcome.Timeout)
-        //        {
-        //            messageWriter.Write(
-        //                CommandFactory.TestFailed(
-        //                    name,
-        //                    result.TraceMessage(),
-        //                    result.TraceMessage()));
-        //        }
-        //    }, name, durationMilliseconds);
-        //}
-
-        private void WrapMessageWithStartAndEnd(Command command, string name, long durationMilliseconds)
+        private void WrapTestWithStartAndEnd(Command command, string name, long durationMilliseconds)
         {
-            WrapMessageWithStartAndEnd(() => messageWriter.Write(command), name, durationMilliseconds);
+            WrapTestWithStartAndEnd(() => messageWriter.Write(command), name, durationMilliseconds);
         }
 
-        private void WrapMessageWithStartAndEnd(Action action, string name, long durationMilliseconds)
+        private void WrapTestWithStartAndEnd(Action action, string name, long durationMilliseconds)
         {
             messageWriter.Write(CommandFactory.TestStarted(name));
             action();
             messageWriter.Write(CommandFactory.TestFinished(name, durationMilliseconds));
         }
-
-        //public void HandleMessage(MobilOtherMessageType result)
-        //{
-        //    if (result.IsIgnoreMessage())
-        //    {
-        //        WrapMessageWithStartAndEnd(CommandFactory.TestIgnored(result.Message, string.Empty), result.Message, 0);
-        //    }
-        //    //if (otherResult.MessageType == LogMessageType.Error)
-        //    //{
-        //    //    messageWriter.Write(
-        //    //        CommandFactory.TestStarted(assemblyName));
-
-        //    //    if (otherResult.MessageType == LogMessageType.Error)
-        //    //    {
-        //    //        messageWriter.Write(
-        //    //            CommandFactory.TestFailed(
-        //    //                assemblyName,
-        //    //                otherResult.TraceMessage(),
-        //    //                otherResult.TraceMessage()));
-        //    //    }
-
-        //    //    messageWriter.Write(
-        //    //        CommandFactory.TestFinished(assemblyName, 0));
-        //    //}
-        //}
-
-
         public void Handle(TestExecutionMethodPassedClientEvent message)
         {
             var name = message.ClassName + "." + message.MethodName;
             var durationMilliseconds = message.TimeToComplete.Milliseconds;
 
-            WrapMessageWithStartAndEnd(() =>
+            WrapTestWithStartAndEnd(() =>
             {
                 
             }, name, durationMilliseconds);
@@ -108,7 +58,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
             var name = message.ClassName + "." + message.MethodName;
             var durationMilliseconds = message.TimeToComplete.Milliseconds;
 
-            WrapMessageWithStartAndEnd(() => messageWriter.Write(
+            WrapTestWithStartAndEnd(() => messageWriter.Write(
                 CommandFactory.TestFailed(
                     name,
                     message.ExceptionInfo.FullMessage,
@@ -119,7 +69,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
         public void Handle(TestExecutionMethodIgnoredClientEvent message)
         {
-            WrapMessageWithStartAndEnd(CommandFactory.TestIgnored(message.Message, string.Empty), message.Message, 0);
+            WrapTestWithStartAndEnd(CommandFactory.TestIgnored(message.Message, string.Empty), message.Message, 0);
         }
 
         public void Handle(TraceClientEvent message)
@@ -129,12 +79,28 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
         public void Handle(DialogAssertionServerEvent message)
         {
-            throw new NotImplementedException();
+            string writeMessage = message.ExceptionMessage;
+            WriteServerEventFailure(writeMessage);
+        }
+
+        private void WriteServerEventFailure(string writeMessage)
+        {
+            const string name = "DialogAssertion";
+            const int durationMilliseconds = 0;
+
+            WrapTestWithStartAndEnd(() => messageWriter.Write(
+                CommandFactory.TestFailed(
+                    name,
+                    writeMessage,
+                    writeMessage)),
+                                    name,
+                                    durationMilliseconds);
         }
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
         {
-            throw new NotImplementedException();
+            string writeMessage = message.Message;
+            WriteServerEventFailure(writeMessage);
         }
     }
 }

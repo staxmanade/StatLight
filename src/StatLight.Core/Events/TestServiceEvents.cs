@@ -9,7 +9,10 @@
     }
 
     public sealed class TestRunCompletedServerEvent { }
-    public sealed class BrowserHostCommunicationTimeoutServerEvent { }
+    public sealed class BrowserHostCommunicationTimeoutServerEvent
+    {
+        public string Message { get; set; }
+    }
 
     public class MessageReceivedFromClientServerEvent { }
 

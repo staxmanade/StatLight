@@ -46,7 +46,12 @@ namespace StatLight.Core.Monitoring
                     _hasPublishedEvent = true;
 
                     _eventAggregator
-                        .SendMessage<BrowserHostCommunicationTimeoutServerEvent>();
+                        .SendMessage(
+                            new BrowserHostCommunicationTimeoutServerEvent
+                                {
+                                    Message = "No communication from the web browser has been detected. We've waited longer than the configured time of {0}".FormatWith(new TimeSpan(_maxTimeAllowedBeforeCommErrorSent.Ticks))
+                                }
+                        );
 
                     _eventAggregator
                         .SendMessage<TestRunCompletedServerEvent>();

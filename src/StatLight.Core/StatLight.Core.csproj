@@ -122,7 +122,7 @@
     <Compile Include="Reporting\Messages\LogMessageType.cs" />
     <Compile Include="Reporting\Messages\TestOutcome.cs" />
     <Compile Include="Reporting\Providers\Console\ConsoleTestCompleteMessage.cs" />
-    <Compile Include="Reporting\Providers\Console\ConsoleTestResultHandler.cs" />
+    <Compile Include="Reporting\Providers\Console\ConsoleResultHandler.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlReport.cs" />
     <Compile Include="Runners\ContinuousConsoleRunner.cs" />
     <Compile Include="Runners\ContinuousTestRunner.cs" />

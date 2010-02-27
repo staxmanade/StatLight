@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace StatLight.Core.Reporting
 {
     using System;
@@ -8,7 +10,6 @@ namespace StatLight.Core.Reporting
     public class TestResultAggregator : IDisposable, ITestingReportEvents
     {
         private readonly TestReport _currentReport = new TestReport();
-
         public TestReport CurrentReport { get { return _currentReport; } }
 
         public TestResultAggregator()
@@ -68,12 +69,12 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TraceClientEvent message)
         {
-            //throw new NotImplementedException();
+            //TODO: add to TestReport???
         }
 
         public void Handle(DialogAssertionServerEvent message)
         {
-            //throw new NotImplementedException();
+            //TODO:
         }
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)

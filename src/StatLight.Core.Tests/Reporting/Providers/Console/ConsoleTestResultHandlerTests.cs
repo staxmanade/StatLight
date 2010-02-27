@@ -12,7 +12,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.Console
         {
             base.Before_all_tests();
 
-            handler = new ConsoleResultHandler(TestLogger, TestEventAggregator);
+            handler = new ConsoleResultHandler(TestLogger);
         }
 
         protected override ConsoleResultHandler Handler
