@@ -367,13 +367,13 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	$file = get-item $scriptFile
 	$doc = [System.Xml.Linq.XDocument]::Load($file)
 	
-	$passingTests = $doc.Descendants('test') | where{ $_.Attribute('passed').Value -eq 'true' }
+	$passingTests = $doc.Descendants('test') | where{ $_.Attribute('resulttype').Value -eq 'Passed' }
 	$passingTests.Count.ShouldEqual(4);
 
-	$ignoredTests = @($doc.Descendants('test') | where{ $_.Attribute('passed').Value -eq 'false' } | where { $_.Value.Contains('Ignoring') })
+	$ignoredTests = @($doc.Descendants('test') | where{ $_.Attribute('resulttype').Value -eq 'Ignored' })
 	$ignoredTests.Count.ShouldEqual(1);
 
-	$failedTests = @($doc.Descendants('test') | where{ $_.Attribute('passed').Value -eq 'false' } | where { ! $_.Value.Contains('Ignoring') })
+	$failedTests = @($doc.Descendants('test') | where{ $_.Attribute('resulttype').Value -eq 'Failed' } )
 	$failedTests.Count.ShouldEqual(1);
 
 	Remove-If-Exists $scriptFile

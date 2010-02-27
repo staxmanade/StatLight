@@ -4,13 +4,13 @@ namespace StatLight.Client.Harness.Events
 {
     public class ExceptionInfo
     {
-        public string Message { get; private set; }
+        public string Message { get; set; }
 
-        public string StackTrace { get; private set; }
+        public string StackTrace { get; set; }
 
-        public string FullMessage { get; private set; }
+        public string FullMessage { get; set; }
 
-        public ExceptionInfo InnerException { get; private set; }
+        public ExceptionInfo InnerException { get; set; }
 
         internal ExceptionInfo() { }
 

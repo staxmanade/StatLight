@@ -30,7 +30,7 @@ namespace StatLight.Core.WebServer
         private int _currentMessagesPostedCount;
         private int _totalMessagesPostedCount;
         private readonly ServerTestRunConfiguration _serverTestRunConfiguration;
-        private IDictionary<Type, MethodInfo> _publishMethods;
+        private readonly IDictionary<Type, MethodInfo> _publishMethods;
 
         public string TagFilters
         {
