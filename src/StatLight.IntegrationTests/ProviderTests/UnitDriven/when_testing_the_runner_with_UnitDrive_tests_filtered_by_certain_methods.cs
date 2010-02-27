@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebServer;
@@ -14,21 +13,26 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
 
 		protected override TestRunConfiguration TestRunConfiguration
 		{
-			get { return this._testRunConfiguration; }
+			get { return _testRunConfiguration; }
 		}
 
 		protected override void Before_all_tests()
 		{
-			base.PathToIntegrationTestXap = TestXapFileLocations.UnitDriven;
+			PathToIntegrationTestXap = TestXapFileLocations.UnitDriven;
+
+            const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.UnitDriven.";
+
+            NormalClassTestName = "ExampleTests";
+            NestedClassTestName = "ExampleTests+UnitDrivenNestedClassTests";
 
 			_testRunConfiguration = new TestRunConfiguration
 			                        	{
 			                        		TagFilter = string.Empty,
 			                        		UnitTestProviderType = UnitTestProviderType.UnitDriven,
-			                        		MethodsToTest = new List<string>()
-			                        		                	{
-			                        		                		(base.NormalClassTestName = "StatLight.IntegrationTests.Silverlight.UnitDriven.ExampleTests+UnitDrivenNestedClassTests") + ".this_should_be_a_passing_test",
-			                        		                		(base.NestedClassTestName = "StatLight.IntegrationTests.Silverlight.UnitDriven.ExampleTests") + ".EmptyTest",
+			                        		MethodsToTest = new List<string>
+			                        		                    {
+		                		namespaceToTestFrom + NormalClassTestName + ".EmptyTest",
+		                		namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
 			                        		                	}
 			                        	};
 

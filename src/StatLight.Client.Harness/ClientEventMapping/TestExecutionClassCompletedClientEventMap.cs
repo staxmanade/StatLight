@@ -27,7 +27,7 @@ namespace StatLight.Client.Harness.ClientEventMapping
             var testClass = (ITestClass)message.Decorators[UnitTestLogDecorator.TestClassMetadata];
             var clientEventX = new TestExecutionClassCompletedClientEvent
                                    {
-                                       ClassName = testClass.Name,
+                                       ClassName = testClass.Type.ReadClassName(),
                                        NamespaceName = testClass.Type.Namespace,
                                    };
             return clientEventX;

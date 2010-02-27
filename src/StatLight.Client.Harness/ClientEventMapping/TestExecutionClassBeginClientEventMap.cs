@@ -2,6 +2,7 @@
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Client.Harness.Events;
+using System.Reflection;
 
 namespace StatLight.Client.Harness.ClientEventMapping
 {
@@ -27,7 +28,7 @@ namespace StatLight.Client.Harness.ClientEventMapping
             var testClass = (ITestClass)message.Decorators[UnitTestLogDecorator.TestClassMetadata];
             var clientEventX = new TestExecutionClassBeginClientEvent
                                    {
-                                       ClassName = testClass.Name,
+                                       ClassName = testClass.Type.ReadClassName(),
                                        NamespaceName = testClass.Type.Namespace,
                                    };
             return clientEventX;

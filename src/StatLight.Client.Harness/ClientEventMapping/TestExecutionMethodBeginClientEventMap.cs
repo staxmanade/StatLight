@@ -28,7 +28,7 @@ namespace StatLight.Client.Harness.ClientEventMapping
             var testMethod = (ITestMethod)message.Decorators[UnitTestLogDecorator.TestMethodMetadata];
             var clientEventX = new TestExecutionMethodBeginClientEvent
                                    {
-                                       ClassName = testMethod.Method.DeclaringType.Name,
+                                       ClassName = testMethod.Method.DeclaringType.ReadClassName(),
                                        NamespaceName = testMethod.Method.DeclaringType.Namespace,
                                        MethodName = testMethod.Method.Name,
                                        Started = DateTime.Now,

@@ -1,1 +1,2 @@
 & 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.ProviderTests.MSTest.when_testing_the_runner_with_MSTest_tests
+#& 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.ProviderTests.MSTest.when_testing_the_runner_with_MSTest_tests_filtered_by_certain_methods

@@ -4,9 +4,8 @@ namespace StatLight.Core.Reporting
     using System.Collections.Generic;
     using System.Linq;
     using System;
-    using System.Collections.ObjectModel;
     using StatLight.Client.Harness.Events;
-    using StatLight.Core.Reporting.Messages;
+    using System.Diagnostics;
 
     public class Result
     {
@@ -19,6 +18,7 @@ namespace StatLight.Core.Reporting
         
     }
 
+    [DebuggerDisplay("Result=[{ResultType}], Method={NamespaceName}.{ClassName}.{MethodName}")]
     public class TestCaseResult : Result
     {
         public TestCaseResult(ResultType resultType) 
@@ -72,10 +72,6 @@ namespace StatLight.Core.Reporting
         }
 
         public IEnumerable<Result> TestResults { get { return _testCaseResults; } }
-
-
-        private Collection<MobilScenarioResult> results = new Collection<MobilScenarioResult>();
-        public Collection<MobilScenarioResult> Results { get { return results; } }
 
         public DateTime DateTimeRunCompleted { get; private set; }
 

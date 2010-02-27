@@ -28,7 +28,7 @@ namespace StatLight.Client.Harness.ClientEventMapping
 
             var clientEventX = new TestExecutionMethodPassedClientEvent
                {
-                   ClassName = testMethod.Method.DeclaringType.Name,
+                   ClassName = testMethod.Method.DeclaringType.ReadClassName(),
                    NamespaceName = testMethod.Method.DeclaringType.Namespace,
                    MethodName = testMethod.Method.Name,
                    Finished = scenarioResult.Finished,

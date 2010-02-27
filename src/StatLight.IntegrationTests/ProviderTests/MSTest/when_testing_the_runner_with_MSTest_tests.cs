@@ -139,7 +139,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         {
             e.NamespaceName.ShouldEqual("StatLight.IntegrationTests.Silverlight", "{0} - NamespaceName property should be correct.".FormatWith(e.GetType().FullName));
 
-            var validClassNames = new List<string> { "MSTestNestedClassTests", "MSTestTests" };
+            var validClassNames = new List<string> { "MSTestTests+MSTestNestedClassTests", "MSTestTests" };
             if (!validClassNames.Contains(e.ClassName))
                 Assert.Fail("e.ClassName is not equal to MSTestNestedClassTests or MSTestTest - actual=" + e.ClassName);
         }

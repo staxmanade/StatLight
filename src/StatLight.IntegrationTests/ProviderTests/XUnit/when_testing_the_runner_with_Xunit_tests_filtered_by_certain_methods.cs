@@ -20,14 +20,19 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
 		{
 			base.PathToIntegrationTestXap = TestXapFileLocations.XUnit;
 
+            const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.";
+
+            NormalClassTestName = "XunitTests";
+            NestedClassTestName = "XunitTests+XunitNestedClassTests";
+
 			_testRunConfiguration = new TestRunConfiguration
 			                        	{
 			                        		TagFilter = string.Empty,
 			                        		UnitTestProviderType = UnitTestProviderType.XUnit,
 			                        		MethodsToTest = new List<string>()
 			                        		                	{
-			                        		                		(base.NormalClassTestName = "StatLight.IntegrationTests.Silverlight.XunitTests+XunitNestedClassTests") + ".this_should_be_a_passing_test",
-			                        		                		(base.NestedClassTestName = "StatLight.IntegrationTests.Silverlight.XunitTests") + ".this_should_be_a_passing_test",
+		                		namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
+		                		namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
 			                        		                	}
 			                        	};
 
