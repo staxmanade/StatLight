@@ -40,7 +40,7 @@ namespace StatLight.Core.Tests.Runners
         {
             var runner = CreateContinuousTestRunner();
 
-            TestEventAggregator.SendMessage(new TestRunCompletedEvent());
+            TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
 
             runner.IsCurrentlyRunningTest.ShouldBeFalse();
             _browserFormHost.Verify(x => x.Stop());
@@ -66,7 +66,7 @@ namespace StatLight.Core.Tests.Runners
             _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, _mockStatLightService.Object, _xapFileBuildChangedMonitor.Object);
 
             // Signal that the first test has already finished.
-            TestEventAggregator.SendMessage(new TestRunCompletedEvent());
+            TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace StatLight.Core.Tests.Runners
             _continuousTestRunner.IsCurrentlyRunningTest.ShouldBeTrue();
             _mockStatLightService.Object.TagFilters.ShouldEqual(newTag);
 
-            TestEventAggregator.SendMessage(new TestRunCompletedEvent());
+            TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
 
             _continuousTestRunner.IsCurrentlyRunningTest.ShouldBeFalse();
             _mockStatLightService.Object.TagFilters.ShouldEqual(newTag);

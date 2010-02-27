@@ -35,7 +35,7 @@ namespace StatLight.Core.Tests.Monitoring
             public void SetupEventToSeeIfPublished()
             {
                 TestEventAggregator
-                    .AddListener<BrowserHostCommunicationTimeoutEvent>(e => EventPublished = true);
+                    .AddListener<BrowserHostCommunicationTimeoutServerEvent>(e => EventPublished = true);
             }
         }
 
@@ -47,7 +47,7 @@ namespace StatLight.Core.Tests.Monitoring
             {
                 base.Before_all_tests();
                 SetupEventToSeeIfPublished();
-                TestEventAggregator.SendMessage(new TestRunCompletedEvent());
+                TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
             }
 
 
@@ -115,7 +115,7 @@ namespace StatLight.Core.Tests.Monitoring
                 base.Before_all_tests();
 
                 TestEventAggregator
-                    .AddListener<BrowserHostCommunicationTimeoutEvent>(o => _publishedEventsCount++);
+                    .AddListener<BrowserHostCommunicationTimeoutServerEvent>(o => _publishedEventsCount++);
             }
 
             protected override void Because()

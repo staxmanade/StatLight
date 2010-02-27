@@ -47,7 +47,7 @@ namespace StatLight.Core.Tests.WebBrowser
 	////    {
 	////        bool slapDownStarted = false;
 	////        base.TestEventAggregator
-	////            .GetEvent<DialogAssertionEvent>()
+	////            .GetEvent<DialogAssertionServerEvent>()
 	////            .Subscribe((result) => { slapDownStarted = true; });
 
 	////        Thread modialDialogThread = new Thread(() =>
@@ -68,7 +68,7 @@ namespace StatLight.Core.Tests.WebBrowser
 	////    {
 	////        bool slapDownStarted = false;
 	////        base.TestEventAggregator
-	////            .GetEvent<DialogAssertionEvent>()
+	////            .GetEvent<DialogAssertionServerEvent>()
 	////            .Subscribe((resutl) => { slapDownStarted = true; });
 
 	////        mockDialogPingingTimer.Raise((t) => t.Elapsed += null, new TimerWrapperElapsedEventArgs(currentTime));

@@ -34,7 +34,7 @@ namespace StatLight.Core.Runners
             eventAggregator.AddListener(testResultAggregator);
 
             eventAggregator
-                .AddListener<TestRunCompletedEvent>(() => _browserThreadWaitHandle.Set());
+                .AddListener<TestRunCompletedServerEvent>(() => _browserThreadWaitHandle.Set());
         }
 
         public virtual TestReport Run()
@@ -69,7 +69,7 @@ namespace StatLight.Core.Runners
             GC.SuppressFinalize(this);
         }
 
-        public void Handle(TestRunCompletedEvent message)
+        public void Handle(TestRunCompletedServerEvent message)
         {
             _browserThreadWaitHandle.Set();
         }

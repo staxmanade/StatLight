@@ -191,7 +191,7 @@ namespace StatLight.Core.WebServer
         {
             if (_totalMessagesPostedCount == _currentMessagesPostedCount)
             {
-                _eventAggregator.SendMessage(new TestRunCompletedEvent());
+                _eventAggregator.SendMessage(new TestRunCompletedServerEvent());
 
                 ResetTestRunStatistics();
             }

@@ -217,7 +217,7 @@ namespace StatLight.Core.Tests.Reporting
             {
                 base.Before_all_tests();
 
-                TestEventAggregator.SendMessage(new BrowserHostCommunicationTimeoutEvent());
+                TestEventAggregator.SendMessage(new BrowserHostCommunicationTimeoutServerEvent());
             }
 
             //TODO:MobilOtherMessageType

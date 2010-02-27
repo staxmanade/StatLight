@@ -74,7 +74,7 @@ namespace StatLight.Core.Tests.WebServer
                 TestEventAggregator.AddListener(TestResultAggregator);
 
                 TestEventAggregator
-                    .AddListener<TestRunCompletedEvent>(e => WasTestCompleteSignalSent = true);
+                    .AddListener<TestRunCompletedServerEvent>(e => WasTestCompleteSignalSent = true);
 
 
                 TestEventAggregator
@@ -207,7 +207,7 @@ namespace StatLight.Core.Tests.WebServer
                 bool wasSignaledTestComplete = false;
 
                 TestEventAggregator
-                    .AddListener<TestRunCompletedEvent>(o => wasSignaledTestComplete = true);
+                    .AddListener<TestRunCompletedServerEvent>(o => wasSignaledTestComplete = true);
 
                 SignalTestComplete(StatLightService, 0);
 
@@ -220,7 +220,7 @@ namespace StatLight.Core.Tests.WebServer
                 bool wasSignaledTestComplete = false;
 
                 TestEventAggregator
-                    .AddListener<TestRunCompletedEvent>(o => wasSignaledTestComplete = true);
+                    .AddListener<TestRunCompletedServerEvent>(o => wasSignaledTestComplete = true);
 
                 // Signal completion of the test with a total of 2 messages 
                 // (that should have been posted to the server)
@@ -246,7 +246,7 @@ namespace StatLight.Core.Tests.WebServer
             {
                 bool wasSignaledTestComplete = false;
                 TestEventAggregator
-                    .AddListener<TestRunCompletedEvent>(o => wasSignaledTestComplete = true);
+                    .AddListener<TestRunCompletedServerEvent>(o => wasSignaledTestComplete = true);
 
                 StatLightService.PostMessage(MessageFactory.CreateResultStream(TestOutcome.Passed));
                 SignalTestComplete(StatLightService, 1);

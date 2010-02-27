@@ -71,12 +71,12 @@ namespace StatLight.Core.Reporting
             //throw new NotImplementedException();
         }
 
-        public void Handle(DialogAssertionEvent message)
+        public void Handle(DialogAssertionServerEvent message)
         {
             //throw new NotImplementedException();
         }
 
-        public void Handle(BrowserHostCommunicationTimeoutEvent message)
+        public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
         {
             var timeoutMessage = new BrowserHostCommunicationTimeoutResult { };
             _currentReport.AddResult(timeoutMessage);

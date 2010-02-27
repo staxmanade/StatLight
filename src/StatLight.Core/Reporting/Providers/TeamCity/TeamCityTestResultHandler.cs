@@ -127,12 +127,12 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
             Console.WriteLine(message.Message);
         }
 
-        public void Handle(DialogAssertionEvent message)
+        public void Handle(DialogAssertionServerEvent message)
         {
             throw new NotImplementedException();
         }
 
-        public void Handle(BrowserHostCommunicationTimeoutEvent message)
+        public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
         {
             throw new NotImplementedException();
         }

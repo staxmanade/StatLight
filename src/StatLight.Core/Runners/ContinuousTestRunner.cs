@@ -48,7 +48,7 @@ namespace StatLight.Core.Runners
             };
 
             eventAggregator
-                .AddListener<TestRunCompletedEvent>(e => Stop());
+                .AddListener<TestRunCompletedServerEvent>(e => Stop());
 
             Start();
         }

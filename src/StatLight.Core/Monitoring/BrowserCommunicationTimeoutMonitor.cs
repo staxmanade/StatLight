@@ -24,10 +24,10 @@ namespace StatLight.Core.Monitoring
 
 
             _eventAggregator
-                .AddListener<TestRunCompletedEvent>(e => _maxTimeoutTimer.Stop());
+                .AddListener<TestRunCompletedServerEvent>(e => _maxTimeoutTimer.Stop());
 
             _eventAggregator
-                .AddListener<DialogAssertionEvent>(ResetTimer);
+                .AddListener<DialogAssertionServerEvent>(ResetTimer);
 
             _eventAggregator
                 .AddListener<MessageReceivedFromClientServerEvent>(ResetTimer);
@@ -46,10 +46,10 @@ namespace StatLight.Core.Monitoring
                     _hasPublishedEvent = true;
 
                     _eventAggregator
-                        .SendMessage<BrowserHostCommunicationTimeoutEvent>();
+                        .SendMessage<BrowserHostCommunicationTimeoutServerEvent>();
 
                     _eventAggregator
-                        .SendMessage<TestRunCompletedEvent>();
+                        .SendMessage<TestRunCompletedServerEvent>();
                 }
             }
         }

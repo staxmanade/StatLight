@@ -3,13 +3,13 @@
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Events.Aggregation;
 
-    public sealed class DialogAssertionEvent
+    public sealed class DialogAssertionServerEvent
     {
         public string ExceptionMessage { get; set; }
     }
 
-    public sealed class TestRunCompletedEvent { }
-    public sealed class BrowserHostCommunicationTimeoutEvent { }
+    public sealed class TestRunCompletedServerEvent { }
+    public sealed class BrowserHostCommunicationTimeoutServerEvent { }
 
     public class MessageReceivedFromClientServerEvent { }
 
@@ -17,8 +17,8 @@
         IListener<TestExecutionMethodPassedClientEvent>,
         IListener<TestExecutionMethodFailedClientEvent>,
         IListener<TestExecutionMethodIgnoredClientEvent>,
-        IListener<DialogAssertionEvent>,
         IListener<TraceClientEvent>,
-        IListener<BrowserHostCommunicationTimeoutEvent>
+        IListener<DialogAssertionServerEvent>,
+        IListener<BrowserHostCommunicationTimeoutServerEvent>
     { }
 }

@@ -53,12 +53,12 @@ namespace StatLight.Core.Reporting.Providers.Console
             _logger.Warning(Environment.NewLine);
         }
 
-        public void Handle(DialogAssertionEvent message)
+        public void Handle(DialogAssertionServerEvent message)
         {
             throw new NotImplementedException();
         }
 
-        public void Handle(BrowserHostCommunicationTimeoutEvent message)
+        public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
         {
             throw new NotImplementedException();
         }
