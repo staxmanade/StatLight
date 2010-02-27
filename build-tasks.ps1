@@ -577,6 +577,18 @@ Task run-all-mstest-version-acceptance-tests -depends load-nunit-assembly {
 	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests $_ }
 }
 
+Task make-sure-there-are-not-any-NotImplementedExceptions {
+	$results = (Get-ChildItem . *.cs -Exclude *MockTestMethod.cs, *MockTestClass.cs -Recurse | Select-String NotImplementedException)
+	if($results.Count -gt 0)
+	{
+		foreach($err in $results)
+		{
+			Write-Host $err -ForegroundColor Red
+		}
+		throw "Found [$($results.Count)] NotImplementedException(s) in source code"
+	}
+}
+
 
 #########################################
 #
@@ -648,7 +660,7 @@ Task help {
 	Dump-Tasks
 }
 
-Task test-all -depends run-tests, run-statlight-silverlight-tests, run-integrationTests, run-all-mstest-version-acceptance-tests {
+Task test-all -depends run-tests, make-sure-there-are-not-any-NotImplementedExceptions, run-statlight-silverlight-tests, run-integrationTests, run-all-mstest-version-acceptance-tests {
 }
 
 Task build-all -depends clean, writeProperties, buildStatLightSolution, buildStatLight, buildStatLightIntegrationTests {
