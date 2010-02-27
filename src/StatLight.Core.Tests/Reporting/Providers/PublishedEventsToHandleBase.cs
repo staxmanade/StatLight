@@ -1,16 +1,13 @@
 using NUnit.Framework;
-using StatLight.Core.Events.Aggregation;
+using StatLight.Core.Events;
 using StatLight.Client.Harness.Events;
-using StatLight.Core.Serialization;
 using System;
 
 namespace StatLight.Core.Tests.Reporting.Providers
 {
 
     public abstract class PublishedEventsToHandleBase<THandler> : FixtureBase
-        where THandler : IListener<TestExecutionMethodPassedClientEvent>,
-                         IListener<TestExecutionMethodFailedClientEvent>,
-                         IListener<TestExecutionMethodIgnoredClientEvent>
+        where THandler : ITestingReportEvents
     {
         protected abstract THandler Handler { get; }
 

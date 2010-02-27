@@ -76,11 +76,7 @@ namespace StatLight.Core.Monitoring
             _eventAggregator.SendMessage(
                 new DialogAssertionEvent
                 {
-                    Payload = new MobilScenarioResult
-                    {
-                        ExceptionMessage = dialogMonitorResult.Message,
-                        Result = TestOutcome.Failed
-                    }
+                    ExceptionMessage = dialogMonitorResult.Message,
                 });
         }
 

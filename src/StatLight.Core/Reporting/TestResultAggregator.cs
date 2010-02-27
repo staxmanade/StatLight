@@ -1,19 +1,11 @@
 ﻿
-using StatLight.Client.Harness.Events;
-using StatLight.Core.Events.Aggregation;
-
 namespace StatLight.Core.Reporting
 {
-    using StatLight.Core.Events;
     using System;
+    using StatLight.Client.Harness.Events;
+    using StatLight.Core.Events;
 
-    public class TestResultAggregator : IDisposable,
-        IListener<TestExecutionMethodPassedClientEvent>,
-        IListener<TestExecutionMethodFailedClientEvent>,
-        IListener<TestExecutionMethodIgnoredClientEvent>,
-        IListener<TraceClientEvent>,
-        IListener<DialogAssertionEvent>,
-        IListener<BrowserHostCommunicationTimeoutEvent>
+    public class TestResultAggregator : IDisposable, ITestingReportEvents
     {
         private readonly TestReport _currentReport = new TestReport();
 

@@ -1,3 +1,4 @@
+using StatLight.Core.Common;
 using StatLight.Core.UnitTestProviders;
 
 namespace StatLight.Core.WebServer.XapInspection
@@ -75,7 +76,7 @@ namespace StatLight.Core.WebServer.XapInspection
 			var entryPointAssemblyNode = root.Attribute("EntryPointAssembly");
 
 			if (entryPointAssemblyNode == null)
-				throw new Exception("Cannot find the EntryPointAssembly attribute in the AppManifest.xaml");
+                throw new StatLightException("Cannot find the EntryPointAssembly attribute in the AppManifest.xaml");
 
 			return entryPointAssemblyNode.Value + ".dll";
 		}

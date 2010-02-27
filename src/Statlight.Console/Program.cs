@@ -124,6 +124,15 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 {
                     HandleKnownError(optionException);
                 }
+                catch (FileNotFoundException fileNotFoundException)
+                {
+                    HandleKnownError(fileNotFoundException);
+                }
+                catch (StatLightException statLightException)
+                {
+                    HandleKnownError(statLightException);
+                }
+                    
                 catch (Exception exception)
                 {
                     HandleUnknownError(exception);

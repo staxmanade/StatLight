@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.Events;
+
 namespace StatLight.Core.Reporting.Providers.TeamCity
 {
     using System;
@@ -6,11 +8,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
     using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Reporting.Messages;
 
-    public class TeamCityTestResultHandler :
-        IListener<TestExecutionMethodPassedClientEvent>,
-        IListener<TestExecutionMethodFailedClientEvent>,
-        IListener<TestExecutionMethodIgnoredClientEvent>,
-        IListener<TraceClientEvent>
+    public class TeamCityTestResultHandler : ITestingReportEvents
     {
         private readonly ICommandWriter messageWriter;
         private readonly string assemblyName;
@@ -125,6 +123,16 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
         }
 
         public void Handle(TraceClientEvent message)
+        {
+            Console.WriteLine(message.Message);
+        }
+
+        public void Handle(DialogAssertionEvent message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Handle(BrowserHostCommunicationTimeoutEvent message)
         {
             throw new NotImplementedException();
         }

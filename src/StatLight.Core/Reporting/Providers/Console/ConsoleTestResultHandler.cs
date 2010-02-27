@@ -1,15 +1,12 @@
 ﻿using System;
 using StatLight.Client.Harness.Events;
+using StatLight.Core.Events;
 using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Common;
 
 namespace StatLight.Core.Reporting.Providers.Console
 {
-    public class ConsoleResultHandler :
-        IListener<TestExecutionMethodPassedClientEvent>,
-        IListener<TestExecutionMethodFailedClientEvent>,
-        IListener<TestExecutionMethodIgnoredClientEvent>,
-        IListener<TraceClientEvent>
+    public class ConsoleResultHandler : ITestingReportEvents
     {
         private readonly ILogger _logger;
 
@@ -54,6 +51,16 @@ namespace StatLight.Core.Reporting.Providers.Console
             _logger.Warning(Environment.NewLine);
             _logger.Warning(message.Message);
             _logger.Warning(Environment.NewLine);
+        }
+
+        public void Handle(DialogAssertionEvent message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Handle(BrowserHostCommunicationTimeoutEvent message)
+        {
+            throw new NotImplementedException();
         }
     }
 }
