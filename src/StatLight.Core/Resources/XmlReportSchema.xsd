@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="StatLightTestResults">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="tests">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element maxOccurs="unbounded" name="test">
+                                <xs:complexType>
+                                    <xs:sequence minOccurs="0">
+                                        <xs:element name="failureMessage" type="xs:string" />
+                                    </xs:sequence>
+                                    <xs:attribute name="name" type="xs:string" use="optional" />
+                                    <xs:attribute name="passed" type="xs:string" use="required" />
+                                    <xs:attribute name="timeToComplete" type="xs:time" use="optional" />
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="xapFileName" type="xs:string" use="required" />
+            <xs:attribute name="total" type="xs:unsignedByte" use="required" />
+            <xs:attribute name="ignored" type="xs:unsignedByte" use="required" />
+            <xs:attribute name="failed" type="xs:unsignedByte" use="required" />
+            <xs:attribute name="dateRun" type="xs:string" use="required" />
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
