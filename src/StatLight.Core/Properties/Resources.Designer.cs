@@ -107,7 +107,7 @@ namespace StatLight.Core.Properties {
         ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; &gt;
         ///&lt;!-- saved from url=(0014)about:internet --&gt;
         ///&lt;head&gt;
-        ///    &lt;title&gt;StatLight.IntegrationTests.Silverlight.MSTest&lt;/title&gt;
+        ///    &lt;title&gt;StatLight.Client.Harness&lt;/title&gt;
         ///    &lt;style type=&quot;text/css&quot;&gt;
         ///    html, body {
         ///	    height: 100%;
@@ -119,11 +119,31 @@ namespace StatLight.Core.Properties {
         ///    }
         ///    #silverlightControlHost {
         ///	    height: 100%;
-        ///	    text-align:center [rest of string was truncated]&quot;;.
+        ///	    text-align:center;
+        ///    }
+        ///    &lt;/style [rest of string was truncated]&quot;;.
         /// </summary>
         public static string TestPage {
             get {
                 return ResourceManager.GetString("TestPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;Windows-1252&quot;?&gt;
+        ///&lt;xs:schema attributeFormDefault=&quot;unqualified&quot; elementFormDefault=&quot;qualified&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;
+        ///    &lt;xs:element name=&quot;StatLightTestResults&quot;&gt;
+        ///        &lt;xs:complexType&gt;
+        ///            &lt;xs:sequence&gt;
+        ///                &lt;xs:element name=&quot;tests&quot;&gt;
+        ///                    &lt;xs:complexType&gt;
+        ///                        &lt;xs:sequence&gt;
+        ///                            &lt;xs:element maxOccurs=&quot;unbounded&quot; name=&quot;test&quot;&gt;
+        ///                                &lt;xs:complexType [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string XmlReportSchema {
+            get {
+                return ResourceManager.GetString("XmlReportSchema", resourceCulture);
             }
         }
     }

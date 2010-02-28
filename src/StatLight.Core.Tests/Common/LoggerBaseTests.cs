@@ -43,7 +43,7 @@ namespace StatLight.Core.Tests.Common
 
 		public override void Debug(string message, bool writeNewLine)
 		{
-			throw new NotImplementedException();
+			throw new Exception("not implemented");
 		}
 	}
 

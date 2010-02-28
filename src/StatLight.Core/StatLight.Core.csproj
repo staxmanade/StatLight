@@ -195,6 +195,7 @@
     <None Include="Resources\CrossDomain.xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\XmlReportSchema.xsd" />
     <None Include="Resources\FavIcon.ico" />
     <None Include="Resources\TestPage.html" />
   </ItemGroup>

@@ -1,20 +1,18 @@
 ﻿
-using System;
-using System.Linq;
-using NUnit.Framework;
-using StatLight.Client.Harness.Events;
-using StatLight.Core.Serialization;
 
 namespace StatLight.Core.Tests.Reporting
 {
     namespace TestResultAggregatorTests
     {
+        using System;
+        using System.Linq;
         using NUnit.Framework;
+        using StatLight.Client.Harness.Events;
         using StatLight.Core.Events;
         using StatLight.Core.Reporting;
-        using StatLight.Client.Harness.Events;
+        using StatLight.Core.Tests.Reporting.Providers;
 
-        public class for_a_TestResultAggregator : FixtureBase
+        public abstract class for_a_TestResultAggregator_that_should_handle_a_ClientEvent : FixtureBase
         {
             public TestResultAggregator TestResultAggregator { get; private set; }
 
@@ -23,12 +21,11 @@ namespace StatLight.Core.Tests.Reporting
                 base.Before_all_tests();
 
                 TestResultAggregator = new TestResultAggregator();
-                TestEventAggregator.AddListener(TestResultAggregator);
             }
         }
 
         [TestFixture]
-        public class when_a_TestExecutionMethodPassedClientEvent_was_published : for_a_TestResultAggregator
+        public class when_a_TestExecutionMethodPassedClientEvent_was_published : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
         {
             private TestCaseResult _passedResult;
             private TestExecutionMethodPassedClientEvent _testExecutionMethodPassedClientEvent;
@@ -45,15 +42,14 @@ namespace StatLight.Core.Tests.Reporting
                     Finished = new DateTime(2009, 1, 1, 1, 1, 1),
                     Started = new DateTime(2009, 1, 1, 1, 1, 2),
                 };
-
-                TestEventAggregator
-                    .SendMessage(_testExecutionMethodPassedClientEvent);
-
             }
 
             protected override void Because()
             {
                 base.Because();
+
+                TestResultAggregator.Handle(_testExecutionMethodPassedClientEvent);
+
                 _passedResult =
                     TestResultAggregator
                     .CurrentReport
@@ -116,7 +112,7 @@ namespace StatLight.Core.Tests.Reporting
         }
 
         [TestFixture]
-        public class when_a_TestExecutionMethodFailedClientEvent_was_published : for_a_TestResultAggregator
+        public class when_a_TestExecutionMethodFailedClientEvent_was_published : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
         {
             private TestCaseResult _failedResult;
             private TestExecutionMethodFailedClientEvent _testExecutionMethodFailedClientEvent;
@@ -135,14 +131,14 @@ namespace StatLight.Core.Tests.Reporting
                     ExceptionInfo = new Exception("Hello world"),
                 };
 
-                TestEventAggregator
-                    .SendMessage(_testExecutionMethodFailedClientEvent);
-
             }
 
             protected override void Because()
             {
                 base.Because();
+
+                TestResultAggregator.Handle(_testExecutionMethodFailedClientEvent);
+
                 _failedResult =
                     TestResultAggregator
                     .CurrentReport
@@ -211,23 +207,22 @@ namespace StatLight.Core.Tests.Reporting
         }
 
         [TestFixture]
-        public class when_a_BrowserHostCommunicationTimeout_has_been_published : for_a_TestResultAggregator
+        public class when_a_BrowserHostCommunicationTimeout_has_been_published : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
         {
+            private BrowserHostCommunicationTimeoutServerEvent _browserHostCommunicationTimeoutServerEvent;
+
             protected override void Before_all_tests()
             {
                 base.Before_all_tests();
 
-                TestEventAggregator.SendMessage(new BrowserHostCommunicationTimeoutServerEvent());
+                _browserHostCommunicationTimeoutServerEvent = new BrowserHostCommunicationTimeoutServerEvent();
             }
+            protected override void Because()
+            {
+                base.Because();
 
-            //TODO:MobilOtherMessageType
-            //[Test]
-            //public void Should_add_a_failure_message_to_the_TestResultHandler()
-            //{
-            //    TestResultHandler
-            //        .Verify(v => v.HandleMessage(
-            //            It.Is<MobilOtherMessageType>(m => m.MessageType == LogMessageType.Error)));
-            //}
+                TestResultAggregator.Handle(_browserHostCommunicationTimeoutServerEvent);
+            }
 
             [Test]
             public void Should_add_a_failure_message_to_the_current_TestReport()
@@ -235,56 +230,24 @@ namespace StatLight.Core.Tests.Reporting
                 TestResultAggregator.CurrentReport.TotalFailed.ShouldEqual(1);
             }
         }
-    }
 
-    [TestFixture]
-    public class When_serializing_and_deserializing_an_exceptionInfo : FixtureBase
-    {
-        Exception exception;
-        private ExceptionInfo beforeExceptionInfo;
-        private ExceptionInfo afterExceptionInfo;
-
-        protected override void Before_all_tests()
+        [TestFixture]
+        public class when_verifying_the_TestResultAggregator_can_accept_messages : PublishedEventsToHandleBase<TestResultAggregator>
         {
-            base.Before_all_tests();
+            TestResultAggregator handler;
 
-            try
+            protected override void Before_all_tests()
             {
-                throw new Exception("Hello");
-            }
-            catch (Exception ex2)
-            {
-                exception = ex2;
+                base.Before_all_tests();
+
+                handler = new TestResultAggregator();
             }
 
-            beforeExceptionInfo = new ExceptionInfo(exception);
+            protected override TestResultAggregator Handler
+            {
+                get { return handler; }
+            }
 
-            afterExceptionInfo = beforeExceptionInfo.Serialize().Deserialize<ExceptionInfo>();
-
-        }
-
-        [Test]
-        public void Should_have_FullMessage()
-        {
-            afterExceptionInfo.FullMessage.ShouldEqual(beforeExceptionInfo.FullMessage);
-        }
-
-        [Test]
-        public void Should_have_Message()
-        {
-            afterExceptionInfo.Message.ShouldEqual(beforeExceptionInfo.Message);
-        }
-
-        [Test]
-        public void Should_have_InnerException()
-        {
-            afterExceptionInfo.InnerException.ShouldEqual(beforeExceptionInfo.InnerException);
-        }
-
-        [Test]
-        public void Should_have_StackTrace()
-        {
-            afterExceptionInfo.StackTrace.ShouldEqual(beforeExceptionInfo.StackTrace);
         }
     }
 }

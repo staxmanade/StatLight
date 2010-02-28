@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace StatLight.Core.Reporting.Providers.Xml
 {
@@ -8,6 +10,8 @@ namespace StatLight.Core.Reporting.Providers.Xml
     using System.IO;
     using System.Linq;
     using System.Xml.Linq;
+    using StatLight.Core.Common;
+    using StatLight.Core.Properties;
 
     public class XmlReport
     {
@@ -34,40 +38,27 @@ namespace StatLight.Core.Reporting.Providers.Xml
             Debug.Assert(_report != null);
 
             IEnumerable<XElement> testItems = (from x in _report.TestResults
-                             where x is TestCaseResult
-                             select GetResult((TestCaseResult) x));
+                                               where x is TestCaseResult
+                                               select GetResult((TestCaseResult)x));
 
             var root =
                     new XElement("StatLightTestResults"
-                        ,new XAttribute("xapFileName", _testXapFileName)
-                        ,new XAttribute("total", _report.TotalResults)
-                        ,new XAttribute("ignored", _report.TotalIgnored)
-                        ,new XAttribute("failed", _report.TotalFailed)
-                        ,new XAttribute("dateRun", _report.DateTimeRunCompleted.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture))
+                        , new XAttribute("xapFileName", _testXapFileName)
+                        , new XAttribute("total", _report.TotalResults)
+                        , new XAttribute("ignored", _report.TotalIgnored)
+                        , new XAttribute("failed", _report.TotalFailed)
+                        , new XAttribute("dateRun", _report.DateTimeRunCompleted.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture))
 
-                        ,new XElement("tests"
+                        , new XElement("tests"
                             , testItems
                             )
-                               
+
                 ////(from x in _report.OtherMessages
                 //// select GetOtherMessage(x))
                 //        )
                     );
             return root.ToString();
         }
-
-        //private static object GetOtherMessage(MobilOtherMessageType result)
-        //{
-        //    if (result.IsIgnoreMessage())
-        //    {
-        //        return GetTestCaseElement(
-        //            new XAttribute("passed", "False"),
-        //            new XElement("failureMessage", new XCData(result.Message))
-        //            );
-        //    }
-
-        //    return null;
-        //}
 
         private static XElement GetResult(TestCaseResult result)
         {
@@ -96,14 +87,51 @@ namespace StatLight.Core.Reporting.Providers.Xml
                     return GetTestCaseElement(
                                 getCommonAttributes(result.ResultType, result)
                                 );
+                case ResultType.SystemGeneratedFailure:
+                    throw new NotImplementedException();
+                default:
+                    throw new StatLightException("Unknown result type {0}".FormatWith(result.ResultType.ToString()));
             }
-
-            throw new NotImplementedException(result.ResultType.ToString());
         }
 
         private static XElement GetTestCaseElement(params object[] attributes)
         {
             return new XElement("test", attributes);
+        }
+
+        public static bool ValidateSchema(string filxeToValidate, out IList<string> validationErrors)
+        {
+            validationErrors = new List<string>();
+
+            var currentValidationErrors = new List<string>();
+
+            string xsdSchemaString = Properties.Resources.XmlReportSchema;
+
+            var stringReader = new StringReader(xsdSchemaString);
+            var xmlReader = XmlReader.Create(stringReader);
+            var schema = XmlSchema.Read(xmlReader, null);
+            var schemaSet = new XmlSchemaSet();
+            schemaSet.Add(schema);
+
+            var settings = new XmlReaderSettings();
+            settings.ValidationEventHandler += (sender, e) => currentValidationErrors.Add(e.Message);
+            settings.ValidationType = ValidationType.Schema;
+            settings.Schemas = schemaSet;
+
+            var reader = XmlReader.Create(filxeToValidate, settings);
+
+            while (reader.Read())
+            {
+            }
+
+            System.Threading.Thread.Sleep(1000);
+
+            if (currentValidationErrors.Count > 0)
+            {
+                validationErrors = currentValidationErrors;
+                return false;
+            }
+            return true;
         }
     }
 }
