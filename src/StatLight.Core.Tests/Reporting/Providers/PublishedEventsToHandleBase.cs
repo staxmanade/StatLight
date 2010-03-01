@@ -47,7 +47,7 @@ namespace StatLight.Core.Tests.Reporting.Providers
         [Test]
         public void Should_handle_the_DialogAssertionServerEvent()
         {
-            Handler.Handle(new DialogAssertionServerEvent { ExceptionMessage = "dialog found error" });
+            Handler.Handle(new DialogAssertionServerEvent { Message = "dialog found error" });
         }
 
         [Test]

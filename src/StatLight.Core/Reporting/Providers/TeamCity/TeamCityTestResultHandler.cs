@@ -5,8 +5,6 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 {
     using System;
     using StatLight.Client.Harness.Events;
-    using StatLight.Core.Events.Aggregation;
-    using StatLight.Core.Reporting.Messages;
 
     public class TeamCityTestResultHandler : ITestingReportEvents
     {
@@ -74,18 +72,17 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
         public void Handle(TraceClientEvent message)
         {
-            Console.WriteLine(message.Message);
+            messageWriter.Write(message.Message);
         }
 
         public void Handle(DialogAssertionServerEvent message)
         {
-            string writeMessage = message.ExceptionMessage;
-            WriteServerEventFailure(writeMessage);
+            string writeMessage = message.Message;
+            WriteServerEventFailure("DialogAssertionServerEvent", writeMessage);
         }
 
-        private void WriteServerEventFailure(string writeMessage)
+        private void WriteServerEventFailure(string name, string writeMessage)
         {
-            const string name = "DialogAssertion";
             const int durationMilliseconds = 0;
 
             WrapTestWithStartAndEnd(() => messageWriter.Write(
@@ -100,7 +97,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
         {
             string writeMessage = message.Message;
-            WriteServerEventFailure(writeMessage);
+            WriteServerEventFailure("BrowserHostCommunicationTimeoutServerEvent", writeMessage);
         }
     }
 }

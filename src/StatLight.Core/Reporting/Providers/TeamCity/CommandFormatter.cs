@@ -1,8 +1,10 @@
-﻿namespace StatLight.Core.Reporting.Providers.TeamCity
+﻿
+namespace StatLight.Core.Reporting.Providers.TeamCity
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Text;
+	using StatLight.Client.Harness.Events;
     using StatLight.Core.Common;
 
 	internal static class CommandFormatter
@@ -42,7 +44,7 @@
 
 		internal static string FormatValue(string value)
 		{
-			StringBuilder builder = new StringBuilder(value);
+			var builder = new StringBuilder(value);
 			FormatValue(builder);
 
 			return builder.ToString();
@@ -50,9 +52,9 @@
 
 		internal static object[] FormatValues(object[] values)
 		{
-			List<object> result = new List<object>();
+			var result = new List<object>();
 
-			StringBuilder builder = new StringBuilder();
+			var builder = new StringBuilder();
 
 			foreach (object value in values)
 			{

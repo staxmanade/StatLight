@@ -52,7 +52,7 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
             //_testReport
             //    .Results
             //    .Where(w => w.Result == TestOutcome.Failed)
-            //    .Where(w => string.IsNullOrEmpty(w.ExceptionMessage))
+            //    .Where(w => string.IsNullOrEmpty(w.Message))
             //    .Count().ShouldBeLessThan(1);
         }
 

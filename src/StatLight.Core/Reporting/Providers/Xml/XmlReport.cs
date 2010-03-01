@@ -38,8 +38,7 @@ namespace StatLight.Core.Reporting.Providers.Xml
             Debug.Assert(_report != null);
 
             IEnumerable<XElement> testItems = (from x in _report.TestResults
-                                               where x is TestCaseResult
-                                               select GetResult((TestCaseResult)x));
+                                               select GetResult(x));
 
             var root =
                     new XElement("StatLightTestResults"
@@ -49,13 +48,7 @@ namespace StatLight.Core.Reporting.Providers.Xml
                         , new XAttribute("failed", _report.TotalFailed)
                         , new XAttribute("dateRun", _report.DateTimeRunCompleted.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture))
 
-                        , new XElement("tests"
-                            , testItems
-                            )
-
-                ////(from x in _report.OtherMessages
-                //// select GetOtherMessage(x))
-                //        )
+                        , new XElement("tests", testItems)
                     );
             return root.ToString();
         }
@@ -63,7 +56,7 @@ namespace StatLight.Core.Reporting.Providers.Xml
         private static XElement GetResult(TestCaseResult result)
         {
             Func<TestCaseResult, string> formatName =
-                resultX => "{0}.{1}".FormatWith(resultX.ClassName, resultX.MethodName);
+                resultX => "{0}.{1}.{2}".FormatWith(resultX.NamespaceName, resultX.ClassName, resultX.MethodName);
 
             Func<ResultType, TestCaseResult, IEnumerable<XAttribute>> getCommonAttributes = (resultType, resultX) => new[]
 				{
@@ -88,7 +81,10 @@ namespace StatLight.Core.Reporting.Providers.Xml
                                 getCommonAttributes(result.ResultType, result)
                                 );
                 case ResultType.SystemGeneratedFailure:
-                    throw new NotImplementedException();
+                    return GetTestCaseElement(
+                                getCommonAttributes(result.ResultType, result),
+                                new XElement("failureMessage", new XCData(result.ExceptionInfo.FullMessage))
+                                );
                 default:
                     throw new StatLightException("Unknown result type {0}".FormatWith(result.ResultType.ToString()));
             }
@@ -99,13 +95,13 @@ namespace StatLight.Core.Reporting.Providers.Xml
             return new XElement("test", attributes);
         }
 
-        public static bool ValidateSchema(string filxeToValidate, out IList<string> validationErrors)
+        public static bool ValidateSchema(string pathToXmlFileToValidate, out IList<string> validationErrors)
         {
             validationErrors = new List<string>();
 
             var currentValidationErrors = new List<string>();
 
-            string xsdSchemaString = Properties.Resources.XmlReportSchema;
+            string xsdSchemaString = Resources.XmlReportSchema;
 
             var stringReader = new StringReader(xsdSchemaString);
             var xmlReader = XmlReader.Create(stringReader);
@@ -118,7 +114,7 @@ namespace StatLight.Core.Reporting.Providers.Xml
             settings.ValidationType = ValidationType.Schema;
             settings.Schemas = schemaSet;
 
-            var reader = XmlReader.Create(filxeToValidate, settings);
+            var reader = XmlReader.Create(pathToXmlFileToValidate, settings);
 
             while (reader.Read())
             {

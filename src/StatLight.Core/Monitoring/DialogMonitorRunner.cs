@@ -76,7 +76,7 @@ namespace StatLight.Core.Monitoring
             _eventAggregator.SendMessage(
                 new DialogAssertionServerEvent
                 {
-                    ExceptionMessage = dialogMonitorResult.Message,
+                    Message = dialogMonitorResult.Message,
                 });
         }
 

@@ -358,7 +358,7 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
 	
 	$tempFileGuid = ([System.Guid]::NewGuid())
-	$scriptFile = ".\temp_statlight-integration-output-$tempFileGuid.ps1"
+	$scriptFile = ".\temp_statlight-integration-output-$tempFileGuid.xml"
 	Remove-If-Exists $scriptFile
 	
 	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
@@ -375,6 +375,15 @@ function Execute-MSTest-Version-Acceptance-Tests {
 
 	$failedTests = @($doc.Descendants('test') | where{ $_.Attribute('resulttype').Value -eq 'Failed' } )
 	$failedTests.Count.ShouldEqual(1);
+
+	$errs = $null
+	$passed = [StatLight.Core.Reporting.Providers.Xml.XmlReport]::ValidateSchema($scriptFile, [ref] $errs)
+	if($passed -eq $false)
+	{
+		Write-Host $errs -ForegroundColor Red
+		throw "Failed the xmlreport schema validation."
+	}
+
 
 	Remove-If-Exists $scriptFile
 }

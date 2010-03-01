@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Text;
+using StatLight.Client.Harness.Events;
+using StatLight.Core.Reporting;
 using StatLight.Core.Reporting.Providers.Xml;
 
 namespace StatLight.Core.Tests.Reporting.Providers.Xml
@@ -44,31 +47,55 @@ namespace StatLight.Core.Tests.Reporting.Providers.Xml
 
      */
 
-    //    public class with_a_test_report_containing_passing_failing_and_ignore_test_results : FixtureBase
-    //    {
-    //        TestReport report;
-    //        XmlReport xmlReport;
-    //        XElement rootReport;
+    public class when_validating_the_XmlReport_is_correct : FixtureBase
+    {
+        private XmlReport _xmlReport;
 
-    //        protected TestReport Report { get { return this.report; } }
-    //        protected XmlReport XmlReport { get { return this.xmlReport; } }
-    //        protected XElement RootReport { get { return this.rootReport; } }
+        protected override void Before_all_tests()
+        {
+            base.Before_all_tests();
 
-    //        protected const string TestXapFileName = "Test.xap";
+            Func<ResultType, ExceptionInfo, TestCaseResult> getResult = (resultType, exceptionInfo) =>
+                {
+                    return new TestCaseResult(resultType)
+                               {
+                                   ClassName = "class_name",
+                                   MethodName = "method_name",
+                                   NamespaceName = "namespace.here",
+                                   Finished = new DateTime(2009, 2, 2, 2, 2, 2),
+                                   Started = new DateTime(2009, 2, 2, 2, 2, 1),
+                                   ExceptionInfo = exceptionInfo,
+                               };
+                };
 
-    //        protected override void Before_all_tests()
-    //        {
-    //            base.Before_all_tests();
+            var testReport = new TestReport()
+                .AddResult(getResult(ResultType.Passed, null))
+                .AddResult(getResult(ResultType.Failed, new ExceptionInfo(new Exception("fail"))))
+                .AddResult(getResult(ResultType.Ignored, null))
+                .AddResult(getResult(ResultType.SystemGeneratedFailure, new ExceptionInfo(new Exception("fail"))))
+                ;
 
-    //            report = new TestReport()
-    //                .AddResult(MessageFactory.CreateResult(TestOutcome.Passed))
-    //                .AddResult(MessageFactory.CreateResult(TestOutcome.Failed))
-    //                .AddResult(MessageFactory.CreateTestIgnoreMessage("testNameHere"))
-    //                ;
-    //            xmlReport = new XmlReport(this.report, "Test.xap");
-    //            this.rootReport = XElement.Parse(xmlReport.GetXmlReport());
-    //        }
-    //    }
+            _xmlReport = new XmlReport(testReport, "Test.xap");
+        }
+
+        [Test]
+        public void Should_pass_the_schema_validation()
+        {
+            var file = Path.GetTempFileName();
+
+            using (TextWriter tw = new StreamWriter(file))
+            {
+                tw.Write(_xmlReport.GetXmlReport());
+            }
+
+            IList<string> errors;
+            if (XmlReport.ValidateSchema(file, out errors))
+            {
+                var msg = string.Join(Environment.NewLine, errors.ToArray());
+                Assert.Fail(msg);
+            }
+        }
+    }
 
     //    [TestFixture]
     //    [Ignore]
@@ -368,7 +395,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.Xml
     //            element.Descendants("failure").Single()
     //                .Descendants("message").SingleOrDefault()
     //                .ShouldNotBeNull()
-    //                .Value.ShouldEqual(failingResult.ExceptionMessage);
+    //                .Value.ShouldEqual(failingResult.Message);
     //        }
     //    }
 

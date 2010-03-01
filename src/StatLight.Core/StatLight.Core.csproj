@@ -145,7 +145,6 @@
     <Compile Include="Reporting\Providers\TeamCity\CommandFactory.cs" />
     <Compile Include="Reporting\Providers\TeamCity\CommandFormatter.cs" />
     <Compile Include="Reporting\Providers\TeamCity\CommandType.cs" />
-    <Compile Include="Reporting\Providers\TeamCity\ExceptionInfo.cs" />
     <Compile Include="Reporting\Providers\TeamCity\ICommandWriter.cs" />
     <Compile Include="Reporting\Providers\TeamCity\TeamCityTestResultHandler.cs" />
     <Compile Include="Reporting\TestResultAggregator.cs" />

@@ -6,9 +6,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
     using System.Collections.Generic;
     using System.Linq;
     using NUnit.Framework;
-    using StatLight.Core.Reporting.Messages;
     using StatLight.Core.Reporting.Providers.TeamCity;
-    using StatLight.Core.Tests.Mocks;
 
     public class TestMessageWriter : ICommandWriter
     {
@@ -17,7 +15,12 @@ namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
 
         public void Write(Command command)
         {
-            this.messages.Add(command.ToString());
+            Write(command.ToString());
+        }
+
+        public void Write(string message)
+        {
+            messages.Add(message);
         }
     }
 
@@ -170,7 +173,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
         protected override void Because()
         {
             base.Because();
-            string testNameIgnored = "some_test_to_ignore";
+            const string testNameIgnored = "some_test_to_ignore";
             var message = new TestExecutionMethodIgnoredClientEvent { Message = testNameIgnored };
             publisher.Handle(message);
         }

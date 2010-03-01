@@ -54,7 +54,7 @@ namespace StatLight.Core.Reporting.Providers.Console
 
         public void Handle(DialogAssertionServerEvent message)
         {
-            WriteString(message.ExceptionMessage);
+            WriteString(message.Message);
         }
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)

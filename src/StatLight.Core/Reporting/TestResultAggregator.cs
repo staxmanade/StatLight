@@ -74,13 +74,22 @@ namespace StatLight.Core.Reporting
 
         public void Handle(DialogAssertionServerEvent message)
         {
-            //TODO:
+            var msg = new TestCaseResult(ResultType.Failed)
+            {
+                OtherInfo = message.Message,
+            };
+
+            _currentReport.AddResult(msg);
         }
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
         {
-            var timeoutMessage = new BrowserHostCommunicationTimeoutResult { };
-            _currentReport.AddResult(timeoutMessage);
+            var msg = new TestCaseResult(ResultType.Failed)
+            {
+                OtherInfo = message.Message,
+            };
+
+            _currentReport.AddResult(msg);
         }
     }
 }

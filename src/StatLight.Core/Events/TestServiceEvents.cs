@@ -5,7 +5,7 @@
 
     public sealed class DialogAssertionServerEvent
     {
-        public string ExceptionMessage { get; set; }
+        public string Message { get; set; }
     }
 
     public sealed class TestRunCompletedServerEvent { }

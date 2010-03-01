@@ -7,23 +7,12 @@ namespace StatLight.Core.Reporting
     using StatLight.Client.Harness.Events;
     using System.Diagnostics;
 
-    public class Result
+    [DebuggerDisplay("Result=[{ResultType}], Method={NamespaceName}.{ClassName}.{MethodName}")]
+    public class TestCaseResult
     {
-        public Result(ResultType resultType)
+        public TestCaseResult(ResultType resultType)
         {
             ResultType = resultType;
-        }
-
-        public ResultType ResultType { get; private set; }
-        
-    }
-
-    [DebuggerDisplay("Result=[{ResultType}], Method={NamespaceName}.{ClassName}.{MethodName}")]
-    public class TestCaseResult : Result
-    {
-        public TestCaseResult(ResultType resultType) 
-            : base(resultType)
-        {
         }
 
         public string NamespaceName { get; set; }
@@ -31,6 +20,7 @@ namespace StatLight.Core.Reporting
         public string MethodName { get; set; }
         public DateTime Started { get; set; }
         public DateTime? Finished { get; set; }
+        public string OtherInfo { get; set; }
         public TimeSpan TimeToComplete
         {
             get
@@ -42,15 +32,8 @@ namespace StatLight.Core.Reporting
             }
         }
         public ExceptionInfo ExceptionInfo { get; set; }
-    }
 
-    public class BrowserHostCommunicationTimeoutResult : Result
-    {
-        public BrowserHostCommunicationTimeoutResult() 
-            : base(ResultType.Failed)
-        {
-        }
-        
+        public ResultType ResultType { get; private set; }
     }
 
     public enum ResultType
@@ -64,14 +47,14 @@ namespace StatLight.Core.Reporting
 
     public class TestReport
     {
-        private readonly IList<Result> _testCaseResults = new List<Result>();
+        private readonly IList<TestCaseResult> _testCaseResults = new List<TestCaseResult>();
 
         public TestReport()
         {
             DateTimeRunCompleted = DateTime.Now;
         }
 
-        public IEnumerable<Result> TestResults { get { return _testCaseResults; } }
+        public IEnumerable<TestCaseResult> TestResults { get { return _testCaseResults; } }
 
         public DateTime DateTimeRunCompleted { get; private set; }
 
@@ -149,7 +132,7 @@ namespace StatLight.Core.Reporting
         //    return this;
         //}
 
-        public TestReport AddResult(Result result)
+        public TestReport AddResult(TestCaseResult result)
         {
             SetLastMessageReceivedTime();
             _testCaseResults.Add(result);
