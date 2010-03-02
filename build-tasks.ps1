@@ -365,8 +365,8 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
 	$file = get-item $scriptFile
+
 	$doc = [System.Xml.Linq.XDocument]::Load($file)
-	
 	$passingTests = $doc.Descendants('test') | where{ $_.Attribute('resulttype').Value -eq 'Passed' }
 	$passingTests.Count.ShouldEqual(4);
 
@@ -376,13 +376,22 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	$failedTests = @($doc.Descendants('test') | where{ $_.Attribute('resulttype').Value -eq 'Failed' } )
 	$failedTests.Count.ShouldEqual(1);
 
-	$statLightCoreFilePath = (Get-Item "$build_dir\StatLight.Core.dll").FullName
+	AssertXmlReportIsValid $scriptFile
 	
+	#added sleep to wait for file system to loose the lock on the file so we can delete it
+	[System.Threading.Thread]::Sleep(500);
+	Remove-If-Exists $scriptFile
+	#rm "$($pwd.Path)\temp_statlight-integration-output-*"
+}
+
+function AssertXmlReportIsValid([string]$scriptFile)
+{
+		$statLightCoreFilePath = (Get-Item "$build_dir\StatLight.Core.dll").FullName
 	$fileStream = ([System.IO.FileInfo] (Get-Item $statLightCoreFilePath)).OpenRead()
 	$assemblyBytes = new-object byte[] $fileStream.Length
 	$fileStream.Read($assemblyBytes, 0, $fileStream.Length) | Out-Null #out null this because this function should only return the version & this call was outputting some garbage number
 	$fileStream.Close()
-	$version = [System.Reflection.Assembly]::Load($assemblyBytes).GetName().Version;
+	[System.Reflection.Assembly]::Load($assemblyBytes);
 	
 	$errs = $null
 	$passed = [StatLight.Core.Reporting.Providers.Xml.XmlReport]::ValidateSchema($scriptFile, [ref] $errs)
@@ -392,13 +401,10 @@ function Execute-MSTest-Version-Acceptance-Tests {
 		{
 			Write-Host $msg -ForegroundColor Red
 		}
+		Remove-If-Exists $scriptFile
 		throw "Failed the xmlreport schema validation."
 	}
-
-
-	Remove-If-Exists $scriptFile
 }
-
 
 function LoadZipAssembly {
 	if(!(Test-Path ('variable:hasLoadedIonicZipDll')))
@@ -608,7 +614,6 @@ Task make-sure-there-are-not-any-NotImplementedExceptions {
 		throw "Found [$($results.Count)] NotImplementedException(s) in source code"
 	}
 }
-
 
 #########################################
 #

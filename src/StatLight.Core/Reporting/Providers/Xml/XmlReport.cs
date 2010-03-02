@@ -115,21 +115,24 @@ namespace StatLight.Core.Reporting.Providers.Xml
 
             string xsdSchemaString = Resources.XmlReportSchema;
 
-            var stringReader = new StringReader(xsdSchemaString);
-            var xmlReader = XmlReader.Create(stringReader);
-            var schema = XmlSchema.Read(xmlReader, null);
-            var schemaSet = new XmlSchemaSet();
-            schemaSet.Add(schema);
-
-            var settings = new XmlReaderSettings();
-            settings.ValidationEventHandler += (sender, e) => currentValidationErrors.Add(e.Message);
-            settings.ValidationType = ValidationType.Schema;
-            settings.Schemas = schemaSet;
-
-            var reader = XmlReader.Create(pathToXmlFileToValidate, settings);
-
-            while (reader.Read())
+            using (var stringReader = new StringReader(xsdSchemaString))
+            using (var xmlReader = XmlReader.Create(stringReader))
             {
+                var schema = XmlSchema.Read(xmlReader, null);
+                var schemaSet = new XmlSchemaSet();
+                schemaSet.Add(schema);
+
+                var settings = new XmlReaderSettings();
+                settings.ValidationEventHandler += (sender, e) => currentValidationErrors.Add(e.Message);
+                settings.ValidationType = ValidationType.Schema;
+                settings.Schemas = schemaSet;
+
+                using (var reader = XmlReader.Create(pathToXmlFileToValidate, settings))
+                {
+                    while (reader.Read())
+                    {
+                    }
+                }
             }
 
             if (currentValidationErrors.Count > 0)
