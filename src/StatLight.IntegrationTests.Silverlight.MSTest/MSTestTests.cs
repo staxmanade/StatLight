@@ -36,7 +36,26 @@ namespace StatLight.IntegrationTests.Silverlight
 		[TestMethod]
 		public void this_should_be_a_Failing_test()
 		{
-			Assert.IsTrue(false);
+            Exception ex1;
+            try
+            {
+                throw new Exception("exception1");
+            }
+            catch (Exception ex)
+            {
+                ex1 = ex;
+            }
+            Exception ex2;
+            try
+            {
+                throw new Exception("exception2", ex1);
+            }
+            catch (Exception ex)
+            {
+                ex2 = ex;
+            }
+		    throw ex2;
+            //Assert.IsTrue(false);
 		}
 
 		[TestMethod]

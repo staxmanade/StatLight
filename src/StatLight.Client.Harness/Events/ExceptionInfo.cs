@@ -7,7 +7,7 @@ namespace StatLight.Client.Harness.Events
         public string Message { get; set; }
 
         // FYI: Silverlight doesn't have a 'Source' property.
-        public string Source { get; set; }
+        //public string Source { get; set; }
 
         public string StackTrace { get; set; }
 

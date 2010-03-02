@@ -358,7 +358,7 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
 	
 	$tempFileGuid = ([System.Guid]::NewGuid())
-	$scriptFile = ".\temp_statlight-integration-output-$tempFileGuid.xml"
+	$scriptFile = ("$($pwd.Path)\temp_statlight-integration-output-$tempFileGuid.xml")
 	Remove-If-Exists $scriptFile
 	
 	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
@@ -376,11 +376,22 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	$failedTests = @($doc.Descendants('test') | where{ $_.Attribute('resulttype').Value -eq 'Failed' } )
 	$failedTests.Count.ShouldEqual(1);
 
+	$statLightCoreFilePath = (Get-Item "$build_dir\StatLight.Core.dll").FullName
+	
+	$fileStream = ([System.IO.FileInfo] (Get-Item $statLightCoreFilePath)).OpenRead()
+	$assemblyBytes = new-object byte[] $fileStream.Length
+	$fileStream.Read($assemblyBytes, 0, $fileStream.Length) | Out-Null #out null this because this function should only return the version & this call was outputting some garbage number
+	$fileStream.Close()
+	$version = [System.Reflection.Assembly]::Load($assemblyBytes).GetName().Version;
+	
 	$errs = $null
 	$passed = [StatLight.Core.Reporting.Providers.Xml.XmlReport]::ValidateSchema($scriptFile, [ref] $errs)
 	if($passed -eq $false)
 	{
-		Write-Host $errs -ForegroundColor Red
+		foreach($msg in $errs)
+		{
+			Write-Host $msg -ForegroundColor Red
+		}
 		throw "Failed the xmlreport schema validation."
 	}
 

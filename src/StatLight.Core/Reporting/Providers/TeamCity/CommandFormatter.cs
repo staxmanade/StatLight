@@ -24,11 +24,11 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 			builder.AppendFormat("{0}: {1}", FormatValue(exceptionInfo.GetType().ToString()), FormatValue(exceptionInfo.Message));
 			builder.AppendLine();
 
-			if (!String.IsNullOrEmpty(exceptionInfo.Source))
-			{
-				builder.AppendFormat(" Source: {0}", FormatValue(exceptionInfo.Source));
-				builder.AppendLine();
-			}
+            //if (!String.IsNullOrEmpty(exceptionInfo.Source))
+            //{
+            //    builder.AppendFormat(" Source: {0}", FormatValue(exceptionInfo.Source));
+            //    builder.AppendLine();
+            //}
 
 			if (!String.IsNullOrEmpty(exceptionInfo.StackTrace))
 			{

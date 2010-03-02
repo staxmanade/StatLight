@@ -248,7 +248,7 @@ namespace StatLight.Core.Tests.WebServer
                 TestEventAggregator
                     .AddListener<TestRunCompletedServerEvent>(o => wasSignaledTestComplete = true);
 
-                StatLightService.PostMessage(MessageFactory.CreateResultStream(TestOutcome.Passed));
+                StatLightService.PostMessage(MessageFactory.Create<TraceClientEvent>());
                 SignalTestComplete(StatLightService, 1);
                 System.Threading.Thread.Sleep(10);
 
@@ -258,7 +258,7 @@ namespace StatLight.Core.Tests.WebServer
 
                 wasSignaledTestComplete = false;
 
-                StatLightService.PostMessage(MessageFactory.CreateResultStream(TestOutcome.Passed));
+                StatLightService.PostMessage(MessageFactory.Create<TraceClientEvent>());
                 SignalTestComplete(StatLightService, 1);
                 System.Threading.Thread.Sleep(10);
 

@@ -75,10 +75,7 @@ namespace XunitLight
 		/// <returns>True if the exception is actually an assert failure.</returns>
 		public bool IsFailedAssert(Exception exception)
 		{
-			throw new NotImplementedException();
-			//Type et = exception.GetType();
-			//Type nuAsserts = typeof(NU.AssertionException);
-			//return (et == nuAsserts || et.IsSubclassOf(nuAsserts));
+		    return false;
 		}
 
 		/// <summary>

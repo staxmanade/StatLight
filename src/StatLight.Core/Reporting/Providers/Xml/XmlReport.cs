@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Xml;
 using System.Xml.Schema;
+using StatLight.Client.Harness.Events;
 
 namespace StatLight.Core.Reporting.Providers.Xml
 {
@@ -12,6 +13,7 @@ namespace StatLight.Core.Reporting.Providers.Xml
     using System.Xml.Linq;
     using StatLight.Core.Common;
     using StatLight.Core.Properties;
+    using System.Text;
 
     public class XmlReport
     {
@@ -58,42 +60,52 @@ namespace StatLight.Core.Reporting.Providers.Xml
             Func<TestCaseResult, string> formatName =
                 resultX => "{0}.{1}.{2}".FormatWith(resultX.NamespaceName, resultX.ClassName, resultX.MethodName);
 
-            Func<ResultType, TestCaseResult, IEnumerable<XAttribute>> getCommonAttributes = (resultType, resultX) => new[]
-				{
-					new XAttribute("name", formatName(resultX)),
-					new XAttribute("resulttype", resultType),
-					new XAttribute("timeToComplete", resultX.TimeToComplete.ToString()),
-				};
-
-            switch (result.ResultType)
+            XElement otherInfoElement = null;
+            if (!string.IsNullOrEmpty(result.OtherInfo))
             {
-                case ResultType.Passed:
-                    return GetTestCaseElement(
-                                getCommonAttributes(result.ResultType, result)
-                            );
-                case ResultType.Failed:
-                    return GetTestCaseElement(
-                                getCommonAttributes(result.ResultType, result),
-                                new XElement("failureMessage", new XCData(result.ExceptionInfo.FullMessage))
-                                );
-                case ResultType.Ignored:
-                    return GetTestCaseElement(
-                                getCommonAttributes(result.ResultType, result)
-                                );
-                case ResultType.SystemGeneratedFailure:
-                    return GetTestCaseElement(
-                                getCommonAttributes(result.ResultType, result),
-                                new XElement("failureMessage", new XCData(result.ExceptionInfo.FullMessage))
-                                );
-                default:
-                    throw new StatLightException("Unknown result type {0}".FormatWith(result.ResultType.ToString()));
+                otherInfoElement = new XElement("otherInfo", result.OtherInfo);
             }
+
+            XElement exceptionInfoElement = null;
+            if (result.ExceptionInfo != null)
+            {
+                exceptionInfoElement = FormatExceptionInfoElement(result.ExceptionInfo);
+            }
+
+            return new XElement("test",
+                        new XAttribute("name", formatName(result)),
+                        new XAttribute("resulttype", result.ResultType),
+                        new XAttribute("timeToComplete", result.TimeToComplete.ToString()),
+                        exceptionInfoElement,
+                        otherInfoElement
+                        );
         }
 
-        private static XElement GetTestCaseElement(params object[] attributes)
+        private static XElement FormatExceptionInfoElement(ExceptionInfo exceptionInfo)
         {
-            return new XElement("test", attributes);
+            if (exceptionInfo == null)
+                return null;
+
+            return FormatExceptionInfoElement(exceptionInfo, false);
         }
+
+        private static XElement FormatExceptionInfoElement(ExceptionInfo exceptionInfo, bool isInnerException)
+        {
+            if (exceptionInfo == null)
+                return null;
+
+            string elementName = "exceptionInfo";
+
+            if (isInnerException)
+                elementName = "innerExceptionInfo";
+
+            return new XElement(elementName
+                            , new XElement("message", exceptionInfo.Message)
+                            , new XElement("stackTrace", exceptionInfo.StackTrace)
+                            , FormatExceptionInfoElement(exceptionInfo.InnerException, true)
+                            );
+        }
+
 
         public static bool ValidateSchema(string pathToXmlFileToValidate, out IList<string> validationErrors)
         {
@@ -119,8 +131,6 @@ namespace StatLight.Core.Reporting.Providers.Xml
             while (reader.Read())
             {
             }
-
-            System.Threading.Thread.Sleep(1000);
 
             if (currentValidationErrors.Count > 0)
             {
