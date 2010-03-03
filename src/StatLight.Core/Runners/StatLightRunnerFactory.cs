@@ -59,9 +59,9 @@ namespace StatLight.Core.Runners
                 out statLightServiceHost,
                 out browserFormHost);
 
-            var publisher = new TeamCityTestResultHandler(new ConsoleCommandWriter(), xapPath);
-            EventAggregator.AddListener(publisher);
-            IRunner runner = new TeamCityRunner(new NullLogger(), EventAggregator, statLightServiceHost, browserFormHost, publisher);
+            var teamCityTestResultHandler = new TeamCityTestResultHandler(new ConsoleCommandWriter(), xapPath);
+            EventAggregator.AddListener(teamCityTestResultHandler);
+            IRunner runner = new TeamCityRunner(new NullLogger(), EventAggregator, statLightServiceHost, browserFormHost, teamCityTestResultHandler);
 
             return runner;
         }

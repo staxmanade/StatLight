@@ -23,7 +23,6 @@ namespace StatLight.Core.Reporting
         private readonly IEventAggregator _eventAggregator;
         private readonly TestReport _currentReport = new TestReport();
         private readonly DialogAssertionMessageMatchMaker _dialogAssertionMessageMatchMaker = new DialogAssertionMessageMatchMaker();
-        private List<SelfManufacturedFailureEvent> _selfManufacturedEvents = new List<SelfManufacturedFailureEvent>();
         public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator)
         {
             _logger = logger;
@@ -48,7 +47,6 @@ namespace StatLight.Core.Reporting
                 return;
             }
 
-
             var msg = new TestCaseResult(ResultType.Passed)
                           {
                               Finished = message.Finished,
@@ -57,7 +55,7 @@ namespace StatLight.Core.Reporting
 
             TranslateCoreInfo(ref msg, message);
 
-            _currentReport.AddResult(msg);
+            ReportIt(msg);
         }
 
         private static void TranslateCoreInfo(ref TestCaseResult result, TestExecutionMethod message)
@@ -84,7 +82,7 @@ namespace StatLight.Core.Reporting
 
             TranslateCoreInfo(ref msg, message);
 
-            _currentReport.AddResult(msg);
+            ReportIt(msg);
         }
 
         public void Handle(TestExecutionMethodIgnoredClientEvent message)
@@ -93,7 +91,7 @@ namespace StatLight.Core.Reporting
                           {
                               MethodName = message.Message,
                           };
-            _currentReport.AddResult(msg);
+            ReportIt(msg);
         }
 
         public void Handle(TraceClientEvent message)
@@ -117,23 +115,7 @@ namespace StatLight.Core.Reporting
                     MethodName = methodName,
                 };
 
-                _currentReport.AddResult(msg);
-
-                var selfManufacturedFailureEvent = new SelfManufacturedFailureEvent(msg);
-                if (!_selfManufacturedEvents.Contains(selfManufacturedFailureEvent))
-                {
-                    var newFailureEvent = new TestExecutionMethodFailedClientEvent
-                    {
-                        NamespaceName = namespaceName,
-                        ClassName = className,
-                        MethodName = methodName,
-                        ExceptionInfo = new Exception(message.Message),
-                    };
-
-                    _selfManufacturedEvents.Add(selfManufacturedFailureEvent);
-                    _eventAggregator.SendMessage(msg);
-                }
-
+                ReportIt(msg);
             };
 
             _dialogAssertionMessageMatchMaker.Handle(message, handler);
@@ -146,66 +128,19 @@ namespace StatLight.Core.Reporting
                 OtherInfo = message.Message,
             };
 
-            _currentReport.AddResult(msg);
+            ReportIt(msg);
         }
 
         public void Handle(TestExecutionMethodBeginClientEvent message)
         {
             _dialogAssertionMessageMatchMaker.Handle(message);
         }
-
-
-        private class SelfManufacturedFailureEvent : IEquatable<SelfManufacturedFailureEvent>
+        private void ReportIt(TestCaseResult result)
         {
-            public SelfManufacturedFailureEvent(TestCaseResult e)
-            {
-                NamespaceName = e.NamespaceName;
-                ClassName = e.ClassName;
-                MethodName = e.MethodName;
-                OtherInfo = e.OtherInfo;
-            }
-            public string NamespaceName { get; set; }
-            public string ClassName { get; set; }
-            public string MethodName { get; set; }
-            public string OtherInfo { get; set; }
-
-            public bool Equals(SelfManufacturedFailureEvent other)
-            {
-                if (ReferenceEquals(null, other)) return false;
-                if (ReferenceEquals(this, other)) return true;
-                return Equals(other.NamespaceName, NamespaceName) && Equals(other.ClassName, ClassName) && Equals(other.MethodName, MethodName) && Equals(other.OtherInfo, OtherInfo);
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != typeof(SelfManufacturedFailureEvent)) return false;
-                return Equals((SelfManufacturedFailureEvent)obj);
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    int result = (NamespaceName != null ? NamespaceName.GetHashCode() : 0);
-                    result = (result * 397) ^ (ClassName != null ? ClassName.GetHashCode() : 0);
-                    result = (result * 397) ^ (MethodName != null ? MethodName.GetHashCode() : 0);
-                    result = (result * 397) ^ (OtherInfo != null ? OtherInfo.GetHashCode() : 0);
-                    return result;
-                }
-            }
-
-            public static bool operator ==(SelfManufacturedFailureEvent left, SelfManufacturedFailureEvent right)
-            {
-                return Equals(left, right);
-            }
-
-            public static bool operator !=(SelfManufacturedFailureEvent left, SelfManufacturedFailureEvent right)
-            {
-                return !Equals(left, right);
-            }
+            _currentReport.AddResult(result);
+            _eventAggregator.SendMessage(result);
         }
+
     }
 
 
@@ -259,6 +194,5 @@ namespace StatLight.Core.Reporting
             _currentDialogServerEvent = null;
             _onMatched = null;
         }
-
     }
 }
