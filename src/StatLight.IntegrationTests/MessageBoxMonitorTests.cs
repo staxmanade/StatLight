@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 using NUnit.Framework;
 using StatLight.Core.Tests;
 using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebServer;
 using StatLight.Core.Reporting;
+using System.Diagnostics;
 
 namespace StatLight.IntegrationTests
 {
@@ -54,6 +56,27 @@ namespace StatLight.IntegrationTests
         {
             _testReport.TotalFailed.ShouldEqual(3);
         }
+
+        [Test]
+        public void Should_have_set_the_Namespace_of_messagebox_failed_methods()
+        {
+            foreach (var result in _testReport.TestResults)
+            {
+                result.NamespaceName.ShouldEqual("StatLight.IntegrationTests.Silverlight");
+            }
+        }
+
+        [Test]
+        public void Should_only_have_three_results_total()
+        {
+            _testReport.TestResults.Count().ShouldEqual(3);
+        }
+
+        //[Test]
+        //public void Should_have_set_the_ClassName_of_messagebox_failed_methods()
+        //{
+        //    _testReport.TestResults.Select(s => s.NamespaceName.ShouldEqual("StatLight.IntegrationTests.Silverlight"));
+        //}
     }
 }
 

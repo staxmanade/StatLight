@@ -20,7 +20,7 @@ namespace StatLight.Core.Tests.Reporting
             {
                 base.Before_all_tests();
 
-                TestResultAggregator = new TestResultAggregator();
+                TestResultAggregator = new TestResultAggregator(TestLogger);
             }
         }
 
@@ -240,7 +240,7 @@ namespace StatLight.Core.Tests.Reporting
             {
                 base.Before_all_tests();
 
-                handler = new TestResultAggregator();
+                handler = new TestResultAggregator(TestLogger);
             }
 
             protected override TestResultAggregator Handler

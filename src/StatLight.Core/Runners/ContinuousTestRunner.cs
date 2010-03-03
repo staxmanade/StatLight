@@ -57,7 +57,7 @@ namespace StatLight.Core.Runners
 
         private void Start()
         {
-            _testResultAggregator = new TestResultAggregator();
+            _testResultAggregator = new TestResultAggregator(_logger);
             _eventAggregator.AddListener(_testResultAggregator);
 
             _logger.Information("{1}{1}Starting Test Run: {0}{1}{1}"

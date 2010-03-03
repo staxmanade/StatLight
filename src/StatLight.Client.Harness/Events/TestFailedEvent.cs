@@ -42,6 +42,11 @@ namespace StatLight.Client.Harness.Events
     public abstract class TestExecutionMethod : TestExecutionClass
     {
         public string MethodName { get; set; }
+
+        //public string FullMethodName
+        //{
+        //    get { return "{0}.{1}.{2}".FormatWith(NamespaceName, ClassName, MethodName); }
+        //}
     }
 
     public class TestExecutionMethodBeginClientEvent : TestExecutionMethod
@@ -80,7 +85,7 @@ namespace StatLight.Client.Harness.Events
             get { return Finished - Started; }
         }
     }
-    #endregion 
+    #endregion
 
     #region Non Test Result releated messages
 
