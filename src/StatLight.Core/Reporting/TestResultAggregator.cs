@@ -42,8 +42,6 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodPassedClientEvent message)
         {
-            _logger.Debug(message.FullMethodName());
-
             if (_dialogAssertionMessageMatchMaker.WasEventAlreadyClosed(message))
             {
                 // Don't include this as a "passed" test as we had to automatically close the dialog);)
@@ -71,8 +69,6 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodFailedClientEvent message)
         {
-            _logger.Debug(message.FullMethodName());
-
             if (_dialogAssertionMessageMatchMaker.WasEventAlreadyClosed(message))
             {
                 // Don't include this as a "passed" test as we had to automatically close the dialog);)
@@ -93,8 +89,6 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodIgnoredClientEvent message)
         {
-            _logger.Debug(message.FullMethodName());
-
             var msg = new TestCaseResult(ResultType.Ignored)
                           {
                               MethodName = message.Message,
@@ -157,8 +151,6 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodBeginClientEvent message)
         {
-            _logger.Debug(message.FullMethodName());
-
             _dialogAssertionMessageMatchMaker.Handle(message);
         }
 
@@ -268,13 +260,5 @@ namespace StatLight.Core.Reporting
             _onMatched = null;
         }
 
-    }
-
-    public static class ext
-    {
-        public static string FullMethodName(this TestExecutionMethod value)
-        {
-            return "{0}.{1}.{2}".FormatWith(value.NamespaceName, value.ClassName, value.MethodName);
-        }
     }
 }

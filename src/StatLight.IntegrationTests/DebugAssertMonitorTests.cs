@@ -7,6 +7,8 @@ using StatLight.Core.Reporting;
 
 namespace StatLight.IntegrationTests
 {
+
+#if DEBUG // These tests only run in debug mode
     [TestFixture]
     public class when_something_executing_in_silverlight_throws_up_a_debug_assertion_dialog
         : IntegrationFixtureBase
@@ -56,6 +58,7 @@ namespace StatLight.IntegrationTests
             _testReport.TotalFailed.ShouldEqual(4);
         }
     }
+#endif
 }
 
 
