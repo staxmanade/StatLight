@@ -31,7 +31,7 @@ namespace StatLight.Core.Runners
             this.statLightServiceHost = statLightServiceHost;
             this.browserFormHost = browserFormHost;
 
-            testResultAggregator = new TestResultAggregator(logger);
+            testResultAggregator = new TestResultAggregator(logger, eventAggregator);
             eventAggregator.AddListener(testResultAggregator);
 
             eventAggregator

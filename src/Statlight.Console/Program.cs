@@ -78,7 +78,6 @@ namespace StatLight.Console
                     config.UnitTestProviderType = unitTestProviderType;
 
                     var testReport = RunTestAndGetTestReport(logger, xapPath, continuousIntegrationMode, showTestingBrowserHost, useTeamCity, startWebServerOnly, config, microsoftTestingFrameworkVersion);
-
                     ConsoleTestCompleteMessage.WriteOutCompletionStatement(testReport);
 
                     if (!string.IsNullOrEmpty(options.XmlReportOutputPath))

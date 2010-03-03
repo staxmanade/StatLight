@@ -12,7 +12,19 @@ namespace StatLight.Client.Harness.ClientEventMapping
             if (message.MessageType == LogMessageType.TestResult)
             {
                 if (message.Is(TestGranularity.TestScenario)
-                    && message.DecoratorMatches(LogDecorator.TestOutcome, v => (TestOutcome)v == TestOutcome.Failed)
+                    && message.DecoratorMatches(LogDecorator.TestOutcome, v =>
+                                                                              {
+                                                                                  TestOutcome outcome = (TestOutcome)v;
+                                                                                  switch ((TestOutcome)v)
+                                                                                  {
+                                                                                      case TestOutcome.Failed:
+                                                                                      case TestOutcome.Inconclusive:
+                                                                                          //TODO: reproduce case TestOutcome.Error:
+                                                                                          return true;
+                                                                                      default:
+                                                                                          return false;
+                                                                                  }
+                                                                              })
                     && message.DecoratorMatches(UnitTestLogDecorator.ScenarioResult, v => ((ScenarioResult)v).Exception != null)
                     )
                 {

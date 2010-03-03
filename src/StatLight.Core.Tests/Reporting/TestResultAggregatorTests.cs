@@ -20,7 +20,7 @@ namespace StatLight.Core.Tests.Reporting
             {
                 base.Before_all_tests();
 
-                TestResultAggregator = new TestResultAggregator(TestLogger);
+                TestResultAggregator = new TestResultAggregator(TestLogger, TestEventAggregator);
             }
         }
 
@@ -240,7 +240,7 @@ namespace StatLight.Core.Tests.Reporting
             {
                 base.Before_all_tests();
 
-                handler = new TestResultAggregator(TestLogger);
+                handler = new TestResultAggregator(TestLogger, TestEventAggregator);
             }
 
             protected override TestResultAggregator Handler
@@ -248,6 +248,32 @@ namespace StatLight.Core.Tests.Reporting
                 get { return handler; }
             }
 
+        }
+
+        [TestFixture]
+        public class when_a_dialog_assertion_occurs_we_should_rePublish_failure_events : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
+        {
+            private TestExecutionMethodFailedClientEvent _manufacturedFailedEvent;
+            protected override void Before_all_tests()
+            {
+                base.Before_all_tests();
+
+                TestEventAggregator
+                    .AddListener<TestExecutionMethodFailedClientEvent>(e => _manufacturedFailedEvent = e);
+            }
+
+            protected override void Because()
+            {
+                base.Because();
+                TestResultAggregator.Handle(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m" });
+                TestResultAggregator.Handle(new DialogAssertionServerEvent { Message = "m" });
+            }
+
+            [Test]
+            public void Should_have_manufactured_a_test_failed_event()
+            {
+                _manufacturedFailedEvent.ShouldNotBeNull();
+            }
         }
     }
 }

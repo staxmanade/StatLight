@@ -70,7 +70,7 @@ namespace StatLight.Core.Tests.WebServer
             {
                 base.Before_all_tests();
 
-                TestResultAggregator = new TestResultAggregator(TestLogger);
+                TestResultAggregator = new TestResultAggregator(TestLogger, TestEventAggregator);
                 TestEventAggregator.AddListener(TestResultAggregator);
 
                 TestEventAggregator

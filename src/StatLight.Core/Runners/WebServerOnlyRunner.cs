@@ -28,7 +28,7 @@ namespace StatLight.Core.Runners
 			this.webServer = webServer;
 			this.testHtmlPageUrl = testHtmlPageUrl;
 
-			this._testResultAggregator = new TestResultAggregator(logger);
+			this._testResultAggregator = new TestResultAggregator(logger, eventAggregator);
 		    eventAggregator.AddListener(_testResultAggregator);
 			this.continuousRunnerThread = new Thread(() =>
 			{
