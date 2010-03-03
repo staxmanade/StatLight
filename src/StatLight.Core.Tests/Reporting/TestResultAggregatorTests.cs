@@ -232,34 +232,15 @@ namespace StatLight.Core.Tests.Reporting
         }
 
         [TestFixture]
-        public class when_verifying_the_TestResultAggregator_can_accept_messages : PublishedEventsToHandleBase<TestResultAggregator>
-        {
-            TestResultAggregator handler;
-
-            protected override void Before_all_tests()
-            {
-                base.Before_all_tests();
-
-                handler = new TestResultAggregator(TestLogger, TestEventAggregator);
-            }
-
-            protected override TestResultAggregator Handler
-            {
-                get { return handler; }
-            }
-
-        }
-
-        [TestFixture]
         public class when_a_dialog_assertion_occurs_we_should_rePublish_failure_events : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
         {
-            private TestExecutionMethodFailedClientEvent _manufacturedFailedEvent;
+            private TestCaseResult _manufacturedFailedEvent;
             protected override void Before_all_tests()
             {
                 base.Before_all_tests();
 
                 TestEventAggregator
-                    .AddListener<TestExecutionMethodFailedClientEvent>(e => _manufacturedFailedEvent = e);
+                    .AddListener<TestCaseResult>(e => _manufacturedFailedEvent = e);
             }
 
             protected override void Because()

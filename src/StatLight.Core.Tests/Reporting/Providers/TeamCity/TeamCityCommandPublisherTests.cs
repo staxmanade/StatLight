@@ -1,5 +1,6 @@
 ﻿using System;
 using StatLight.Client.Harness.Events;
+using StatLight.Core.Reporting;
 
 namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
 {
@@ -106,7 +107,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
         protected override void Because()
         {
             base.Because();
-            var message = new TestExecutionMethodPassedClientEvent();
+            var message = new TestCaseResult(ResultType.Passed);
             publisher.Handle(message);
         }
 
@@ -136,8 +137,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
         protected override void Because()
         {
             base.Because();
-            var message = new TestExecutionMethodFailedClientEvent { ExceptionInfo = new Exception() };
-            publisher.Handle(message);
+            publisher.Handle(new TestCaseResult(ResultType.Failed){ExceptionInfo = new Exception()});
         }
 
         [Test]
@@ -175,7 +175,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
             base.Because();
             const string testNameIgnored = "some_test_to_ignore";
             var message = new TestExecutionMethodIgnoredClientEvent { Message = testNameIgnored };
-            publisher.Handle(message);
+            publisher.Handle(new TestCaseResult(ResultType.Ignored));
         }
 
         [Test]

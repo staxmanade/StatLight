@@ -2,6 +2,7 @@
 {
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Events.Aggregation;
+using StatLight.Core.Reporting;
 
     public sealed class DialogAssertionServerEvent
     {
@@ -16,12 +17,9 @@
 
     public class MessageReceivedFromClientServerEvent { }
 
-    public interface ITestingReportEvents :
-        IListener<TestExecutionMethodPassedClientEvent>,
-        IListener<TestExecutionMethodFailedClientEvent>,
-        IListener<TestExecutionMethodIgnoredClientEvent>,
+    public interface ITestingReportEvents : IListener<TestCaseResult>,
         IListener<TraceClientEvent>,
-        IListener<DialogAssertionServerEvent>,
         IListener<BrowserHostCommunicationTimeoutServerEvent>
     { }
+
 }

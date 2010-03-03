@@ -11,7 +11,12 @@ namespace StatLight.Core.Reporting
     using StatLight.Core.Events.Aggregation;
 
     public class TestResultAggregator : IDisposable,
-        ITestingReportEvents,
+        IListener<TestExecutionMethodPassedClientEvent>,
+        IListener<TestExecutionMethodFailedClientEvent>,
+        IListener<TestExecutionMethodIgnoredClientEvent>,
+        IListener<TraceClientEvent>,
+        IListener<DialogAssertionServerEvent>,
+        IListener<BrowserHostCommunicationTimeoutServerEvent>,
         IListener<TestExecutionMethodBeginClientEvent>
     {
         private readonly ILogger _logger;
@@ -132,7 +137,7 @@ namespace StatLight.Core.Reporting
                     };
 
                     _selfManufacturedEvents.Add(selfManufacturedFailureEvent);
-                    _eventAggregator.SendMessage(newFailureEvent);
+                    _eventAggregator.SendMessage(msg);
                 }
 
             };

@@ -2,6 +2,7 @@ using NUnit.Framework;
 using StatLight.Core.Events;
 using StatLight.Client.Harness.Events;
 using System;
+using StatLight.Core.Reporting;
 
 namespace StatLight.Core.Tests.Reporting.Providers
 {
@@ -11,10 +12,20 @@ namespace StatLight.Core.Tests.Reporting.Providers
     {
         protected abstract THandler Handler { get; }
 
+        private TestCaseResult Create(ResultType type)
+        {
+            return new TestCaseResult(type);
+        }
+
+        private TestCaseResult Create(ResultType type, ExceptionInfo ex)
+        {
+            return new TestCaseResult(type) { ExceptionInfo = ex };
+        }
+
         [Test]
         public void Should_handle_the_TestExecutionMethodPassedClientEvent_event()
         {
-            Handler.Handle(new TestExecutionMethodPassedClientEvent());
+            Handler.Handle(Create(ResultType.Passed));
         }
 
         [Test]
@@ -29,13 +40,13 @@ namespace StatLight.Core.Tests.Reporting.Providers
             {
                 exception = ex;
             }
-            Handler.Handle(new TestExecutionMethodFailedClientEvent { ExceptionInfo = exception });
+            Handler.Handle(Create(ResultType.Failed, exception));
         }
 
         [Test]
         public void Should_handle_the_TestExecutionMethodIgnoredClientEvent_event()
         {
-            Handler.Handle(new TestExecutionMethodIgnoredClientEvent());
+            Handler.Handle(Create(ResultType.Ignored));
         }
 
         [Test]
@@ -47,7 +58,7 @@ namespace StatLight.Core.Tests.Reporting.Providers
         [Test]
         public void Should_handle_the_DialogAssertionServerEvent()
         {
-            Handler.Handle(new DialogAssertionServerEvent { Message = "dialog found error" });
+            Handler.Handle(Create(ResultType.SystemGeneratedFailure));
         }
 
         [Test]

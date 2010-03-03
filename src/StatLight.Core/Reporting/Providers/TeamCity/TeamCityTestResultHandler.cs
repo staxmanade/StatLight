@@ -1,10 +1,10 @@
 ﻿
-using StatLight.Core.Events;
-
 namespace StatLight.Core.Reporting.Providers.TeamCity
 {
     using System;
     using StatLight.Client.Harness.Events;
+    using StatLight.Core.Reporting;
+    using StatLight.Core.Events;
 
     public class TeamCityTestResultHandler : ITestingReportEvents
     {
@@ -40,35 +40,6 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
             action();
             messageWriter.Write(CommandFactory.TestFinished(name, durationMilliseconds));
         }
-        public void Handle(TestExecutionMethodPassedClientEvent message)
-        {
-            var name = message.ClassName + "." + message.MethodName;
-            var durationMilliseconds = message.TimeToComplete.Milliseconds;
-
-            WrapTestWithStartAndEnd(() =>
-            {
-                
-            }, name, durationMilliseconds);
-        }
-
-        public void Handle(TestExecutionMethodFailedClientEvent message)
-        {
-            var name = message.ClassName + "." + message.MethodName;
-            var durationMilliseconds = message.TimeToComplete.Milliseconds;
-
-            WrapTestWithStartAndEnd(() => messageWriter.Write(
-                CommandFactory.TestFailed(
-                    name,
-                    message.ExceptionInfo.FullMessage,
-                    message.ExceptionInfo.FullMessage)), 
-                name,
-                durationMilliseconds);
-        }
-
-        public void Handle(TestExecutionMethodIgnoredClientEvent message)
-        {
-            WrapTestWithStartAndEnd(CommandFactory.TestIgnored(message.Message, string.Empty), message.Message, 0);
-        }
 
         public void Handle(TraceClientEvent message)
         {
@@ -98,6 +69,42 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
         {
             string writeMessage = message.Message;
             WriteServerEventFailure("BrowserHostCommunicationTimeoutServerEvent", writeMessage);
+        }
+
+        public void Handle(TestCaseResult message)
+        {
+            var name = message.ClassName + "." + message.MethodName;
+            var durationMilliseconds = message.TimeToComplete.Milliseconds;
+
+            switch (message.ResultType)
+            {
+                case ResultType.Ignored:
+                    WrapTestWithStartAndEnd(CommandFactory.TestIgnored(message.MethodName, string.Empty), message.MethodName, 0);
+                    break;
+                case ResultType.Passed:
+
+                    WrapTestWithStartAndEnd(() =>
+                    {
+
+                    }, name, durationMilliseconds);
+                    break;
+                case ResultType.Failed:
+
+                    WrapTestWithStartAndEnd(() => messageWriter.Write(
+                        CommandFactory.TestFailed(
+                            name,
+                            message.ExceptionInfo.FullMessage,
+                            message.ExceptionInfo.FullMessage)),
+                        name,
+                        durationMilliseconds);
+                    break;
+
+                default:
+                    "Unknown TestCaseResult (to StatLight) - {0}".FormatWith(message.ResultType)
+                        .WrapConsoleMessageWithColor(ConsoleColor.Red, true);
+                    break;
+            }
+
         }
     }
 }
