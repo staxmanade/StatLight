@@ -391,7 +391,7 @@ function AssertXmlReportIsValid([string]$scriptFile)
 	$assemblyBytes = new-object byte[] $fileStream.Length
 	$fileStream.Read($assemblyBytes, 0, $fileStream.Length) | Out-Null #out null this because this function should only return the version & this call was outputting some garbage number
 	$fileStream.Close()
-	[System.Reflection.Assembly]::Load($assemblyBytes);
+	[System.Reflection.Assembly]::Load($assemblyBytes) | Out-Null;
 	
 	$errs = $null
 	$passed = [StatLight.Core.Reporting.Providers.Xml.XmlReport]::ValidateSchema($scriptFile, [ref] $errs)
