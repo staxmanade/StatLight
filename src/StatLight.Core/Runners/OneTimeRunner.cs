@@ -1,4 +1,5 @@
 ﻿
+using StatLight.Client.Harness.Events;
 using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.Runners

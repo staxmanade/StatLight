@@ -61,23 +61,13 @@ namespace StatLight.Core.Monitoring
 
         private void ExecuteDialogSlapdown(IDialogMonitor dialogMonitor)
         {
-            var dialogMonitorResult = dialogMonitor.ExecuteDialogSlapDown();
-
-            if (!dialogMonitorResult.WasActionTaken)
-                return;
-
-            PostDialogAssertionEvent(dialogMonitorResult);
-        }
-
-        private void PostDialogAssertionEvent(DialogMonitorResult dialogMonitorResult)
-        {
-            _logger.Debug(dialogMonitorResult.Message);
-
-            _eventAggregator.SendMessage(
+            Action<string> a = msg => _eventAggregator.SendMessage(
                 new DialogAssertionServerEvent
-                {
-                    Message = dialogMonitorResult.Message,
-                });
+                    {
+                        Message = msg,
+                    });
+
+            dialogMonitor.ExecuteDialogSlapDown(a);
         }
 
         public void Start()

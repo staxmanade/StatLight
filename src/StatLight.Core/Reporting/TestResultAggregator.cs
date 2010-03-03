@@ -18,12 +18,12 @@ namespace StatLight.Core.Reporting
         private readonly ILogger _logger;
         private readonly TestReport _currentReport = new TestReport();
         public TestReport CurrentReport { get { return _currentReport; } }
-        private TestExecutionMethodBeginClientEvent _mostRecentBeginEventMessage;
+        private DialogAssertionMessageMatchMaker _dialogAssertionMessageMatchMaker = new DialogAssertionMessageMatchMaker();
 
         public TestResultAggregator(ILogger logger)
         {
             _logger = logger;
-           // Debugger.Break();
+            // Debugger.Break();
         }
 
         #region IDisposable Members
@@ -38,18 +38,13 @@ namespace StatLight.Core.Reporting
         {
             _logger.Debug(message.FullMethodName());
 
-            //if (_methodsToIgnorePassedMessageFor
-            //    .Any(w =>
-            //        w.NamespaceName == message.NamespaceName
-            //        && w.ClassName == message.ClassName
-            //         && w.MethodName == message.MethodName
-            //        )
-            //    )
-            //{
-            //    _logger.Warning("********Skipped passing test message for {1}".FormatWith(message.FullMethodName()));
-            //    // Don't include this as a "passed" test as we had to automatically close the dialog);)
-            //    return;
-            //}
+            if (_dialogAssertionMessageMatchMaker.WasEventAlreadyClosed(message))
+            {
+                _logger.Warning("********Skipped passing test message for {0}".FormatWith(message.FullMethodName()));
+                // Don't include this as a "passed" test as we had to automatically close the dialog);)
+                return;
+            }
+
 
             var msg = new TestCaseResult(ResultType.Passed)
                           {
@@ -72,6 +67,13 @@ namespace StatLight.Core.Reporting
         public void Handle(TestExecutionMethodFailedClientEvent message)
         {
             _logger.Debug(message.FullMethodName());
+
+            if (_dialogAssertionMessageMatchMaker.WasEventAlreadyClosed(message))
+            {
+                _logger.Warning("********Skipped passing test message for {0}".FormatWith(message.FullMethodName()));
+                // Don't include this as a "passed" test as we had to automatically close the dialog);)
+                return;
+            }
 
             var msg = new TestCaseResult(ResultType.Failed)
             {
@@ -103,28 +105,20 @@ namespace StatLight.Core.Reporting
 
         public void Handle(DialogAssertionServerEvent message)
         {
-            string namespaceName = null;
-            string className = null;
-            string methodName = null;
-
-            if (_mostRecentBeginEventMessage != null)
+            Action<TestExecutionMethodBeginClientEvent> handler = m =>
             {
-                //_methodsToIgnorePassedMessageFor.Add(_mostRecentBeginEventMessage);
+                var msg = new TestCaseResult(ResultType.Failed)
+                {
+                    OtherInfo = message.Message,
+                    NamespaceName = m.NamespaceName,
+                    ClassName = m.ClassName,
+                    MethodName = m.MethodName,
+                };
 
-                namespaceName = _mostRecentBeginEventMessage.NamespaceName;
-                className = _mostRecentBeginEventMessage.ClassName;
-                methodName = _mostRecentBeginEventMessage.MethodName;
-            }
-
-            var msg = new TestCaseResult(ResultType.Failed)
-            {
-                OtherInfo = message.Message,
-                NamespaceName = namespaceName,
-                ClassName = className,
-                MethodName = methodName,
+                _currentReport.AddResult(msg);
             };
 
-            _currentReport.AddResult(msg);
+            _dialogAssertionMessageMatchMaker.Handle(message, handler);
         }
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
@@ -141,32 +135,60 @@ namespace StatLight.Core.Reporting
         {
             _logger.Debug(message.FullMethodName());
 
-            //waitingForResults.Add(message);
+            _dialogAssertionMessageMatchMaker.Handle(message);
+        }
+    }
 
-            _mostRecentBeginEventMessage = message;
+
+    public class DialogAssertionMessageMatchMaker
+    {
+        private readonly List<TestExecutionMethodBeginClientEvent> _completedMessage = new List<TestExecutionMethodBeginClientEvent>();
+
+        private TestExecutionMethodBeginClientEvent _currentBeginEvent;
+        private DialogAssertionServerEvent _currentDialogServerEvent;
+        private Action<TestExecutionMethodBeginClientEvent> _onMatched;
+
+        public void Handle(TestExecutionMethodBeginClientEvent message)
+        {
+            if (_currentDialogServerEvent != null)
+            {
+                _onMatched(message);
+                ResetWithBeginEvent(message);
+            }
+            else
+            {
+                _currentBeginEvent = message;
+            }
         }
 
-        private class WaitingMessageGroupings
+        public void Handle(DialogAssertionServerEvent message, Action<TestExecutionMethodBeginClientEvent> onMatched)
         {
-            private readonly List<TestExecutionMethodBeginClientEvent> _waitingFor =
-                new List<TestExecutionMethodBeginClientEvent>();
-
-            private DialogAssertionServerEvent currentDialogServerEvent;
-
-            public void Add(TestExecutionMethodBeginClientEvent message)
+            if (_currentBeginEvent != null)
             {
-                _waitingFor.Add(message);
+                onMatched(_currentBeginEvent);
+                ResetWithBeginEvent(_currentBeginEvent);
             }
-
-            public void Apply(TestExecutionMethod message)
+            else
             {
-                
+                _currentDialogServerEvent = message;
+                _onMatched = onMatched;
             }
+        }
 
-            public void Add(DialogAssertionServerEvent message)
-            {
-                currentDialogServerEvent = message;
-            }
+        public bool WasEventAlreadyClosed(TestExecutionMethod message)
+        {
+            return _completedMessage.Any(a =>
+                                  a.NamespaceName == message.NamespaceName
+                                  && a.ClassName == message.ClassName
+                                  && a.MethodName == message.MethodName);
+        }
+
+        private void ResetWithBeginEvent(TestExecutionMethodBeginClientEvent message)
+        {
+            _completedMessage.Add(message);
+            _currentBeginEvent = null;
+            _currentDialogServerEvent = null;
+            _onMatched = null;
         }
     }
 

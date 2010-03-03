@@ -6,99 +6,102 @@ namespace StatLight.Core.Monitoring
 	using System.Windows.Automation;
 	using StatLight.Core.Common;
 
-	internal class DebugAssertMonitor : IDialogMonitor
-	{
-		private readonly ILogger _logger;
+    internal class DebugAssertMonitor : IDialogMonitor
+    {
+        private readonly ILogger _logger;
 
-		public DebugAssertMonitor(ILogger logger)
-		{
-			_logger = logger;
-		}
+        public DebugAssertMonitor(ILogger logger)
+        {
+            _logger = logger;
+        }
 
-		public DialogMonitorResult ExecuteDialogSlapDown()
-		{
-			//TODO: 
-			if (!FoundSomeDialogWindowAndGaveItASmackDown())
-				return DialogMonitorResult.NoSlapdownAction();
+        public DialogMonitorResult ExecuteDialogSlapDown(Action<string> ifSlappedAction)
+        {
+            if (!FoundSomeDialogWindowAndGaveItASmackDown())
+                return DialogMonitorResult.NoSlapdownAction();
 
-			_logger.Debug("DebugAssertMonitor.RunTheDialogSlapdown");
+            _logger.Debug("DebugAssertMonitor.RunTheDialogSlapdown");
 
-			return new DialogMonitorResult()
-				{
-					WasActionTaken = true,
-					Message = "A Silverlight Debug.Assert() dialog was automatically closed.",
-				};
-		}
+            const string msg = "A Silverlight Debug.Assert() dialog was automatically closed.";
 
-		private bool FoundSomeDialogWindowAndGaveItASmackDown()
-		{
-			var rootElement = AutomationElement.RootElement;
+            ifSlappedAction(msg);
 
-			if (rootElement == null)
-				return false;
+            return new DialogMonitorResult()
+                {
+                    WasActionTaken = true,
+                    Message = msg,
+                };
+        }
 
-			var elementNode = TreeWalker.ControlViewWalker.GetFirstChild(rootElement);
+        private bool FoundSomeDialogWindowAndGaveItASmackDown()
+        {
+            var rootElement = AutomationElement.RootElement;
 
-			return ClosedWindowFromChildElement(elementNode);
-		}
+            if (rootElement == null)
+                return false;
 
-		private bool ClosedWindowFromChildElement(AutomationElement elementNode)
-		{
-			while (elementNode != null)
-			{
-				if (ClosedWindow(elementNode))
-					return true;
+            var elementNode = TreeWalker.ControlViewWalker.GetFirstChild(rootElement);
 
-				elementNode = TreeWalker.ControlViewWalker.GetNextSibling(elementNode);
-			}
+            return ClosedWindowFromChildElement(elementNode);
+        }
 
-			return false;
-		}
+        private bool ClosedWindowFromChildElement(AutomationElement elementNode)
+        {
+            while (elementNode != null)
+            {
+                if (ClosedWindow(elementNode))
+                    return true;
 
-		private bool ClosedWindow(AutomationElement elementNode)
-		{
-			if (FoundWindowToClose(elementNode))
-			{
-				_logger.Debug("DebugAssertMonitor. debug assertion dialog found");
-				var childNode = TreeWalker.ControlViewWalker.GetFirstChild(elementNode);
-				DealWithAssertionFailedWindow(childNode);
-				return true;
-			}
+                elementNode = TreeWalker.ControlViewWalker.GetNextSibling(elementNode);
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		private static bool FoundWindowToClose(AutomationElement elementNode)
-		{
-			return elementNode.Current.Name.Contains("Assertion Failed");
-		}
+        private bool ClosedWindow(AutomationElement elementNode)
+        {
+            if (FoundWindowToClose(elementNode))
+            {
+                _logger.Debug("DebugAssertMonitor. debug assertion dialog found");
+                var childNode = TreeWalker.ControlViewWalker.GetFirstChild(elementNode);
+                DealWithAssertionFailedWindow(childNode);
+                return true;
+            }
 
-		private static void DealWithAssertionFailedWindow(AutomationElement elementNode)
-		{
-			while (elementNode != null)
-			{
-				if (IfItsTheOkButton(elementNode))
-				{
-					InvokeClickOnButton(elementNode);
-					break;
-				}
+            return false;
+        }
 
-				elementNode = TreeWalker.ControlViewWalker.GetNextSibling(elementNode);
-			}
-		}
+        private static bool FoundWindowToClose(AutomationElement elementNode)
+        {
+            return elementNode.Current.Name.Contains("Assertion Failed");
+        }
 
-		private static void InvokeClickOnButton(AutomationElement elementNode)
-		{
-			var buttonClicInvokePattern = elementNode.GetCurrentPattern(InvokePattern.Pattern) as InvokePattern;
+        private static void DealWithAssertionFailedWindow(AutomationElement elementNode)
+        {
+            while (elementNode != null)
+            {
+                if (IfItsTheOkButton(elementNode))
+                {
+                    InvokeClickOnButton(elementNode);
+                    break;
+                }
 
-			if (buttonClicInvokePattern != null)
-				buttonClicInvokePattern.Invoke();
-		}
+                elementNode = TreeWalker.ControlViewWalker.GetNextSibling(elementNode);
+            }
+        }
 
-		private static bool IfItsTheOkButton(AutomationElement elementNode)
-		{
-			return elementNode.Current.ControlType.LocalizedControlType == "button"
-				   && elementNode.Current.Name.ToLower(CultureInfo.CurrentCulture) == "ok";
-		}
-	}
+        private static void InvokeClickOnButton(AutomationElement elementNode)
+        {
+            var buttonClicInvokePattern = elementNode.GetCurrentPattern(InvokePattern.Pattern) as InvokePattern;
+
+            if (buttonClicInvokePattern != null)
+                buttonClicInvokePattern.Invoke();
+        }
+
+        private static bool IfItsTheOkButton(AutomationElement elementNode)
+        {
+            return elementNode.Current.ControlType.LocalizedControlType == "button"
+                   && elementNode.Current.Name.ToLower(CultureInfo.CurrentCulture) == "ok";
+        }
+    }
 }

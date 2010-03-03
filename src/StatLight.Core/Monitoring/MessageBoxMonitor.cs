@@ -17,7 +17,7 @@ using System;
 			_logger = logger;
 		}
 
-		public DialogMonitorResult ExecuteDialogSlapDown()
+        public DialogMonitorResult ExecuteDialogSlapDown(Action<string> ifSlappedAction)
 		{
 			var noActionTaken = DialogMonitorResult.NoSlapdownAction();
 
@@ -67,6 +67,9 @@ using System;
 				_logger.Debug("COULD NOT FIND THE buttonClicInvokePattern");
 				return noActionTaken;
 			}
+            const string msg = "A Silverlight MessageBox dialog was automatically closed.";
+
+            ifSlappedAction(msg);
 
 			// Close the dialgo by clicking OK
 			buttonClicInvokePattern.Invoke();
@@ -74,7 +77,7 @@ using System;
 			return new DialogMonitorResult
 					{
 						WasActionTaken = true,
-						Message = "A Silverlight MessageBox dialog was automatically closed.",
+						Message = msg,
 					};
 		}
 	}
