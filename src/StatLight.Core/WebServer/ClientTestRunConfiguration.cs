@@ -9,7 +9,7 @@ namespace StatLight.Core.WebServer
     using StatLight.Client.Harness;
 
     [DataContract]
-    public class TestRunConfiguration
+    public class ClientTestRunConfiguration
     {
         private string _tagFilters = string.Empty;
 
@@ -41,28 +41,28 @@ namespace StatLight.Core.WebServer
             set { _methodsToTest = value; }
         }
 
-        public static TestRunConfiguration CreateDefault()
+        public static ClientTestRunConfiguration CreateDefault()
         {
-            return new TestRunConfiguration
+            return new ClientTestRunConfiguration
             {
                 TagFilter = string.Empty,
                 UnitTestProviderType = UnitTestProviderType.MSTest,
             };
         }
 
-        public static TestRunConfiguration CurrentTestRunConfiguration { get; set; }
+        public static ClientTestRunConfiguration CurrentClientTestRunConfiguration { get; set; }
         public static bool ContainsMethod(MethodInfo methodInfo)
         {
-            if (CurrentTestRunConfiguration == null)
+            if (CurrentClientTestRunConfiguration == null)
                 return false;
             if (methodInfo == null)
                 throw new ArgumentNullException("methodInfo");
 
-            if (CurrentTestRunConfiguration.MethodsToTest.Count == 0)
+            if (CurrentClientTestRunConfiguration.MethodsToTest.Count == 0)
                 return true;
 
             string methodString = methodInfo.DeclaringType.FullName + "." + methodInfo.Name;
-            if (CurrentTestRunConfiguration.MethodsToTest.Contains(methodString))
+            if (CurrentClientTestRunConfiguration.MethodsToTest.Contains(methodString))
                 return true;
 
             return false;

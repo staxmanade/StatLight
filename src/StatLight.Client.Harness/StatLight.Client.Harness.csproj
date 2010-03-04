@@ -97,11 +97,11 @@
     <Compile Include="..\StatLight.Core\UnitTestProviders\UnitTestProviderTypes.cs">
       <Link>Core\UnitTestProviders\UnitTestProviderTypes.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Core\WebServer\ClientTestRunConfiguration.cs">
+      <Link>Core\WebServer\ClientTestRunConfiguration.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Core\WebServer\StatLightServiceRestApi.cs">
       <Link>Core\WebServer\StatLightServiceRestApi.cs</Link>
-    </Compile>
-    <Compile Include="..\StatLight.Core\WebServer\TestRunConfiguration.cs">
-      <Link>Core\WebServer\TestRunConfiguration.cs</Link>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

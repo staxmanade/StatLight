@@ -11,18 +11,18 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
 	public class when_testing_the_runner_with_xunit_tests
 		: IntegrationFixtureBase
 	{
-		private TestRunConfiguration _testRunConfiguration;
+		private ClientTestRunConfiguration _clientTestRunConfiguration;
 		private TestReport _testReport;
 
-		protected override TestRunConfiguration TestRunConfiguration
+		protected override ClientTestRunConfiguration ClientTestRunConfiguration
 		{
-			get { return this._testRunConfiguration; }
+			get { return this._clientTestRunConfiguration; }
 		}
 
 		protected override void Before_all_tests()
 		{
 			base.PathToIntegrationTestXap = TestXapFileLocations.XUnit;
-			this._testRunConfiguration = new TestRunConfiguration
+			this._clientTestRunConfiguration = new ClientTestRunConfiguration
 			                             	{
 			                             		TagFilter = string.Empty,
 			                             		UnitTestProviderType = UnitTestProviderType.XUnit

@@ -44,7 +44,7 @@ namespace StatLight.Core.Tests.WebServer
 
                 _hostXap = serverConfig.HostXap;
 
-                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, PathToTempXapFile, TestRunConfiguration.CreateDefault(), serverConfig);
+                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, PathToTempXapFile, ClientTestRunConfiguration.CreateDefault(), serverConfig);
             }
 
             protected void SignalTestComplete(IStatLightService statLightService, int postCount)
@@ -136,7 +136,7 @@ namespace StatLight.Core.Tests.WebServer
             {
                 base.Before_all_tests();
 
-                var config = new TestRunConfiguration { TagFilter = _tagFilter };
+                var config = new ClientTestRunConfiguration { TagFilter = _tagFilter };
 
                 _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, PathToTempXapFile, config, MockServerTestRunConfiguration);
             }
@@ -172,7 +172,7 @@ namespace StatLight.Core.Tests.WebServer
             [Test]
             public void should_throw_FileNotFoundException_when_given_bad_file_path()
             {
-                typeof(FileNotFoundException).ShouldBeThrownBy(() => new StatLightService(new NullLogger(), TestEventAggregator, "missingFile", TestRunConfiguration.CreateDefault(), MockServerTestRunConfiguration));
+                typeof(FileNotFoundException).ShouldBeThrownBy(() => new StatLightService(new NullLogger(), TestEventAggregator, "missingFile", ClientTestRunConfiguration.CreateDefault(), MockServerTestRunConfiguration));
             }
 
             [Test]

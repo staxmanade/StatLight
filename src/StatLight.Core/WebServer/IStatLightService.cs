@@ -38,6 +38,6 @@ namespace StatLight.Core.WebServer
 
 		[OperationContract]
 		[WebGet(UriTemplate = StatLightServiceRestApi.GetTestRunConfiguration, BodyStyle = WebMessageBodyStyle.Bare)]
-		TestRunConfiguration GetTestRunConfiguration();
+		ClientTestRunConfiguration GetTestRunConfiguration();
 	}
 }

@@ -16,8 +16,8 @@ namespace StatLight.Core.WebServer
 		private IStatLightService _serviceInstance;
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "xap")]
-		public StatLightServiceHost(ILogger logger, IEventAggregator eventAggregator, string xapPath, Uri baseAddress, TestRunConfiguration testRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
-            : this(logger, new StatLightService(logger, eventAggregator, xapPath, testRunConfiguration, serverTestRunConfiguration), baseAddress)
+		public StatLightServiceHost(ILogger logger, IEventAggregator eventAggregator, string xapPath, Uri baseAddress, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
+            : this(logger, new StatLightService(logger, eventAggregator, xapPath, clientTestRunConfiguration, serverTestRunConfiguration), baseAddress)
 		{ }
 
 		public StatLightServiceHost(ILogger logger, StatLightService statLightService, Uri baseAddress)

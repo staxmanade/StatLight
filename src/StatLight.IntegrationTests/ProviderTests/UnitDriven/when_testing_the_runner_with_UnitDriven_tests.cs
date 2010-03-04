@@ -10,18 +10,18 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
     public class when_testing_the_runner_with_UnitDriven_tests
         : IntegrationFixtureBase
     {
-        private TestRunConfiguration _testRunConfiguration;
+        private ClientTestRunConfiguration _clientTestRunConfiguration;
         private TestReport _testReport;
 
-        protected override TestRunConfiguration TestRunConfiguration
+        protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return _testRunConfiguration; }
+            get { return _clientTestRunConfiguration; }
         }
 
         protected override void Before_all_tests()
         {
             PathToIntegrationTestXap = TestXapFileLocations.UnitDriven;
-            _testRunConfiguration = new TestRunConfiguration
+            _clientTestRunConfiguration = new ClientTestRunConfiguration
                                         {
                                                 TagFilter = string.Empty,
                                                 UnitTestProviderType = UnitTestProviderType.UnitDriven

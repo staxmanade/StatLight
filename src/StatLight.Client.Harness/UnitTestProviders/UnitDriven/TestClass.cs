@@ -135,7 +135,7 @@ namespace StatLight.Client.Harness.UnitTestProviders.UnitDriven
 				_tests = new List<ITestMethod>(methods.Count);
 				foreach (MethodInfo method in methods)
 				{
-					if (TestRunConfiguration.ContainsMethod(method))
+                    if (ClientTestRunConfiguration.ContainsMethod(method))
 						_tests.Add(new TestMethod(method));
 				}
 				_testsLoaded = true;

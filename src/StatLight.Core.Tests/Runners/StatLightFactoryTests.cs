@@ -16,14 +16,14 @@ namespace StatLight.Core.Tests.Runners
         [Test]
         public void should_be_able_to_get_a_StatLight_ContinuousConsoleRunner_runner()
         {
-            IRunner runner = StatLightRunnerFactory.CreateContinuousTestRunner(new Mock<ILogger>().Object, base.PathToTempXapFile, TestRunConfiguration.CreateDefault(), false, MockServerTestRunConfiguration);
+            IRunner runner = StatLightRunnerFactory.CreateContinuousTestRunner(new Mock<ILogger>().Object, base.PathToTempXapFile, ClientTestRunConfiguration.CreateDefault(), false, MockServerTestRunConfiguration);
             runner.ShouldBeOfType(typeof(ContinuousConsoleRunner));
         }
 
         [Test]
         public void should_be_able_to_create_the_StatLight_TeamCity_runner()
         {
-            IRunner runner = StatLightRunnerFactory.CreateTeamCityRunner(base.PathToTempXapFile, TestRunConfiguration.CreateDefault(), MockServerTestRunConfiguration);
+            IRunner runner = StatLightRunnerFactory.CreateTeamCityRunner(base.PathToTempXapFile, ClientTestRunConfiguration.CreateDefault(), MockServerTestRunConfiguration);
             runner.ShouldBeOfType(typeof(TeamCityRunner));
         }
     }

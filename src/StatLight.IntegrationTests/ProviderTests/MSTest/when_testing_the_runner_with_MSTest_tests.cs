@@ -16,7 +16,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
     public class when_testing_the_runner_with_MSTest_tests
         : IntegrationFixtureBase
     {
-        private TestRunConfiguration _testRunConfiguration;
+        private ClientTestRunConfiguration _clientTestRunConfiguration;
         private TestReport _testReport;
         private InitializationOfUnitTestHarnessClientEvent _initializationOfUnitTestHarnessClientEvent;
 
@@ -27,15 +27,15 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         private readonly IList<TestExecutionMethodFailedClientEvent> _testExecutionMethodFailedClientEvent = new List<TestExecutionMethodFailedClientEvent>();
         private readonly IList<TestExecutionMethodPassedClientEvent> _testExecutionMethodPassedClientEvent = new List<TestExecutionMethodPassedClientEvent>();
 
-        protected override TestRunConfiguration TestRunConfiguration
+        protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return _testRunConfiguration; }
+            get { return _clientTestRunConfiguration; }
         }
 
         protected override void Before_all_tests()
         {
             PathToIntegrationTestXap = TestXapFileLocations.MSTest;
-            _testRunConfiguration = new TestRunConfiguration
+            _clientTestRunConfiguration = new ClientTestRunConfiguration
                                         {
                                             TagFilter = string.Empty,
                                             UnitTestProviderType = UnitTestProviderType.MSTest,

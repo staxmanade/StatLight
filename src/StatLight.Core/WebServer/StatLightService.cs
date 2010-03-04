@@ -26,7 +26,7 @@ namespace StatLight.Core.WebServer
         private readonly FileInfo _xapTestFile;
         private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;
-        private readonly TestRunConfiguration _testRunConfiguration;
+        private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
         private int _currentMessagesPostedCount;
         private int _totalMessagesPostedCount;
         private readonly ServerTestRunConfiguration _serverTestRunConfiguration;
@@ -34,18 +34,18 @@ namespace StatLight.Core.WebServer
 
         public string TagFilters
         {
-            get { return _testRunConfiguration.TagFilter; }
+            get { return _clientTestRunConfiguration.TagFilter; }
             set
             {
-                _testRunConfiguration.TagFilter = value;
+                _clientTestRunConfiguration.TagFilter = value;
             }
         }
 
         public StatLightService(ILogger logger, IEventAggregator eventAggregator, string xapTestFile,
-            TestRunConfiguration testRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
+            ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
         {
-            if (testRunConfiguration == null)
-                throw new ArgumentNullException("testRunConfiguration");
+            if (clientTestRunConfiguration == null)
+                throw new ArgumentNullException("clientTestRunConfiguration");
             if (serverTestRunConfiguration == null)
                 throw new ArgumentNullException("serverTestRunConfiguration");
 
@@ -57,7 +57,7 @@ namespace StatLight.Core.WebServer
                 throw new FileNotFoundException("File could not be found. [{0}]".FormatWith(xapTestFile));
             }
 
-            _testRunConfiguration = testRunConfiguration;
+            _clientTestRunConfiguration = clientTestRunConfiguration;
             _serverTestRunConfiguration = serverTestRunConfiguration;
 
             _logger.Debug("StatLightService.ctor() - Initializing StatLightService with xapTestFile[{0}]".FormatWith(xapTestFile));
@@ -214,9 +214,9 @@ namespace StatLight.Core.WebServer
             return message;
         }
 
-        public TestRunConfiguration GetTestRunConfiguration()
+        public ClientTestRunConfiguration GetTestRunConfiguration()
         {
-            return _testRunConfiguration;
+            return _clientTestRunConfiguration;
         }
 
     }

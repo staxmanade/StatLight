@@ -165,7 +165,7 @@
     <Compile Include="WebServer\IStatLightService.cs" />
     <Compile Include="WebServer\StatLightService.cs" />
     <Compile Include="WebServer\StatLightServiceHost.cs" />
-    <Compile Include="WebServer\TestRunConfiguration.cs" />
+    <Compile Include="WebServer\ClientTestRunConfiguration.cs" />
     <Compile Include="WebServer\WebServerLocation.cs" />
     <Compile Include="WebServer\XapFileBuildChangedMonitor.cs" />
     <Compile Include="WebServer\XapFileBuildChangedArgs.cs" />

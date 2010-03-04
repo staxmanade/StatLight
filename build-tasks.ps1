@@ -200,7 +200,7 @@ function global:CompileStatLight {
 		"src\StatLight.Core\Reporting\Messages\TestOutcome.cs",
 		"src\StatLight.core\UnitTestProviders\UnitTestProviderTypes.cs",
 		"src\StatLight.Core\WebServer\StatLightServiceRestApi.cs",
-		"src\StatLight.Core\WebServer\TestRunConfiguration.cs"
+		"src\StatLight.Core\WebServer\ClientTestRunConfiguration.cs"
 	)
 
 	$sourceFiles += Get-ChildItem 'src\StatLight.Client.Harness\' -recurse `

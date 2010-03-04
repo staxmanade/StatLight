@@ -73,7 +73,7 @@ namespace StatLight.Console
                         unitTestProviderType = DetermineUnitTestProviderType(xapPath);
                     }
 
-                    var config = TestRunConfiguration.CreateDefault();
+                    var config = ClientTestRunConfiguration.CreateDefault();
                     config.TagFilter = options.TagFilters;
                     config.UnitTestProviderType = unitTestProviderType;
 
@@ -170,7 +170,7 @@ Try: (the following two steps that should allow StatLight to start a web server 
             System.Console.WriteLine("*********************************");
         }
 
-        private static TestReport RunTestAndGetTestReport(ILogger logger, string xapPath, bool continuousIntegrationMode, bool showTestingBrowserHost, bool useTeamCity, bool startWebServerOnly, TestRunConfiguration config, MicrosoftTestingFrameworkVersion microsoftTestingFrameworkVersion)
+        private static TestReport RunTestAndGetTestReport(ILogger logger, string xapPath, bool continuousIntegrationMode, bool showTestingBrowserHost, bool useTeamCity, bool startWebServerOnly, ClientTestRunConfiguration config, MicrosoftTestingFrameworkVersion microsoftTestingFrameworkVersion)
         {
             IRunner runner;
 

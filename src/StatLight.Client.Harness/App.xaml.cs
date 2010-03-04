@@ -27,7 +27,7 @@ namespace StatLight.Client.Harness
 {
 	public partial class App : Application
 	{
-		private TestRunConfiguration _testRunConfiguration;
+		private ClientTestRunConfiguration _clientTestRunConfiguration;
 		private bool _testRunConfigurationDownloadComplete;
 		private bool _completedTestXapRequest;
 		private readonly UnitTestSettings _settings = new UnitTestSettings();
@@ -55,11 +55,11 @@ namespace StatLight.Client.Harness
 							 };
 			client.OpenReadCompleted += (sender, e) =>
 			{
-				_testRunConfiguration = e.Result.Deserialize<TestRunConfiguration>();
-				TestRunConfiguration.CurrentTestRunConfiguration = _testRunConfiguration;
+				_clientTestRunConfiguration = e.Result.Deserialize<ClientTestRunConfiguration>();
+                ClientTestRunConfiguration.CurrentClientTestRunConfiguration = _clientTestRunConfiguration;
 				_testRunConfigurationDownloadComplete = true;
-				_settings.TagExpression = _testRunConfiguration.TagFilter;
-				_settings.LogProviders.Add(new WebpageHeaderLogProvider("StatLight filters[{0}]".FormatWith(_testRunConfiguration.TagFilter)));
+				_settings.TagExpression = _clientTestRunConfiguration.TagFilter;
+				_settings.LogProviders.Add(new WebpageHeaderLogProvider("StatLight filters[{0}]".FormatWith(_clientTestRunConfiguration.TagFilter)));
 
 				DisplayTestHarness();
 			};
@@ -145,7 +145,7 @@ namespace StatLight.Client.Harness
 		{
 			if (_testRunConfigurationDownloadComplete && _completedTestXapRequest)
 			{
-				SetupUnitTestProvider(_testRunConfiguration.UnitTestProviderType);
+				SetupUnitTestProvider(_clientTestRunConfiguration.UnitTestProviderType);
 
 				RootVisual = UnitTestSystem.CreateTestPage(_settings);
 			}

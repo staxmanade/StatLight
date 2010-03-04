@@ -32,12 +32,12 @@ namespace StatLight.IntegrationTests
 		}
 
 		protected IRunner Runner { get; private set; }
-		protected abstract TestRunConfiguration TestRunConfiguration { get; }
+		protected abstract ClientTestRunConfiguration ClientTestRunConfiguration { get; }
 
 		protected override void Before_all_tests()
 		{
 			var serverTestRunConfiguration = new ServerTestRunConfiguration(new XapHostFileLoaderFactory(_testLogger), MicrosoftTestingFrameworkVersion.Default);
-			Runner = StatLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, _pathToIntegrationTestXap, TestRunConfiguration, serverTestRunConfiguration, true);
+			Runner = StatLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, _pathToIntegrationTestXap, ClientTestRunConfiguration, serverTestRunConfiguration, true);
 		}
 
 	}

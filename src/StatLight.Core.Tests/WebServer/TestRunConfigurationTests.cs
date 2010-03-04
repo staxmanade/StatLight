@@ -9,32 +9,32 @@
 		[TestFixture]
 		public class when_testing_the_default_TestRunConfiguration : FixtureBase
 		{
-			TestRunConfiguration testRunConfiguration;
+			ClientTestRunConfiguration clientTestRunConfiguration;
 			protected override void Before_all_tests()
 			{
 				base.Before_all_tests();
 
-				testRunConfiguration = TestRunConfiguration.CreateDefault();
+				clientTestRunConfiguration = ClientTestRunConfiguration.CreateDefault();
 			}
 
 			[Test]
 			public void the_default_TagFilter_should_be_an_empty_string()
 			{
-				testRunConfiguration.TagFilter.ShouldEqual(string.Empty);
+				clientTestRunConfiguration.TagFilter.ShouldEqual(string.Empty);
 			}
 
 			[Test]
 			public void the_default_UnitTestProviderType_should_be_MSTest()
 			{
-				testRunConfiguration.UnitTestProviderType.ShouldEqual(UnitTestProviderType.MSTest);
+				clientTestRunConfiguration.UnitTestProviderType.ShouldEqual(UnitTestProviderType.MSTest);
 			}
 
 
 			[Test]
 			public void when_setting_the_TagFilter_to_null_it_should_remain_the_empty_string()
 			{
-				testRunConfiguration.TagFilter = null;
-				testRunConfiguration.TagFilter.ShouldEqual(string.Empty);
+				clientTestRunConfiguration.TagFilter = null;
+				clientTestRunConfiguration.TagFilter.ShouldEqual(string.Empty);
 			}
 		}
 	}

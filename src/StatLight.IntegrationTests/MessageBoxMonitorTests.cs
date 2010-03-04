@@ -13,18 +13,18 @@ namespace StatLight.IntegrationTests
     public class when_something_executing_in_silverlight_throws_up_a_modal_MessageBox
         : IntegrationFixtureBase
     {
-        private TestRunConfiguration testRunConfiguration;
+        private ClientTestRunConfiguration clientTestRunConfiguration;
         private TestReport _testReport;
 
-        protected override TestRunConfiguration TestRunConfiguration
+        protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return testRunConfiguration; }
+            get { return clientTestRunConfiguration; }
         }
 
         protected override void Before_all_tests()
         {
             const string prefix = "StatLight.IntegrationTests.Silverlight.When_a_modal_MessageBox_is_displayed";
-            testRunConfiguration = new TestRunConfiguration
+            clientTestRunConfiguration = new ClientTestRunConfiguration
                                        {
                                            TagFilter = string.Empty,
                                            UnitTestProviderType = UnitTestProviderType.MSTest,

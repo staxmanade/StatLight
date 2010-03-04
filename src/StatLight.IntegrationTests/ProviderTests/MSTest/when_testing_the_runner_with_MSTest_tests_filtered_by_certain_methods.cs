@@ -10,11 +10,11 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
     public class when_testing_the_runner_with_MSTest_tests_filtered_by_certain_methods
         : filtered_tests____
     {
-        private TestRunConfiguration _testRunConfiguration;
+        private ClientTestRunConfiguration _clientTestRunConfiguration;
 
-        protected override TestRunConfiguration TestRunConfiguration
+        protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return _testRunConfiguration; }
+            get { return _clientTestRunConfiguration; }
         }
 
         protected override void Before_all_tests()
@@ -26,7 +26,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             NormalClassTestName = "MSTestTests";
             NestedClassTestName = "MSTestTests+MSTestNestedClassTests";
 
-            _testRunConfiguration = new TestRunConfiguration
+            _clientTestRunConfiguration = new ClientTestRunConfiguration
                     {
                         TagFilter = string.Empty,
                         UnitTestProviderType = UnitTestProviderType.MSTest,

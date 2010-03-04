@@ -10,18 +10,18 @@ namespace StatLight.IntegrationTests.ProviderTests.NUnit
 	public class when_testing_the_runner_with_NUnit_tests
 		: IntegrationFixtureBase
 	{
-		private TestRunConfiguration testRunConfiguration;
+		private ClientTestRunConfiguration clientTestRunConfiguration;
 		private TestReport testReport;
 
-		protected override TestRunConfiguration TestRunConfiguration
+		protected override ClientTestRunConfiguration ClientTestRunConfiguration
 		{
-			get { return this.testRunConfiguration; }
+			get { return this.clientTestRunConfiguration; }
 		}
 
 		protected override void Before_all_tests()
 		{
 			base.PathToIntegrationTestXap = TestXapFileLocations.NUnit;
-			this.testRunConfiguration = new TestRunConfiguration()
+			this.clientTestRunConfiguration = new ClientTestRunConfiguration()
 			                            	{
 			                            		TagFilter = string.Empty,
 			                            		UnitTestProviderType = UnitTestProviderType.NUnit
