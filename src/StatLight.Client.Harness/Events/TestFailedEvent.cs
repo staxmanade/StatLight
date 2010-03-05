@@ -23,6 +23,9 @@ namespace StatLight.Client.Harness.Events
     public class SignalTestCompleteClientEvent : ClientEvent
     {
         public int TotalMessagesPostedCount { get; set; }
+        public bool Failed { get; set; }
+        public int TotalFailureCount { get; set; }
+        public int TotalTestsCount { get; set; }
     }
 
 

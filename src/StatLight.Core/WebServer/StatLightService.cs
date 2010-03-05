@@ -104,6 +104,15 @@ namespace StatLight.Core.WebServer
 
                     _logger.Debug("");
                     _logger.Debug("StatLightService.TestComplete() with {0} total messages posted - Currently have {1} registered".FormatWith(totalMessagsPostedCount, _currentMessagesPostedCount));
+
+                    _logger.Debug("SignalTestCompleteClientEvent");
+                    _logger.Debug("     {");
+                    _logger.Debug("         Failed = {0}".FormatWith(result.Failed));
+                    _logger.Debug("         TotalMessagesPostedCount = {0}".FormatWith(result.TotalMessagesPostedCount));
+                    _logger.Debug("         TotalTestsCount = {0}".FormatWith(result.TotalTestsCount));
+                    _logger.Debug("         TotalFailureCount = {0}".FormatWith(result.TotalFailureCount));
+                    _logger.Debug("     }");
+
                     _totalMessagesPostedCount = totalMessagsPostedCount;
 
                     WaitingForMessagesToCompletePosting();

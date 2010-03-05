@@ -153,7 +153,7 @@ namespace StatLight.Client.Harness
 
 		private static void CurrentHarness_TestHarnessCompleted(object sender, TestHarnessCompletedEventArgs e)
 		{
-			Server.SignalTestComplete();
+			Server.SignalTestComplete(e.State);
 		}
 
 		private class LoadedXapData

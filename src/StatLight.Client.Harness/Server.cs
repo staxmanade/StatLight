@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Silverlight.Testing.Harness;
 using StatLight.Client.Harness.Events;
 using StatLight.Client.Model.Messaging;
 using StatLight.Core.Serialization;
@@ -41,17 +42,6 @@ namespace StatLight.Client.Harness
             PostMessageX(traceMessage);
         }
 
-
-        /// <summary>
-        /// Send a message back to the server signaling that all the tests have completed.
-        /// </summary>
-        public static void SignalTestComplete()
-        {
-            PostMessage(new SignalTestCompleteClientEvent { TotalMessagesPostedCount = postMessageCount });
-        }
-
-
-
         private static int postMessageCount;
         private static void PostMessageX(string message)
         {
@@ -64,5 +54,37 @@ namespace StatLight.Client.Harness
         {
             new HttpWebRequestHelper(uri, "POST", message).Execute();
         }
+
+        #region SignalTestComplate
+
+
+        /// <summary>
+        /// Send a message back to the server signaling that all the tests have completed.
+        /// </summary>
+        /// <param name="state"></param>
+        public static void SignalTestComplete(TestHarnessState state)
+        {
+            var signalTestCompleteClientEvent = new SignalTestCompleteClientEvent
+            {
+                TotalMessagesPostedCount = postMessageCount,
+                Failed = state.Failed,
+                TotalFailureCount = state.Failures,
+                TotalTestsCount = state.TotalScenarios,
+            };
+            SignalTestComplate(signalTestCompleteClientEvent);
+        }
+
+        public static void SignalTestComplete()
+        {
+            SignalTestComplate(new SignalTestCompleteClientEvent { TotalMessagesPostedCount = postMessageCount });
+        }
+
+        private static void SignalTestComplate(SignalTestCompleteClientEvent completeClientEvent)
+        {
+            PostMessage(completeClientEvent);
+        }
+
+
+        #endregion
     }
 }

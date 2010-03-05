@@ -354,12 +354,18 @@ function global:Get-Not-Build-Configuration {
 	$not_build_configuration;
 }
 
-function Execute-MSTest-Version-Acceptance-Tests {
-	param([string]$microsoft_Silverlight_Testing_Version_Name)
-	
+function GetTemporaryXmlFile()
+{
 	$tempFileGuid = ([System.Guid]::NewGuid())
 	$scriptFile = ("$($pwd.Path)\temp_statlight-integration-output-$tempFileGuid.xml")
 	Remove-If-Exists $scriptFile
+	$scriptFile
+}
+
+function Execute-MSTest-Version-Acceptance-Tests {
+	param([string]$microsoft_Silverlight_Testing_Version_Name)
+	
+	$scriptFile = GetTemporaryXmlFile;
 	
 	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
 	
@@ -367,13 +373,20 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	$file = get-item $scriptFile
 
 	$doc = [System.Xml.Linq.XDocument]::Load($file)
-	$passingTests = $doc.Descendants('test') | where{ $_.Attribute('resulttype').Value -eq 'Passed' }
+
+	$tests = $doc.Descendants('test')
+	if($passingTests -eq $null)
+	{
+		throw "FAIL: no tests found in xml report"
+	}
+
+	$passingTests = $tests | where{ $_.Attribute('resulttype').Value -eq 'Passed' }
 	$passingTests.Count.ShouldEqual(4);
 
-	$ignoredTests = @($doc.Descendants('test') | where{ $_.Attribute('resulttype').Value -eq 'Ignored' })
+	$ignoredTests = @($tests | where{ $_.Attribute('resulttype').Value -eq 'Ignored' })
 	$ignoredTests.Count.ShouldEqual(1);
 
-	$failedTests = @($doc.Descendants('test') | where{ $_.Attribute('resulttype').Value -eq 'Failed' } )
+	$failedTests = @($tests | where{ $_.Attribute('resulttype').Value -eq 'Failed' } )
 	$failedTests.Count.ShouldEqual(1);
 
 	AssertXmlReportIsValid $scriptFile
@@ -579,9 +592,38 @@ Task run-integrationTests {
 	}
 }
 
+
+Task run-tests-in-other-assembly {
+	
+	$scriptFile = GetTemporaryXmlFile;
+	
+	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" "-t=OtherAssemblyTests" "-r=$scriptFile"	
+	
+	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
+	$file = get-item $scriptFile
+	$doc = [System.Xml.Linq.XDocument]::Load($file)
+	
+	$tests = $doc.Descendants('test')
+	if($passingTests -eq $null)
+	{
+		throw "FAIL: no tests found in xml report"
+	}
+	
+	$passingTests = $tests | where{ $_.Attribute('resulttype').Value -eq 'Passed' }
+	$passingTests.Count.ShouldEqual(2);
+
+	$ignoredTests = @($tests | where{ $_.Attribute('resulttype').Value -eq 'Ignored' })
+	$ignoredTests.Count.ShouldEqual(1);
+
+	$failedTests = @($tests | where{ $_.Attribute('resulttype').Value -eq 'Failed' } )
+	$failedTests.Count.ShouldEqual(1);
+
+	AssertXmlReportIsValid $scriptFile
+}
+
 Task run-statlight-silverlight-tests {
 
-	exec "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" "-o=MSTest"
+	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" "-o=MSTest"
 
 	if($LastExitCode)
 	{

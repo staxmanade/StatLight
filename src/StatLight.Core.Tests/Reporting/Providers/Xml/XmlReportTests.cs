@@ -82,6 +82,13 @@ namespace StatLight.Core.Tests.Reporting.Providers.Xml
                 Assert.Fail(msg);
             }
         }
+
+        [Test]
+        public void Should_not_throw_any_exceptions_if_there_are_no_tests()
+        {
+            XmlReport xmlReport = new XmlReport(new TestReport(), "Test.xap");
+            xmlReport.GetXmlReport().ShouldNotBeEmpty();
+        }
     }
 
 }
