@@ -1,5 +1,7 @@
 ﻿
 
+using StatLight.Client.Harness.Events;
+
 namespace StatLight.Core.Runners
 {
     using System;
@@ -36,7 +38,7 @@ namespace StatLight.Core.Runners
                 out browserFormHost);
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
-
+            
             IRunner runner = new ContinuousConsoleRunner(logger, EventAggregator, xapPath, statLightService, statLightServiceHost, browserFormHost);
             return runner;
         }
@@ -88,6 +90,20 @@ namespace StatLight.Core.Runners
             return runner;
         }
 
+        public static IRunner CreateWebServerOnlyRunner(ILogger logger, string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
+        {
+            var location = new WebServerLocation();
+
+            var statLightService = new StatLightService(logger, EventAggregator, xapPath, clientTestRunConfiguration, serverTestRunConfiguration);
+            var statLightServiceHost = new StatLightServiceHost(logger, statLightService, location.BaseUrl);
+
+            CreateAndAddConsoleResultHandlerToEventAggregator(logger);
+            SetupDebugClientEventListener(logger);
+            IRunner runner = new WebServerOnlyRunner(logger, EventAggregator, statLightServiceHost, location.TestPageUrl);
+
+            return runner;
+        }
+
         private static void BuildAndReturnWebServiceAndBrowser(
             ILogger logger,
             string xapPath,
@@ -106,7 +122,7 @@ namespace StatLight.Core.Runners
 				new MessageBoxMonitor(logger),
 			};
             var dialogMonitorRunner = new DialogMonitorRunner(logger, EventAggregator, debugAssertMonitorTimer, dialogMonitors);
-
+            SetupDebugClientEventListener(logger);
             statLightService = new StatLightService(logger, EventAggregator, xapPath, clientTestRunConfiguration, serverTestRunConfiguration);
             statLightServiceHost = new StatLightServiceHost(logger, statLightService, location.BaseUrl);
             browserFormHost = new BrowserFormHost(logger, location.TestPageUrl, showTestingBrowserHost, dialogMonitorRunner);
@@ -120,24 +136,16 @@ namespace StatLight.Core.Runners
         }
 
 
-        public static IRunner CreateWebServerOnlyRunner(ILogger logger, string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
-        {
-            var location = new WebServerLocation();
-
-            var statLightService = new StatLightService(logger, EventAggregator, xapPath, clientTestRunConfiguration, serverTestRunConfiguration);
-            var statLightServiceHost = new StatLightServiceHost(logger, statLightService, location.BaseUrl);
-
-            CreateAndAddConsoleResultHandlerToEventAggregator(logger);
-
-            IRunner runner = new WebServerOnlyRunner(logger, EventAggregator, statLightServiceHost, location.TestPageUrl);
-
-            return runner;
-        }
-
         private static void CreateAndAddConsoleResultHandlerToEventAggregator(ILogger logger)
         {
             var consoleResultHandler = new ConsoleResultHandler(logger);
             EventAggregator.AddListener(consoleResultHandler);
         }
+
+        private static void SetupDebugClientEventListener(ILogger logger)
+        {
+            EventAggregator.AddListener<DebugClientEvent>(e => logger.Debug(e.Message));
+        }
+
     }
 }

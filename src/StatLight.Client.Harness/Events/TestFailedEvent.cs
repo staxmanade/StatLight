@@ -99,5 +99,10 @@ namespace StatLight.Client.Harness.Events
         public string Message { get; set; }
     }
 
+    public class DebugClientEvent : ClientEvent
+    {
+        public string Message { get; set; }
+    }
+
     #endregion
 }

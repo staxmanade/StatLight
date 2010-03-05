@@ -16,6 +16,14 @@ namespace StatLight.Client.Harness
             PostMessage(traceClientEvent);
         }
 
+        public static void Debug(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+                message = "{StatLight - Debug Message: trace string is NULL or empty}";
+            var traceClientEvent = new DebugClientEvent { Message = message };
+            PostMessage(traceClientEvent);
+        }
+
         public static void PostMessage(string message)
         {
             PostMessageX(message);
