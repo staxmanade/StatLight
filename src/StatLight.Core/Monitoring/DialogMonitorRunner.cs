@@ -40,12 +40,12 @@ namespace StatLight.Core.Monitoring
         {
             foreach (var dialogMonitor in _dialogMonitors)
             {
-                _logger.Debug("DialogMonitorRunner.Elapsed Start = {0}".FormatWith(dialogMonitor.ToString()));
+                //_logger.Debug("DialogMonitorRunner.Elapsed Start = {0}".FormatWith(dialogMonitor.ToString()));
 
 
                 if (!_isMonitorCurrentlyRunning[dialogMonitor.GetType()])
                 {
-                    _logger.Debug("DialogMonitorRunner.Elapsed - running = {0}".FormatWith(dialogMonitor.ToString()));
+                    //_logger.Debug("DialogMonitorRunner.Elapsed - running = {0}".FormatWith(dialogMonitor.ToString()));
 
                     _isMonitorCurrentlyRunning[dialogMonitor.GetType()] = true;
                     ExecuteDialogSlapdown(dialogMonitor);
@@ -53,9 +53,9 @@ namespace StatLight.Core.Monitoring
                 }
                 else
                 {
-                    _logger.Debug("DialogMonitorRunner.Elapsed skipped = {0}".FormatWith(dialogMonitor.ToString()));
+                    //_logger.Debug("DialogMonitorRunner.Elapsed skipped = {0}".FormatWith(dialogMonitor.ToString()));
                 }
-                _logger.Debug("DialogMonitorRunner.Elapsed End = {0}".FormatWith(dialogMonitor.ToString()));
+                //_logger.Debug("DialogMonitorRunner.Elapsed End = {0}".FormatWith(dialogMonitor.ToString()));
             }
         }
 

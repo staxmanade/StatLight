@@ -12,9 +12,11 @@ namespace StatLight.Core.Runners
     using StatLight.Core.WebServer;
     using StatLight.Core.Events;
 
-    internal class OnetimeRunner : IRunner, IDisposable
+    internal class OnetimeRunner : IRunner, IDisposable,
+        IListener<TestRunCompletedServerEvent>
     {
         private readonly ILogger logger;
+        private readonly IEventAggregator _eventAggregator;
         private readonly IWebServer statLightServiceHost;
         private readonly IBrowserFormHost browserFormHost;
         private readonly TestResultAggregator testResultAggregator;
@@ -28,14 +30,13 @@ namespace StatLight.Core.Runners
             IBrowserFormHost browserFormHost)
         {
             this.logger = logger;
+            _eventAggregator = eventAggregator;
             this.statLightServiceHost = statLightServiceHost;
             this.browserFormHost = browserFormHost;
 
             testResultAggregator = new TestResultAggregator(logger, eventAggregator);
             eventAggregator.AddListener(testResultAggregator);
-
-            eventAggregator
-                .AddListener<TestRunCompletedServerEvent>(() => _browserThreadWaitHandle.Set());
+            eventAggregator.AddListener(this);
         }
 
         public virtual TestReport Run()
@@ -58,6 +59,8 @@ namespace StatLight.Core.Runners
 
         protected virtual void Dispose(bool disposing)
         {
+            browserFormHost.Dispose();
+            _eventAggregator.RemoveListener(this);
             if (disposing)
             {
                 testResultAggregator.Dispose();

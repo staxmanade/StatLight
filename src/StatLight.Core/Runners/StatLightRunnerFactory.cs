@@ -20,7 +20,8 @@ namespace StatLight.Core.Runners
     {
         internal static IEventAggregator EventAggregator = new EventAggregator(new SynchronizationContext());
         private static BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
-
+        private static ConsoleResultHandler _consoleResultHandler;
+        private static Action<DebugClientEvent> _debugEventListener;
         public static IRunner CreateContinuousTestRunner(ILogger logger, string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, ServerTestRunConfiguration serverTestRunConfiguration)
         {
             StatLightService statLightService;
@@ -38,7 +39,7 @@ namespace StatLight.Core.Runners
                 out browserFormHost);
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
-            
+
             IRunner runner = new ContinuousConsoleRunner(logger, EventAggregator, xapPath, statLightService, statLightServiceHost, browserFormHost);
             return runner;
         }
@@ -132,19 +133,27 @@ namespace StatLight.Core.Runners
 
         private static void StartupBrowserCommunicationTimeoutMonitor(TimeSpan maxTimeAllowedBeforeCommErrorSent)
         {
-            _browserCommunicationTimeoutMonitor = new BrowserCommunicationTimeoutMonitor(EventAggregator, new TimerWrapper(3000), maxTimeAllowedBeforeCommErrorSent);
+            if (_browserCommunicationTimeoutMonitor == null)
+                _browserCommunicationTimeoutMonitor = new BrowserCommunicationTimeoutMonitor(EventAggregator, new TimerWrapper(3000), maxTimeAllowedBeforeCommErrorSent);
         }
 
 
         private static void CreateAndAddConsoleResultHandlerToEventAggregator(ILogger logger)
         {
-            var consoleResultHandler = new ConsoleResultHandler(logger);
-            EventAggregator.AddListener(consoleResultHandler);
+            if (_consoleResultHandler == null)
+            {
+                _consoleResultHandler = new ConsoleResultHandler(logger);
+                EventAggregator.AddListener(_consoleResultHandler);
+            }
         }
 
         private static void SetupDebugClientEventListener(ILogger logger)
         {
-            EventAggregator.AddListener<DebugClientEvent>(e => logger.Debug(e.Message));
+            if (_debugEventListener != null)
+            {
+                _debugEventListener = e => logger.Debug(e.Message);
+                EventAggregator.AddListener<DebugClientEvent>(_debugEventListener);
+            }
         }
 
     }

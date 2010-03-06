@@ -24,12 +24,11 @@
 			_dialogMonitorRunner = dialogMonitorRunner;
 		}
 
-		private Form _form;
 		public void Start()
 		{
 			_browserThread = new Thread(() =>
 			{
-				_form = new Form
+				var form = new Form
 				{
 					Height = 600,
 					Width = 800,
@@ -45,8 +44,8 @@
 					Dock = DockStyle.Fill
 				};
 
-				_form.Controls.Add(browser);
-				_form.Show();
+				form.Controls.Add(browser);
+				form.Show();
 
 				for (; ; )
 				{
@@ -82,7 +81,9 @@
 			_logger.Debug("~BrowserFormHost.Stop()");
 			_dialogMonitorRunner.Stop();
 			_shouldBrowserThreadQuit = true;
-		}
+            _browserThread.Abort();
+            _browserThread = null;
+        }
 
 		protected virtual void Dispose(bool disposing)
 		{
