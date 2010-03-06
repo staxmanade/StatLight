@@ -371,23 +371,32 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
 	$file = get-item $scriptFile
-
 	$doc = [System.Xml.Linq.XDocument]::Load($file)
 
-	$tests = $doc.Descendants('test')
-	if($passingTests -eq $null)
+	$passedCount = 0;
+	$ignoredCount = 0;
+	$failedCount = 0;
+
+	foreach($test in $doc.Descendants('test'))
 	{
-		throw "FAIL: no tests found in xml report"
+		if($test.Attribute('resulttype').Value -eq 'Passed')
+		{
+			$passedCount = $passedCount + 1;
+		}
+		if($test.Attribute('resulttype').Value -eq 'Ignored')
+		{
+			$ignoredCount = $ignoredCount + 1;
+		}
+		if($test.Attribute('resulttype').Value -eq 'Failed')
+		{
+			$failedCount = $failedCount + 1;
+		}
+	
 	}
-
-	$passingTests = $tests | where{ $_.Attribute('resulttype').Value -eq 'Passed' }
-	$passingTests.Count.ShouldEqual(4);
-
-	$ignoredTests = @($tests | where{ $_.Attribute('resulttype').Value -eq 'Ignored' })
-	$ignoredTests.Count.ShouldEqual(1);
-
-	$failedTests = @($tests | where{ $_.Attribute('resulttype').Value -eq 'Failed' } )
-	$failedTests.Count.ShouldEqual(1);
+	
+	$passedCount.ShouldEqual(2);
+	$ignoredCount.ShouldEqual(1);
+	$failedCount.ShouldEqual(1);
 
 	AssertXmlReportIsValid $scriptFile
 	
@@ -593,7 +602,7 @@ Task run-integrationTests {
 }
 
 
-Task run-tests-in-other-assembly {
+Task run-tests-in-other-assembly -depends load-nunit-assembly {
 	
 	$scriptFile = GetTemporaryXmlFile;
 	
@@ -602,21 +611,31 @@ Task run-tests-in-other-assembly {
 	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
 	$file = get-item $scriptFile
 	$doc = [System.Xml.Linq.XDocument]::Load($file)
-	
-	$tests = $doc.Descendants('test')
-	if($passingTests -eq $null)
+
+	$passedCount = 0;
+	$ignoredCount = 0;
+	$failedCount = 0;
+
+	foreach($test in $doc.Descendants('test'))
 	{
-		throw "FAIL: no tests found in xml report"
+		if($test.Attribute('resulttype').Value -eq 'Passed')
+		{
+			$passedCount = $passedCount + 1;
+		}
+		if($test.Attribute('resulttype').Value -eq 'Ignored')
+		{
+			$ignoredCount = $ignoredCount + 1;
+		}
+		if($test.Attribute('resulttype').Value -eq 'Failed')
+		{
+			$failedCount = $failedCount + 1;
+		}
+	
 	}
 	
-	$passingTests = $tests | where{ $_.Attribute('resulttype').Value -eq 'Passed' }
-	$passingTests.Count.ShouldEqual(2);
-
-	$ignoredTests = @($tests | where{ $_.Attribute('resulttype').Value -eq 'Ignored' })
-	$ignoredTests.Count.ShouldEqual(1);
-
-	$failedTests = @($tests | where{ $_.Attribute('resulttype').Value -eq 'Failed' } )
-	$failedTests.Count.ShouldEqual(1);
+	$passedCount.ShouldEqual(2);
+	$ignoredCount.ShouldEqual(1);
+	$failedCount.ShouldEqual(1);
 
 	AssertXmlReportIsValid $scriptFile
 }
@@ -727,7 +746,7 @@ Task help {
 	Dump-Tasks
 }
 
-Task test-all -depends run-tests, make-sure-there-are-not-any-NotImplementedExceptions, run-statlight-silverlight-tests, run-integrationTests, run-all-mstest-version-acceptance-tests {
+Task test-all -depends run-tests, make-sure-there-are-not-any-NotImplementedExceptions, run-statlight-silverlight-tests, run-integrationTests, run-all-mstest-version-acceptance-tests, run-tests-in-other-assembly {
 }
 
 Task build-all -depends clean, writeProperties, buildStatLightSolution, buildStatLight, buildStatLightIntegrationTests {
