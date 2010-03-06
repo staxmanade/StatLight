@@ -18,6 +18,8 @@ namespace StatLight.IntegrationTests.ProviderTests.NUnit
 
         protected override void Before_all_tests()
         {
+            base.Before_all_tests();
+
             PathToIntegrationTestXap = TestXapFileLocations.NUnit;
             const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.";
 
@@ -34,10 +36,6 @@ namespace StatLight.IntegrationTests.ProviderTests.NUnit
 		                		                                    namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
 			                        		                	}
                                         };
-
-            base.Before_all_tests();
-
-            TestResults = Runner.Run();
         }
     }
 }

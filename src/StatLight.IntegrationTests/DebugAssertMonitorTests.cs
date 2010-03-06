@@ -14,7 +14,6 @@ namespace StatLight.IntegrationTests
         : IntegrationFixtureBase
     {
         private ClientTestRunConfiguration clientTestRunConfiguration;
-        private TestReport _testReport;
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
@@ -23,6 +22,8 @@ namespace StatLight.IntegrationTests
 
         protected override void Before_all_tests()
         {
+            base.Before_all_tests();
+
             const string prefix = "StatLight.IntegrationTests.Silverlight.When_calling_debug_assert_with_each_overload";
             clientTestRunConfiguration = new ClientTestRunConfiguration
                                        {
@@ -36,26 +37,18 @@ namespace StatLight.IntegrationTests
                                                                    prefix + ".debug_assert_overload_4",
                                                                }
                                        };
-
-            base.Before_all_tests();
-        }
-
-        protected override void Because()
-        {
-            base.Because();
-            _testReport = base.Runner.Run();
         }
 
         [Test]
         public void the_final_result_should_be_a_failure()
         {
-            _testReport.FinalResult.ShouldEqual(RunCompletedState.Failure);
+            TestReport.FinalResult.ShouldEqual(RunCompletedState.Failure);
         }
 
         [Test]
         public void Should_have_detected_three_message_box_failures()
         {
-            _testReport.TotalFailed.ShouldEqual(4);
+            TestReport.TotalFailed.ShouldEqual(4);
         }
     }
 #endif

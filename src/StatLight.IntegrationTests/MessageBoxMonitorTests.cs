@@ -14,7 +14,6 @@ namespace StatLight.IntegrationTests
         : IntegrationFixtureBase
     {
         private ClientTestRunConfiguration clientTestRunConfiguration;
-        private TestReport _testReport;
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
@@ -23,6 +22,8 @@ namespace StatLight.IntegrationTests
 
         protected override void Before_all_tests()
         {
+            base.Before_all_tests();
+
             const string prefix = "StatLight.IntegrationTests.Silverlight.When_a_modal_MessageBox_is_displayed";
             clientTestRunConfiguration = new ClientTestRunConfiguration
                                        {
@@ -35,32 +36,24 @@ namespace StatLight.IntegrationTests
                                                                    prefix + ".messageBox_overload_1_MessageBoxButton_OKCancel",
                                                                }
                                        };
-
-            base.Before_all_tests();
-        }
-
-        protected override void Because()
-        {
-            base.Because();
-            _testReport = base.Runner.Run();
         }
 
         [Test]
         public void the_final_result_should_be_a_failure()
         {
-            _testReport.FinalResult.ShouldEqual(RunCompletedState.Failure);
+            TestReport.FinalResult.ShouldEqual(RunCompletedState.Failure);
         }
 
         [Test]
         public void Should_have_detected_three_message_box_failures()
         {
-            _testReport.TotalFailed.ShouldEqual(3);
+            TestReport.TotalFailed.ShouldEqual(3);
         }
 
         [Test]
         public void Should_have_set_the_Namespace_of_messagebox_failed_methods()
         {
-            foreach (var result in _testReport.TestResults)
+            foreach (var result in TestReport.TestResults)
             {
                 result.NamespaceName.ShouldEqual("StatLight.IntegrationTests.Silverlight");
             }
@@ -69,7 +62,7 @@ namespace StatLight.IntegrationTests
         [Test]
         public void Should_only_have_three_results_total()
         {
-            _testReport.TestResults.Count().ShouldEqual(3);
+            TestReport.TestResults.Count().ShouldEqual(3);
         }
 
         //[Test]

@@ -11,7 +11,6 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
         : IntegrationFixtureBase
     {
         private ClientTestRunConfiguration _clientTestRunConfiguration;
-        private TestReport _testReport;
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
@@ -20,29 +19,27 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
 
         protected override void Before_all_tests()
         {
+            base.Before_all_tests();
             PathToIntegrationTestXap = TestXapFileLocations.UnitDriven;
             _clientTestRunConfiguration = new ClientTestRunConfiguration
                                         {
                                                 TagFilter = string.Empty,
                                                 UnitTestProviderType = UnitTestProviderType.UnitDriven
                                             };
-            base.Before_all_tests();
-
-            _testReport = Runner.Run();
         }
 
         [Test]
         public void Should_have_correct_TotalFailed_count()
         {
             // note: should be 4, but not currently supporting the async tests
-            _testReport.TotalFailed.ShouldEqual(2);
+            TestReport.TotalFailed.ShouldEqual(2);
         }
 
 
         [Test]
         public void Should_have_total_results_of_11_but_currently_9_because_not_supported_async_failures()
         {
-            _testReport.TotalResults.ShouldEqual(9);
+            TestReport.TotalResults.ShouldEqual(9);
         }
 
         [Test]
@@ -59,13 +56,13 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
         [Test]
         public void Should_have_correct_TotalPassed_count()
         {
-            _testReport.TotalPassed.ShouldEqual(7);
+            TestReport.TotalPassed.ShouldEqual(7);
         }
 
         [Test]
         public void Should_have_correct_TotalIgnored_count()
         {
-            _testReport.TotalIgnored.ShouldEqual(0);
+            TestReport.TotalIgnored.ShouldEqual(0);
         }
     }
 }

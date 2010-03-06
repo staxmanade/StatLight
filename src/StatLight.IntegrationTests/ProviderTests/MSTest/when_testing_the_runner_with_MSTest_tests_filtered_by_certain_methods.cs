@@ -19,6 +19,8 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
         protected override void Before_all_tests()
         {
+            base.Before_all_tests();
+
             PathToIntegrationTestXap = TestXapFileLocations.MSTest;
 
             const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.";
@@ -37,9 +39,6 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 		                	}
                     };
 
-            base.Before_all_tests();
-
-            TestResults = base.Runner.Run();
         }
     }
 

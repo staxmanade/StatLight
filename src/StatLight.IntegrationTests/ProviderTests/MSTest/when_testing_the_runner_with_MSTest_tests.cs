@@ -17,7 +17,6 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         : IntegrationFixtureBase
     {
         private ClientTestRunConfiguration _clientTestRunConfiguration;
-        private TestReport _testReport;
         private InitializationOfUnitTestHarnessClientEvent _initializationOfUnitTestHarnessClientEvent;
 
         private readonly IList<TestExecutionClassBeginClientEvent> _testExecutionClassBeginClientEvent = new List<TestExecutionClassBeginClientEvent>();
@@ -34,13 +33,14 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
         protected override void Before_all_tests()
         {
+            base.Before_all_tests();
+
             PathToIntegrationTestXap = TestXapFileLocations.MSTest;
             _clientTestRunConfiguration = new ClientTestRunConfiguration
                                         {
                                             TagFilter = string.Empty,
                                             UnitTestProviderType = UnitTestProviderType.MSTest,
                                         };
-            base.Before_all_tests();
             IEventAggregator eventAggregator = StatLightRunnerFactory.EventAggregator;
 
 
@@ -54,26 +54,25 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
                 .AddListener<TestExecutionMethodPassedClientEvent>(e => _testExecutionMethodPassedClientEvent.Add(e))
                 ;
 
-            _testReport = Runner.Run();
         }
 
 
         [Test]
         public void Should_have_correct_TotalFailed_count()
         {
-            _testReport.TotalFailed.ShouldEqual(1);
+            TestReport.TotalFailed.ShouldEqual(1);
         }
 
         [Test]
         public void Should_have_correct_TotalPassed_count()
         {
-            _testReport.TotalPassed.ShouldEqual(4);
+            TestReport.TotalPassed.ShouldEqual(4);
         }
 
         [Test]
         public void Should_have_correct_TotalIgnored_count()
         {
-            _testReport.TotalIgnored.ShouldEqual(1);
+            TestReport.TotalIgnored.ShouldEqual(1);
         }
 
         #region Events

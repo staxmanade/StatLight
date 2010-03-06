@@ -12,12 +12,12 @@ namespace StatLight.IntegrationTests.ProviderTests
         protected string NormalClassTestName { get; set; }
         protected string NestedClassTestName { get; set; }
 
-        protected override void Before_all_tests()
+        protected override void Because()
         {
             NormalClassTestName.ShouldNotBeNull("NormalClassTestName");
             NestedClassTestName.ShouldNotBeNull("NestedClassTestName");
 
-            base.Before_all_tests();
+            base.Because();
         }
 
         [Test]

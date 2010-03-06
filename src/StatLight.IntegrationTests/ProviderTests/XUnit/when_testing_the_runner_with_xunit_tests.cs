@@ -12,7 +12,6 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
 		: IntegrationFixtureBase
 	{
 		private ClientTestRunConfiguration _clientTestRunConfiguration;
-		private TestReport _testReport;
 
 		protected override ClientTestRunConfiguration ClientTestRunConfiguration
 		{
@@ -21,33 +20,33 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
 
 		protected override void Before_all_tests()
 		{
-			base.PathToIntegrationTestXap = TestXapFileLocations.XUnit;
+            base.Before_all_tests();
+           
+            base.PathToIntegrationTestXap = TestXapFileLocations.XUnit;
 			this._clientTestRunConfiguration = new ClientTestRunConfiguration
 			                             	{
 			                             		TagFilter = string.Empty,
 			                             		UnitTestProviderType = UnitTestProviderType.XUnit
 			                             	};
-			base.Before_all_tests();
 
-			_testReport = base.Runner.Run();
 		}
 
 		[Test]
 		public void Should_have_correct_TotalFailed_count()
 		{
-			_testReport.TotalFailed.ShouldEqual(1);
+			TestReport.TotalFailed.ShouldEqual(1);
 		}
 
 		[Test]
 		public void Should_have_correct_TotalPassed_count()
 		{
-			_testReport.TotalPassed.ShouldEqual(3);
+			TestReport.TotalPassed.ShouldEqual(3);
 		}
 
 		[Test]
 		public void Should_have_correct_TotalIgnored_count()
 		{
-			_testReport.TotalIgnored.ShouldEqual(1);
+			TestReport.TotalIgnored.ShouldEqual(1);
 		}
 	}
 }

@@ -11,7 +11,6 @@ namespace StatLight.IntegrationTests.ProviderTests.NUnit
 		: IntegrationFixtureBase
 	{
 		private ClientTestRunConfiguration clientTestRunConfiguration;
-		private TestReport testReport;
 
 		protected override ClientTestRunConfiguration ClientTestRunConfiguration
 		{
@@ -20,34 +19,33 @@ namespace StatLight.IntegrationTests.ProviderTests.NUnit
 
 		protected override void Before_all_tests()
 		{
-			base.PathToIntegrationTestXap = TestXapFileLocations.NUnit;
+            base.Before_all_tests();
+
+            base.PathToIntegrationTestXap = TestXapFileLocations.NUnit;
 			this.clientTestRunConfiguration = new ClientTestRunConfiguration()
 			                            	{
 			                            		TagFilter = string.Empty,
 			                            		UnitTestProviderType = UnitTestProviderType.NUnit
 			                            	};
-			base.Before_all_tests();
-
-			testReport = base.Runner.Run();
 		}
 
 
 		[Test]
 		public void Should_have_correct_TotalFailed_count()
 		{
-			testReport.TotalFailed.ShouldEqual(1, "Failed count wrong");
+			TestReport.TotalFailed.ShouldEqual(1, "Failed count wrong");
 		}
 
 		[Test]
 		public void Should_have_correct_TotalPassed_count()
 		{
-			testReport.TotalPassed.ShouldEqual(4, "Passed count wrong");
+			TestReport.TotalPassed.ShouldEqual(4, "Passed count wrong");
 		}
 
 		[Test]
 		public void Should_have_correct_TotalIgnored_count()
 		{
-			testReport.TotalIgnored.ShouldEqual(1, "Ignored count wrong");
+			TestReport.TotalIgnored.ShouldEqual(1, "Ignored count wrong");
 		}
 	}
 }
