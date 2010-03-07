@@ -8,7 +8,6 @@ namespace StatLight.IntegrationTests.ProviderTests
 {
     public abstract class filtered_tests____ : IntegrationFixtureBase
     {
-        protected TestReport TestResults { get; set; }
         protected string NormalClassTestName { get; set; }
         protected string NestedClassTestName { get; set; }
 
@@ -40,10 +39,7 @@ namespace StatLight.IntegrationTests.ProviderTests
 
         private IEnumerable<TestCaseResult> TestCaseResults()
         {
-            return TestResults
-                .TestResults
-                .Where(w => w is TestCaseResult)
-                .Cast<TestCaseResult>();
+            return TestReport.TestResults;
         }
 
     }

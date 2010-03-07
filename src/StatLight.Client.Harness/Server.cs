@@ -19,10 +19,10 @@ namespace StatLight.Client.Harness
 
         public static void Debug(string message)
         {
-            if (string.IsNullOrEmpty(message))
-                message = "{StatLight - Debug Message: trace string is NULL or empty}";
+#if DEBUG
             var traceClientEvent = new DebugClientEvent { Message = message };
             PostMessage(traceClientEvent);
+#endif
         }
 
         public static void PostMessage(string message)

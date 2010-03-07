@@ -394,7 +394,7 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	}
 	
-	$passedCount.ShouldEqual(2);
+	$passedCount.ShouldEqual(4);
 	$ignoredCount.ShouldEqual(1);
 	$failedCount.ShouldEqual(1);
 
