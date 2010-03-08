@@ -1,3 +1,9 @@
+Project (bits) Information
+=========================
+Source code is at http://github.com/staxmanade/StatLight
+Documentation, Issue tracking, etc at http://statlight.codeplex.com
+
+
 
 How to build?
 =========================
