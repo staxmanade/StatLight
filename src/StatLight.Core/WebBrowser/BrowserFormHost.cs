@@ -1,101 +1,92 @@
 ﻿namespace StatLight.Core.WebBrowser
 {
-	using System;
-	using System.Threading;
-	using System.Windows.Forms;
-	using StatLight.Core.Common;
-	using StatLight.Core.Monitoring;
-	using StatLight.Core.Timing;
+    using System;
+    using System.Threading;
+    using System.Windows.Forms;
+    using StatLight.Core.Common;
+    using StatLight.Core.Monitoring;
 
-	internal class BrowserFormHost : IBrowserFormHost, IDisposable
-	{
-		private readonly ILogger _logger;
-		private readonly Uri _pageToHost;
-		private readonly bool _browserVisible;
-		private Thread _browserThread;
-		private bool _shouldBrowserThreadQuit;
-		private readonly DialogMonitorRunner _dialogMonitorRunner;
+    internal class BrowserFormHost : IBrowserFormHost, IDisposable
+    {
+        private readonly ILogger _logger;
+        private readonly Uri _pageToHost;
+        private readonly bool _browserVisible;
+        private Thread _browserThread;
+        private readonly DialogMonitorRunner _dialogMonitorRunner;
+        readonly AutoResetEvent _browserThreadWaitHandle = new AutoResetEvent(false);
 
-		public BrowserFormHost(ILogger logger, Uri pageToHost, bool browserVisible, DialogMonitorRunner dialogMonitorRunner)
-		{
-			_logger = logger;
-			_pageToHost = pageToHost;
-			_browserVisible = browserVisible;
-			_dialogMonitorRunner = dialogMonitorRunner;
-		}
+        public BrowserFormHost(ILogger logger, Uri pageToHost, bool browserVisible, DialogMonitorRunner dialogMonitorRunner)
+        {
+            _logger = logger;
+            _pageToHost = pageToHost;
+            _browserVisible = browserVisible;
+            _dialogMonitorRunner = dialogMonitorRunner;
+        }
 
-		public void Start()
-		{
-			_browserThread = new Thread(() =>
-			{
-				var form = new Form
-				{
-					Height = 600,
-					Width = 800,
-					WindowState = GetBrowserVisibilityState(_browserVisible),
-					ShowInTaskbar = _browserVisible,
-					Icon = Properties.Resources.FavIcon,
-					Text = "StatLight - Browser Host"
-				};
+        private Form _form;
+        public void Start()
+        {
+            _browserThread = new Thread(() =>
+            {
+                _form = new Form
+                {
+                    Height = 600,
+                    Width = 800,
+                    WindowState = GetBrowserVisibilityState(_browserVisible),
+                    ShowInTaskbar = _browserVisible,
+                    Icon = Properties.Resources.FavIcon,
+                    Text = "StatLight - Browser Host"
+                };
 
-				var browser = new WebBrowser
-				{
-					Url = _pageToHost,
-					Dock = DockStyle.Fill
-				};
+                var browser = new WebBrowser
+                {
+                    Url = _pageToHost,
+                    Dock = DockStyle.Fill
+                };
 
-				form.Controls.Add(browser);
-				form.Show();
+                _form.Controls.Add(browser);
+                _form.ShowDialog();
 
-				for (; ; )
-				{
-					Application.DoEvents();
+                // If we don't stall here till we're told - then the thread dies and the form along with it.
+                _browserThreadWaitHandle.WaitOne();
+            });
+            _browserThread.SetApartmentState(ApartmentState.STA);
+            _browserThread.Start();
 
-					if (!_shouldBrowserThreadQuit)
-						continue;
+            _dialogMonitorRunner.Start();
+        }
 
-					_logger.Debug("_shouldBrowserThreadQuit switched to false");
-					_shouldBrowserThreadQuit = false;
-					break;
-				}
-			});
-			_browserThread.SetApartmentState(ApartmentState.STA);
-			_browserThread.Start();
+        private static FormWindowState GetBrowserVisibilityState(bool browserVisible)
+        {
+            return browserVisible ? FormWindowState.Normal : FormWindowState.Minimized;
+        }
 
-			_dialogMonitorRunner.Start();
-		}
+        ~BrowserFormHost()
+        {
+            _logger.Debug("Disposing BrowserFormHost");
+        }
 
-		private static FormWindowState GetBrowserVisibilityState(bool browserVisible)
-		{
-			return browserVisible ? FormWindowState.Normal : FormWindowState.Minimized;
-		}
-
-		~BrowserFormHost()
-		{
-			_logger.Debug("Disposing BrowserFormHost");
-			_shouldBrowserThreadQuit = true;
-		}
-
-		public void Stop()
-		{
-			_logger.Debug("~BrowserFormHost.Stop()");
-			_dialogMonitorRunner.Stop();
-			_shouldBrowserThreadQuit = true;
+        public void Stop()
+        {
+            _form.Close();
+            _logger.Debug("~BrowserFormHost.Stop()");
+            _dialogMonitorRunner.Stop();
+            _browserThreadWaitHandle.Set();
             _browserThread.Abort();
             _browserThread = null;
         }
 
-		protected virtual void Dispose(bool disposing)
-		{
-			if (!disposing)
-				return;
-		}
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+                return;
+        }
 
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-	}
+    }
 }
