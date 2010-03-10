@@ -1,6 +1,7 @@
 ﻿
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Events.Aggregation;
+using StatLight.Core.Reporting.Providers.Console;
 
 namespace StatLight.Core.Runners
 {
@@ -41,7 +42,7 @@ namespace StatLight.Core.Runners
 
         public virtual TestReport Run()
         {
-
+            DateTime startOfRun = DateTime.Now;
             logger.Information("{1}{1}Starting Test Run: {0}{1}{1}"
                 .FormatWith(DateTime.Now, Environment.NewLine));
 
@@ -51,10 +52,9 @@ namespace StatLight.Core.Runners
             browserFormHost.Stop();
             statLightServiceHost.Stop();
 
-            logger.Information("{1}{1}--- Completed Test Run: {0}{1}{1}"
-                .FormatWith(DateTime.Now, Environment.NewLine));
-
-            return testResultAggregator.CurrentReport;
+            var testReport = testResultAggregator.CurrentReport;
+            ConsoleTestCompleteMessage.WriteOutCompletionStatement(testReport, startOfRun);
+            return testReport;
         }
 
         protected virtual void Dispose(bool disposing)

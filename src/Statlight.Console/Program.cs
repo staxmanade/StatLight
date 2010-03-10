@@ -79,7 +79,6 @@ namespace StatLight.Console
 
                     DateTime startOfRun = DateTime.Now; 
                     var testReport = RunTestAndGetTestReport(logger, xapPath, continuousIntegrationMode, showTestingBrowserHost, useTeamCity, startWebServerOnly, config, microsoftTestingFrameworkVersion);
-                    ConsoleTestCompleteMessage.WriteOutCompletionStatement(testReport, startOfRun);
 
                     if (!string.IsNullOrEmpty(options.XmlReportOutputPath))
                     {
