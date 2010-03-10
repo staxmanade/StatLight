@@ -225,13 +225,6 @@ namespace StatLight.Client.Harness
                                         _testAssemblies.Add(ass.FullName, ass);
                                     }
                                 }
-
-                                //if (ass.FullName.Contains("Other"))
-                                //    _testAssemblies.Add(ass.FullName, ass);
-                                if (part == entryPoint + ".dll")
-                                {
-                                    //_testAssemblies.Add(ass.FullName, ass);
-                                }
                             }
                         }
                     }
@@ -261,7 +254,6 @@ namespace StatLight.Client.Harness
                     Exception = ex,
                 };
                 Server.PostMessage(messageObject);
-                Server.SignalTestComplete();
             }
             catch (Exception)
             {

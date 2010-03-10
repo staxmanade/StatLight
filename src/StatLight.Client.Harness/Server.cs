@@ -30,11 +30,6 @@ namespace StatLight.Client.Harness
             PostMessageX(message);
         }
 
-        public static void PostMessage(object message)
-        {
-            string traceMessage = message.Serialize();
-            PostMessageX(traceMessage);
-        }
 
         public static void PostMessage(ClientEvent message)
         {
