@@ -68,7 +68,6 @@
 
         public void Stop()
         {
-            _form.Close();
             _logger.Debug("~BrowserFormHost.Stop()");
             _dialogMonitorRunner.Stop();
             _browserThreadWaitHandle.Set();
