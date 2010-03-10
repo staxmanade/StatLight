@@ -77,8 +77,9 @@ namespace StatLight.Console
                     config.TagFilter = options.TagFilters;
                     config.UnitTestProviderType = unitTestProviderType;
 
+                    DateTime startOfRun = DateTime.Now; 
                     var testReport = RunTestAndGetTestReport(logger, xapPath, continuousIntegrationMode, showTestingBrowserHost, useTeamCity, startWebServerOnly, config, microsoftTestingFrameworkVersion);
-                    ConsoleTestCompleteMessage.WriteOutCompletionStatement(testReport);
+                    ConsoleTestCompleteMessage.WriteOutCompletionStatement(testReport, startOfRun);
 
                     if (!string.IsNullOrEmpty(options.XmlReportOutputPath))
                     {

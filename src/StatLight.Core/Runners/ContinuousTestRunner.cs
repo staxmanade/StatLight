@@ -20,7 +20,7 @@ namespace StatLight.Core.Runners
         private readonly ILogger _logger;
         private TestResultAggregator _testResultAggregator;
         private readonly IEventAggregator _eventAggregator;
-
+        private DateTime _startOfRun;
         internal ContinuousTestRunner(
             ILogger logger,
             IEventAggregator eventAggregator,
@@ -62,6 +62,7 @@ namespace StatLight.Core.Runners
 
             _logger.Information("{1}{1}Starting Test Run: {0}{1}{1}"
                 .FormatWith(DateTime.Now, Environment.NewLine));
+            _startOfRun = DateTime.Now;
             _browserFormHost.Start();
             IsCurrentlyRunningTest = true;
         }
@@ -69,9 +70,7 @@ namespace StatLight.Core.Runners
         private void Stop()
         {
             _logger.Debug("ContinuousTestRunner.Stop()");
-            _logger.Information("{1}{1}--- Completed Test Run: {0}{1}{1}"
-                .FormatWith(DateTime.Now, Environment.NewLine));
-            ConsoleTestCompleteMessage.WriteOutCompletionStatement(_testResultAggregator.CurrentReport);
+            ConsoleTestCompleteMessage.WriteOutCompletionStatement(_testResultAggregator.CurrentReport, _startOfRun);
             _browserFormHost.Stop();
             IsCurrentlyRunningTest = false;
 

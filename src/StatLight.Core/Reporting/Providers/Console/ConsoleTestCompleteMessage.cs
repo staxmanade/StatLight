@@ -8,8 +8,11 @@ namespace StatLight.Core.Reporting.Providers.Console
 {
     public static class ConsoleTestCompleteMessage
     {
-        public static void WriteOutCompletionStatement(TestReport completeState)
+        public static void WriteOutCompletionStatement(TestReport completeState, DateTime startOfRunTime)
         {
+            writer.Write("{1}{1}--- Completed Test Run at: {0}. Total Run Time: {2}{1}{1}"
+                .FormatWith(DateTime.Now, Environment.NewLine, DateTime.Now.Subtract(startOfRunTime)));
+
             writer.Write("Test run results: Total {0}, ", completeState.TotalResults);
 
             var successfulMessage = "Successful {0}, ".FormatWith(completeState.TotalPassed);
