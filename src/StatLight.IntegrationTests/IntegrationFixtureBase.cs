@@ -1,4 +1,5 @@
-﻿using StatLight.IntegrationTests.ProviderTests;
+﻿using System;
+using StatLight.IntegrationTests.ProviderTests;
 
 namespace StatLight.IntegrationTests
 {
@@ -39,7 +40,11 @@ namespace StatLight.IntegrationTests
         protected override void Because()
         {
             base.Because();
-            var serverTestRunConfiguration = new ServerTestRunConfiguration(new XapHostFileLoaderFactory(_testLogger), MicrosoftTestingFrameworkVersion.Default);
+            var serverTestRunConfiguration = new ServerTestRunConfiguration(new XapHostFileLoaderFactory(_testLogger),
+                                                                            MicrosoftTestingFrameworkVersion.Default)
+                                                 {
+                                                     DialogSmackDownElapseMilliseconds = 500,
+                                                 };
             Runner = StatLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, _pathToIntegrationTestXap, ClientTestRunConfiguration, serverTestRunConfiguration, true);
             TestReport = Runner.Run();
         }
@@ -47,7 +52,7 @@ namespace StatLight.IntegrationTests
         protected override void After_all_tests()
         {
             base.After_all_tests();
-            
+
             Runner.Dispose();
             Runner = null;
         }

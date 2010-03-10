@@ -46,7 +46,7 @@ using System;
 			var dialogWindow = appWindow.FindFirst(TreeScope.Children, dialogCond);
 			if (dialogWindow == null)
 			{
-				_logger.Debug("COULD NOT FIND THE AUTOMATION ELEMENT FOR dialgWindow 'Dialog'");
+				//_logger.Debug("COULD NOT FIND THE AUTOMATION ELEMENT FOR dialgWindow 'Dialog'");
 				return noActionTaken;
 			}
 

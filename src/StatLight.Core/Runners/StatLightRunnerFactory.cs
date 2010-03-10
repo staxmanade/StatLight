@@ -116,7 +116,7 @@ namespace StatLight.Core.Runners
             out BrowserFormHost browserFormHost)
         {
             var location = new WebServerLocation();
-            var debugAssertMonitorTimer = new TimerWrapper(5000);
+            var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
             var dialogMonitors = new List<IDialogMonitor>
 			{
 				new DebugAssertMonitor(logger),
