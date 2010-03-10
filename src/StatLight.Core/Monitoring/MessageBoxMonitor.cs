@@ -73,7 +73,7 @@ using System;
 
 			// Close the dialgo by clicking OK
 			buttonClicInvokePattern.Invoke();
-			Thread.Sleep(100);
+			//Thread.Sleep(100);
 			return new DialogMonitorResult
 					{
 						WasActionTaken = true,
