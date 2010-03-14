@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using StatLight.Core.Tests;
 using StatLight.Core.UnitTestProviders;
@@ -49,6 +50,17 @@ namespace StatLight.IntegrationTests
         public void Should_have_detected_three_message_box_failures()
         {
             TestReport.TotalFailed.ShouldEqual(4);
+        }
+
+        [Test]
+        public void Should_have_scraped_the__debug_assert_overload_1__test_message_box_info()
+        {
+            TestReport
+                .TestResults
+                .Single(w => w.MethodName.Equals("debug_assert_overload_1"))
+                .OtherInfo
+                .ShouldContain("at When_calling_debug_assert_with_each_overload.debug_assert_overload_1()")
+                ;
         }
     }
 #endif

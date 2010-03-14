@@ -1,12 +1,10 @@
-using StatLight.Core.Events.Aggregation;
-
 namespace StatLight.Core.Monitoring
 {
     using System;
     using System.Collections.Generic;
     using StatLight.Core.Common;
     using StatLight.Core.Events;
-    using StatLight.Core.Reporting.Messages;
+    using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Timing;
 
     internal class DialogMonitorRunner
@@ -29,6 +27,7 @@ namespace StatLight.Core.Monitoring
 
             foreach (var monitor in _dialogMonitors)
             {
+                //_logger.Debug("adding dialogMonitor[{0}]".FormatWith(_isMonitorCurrentlyRunning.GetType()));
                 _isMonitorCurrentlyRunning.Add(monitor.GetType(), false);
             }
 

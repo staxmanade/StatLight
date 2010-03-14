@@ -116,9 +116,10 @@ namespace StatLight.Core.Tests
 			Assert.IsNotEmpty(aString);
 		}
 
-		public static void ShouldContain(this string actual, string expected)
+		public static string ShouldContain(this string actual, string expected)
 		{
 			StringAssert.Contains(expected, actual);
+		    return actual;
 		}
 
 		public static void ShouldNotContain(this string actual, string expected)

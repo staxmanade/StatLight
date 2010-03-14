@@ -65,11 +65,44 @@ namespace StatLight.IntegrationTests
             TestReport.TestResults.Count().ShouldEqual(3);
         }
 
-        //[Test]
-        //public void Should_have_set_the_ClassName_of_messagebox_failed_methods()
-        //{
-        //    _testReport.TestResults.Select(s => s.NamespaceName.ShouldEqual("StatLight.IntegrationTests.Silverlight"));
-        //}
+        [Test]
+        public void Should_have_set_the_ClassName_of_messagebox_failed_methods()
+        {
+            TestReport.TestResults.Select(s => s.NamespaceName.ShouldEqual("StatLight.IntegrationTests.Silverlight"));
+        }
+
+        [Test]
+        public void Should_have_scraped_the__messageBox_overload_1__test_message_box_info()
+        {
+            TestReport
+                .TestResults
+                .Single(w => w.MethodName.Equals("messageBox_overload_1"))
+                .OtherInfo
+                .ShouldContain("Some text");
+
+        }
+
+        [Test]
+        public void Should_have_scraped_the__messageBox_overload_1_MessageBoxButton_OK__test_message_box_info()
+        {
+            TestReport
+                .TestResults
+                .Single(w => w.MethodName.Equals("messageBox_overload_1_MessageBoxButton_OK"))
+                .OtherInfo
+                .ShouldContain("some caption")
+                .ShouldContain("Some text");
+        }
+
+        [Test]
+        public void Should_have_scraped_the__messageBox_overload_1_MessageBoxButton_OKCancel__test_message_box_info()
+        {
+            TestReport
+                .TestResults
+                .Single(w => w.MethodName.Equals("messageBox_overload_1_MessageBoxButton_OKCancel"))
+                .OtherInfo
+                .ShouldContain("some caption")
+                .ShouldContain("Some text");
+        }
     }
 }
 
