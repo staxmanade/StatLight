@@ -1,20 +1,18 @@
-﻿using System;
-using Microsoft.Silverlight.Testing.Harness;
+﻿using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Client.Harness.Events;
 
-namespace StatLight.Client.Harness.ClientEventMapping
+namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
 {
-    public class TestExecutionMethodBeginClientEventMap : ILogMessageToClientEventTranslation
+    public class TestExecutionMethodPassedClientEventMap : ILogMessageToClientEventTranslation
     {
         public bool CanTranslate(LogMessage message)
         {
-            if (message.MessageType == LogMessageType.TestExecution)
+            if (message.MessageType == LogMessageType.TestResult)
             {
-                if (message.Is(TestStage.Starting)
-                    && message.Is(TestGranularity.TestScenario)
-                    && message.DecoratorMatches(UnitTestLogDecorator.TestMethodMetadata, v => v is ITestMethod)
+                if (message.Is(TestGranularity.TestScenario)
+                    && message.DecoratorMatches(LogDecorator.TestOutcome, v => (TestOutcome)v == TestOutcome.Passed)
                     )
                 {
                     return true;
@@ -25,13 +23,16 @@ namespace StatLight.Client.Harness.ClientEventMapping
 
         public ClientEvent Translate(LogMessage message)
         {
+            var scenarioResult = (ScenarioResult)message.Decorators[UnitTestLogDecorator.ScenarioResult];
             var testMethod = (ITestMethod)message.Decorators[UnitTestLogDecorator.TestMethodMetadata];
-            var clientEventX = new TestExecutionMethodBeginClientEvent
+
+            var clientEventX = new TestExecutionMethodPassedClientEvent
                                    {
                                        ClassName = testMethod.Method.DeclaringType.ReadClassName(),
                                        NamespaceName = testMethod.Method.DeclaringType.Namespace,
                                        MethodName = testMethod.Method.Name,
-                                       Started = DateTime.Now,
+                                       Finished = scenarioResult.Finished,
+                                       Started = scenarioResult.Started,
                                    };
             return clientEventX;
         }

@@ -3,7 +3,7 @@ using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Client.Harness.Events;
 
-namespace StatLight.Client.Harness.ClientEventMapping
+namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
 {
     public class TestExecutionClassCompletedClientEventMap : ILogMessageToClientEventTranslation
     {

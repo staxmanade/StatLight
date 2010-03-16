@@ -1,12 +1,7 @@
 ﻿using System;
 using Microsoft.Silverlight.Testing.Harness;
-using Microsoft.Silverlight.Testing.UnitTesting.Harness;
-using StatLight.Client.Harness.Events;
-using StatLight.Core.Reporting.Messages;
-using StatLight.Core.Serialization;
-using LogMessageType = Microsoft.Silverlight.Testing.Harness.LogMessageType;
 
-namespace StatLight.Client.Harness.ClientEventMapping
+namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
 {
     internal static class UnitTestResultProviderExtensions
     {

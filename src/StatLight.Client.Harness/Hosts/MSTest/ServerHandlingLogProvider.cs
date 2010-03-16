@@ -1,11 +1,10 @@
 using System;
 using System.Text;
 using Microsoft.Silverlight.Testing.Harness;
-using StatLight.Client.Harness.ClientEventMapping;
 using StatLight.Client.Harness.Events;
-using StatLight.Core.Serialization;
+using StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation;
 
-namespace StatLight.Client.Harness
+namespace StatLight.Client.Harness.Hosts.MSTest
 {
     internal sealed class ServerHandlingLogProvider : LogProvider
     {
@@ -64,11 +63,13 @@ namespace StatLight.Client.Harness
             foreach (var k in decorators)
             {
                 sb.AppendFormat("KeyType(typeof,string)={0}, {1}, ValueType={2}, {3}{4}",
-                    k.Key.GetType(), k.Key,
-                    k.Value.GetType(), k.Value, Environment.NewLine);
+                                k.Key.GetType(), k.Key,
+                                k.Value.GetType(), k.Value, Environment.NewLine);
             }
             return sb.ToString();
         }
 
     }
 }
+
+
