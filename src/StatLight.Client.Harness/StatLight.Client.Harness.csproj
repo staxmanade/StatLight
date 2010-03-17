@@ -122,7 +122,7 @@
     <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionMethodPassedClientEventMap.cs" />
     <Compile Include="Hosts\MSTest\LogMessagTranslation\UnitTestResultProviderExtensions.cs" />
     <Compile Include="Hosts\ITestRunnerHost.cs" />
-    <Compile Include="LoadedXapData.xaml.cs" />
+    <Compile Include="LoadedXapData.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventArgs.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventHandler.cs" />
     <Compile Include="Messaging\HttpWebRequest.cs" />
