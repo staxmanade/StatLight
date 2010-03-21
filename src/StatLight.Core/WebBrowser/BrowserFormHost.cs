@@ -13,7 +13,6 @@
         private readonly bool _browserVisible;
         private Thread _browserThread;
         private readonly DialogMonitorRunner _dialogMonitorRunner;
-        readonly AutoResetEvent _browserThreadWaitHandle = new AutoResetEvent(false);
 
         public BrowserFormHost(ILogger logger, Uri pageToHost, bool browserVisible, DialogMonitorRunner dialogMonitorRunner)
         {
@@ -29,26 +28,26 @@
             _browserThread = new Thread(() =>
             {
                 _form = new Form
+                            {
+                                Height = 600,
+                                Width = 800,
+                                WindowState = GetBrowserVisibilityState(_browserVisible),
+                                ShowInTaskbar = _browserVisible,
+                                Icon = Properties.Resources.FavIcon,
+                                Text = "StatLight - Browser Host"
+                            };
+
+                using (_form)
                 {
-                    Height = 600,
-                    Width = 800,
-                    WindowState = GetBrowserVisibilityState(_browserVisible),
-                    ShowInTaskbar = _browserVisible,
-                    Icon = Properties.Resources.FavIcon,
-                    Text = "StatLight - Browser Host"
-                };
+                    var browser = new WebBrowser
+                    {
+                        Url = _pageToHost,
+                        Dock = DockStyle.Fill
+                    };
 
-                var browser = new WebBrowser
-                {
-                    Url = _pageToHost,
-                    Dock = DockStyle.Fill
-                };
-
-                _form.Controls.Add(browser);
-                _form.ShowDialog();
-
-                // If we don't stall here till we're told - then the thread dies and the form along with it.
-                _browserThreadWaitHandle.WaitOne();
+                    _form.Controls.Add(browser);
+                    _form.ShowDialog();
+                }
             });
             _browserThread.SetApartmentState(ApartmentState.STA);
             _browserThread.Start();
@@ -68,10 +67,9 @@
 
         public void Stop()
         {
-            _logger.Debug("~BrowserFormHost.Stop()");
+            _logger.Debug("BrowserFormHost.Stop()");
             _dialogMonitorRunner.Stop();
-            _browserThreadWaitHandle.Set();
-            _browserThread.Abort();
+            _form.Close();
             _browserThread = null;
         }
 
