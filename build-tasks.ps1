@@ -531,7 +531,6 @@ Task writeProperties {
 	
 	$ErrorActionPreference = "Stop"
 	
-	Dump-Properties
 }
 
 Task clean {
@@ -568,11 +567,7 @@ Task buildStatLightIntegrationTests {
 
 Task buildStatLightSolution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe'
-	& $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86
-	if($LastExitCode)
-	{
-		throw 'msbuild failed on StatLight.sln'
-	}
+	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 } 'msbuild failed on StatLight.sln'
 }
 
 
@@ -584,21 +579,11 @@ Task buildStatLightSolution {
 
 
 Task run-tests {
-	& $nunit_console_path $test_assembly_path
-
-	if($LastExitCode)
-	{
-		throw 'Unit Tests Failed'
-	}
+	exec { & $nunit_console_path $test_assembly_path } 'Unit Tests Failed'
 }
 
 Task run-integrationTests {
-	& $nunit_console_path $integration_test_assembly_path /noshadow
-
-	if($LastExitCode)
-	{
-		throw 'run-integrationTests Failed'
-	}
+	exec { & $nunit_console_path $integration_test_assembly_path /noshadow } 'run-integrationTests Failed'
 }
 
 
@@ -641,13 +626,7 @@ Task run-tests-in-other-assembly -depends load-nunit-assembly {
 }
 
 Task run-statlight-silverlight-tests {
-
-	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" "-o=MSTest"
-
-	if($LastExitCode)
-	{
-		throw 'run-statlight-silverlight-tests Failed'
-	}
+	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" "-o=MSTest" } 'run-statlight-silverlight-tests Failed'
 }
 
 Task load-nunit-assembly {
