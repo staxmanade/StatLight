@@ -216,13 +216,5 @@ Try: (the following two steps that should allow StatLight to start a web server 
             Console.WriteLine("All Rights Reserved.");
             Console.WriteLine("");
         }
-
-        private static void ShowHelp(Mono.Options.OptionSet p)
-        {
-            System.Console.WriteLine("Usage: TODO [OPTIONS]");
-            System.Console.WriteLine();
-            System.Console.WriteLine("Options:");
-            p.WriteOptionDescriptions(System.Console.Out);
-        }
     }
 }
