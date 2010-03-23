@@ -60,6 +60,11 @@ namespace StatLight.Console
                         Environment.ExitCode = ExitFailed;
                     }
 
+                    if (!File.Exists(xapPath))
+                    {
+                        throw new FileNotFoundException("Could not find the file [{0}]".FormatWith(xapPath));
+                    }
+
                     if (options.ShowHelp)
                     {
                         ArgOptions.ShowHelpMessage(System.Console.Out, options);
