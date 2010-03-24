@@ -41,10 +41,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
                                             TagFilter = string.Empty,
                                             UnitTestProviderType = UnitTestProviderType.MSTest,
                                         };
-            IEventAggregator eventAggregator = StatLightRunnerFactory.EventAggregator;
-
-
-            eventAggregator
+            EventAggregator
                 .AddListener<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e)
                 .AddListener<TestExecutionClassBeginClientEvent>(e => _testExecutionClassBeginClientEvent.Add(e))
                 .AddListener<TestExecutionClassCompletedClientEvent>(e => _testExecutionClassCompletedClientEvent.Add(e))

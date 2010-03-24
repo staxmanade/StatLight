@@ -9,9 +9,11 @@ namespace StatLight.IntegrationTests
     using StatLight.Core.WebServer;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.Reporting;
+using StatLight.Core.Events.Aggregation;
 
     public abstract class IntegrationFixtureBase : FixtureBase
     {
+        readonly StatLightRunnerFactory _statLightRunnerFactory = new StatLightRunnerFactory();
         private string _pathToIntegrationTestXap;
         private readonly ILogger _testLogger;
 
@@ -33,6 +35,8 @@ namespace StatLight.IntegrationTests
             }
         }
 
+        protected IEventAggregator EventAggregator { get { return _statLightRunnerFactory.EventAggregator; } }
+
         protected TestReport TestReport { get; private set; }
         private IRunner Runner { get; set; }
         protected abstract ClientTestRunConfiguration ClientTestRunConfiguration { get; }
@@ -45,7 +49,7 @@ namespace StatLight.IntegrationTests
                                                  {
                                                      DialogSmackDownElapseMilliseconds = 500,
                                                  };
-            Runner = StatLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, _pathToIntegrationTestXap, ClientTestRunConfiguration, serverTestRunConfiguration, true);
+            Runner = _statLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, _pathToIntegrationTestXap, ClientTestRunConfiguration, serverTestRunConfiguration, true);
             TestReport = Runner.Run();
         }
 

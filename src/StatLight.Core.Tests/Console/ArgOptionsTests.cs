@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using NUnit.Framework;
 using StatLight.Console;
-using System.IO;
 
 namespace StatLight.Core.Tests.Console
 {

@@ -16,13 +16,13 @@ namespace StatLight.Core.Runners
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
 
-    public static class StatLightRunnerFactory
+    public class StatLightRunnerFactory
     {
-        internal static IEventAggregator EventAggregator = new EventAggregator(new SynchronizationContext());
-        private static BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
-        private static ConsoleResultHandler _consoleResultHandler;
-        private static Action<DebugClientEvent> _debugEventListener;
-        public static IRunner CreateContinuousTestRunner(ILogger logger, string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, ServerTestRunConfiguration serverTestRunConfiguration)
+        internal IEventAggregator EventAggregator = new EventAggregator(new SynchronizationContext());
+        private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
+        private ConsoleResultHandler _consoleResultHandler;
+        private Action<DebugClientEvent> _debugEventListener;
+        public IRunner CreateContinuousTestRunner(ILogger logger, string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, ServerTestRunConfiguration serverTestRunConfiguration)
         {
             StatLightService statLightService;
             StatLightServiceHost statLightServiceHost;
@@ -44,7 +44,7 @@ namespace StatLight.Core.Runners
             return runner;
         }
 
-        public static IRunner CreateTeamCityRunner(string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
+        public IRunner CreateTeamCityRunner(string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
         {
             ILogger logger = new NullLogger();
 
@@ -69,7 +69,7 @@ namespace StatLight.Core.Runners
             return runner;
         }
 
-        public static IRunner CreateOnetimeConsoleRunner(ILogger logger, string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration, bool showTestingBrowserHost)
+        public IRunner CreateOnetimeConsoleRunner(ILogger logger, string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration, bool showTestingBrowserHost)
         {
             StatLightService statLightService;
             StatLightServiceHost statLightServiceHost;
@@ -91,7 +91,7 @@ namespace StatLight.Core.Runners
             return runner;
         }
 
-        public static IRunner CreateWebServerOnlyRunner(ILogger logger, string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
+        public IRunner CreateWebServerOnlyRunner(ILogger logger, string xapPath, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
         {
             var location = new WebServerLocation();
 
@@ -105,7 +105,7 @@ namespace StatLight.Core.Runners
             return runner;
         }
 
-        private static void BuildAndReturnWebServiceAndBrowser(
+        private void BuildAndReturnWebServiceAndBrowser(
             ILogger logger,
             string xapPath,
             bool showTestingBrowserHost,
@@ -131,14 +131,14 @@ namespace StatLight.Core.Runners
             StartupBrowserCommunicationTimeoutMonitor(new TimeSpan(0, 0, 5, 0));
         }
 
-        private static void StartupBrowserCommunicationTimeoutMonitor(TimeSpan maxTimeAllowedBeforeCommErrorSent)
+        private void StartupBrowserCommunicationTimeoutMonitor(TimeSpan maxTimeAllowedBeforeCommErrorSent)
         {
             if (_browserCommunicationTimeoutMonitor == null)
                 _browserCommunicationTimeoutMonitor = new BrowserCommunicationTimeoutMonitor(EventAggregator, new TimerWrapper(3000), maxTimeAllowedBeforeCommErrorSent);
         }
 
 
-        private static void CreateAndAddConsoleResultHandlerToEventAggregator(ILogger logger)
+        private void CreateAndAddConsoleResultHandlerToEventAggregator(ILogger logger)
         {
             if (_consoleResultHandler == null)
             {
@@ -147,7 +147,7 @@ namespace StatLight.Core.Runners
             }
         }
 
-        private static void SetupDebugClientEventListener(ILogger logger)
+        private void SetupDebugClientEventListener(ILogger logger)
         {
             if (_debugEventListener == null)
             {

@@ -178,25 +178,26 @@ Try: (the following two steps that should allow StatLight to start a web server 
         private static TestReport RunTestAndGetTestReport(ILogger logger, string xapPath, bool continuousIntegrationMode, bool showTestingBrowserHost, bool useTeamCity, bool startWebServerOnly, ClientTestRunConfiguration config, MicrosoftTestingFrameworkVersion microsoftTestingFrameworkVersion)
         {
             IRunner runner;
+            var statLightRunnerFactory = new StatLightRunnerFactory();
 
             var serverTestRunConfiguration = new ServerTestRunConfiguration(new XapHostFileLoaderFactory(logger), microsoftTestingFrameworkVersion);
 
             if (useTeamCity)
             {
                 logger.LogChatterLevel = LogChatterLevels.None;
-                runner = StatLightRunnerFactory.CreateTeamCityRunner(xapPath, config, serverTestRunConfiguration);
+                runner = statLightRunnerFactory.CreateTeamCityRunner(xapPath, config, serverTestRunConfiguration);
             }
             else if (startWebServerOnly)
             {
-                runner = StatLightRunnerFactory.CreateWebServerOnlyRunner(logger, xapPath, config, serverTestRunConfiguration);
+                runner = statLightRunnerFactory.CreateWebServerOnlyRunner(logger, xapPath, config, serverTestRunConfiguration);
             }
             else if (continuousIntegrationMode)
             {
-                runner = StatLightRunnerFactory.CreateContinuousTestRunner(logger, xapPath, config, showTestingBrowserHost, serverTestRunConfiguration);
+                runner = statLightRunnerFactory.CreateContinuousTestRunner(logger, xapPath, config, showTestingBrowserHost, serverTestRunConfiguration);
             }
             else
             {
-                runner = StatLightRunnerFactory.CreateOnetimeConsoleRunner(logger, xapPath, config, serverTestRunConfiguration, showTestingBrowserHost);
+                runner = statLightRunnerFactory.CreateOnetimeConsoleRunner(logger, xapPath, config, serverTestRunConfiguration, showTestingBrowserHost);
             }
 
             return runner.Run();
