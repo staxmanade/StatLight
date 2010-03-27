@@ -24,10 +24,6 @@ namespace StatLight.Console
 
         static void Main(string[] args)
         {
-            Trace.Listeners.Add(new TextWriterTraceListener(System.Console.Out));
-            Trace.AutoFlush = true;
-            Trace.Indent();
-
             PrintNameVersionAndCopyright();
 
 #if DEBUG
@@ -54,17 +50,6 @@ namespace StatLight.Console
                     MicrosoftTestingFrameworkVersion microsoftTestingFrameworkVersion =
                         options.MicrosoftTestingFrameworkVersion;
 
-                    if (string.IsNullOrEmpty(xapPath))
-                    {
-                        options.ShowHelp = true;
-                        Environment.ExitCode = ExitFailed;
-                    }
-
-                    if (!File.Exists(xapPath))
-                    {
-                        throw new FileNotFoundException("Could not find the file [{0}]".FormatWith(xapPath));
-                    }
-
                     if (options.ShowHelp)
                     {
                         ArgOptions.ShowHelpMessage(System.Console.Out, options);
@@ -82,7 +67,6 @@ namespace StatLight.Console
                     config.TagFilter = options.TagFilters;
                     config.UnitTestProviderType = unitTestProviderType;
 
-                    DateTime startOfRun = DateTime.Now; 
                     var testReport = RunTestAndGetTestReport(logger, xapPath, continuousIntegrationMode, showTestingBrowserHost, useTeamCity, startWebServerOnly, config, microsoftTestingFrameworkVersion);
 
                     if (!string.IsNullOrEmpty(options.XmlReportOutputPath))
