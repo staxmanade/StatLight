@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Microsoft.Silverlight.Testing.Harness;
-using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Core.WebServer;
 
-namespace StatLight.Client.Harness.UnitTestProviders.MSTest
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
 {
 	/// <summary>
 	/// Test class wrapper.

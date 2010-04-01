@@ -1,11 +1,10 @@
 ﻿
-namespace StatLight.Client.Harness.UnitTestProviders
-{
-	using System;
-	using System.Reflection;
-	using System.Diagnostics.CodeAnalysis;
+using System;
+using System.Reflection;
 
-	/// <summary>
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
+{
+    /// <summary>
 	/// A lazy method type.
 	/// </summary>
 	public class LazyDynamicAssemblyMethodInfo : LazyDynamicMethodInfo

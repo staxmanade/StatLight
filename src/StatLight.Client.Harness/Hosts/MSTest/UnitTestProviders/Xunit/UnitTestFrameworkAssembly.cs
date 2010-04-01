@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +6,7 @@ using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-namespace StatLight.Client.Harness.UnitTestProviders.Xunit
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit
 {
 	/// <summary>
 	/// Assembly metadata for the Visual Studio Team Test unit test framework.

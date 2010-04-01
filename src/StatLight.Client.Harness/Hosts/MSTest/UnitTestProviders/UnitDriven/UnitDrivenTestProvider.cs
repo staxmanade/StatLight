@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ITestHarness = Microsoft.Silverlight.Testing.Harness.ITestHarness;
+using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-namespace StatLight.Client.Harness.UnitTestProviders.UnitDriven
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven
 {
 	/// <summary>
 	/// Provider for the Visual Studio Team Test unit test (UT) framework 

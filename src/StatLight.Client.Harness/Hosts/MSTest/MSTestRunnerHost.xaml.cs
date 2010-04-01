@@ -5,10 +5,10 @@ using Microsoft.Silverlight.Testing.Harness.Service;
 using Microsoft.Silverlight.Testing.UI;
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.UI;
-using StatLight.Client.Harness.UnitTestProviders.MSTest;
-using StatLight.Client.Harness.UnitTestProviders.NUnit;
-using StatLight.Client.Harness.UnitTestProviders.UnitDriven;
-using StatLight.Client.Harness.UnitTestProviders.Xunit;
+using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest;
+using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit;
+using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven;
+using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit;
 using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebServer;
 

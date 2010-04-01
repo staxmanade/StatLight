@@ -1,12 +1,11 @@
 ﻿
-namespace StatLight.Client.Harness.UnitTestProviders.NUnit
-{
-	using System;
-	using System.Diagnostics.CodeAnalysis;
-	using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-	using StatLight.Client.Harness.UnitTestProviders;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-	/// <summary>
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
+{
+    /// <summary>
 	/// Expected exception metadata.
 	/// </summary>
 	[SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "Standard unit test framework naming")]

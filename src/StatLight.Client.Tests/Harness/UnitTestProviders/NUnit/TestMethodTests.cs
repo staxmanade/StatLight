@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Reflection;
 using NUnit.Framework;
 using StatLight.Client.Tests;
+using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit;
 
 namespace StatLight.Client.Harness.UnitTestProviders.NUnit
 {
@@ -38,7 +39,7 @@ namespace StatLight.Client.Harness.UnitTestProviders.NUnit
             base.Before_all_tests();
 
             methodInfo = MockNUnitTestClass.GetPassingTest();
-            testMethod = new Xunit.TestMethod(methodInfo);
+            testMethod = new TestMethod(methodInfo);
         }
 
         [TestMethod]

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-namespace StatLight.Client.Harness.UnitTestProviders.UnitDriven
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven
 {
 	/// <summary>
 	/// A simple wrapper for a priority integer value that overrides the 

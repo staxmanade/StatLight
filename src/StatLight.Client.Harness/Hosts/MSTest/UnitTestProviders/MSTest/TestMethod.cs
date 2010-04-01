@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-using StatLight.Client.Harness.UnitTestProviders;
-namespace StatLight.Client.Harness.UnitTestProviders.MSTest
+
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
 {
 	/// <summary>
 	/// A provider wrapper for a test method.

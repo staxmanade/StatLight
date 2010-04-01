@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit;
 using StatLight.Client.Tests;
 using Xunit;
 

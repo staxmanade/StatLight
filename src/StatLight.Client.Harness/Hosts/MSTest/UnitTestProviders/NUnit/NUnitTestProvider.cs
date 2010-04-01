@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using Microsoft.Silverlight.Testing.Harness;
-using StatLight.Client.Harness.UnitTestProviders;
 
-namespace StatLight.Client.Harness.UnitTestProviders.NUnit
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 {
     public class NUnitTestProvider : IUnitTestProvider
     {

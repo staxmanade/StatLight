@@ -1,12 +1,11 @@
 ﻿using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Collections.Generic;
 
-namespace StatLight.Client.Harness.UnitTestProviders
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
 {
-    using System;
-    using System.Linq;
-    using System.Reflection;
-    using System.Collections.Generic;
-
     public static class DynamicAttributeHelper
     {
         public static bool HasAttribute(this MemberInfo method, string attributeName)
