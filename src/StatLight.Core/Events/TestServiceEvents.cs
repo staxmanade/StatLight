@@ -2,10 +2,23 @@
 {
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Events.Aggregation;
-using StatLight.Core.Reporting;
+    using StatLight.Core.Reporting;
+
+    public enum DialogType
+    {
+        Assert,
+        MessageBox,
+    }
 
     public sealed class DialogAssertionServerEvent
     {
+        public DialogAssertionServerEvent(DialogType dialogType)
+        {
+            DialogType = dialogType;
+        }
+
+        public DialogType DialogType { get; private set; }
+
         public string Message { get; set; }
     }
 

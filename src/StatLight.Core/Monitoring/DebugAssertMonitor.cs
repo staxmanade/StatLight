@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using StatLight.Core.Events;
 
 namespace StatLight.Core.Monitoring
 {
@@ -124,6 +125,10 @@ Dialog Message:
             //return DialogMonitorResult.NoSlapdownAction();
 
 
+        }
+        public DialogType DialogType
+        {
+            get { return DialogType.Assert; }
         }
 
 

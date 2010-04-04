@@ -1,5 +1,6 @@
 ﻿
 using System.Threading;
+using StatLight.Core.Events;
 
 namespace StatLight.Core.Monitoring
 {
@@ -76,6 +77,10 @@ Dialog Message:
                     };
         }
 
+        public DialogType DialogType
+        {
+            get { return DialogType.MessageBox; }
+        }
     }
 
     public static class AutomationTypes

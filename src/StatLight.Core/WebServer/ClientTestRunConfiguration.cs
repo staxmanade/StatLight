@@ -62,6 +62,9 @@ namespace StatLight.Core.WebServer
                 return true;
 
             string methodString = methodInfo.DeclaringType.FullName + "." + methodInfo.Name;
+#if SILVERLIGHT
+            Server.Trace(methodString);
+#endif
             if (CurrentClientTestRunConfiguration.MethodsToTest.Contains(methodString))
                 return true;
 

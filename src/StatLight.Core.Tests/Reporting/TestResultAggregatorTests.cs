@@ -246,8 +246,8 @@ namespace StatLight.Core.Tests.Reporting
             protected override void Because()
             {
                 base.Because();
+                TestResultAggregator.Handle(new DialogAssertionServerEvent(DialogType.Assert) { Message = "m" });
                 TestResultAggregator.Handle(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m" });
-                TestResultAggregator.Handle(new DialogAssertionServerEvent { Message = "m" });
             }
 
             [Test]

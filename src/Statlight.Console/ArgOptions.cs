@@ -44,7 +44,7 @@ namespace StatLight.Console
 
         public UnitTestProviderType UnitTestProviderType { get; private set; }
 
-        public MicrosoftTestingFrameworkVersion MicrosoftTestingFrameworkVersion { get; private set; }
+        public MicrosoftTestingFrameworkVersion? MicrosoftTestingFrameworkVersion { get; private set; }
 
         private ArgOptions()
         {
@@ -76,7 +76,6 @@ namespace StatLight.Console
         private Mono.Options.OptionSet GetOptions()
         {
             var msTestVersions = (from MicrosoftTestingFrameworkVersion version in Enum.GetValues(typeof(MicrosoftTestingFrameworkVersion))
-                                  where version != MicrosoftTestingFrameworkVersion.Default
                                   select version).ToDictionary(key => key.ToString().ToLower(), value => value);
 
             return new Mono.Options.OptionSet()
@@ -115,7 +114,7 @@ namespace StatLight.Console
                         v = v ?? string.Empty;
 
                         if (v == string.Empty || string.Equals(v, "Default", StringComparison.CurrentCultureIgnoreCase))
-                            this.MicrosoftTestingFrameworkVersion = MicrosoftTestingFrameworkVersion.Default;
+                            this.MicrosoftTestingFrameworkVersion = null;
                         else
                         {
                             var loweredV = v.ToLower();

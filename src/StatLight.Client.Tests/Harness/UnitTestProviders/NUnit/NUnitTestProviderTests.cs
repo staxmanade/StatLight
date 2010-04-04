@@ -6,7 +6,6 @@ using StatLight.Client.Tests;
 namespace StatLight.Client.Harness.UnitTestProviders.NUnit
 {
     [TestClass]
-    [Ignore]
     public class NUnitTestProviderTests : FixtureBase
     {
         IUnitTestProvider provider;
@@ -22,14 +21,6 @@ namespace StatLight.Client.Harness.UnitTestProviders.NUnit
         {
             provider
                 .HasCapability(UnitTestProviderCapabilities.MethodCanIgnore)
-                .ShouldBeTrue();
-        }
-
-        [TestMethod]
-        public void provider_should_support_MethodCanHaveTimeout()
-        {
-            provider
-                .HasCapability(UnitTestProviderCapabilities.MethodCanHaveTimeout)
                 .ShouldBeTrue();
         }
     }

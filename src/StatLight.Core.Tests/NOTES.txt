@@ -1,7 +1,4 @@
 ﻿
-TeamCity build located at.
-http://localhost:8087/overview.html
-
 http://blogs.msdn.com/gisenberg/archive/2008/07/12/ui-automation-in-silverlight-simulating-user-interactions.aspx
 http://msmvps.com/blogs/paulomorgado/archive/2008/12/03/improving-debugging-and-testing-through-assertions.aspx
 
@@ -11,5 +8,8 @@ http://www.regnow.com/software_publisher.html
 http://www.artoftest.com/
 
 
-netsh http add urlacl url=http://+:8887/ user=ncmops\jasonj
+netsh http add urlacl url=http://+:8887/
 netsh http delete urlacl http://+:8887/
+
+TODO:
+ - Refactor Integrations/Acceptance tests to support Dialog and Assertion messages

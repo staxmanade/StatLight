@@ -37,7 +37,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT, MSTestMarch2010</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -54,13 +54,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=2c5c654d367bf4a7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Silverlight\Microsoft\July2009\Microsoft.Silverlight.Testing.dll</HintPath>
+      <HintPath>..\..\lib\Silverlight\Microsoft\March2010\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=2c5c654d367bf4a7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Silverlight\Microsoft\July2009\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+      <HintPath>..\..\lib\Silverlight\Microsoft\March2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -185,8 +185,6 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>copy $(ProjectDir)$(OutDir)$(TargetName).xap $(ProjectDir)..\build\$(TargetName).xap
-copy $(ProjectDir)$(OutDir)$(TargetName).xap $(ProjectDir)..\build\StatLight.Client.For.July2009.xap
-copy $(ProjectDir)$(OutDir)$(TargetName).xap $(ProjectDir)..\build\bin\$(ConfigurationName)\StatLight.Client.For.July2009.xap</PostBuildEvent>
+    <PostBuildEvent>copy $(ProjectDir)$(OutDir)$(TargetName).xap $(ProjectDir)..\build\bin\$(ConfigurationName)\StatLight.Client.For.March2010.xap</PostBuildEvent>
   </PropertyGroup>
 </Project>

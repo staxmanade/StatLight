@@ -1,10 +1,6 @@
 ﻿using System.Windows;
 using Microsoft.Silverlight.Testing;
 using Microsoft.Silverlight.Testing.Harness;
-using Microsoft.Silverlight.Testing.Harness.Service;
-using Microsoft.Silverlight.Testing.UI;
-using Microsoft.Silverlight.Testing.UnitTesting.Harness;
-using Microsoft.Silverlight.Testing.UnitTesting.UI;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven;
@@ -16,39 +12,26 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 {
     public class MSTestRunnerHost : ITestRunnerHost
     {
-        private readonly UnitTestSettings _settings = new UnitTestSettings();
         private ClientTestRunConfiguration _clientTestRunConfiguration;
+        private LoadedXapData _loadedXapData;
 
         public void ConfigureWithClientTestRunConfiguration(ClientTestRunConfiguration clientTestRunConfiguration)
         {
             _clientTestRunConfiguration = clientTestRunConfiguration;
-
-            _settings.TagExpression = _clientTestRunConfiguration.TagFilter;
-            _settings.LogProviders.Add(new WebpageHeaderLogProvider("StatLight filters[{0}]".FormatWith(_clientTestRunConfiguration.TagFilter)));
         }
 
         public void ConfigureWithLoadedXapData(LoadedXapData loadedXapData)
         {
-            // The below setup pretty much the standard setup used in the Microsoft testing framework
-            _settings.TestHarness = new UnitTestHarness();
-            _settings.TestService = new SilverlightTestService();
-            _settings.LogProviders.Add(new UnitTestWebpageLog());
-            _settings.LogProviders.Add(new TextFailuresLogProvider());
-
-            // Below is the custom stuff...
-            _settings.LogProviders.Add(new ServerHandlingLogProvider());
-            foreach (var assembly in loadedXapData.TestAssemblies)
-            {
-                _settings.TestAssemblies.Add(assembly);
-            }
-            _settings.TestHarness.TestHarnessCompleted += CurrentHarness_TestHarnessCompleted;
+            _loadedXapData = loadedXapData;
         }
 
         public UIElement StartRun()
         {
             SetupUnitTestProvider(_clientTestRunConfiguration.UnitTestProviderType);
+            
+            var settings = ConfigureSettings();
 
-            return UnitTestSystem.CreateTestPage(_settings);
+            return UnitTestSystem.CreateTestPage(settings);
         }
 
         private static void CurrentHarness_TestHarnessCompleted(object sender, TestHarnessCompletedEventArgs e)
@@ -75,6 +58,26 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             {
                 UnitTestSystem.RegisterUnitTestProvider(new VsttProvider());
             }
+        }
+
+        private UnitTestSettings ConfigureSettings()
+        {
+            var settings = UnitTestSystem.CreateDefaultSettings();
+
+#if MSTestMarch2010
+            settings.StartRunImmediately = true;
+#else
+#endif
+
+            // Below is the custom stuff...
+            settings.TagExpression = _clientTestRunConfiguration.TagFilter;
+            settings.LogProviders.Add(new ServerHandlingLogProvider());
+            foreach (var assembly in _loadedXapData.TestAssemblies)
+            {
+                settings.TestAssemblies.Add(assembly);
+            }
+            settings.TestHarness.TestHarnessCompleted += CurrentHarness_TestHarnessCompleted;
+            return settings;
         }
     }
 }

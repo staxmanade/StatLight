@@ -47,7 +47,7 @@ namespace StatLight.Console
                     bool showTestingBrowserHost = options.ShowTestingBrowserHost;
                     bool useTeamCity = options.OutputForTeamCity;
                     bool startWebServerOnly = options.StartWebServerOnly;
-                    MicrosoftTestingFrameworkVersion microsoftTestingFrameworkVersion =
+                    MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion =
                         options.MicrosoftTestingFrameworkVersion;
 
                     if (options.ShowHelp)
@@ -58,16 +58,34 @@ namespace StatLight.Console
 
                     var unitTestProviderType = options.UnitTestProviderType;
 
-                    if (unitTestProviderType == UnitTestProviderType.Undefined)
+                    XapReadItems xapReadItems;
+                    if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
                     {
-                        unitTestProviderType = DetermineUnitTestProviderType(xapPath);
+                        xapReadItems = new XapReader(logger).GetTestAssembly(xapPath);
+                        //TODO: Print message telling the user what the type is - and if they give it
+                        // we don't have to "reflect" on the xap to determine the test provider type.
+
+                        if (unitTestProviderType == UnitTestProviderType.Undefined)
+                            unitTestProviderType = xapReadItems.UnitTestProvider;
+
+                        if (xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest
+                            && microsoftTestingFrameworkVersion == null)
+                        {
+                            microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
+                            if(microsoftTestingFrameworkVersion == null)
+                            {
+                                logger.Debug("microsoftTestingFrameworkVersion == null");
+                            }
+                        }
                     }
 
                     var config = ClientTestRunConfiguration.CreateDefault();
                     config.TagFilter = options.TagFilters;
                     config.UnitTestProviderType = unitTestProviderType;
 
-                    var testReport = RunTestAndGetTestReport(logger, xapPath, continuousIntegrationMode, showTestingBrowserHost, useTeamCity, startWebServerOnly, config, microsoftTestingFrameworkVersion);
+                    var testReport = RunTestAndGetTestReport(logger, xapPath, continuousIntegrationMode, 
+                        showTestingBrowserHost, useTeamCity, startWebServerOnly, config, 
+                        microsoftTestingFrameworkVersion ?? MicrosoftTestingFrameworkVersion.March2010);
 
                     if (!string.IsNullOrEmpty(options.XmlReportOutputPath))
                     {
@@ -120,7 +138,7 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 {
                     HandleKnownError(statLightException);
                 }
-                    
+
                 catch (Exception exception)
                 {
                     HandleUnknownError(exception);
@@ -140,13 +158,6 @@ Try: (the following two steps that should allow StatLight to start a web server 
             WriteErrorToConsole(optionException.Message, "Error");
         }
 
-        private static UnitTestProviderType DetermineUnitTestProviderType(string xapPath)
-        {
-            //TODO: Print message telling the user what the type is - and if they give it
-            // we don't have to "reflect" on the xap to determine the test provider type.
-            var xapReadItems = new XapReader().GetTestAssembly(xapPath);
-            return xapReadItems.UnitTestProvider;
-        }
 
         private static void WriteErrorToConsole(string errorMessage, string beginMsg)
         {

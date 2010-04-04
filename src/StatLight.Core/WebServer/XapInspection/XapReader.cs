@@ -1,106 +1,158 @@
+using System.Linq;
+using System.Security.Cryptography;
 using StatLight.Core.Common;
 using StatLight.Core.UnitTestProviders;
+using StatLight.Core.WebServer.XapHost;
 
 namespace StatLight.Core.WebServer.XapInspection
 {
-	using System;
-	using System.IO;
-	using System.Reflection;
-	using System.Text;
-	using System.Xml.Linq;
-	using Ionic.Zip;
+    using System;
+    using System.IO;
+    using System.Reflection;
+    using System.Text;
+    using System.Xml.Linq;
+    using Ionic.Zip;
 
-	public class XapReader
-	{
-		public XapReadItems GetTestAssembly(string archiveFileName)
-		{
-			var xapItems = new XapReadItems();
+    public class XapReader
+    {
+        private readonly ILogger _logger;
 
-			using (var archive = ZipFile.Read(archiveFileName))
-			{
-				xapItems.AppManifest = LoadAppManifest(archive);
+        public XapReader(ILogger logger)
+        {
+            _logger = logger;
+        }
 
-				if(xapItems.AppManifest != null)
-				{
-					string testAssemblyName = GetTestAssemblyNameFromAppManifest(xapItems.AppManifest);
+        public XapReadItems GetTestAssembly(string archiveFileName)
+        {
+            var xapItems = new XapReadItems();
 
-					xapItems.TestAssembly = LoadTestAssembly(archive, testAssemblyName);
-				}
+            using (var archive = ZipFile.Read(archiveFileName))
+            {
+                xapItems.AppManifest = LoadAppManifest(archive);
 
-				xapItems.UnitTestProvider = DetermineUnitTestProviderType(archive);
-			}
-			return xapItems;
-		}
+                if (xapItems.AppManifest != null)
+                {
+                    string testAssemblyName = GetTestAssemblyNameFromAppManifest(xapItems.AppManifest);
 
-		private UnitTestProviderType DetermineUnitTestProviderType(ZipFile archive)
-		{
-			Func<string, string, bool> fileNameCompare =
-				(fileA, fileB) =>
-					string.Equals(fileA, fileB, StringComparison.CurrentCultureIgnoreCase);
+                    xapItems.TestAssembly = LoadTestAssembly(archive, testAssemblyName);
+                }
 
-			bool hasMSTest = false;
+                xapItems.UnitTestProvider = DetermineUnitTestProviderType(archive);
 
-			foreach (ZipEntry zipEntry in archive)
-			{
-				if (fileNameCompare(zipEntry.FileName, "XUnitLight.Silverlight.dll"))
-					return UnitTestProviderType.XUnit;
+                if (xapItems.UnitTestProvider == UnitTestProviderType.MSTest)
+                    xapItems.MicrosoftSilverlightTestingFrameworkVersion = DetermineUnitTestVersion(archive);
 
-				if (zipEntry.FileName.ToLower().Contains("unitdriven"))
-					return UnitTestProviderType.UnitDriven;
+            }
+            return xapItems;
+        }
 
-				if (zipEntry.FileName.ToLower().Contains("nunit"))
-					return UnitTestProviderType.NUnit;
+        private static string SHA1Encryption(byte[] bytes)
+        {
+            var encryptedString = new StringBuilder();
 
-				if (fileNameCompare(zipEntry.FileName, "Microsoft.Silverlight.Testing.dll"))
-					hasMSTest = true;
-			}
+            var result = new SHA1Managed().ComputeHash(bytes);
+            foreach (byte outputByte in result)
+                // convert each byte to a Hexadecimal upper case string
+                encryptedString.Append(outputByte.ToString("x2").ToUpper());
+            return encryptedString.ToString();
+        }
 
-			if (hasMSTest)
-				return UnitTestProviderType.MSTest;
+        private MicrosoftTestingFrameworkVersion? DetermineUnitTestVersion(ZipFile archive)
+        {
+            var incomingHash = (from zipEntry in archive
+                                where fileNameCompare(zipEntry.FileName, "Microsoft.Silverlight.Testing.dll")
+                                select SHA1Encryption(ReadFileIntoBytes(archive, zipEntry.FileName))).First();
 
-			return UnitTestProviderType.Undefined;
-		}
+            var definedVersions = new[]
+            {
+              new { Version = MicrosoftTestingFrameworkVersion.March2010, Hash = "4b41678001f2000720a5b7479e4d20ea77820605" },
+              new { Version = MicrosoftTestingFrameworkVersion.March2009, Hash = "8043c0da38fa18b224082e400189aca37ff0505f" },
+              new { Version = MicrosoftTestingFrameworkVersion.December2008, Hash = "9ecc2326c15db40aa28afc466a683279380affec" },
+              new { Version = MicrosoftTestingFrameworkVersion.July2009, Hash = "108d7c8a4f753f55433e1c195bb9e8f548bd627d" },
+              new { Version = MicrosoftTestingFrameworkVersion.November2009, Hash = "aba8d1ea91c37f06000b6f2a2927e4feb00bd97d" },
+              new { Version = MicrosoftTestingFrameworkVersion.October2009, Hash = "8282f627299dc4cfd62f505ae7a6119aaae62d0d" },
+            };
 
-		private static Assembly LoadTestAssembly(ZipFile zip1, string testAssemblyName)
-		{
-			var fileData = ReadFileIntoBytes(zip1, testAssemblyName);
-			if (fileData != null)
-				return Assembly.Load(fileData);
-			return null;
-		}
+            var foundVersion = definedVersions.Where(w => w.Hash.Equals(incomingHash, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
-		private static string GetTestAssemblyNameFromAppManifest(string appManifest)
-		{
-			var root = XElement.Parse(appManifest);
+            _logger.Debug("Incoming MSTest file's hash = {0}".FormatWith(incomingHash));
 
-			var entryPointAssemblyNode = root.Attribute("EntryPointAssembly");
+            if (foundVersion == null)
+                return null;
 
-			if (entryPointAssemblyNode == null)
+            return foundVersion.Version;
+        }
+
+        private bool fileNameCompare(string fileA, string fileB)
+        {
+            return string.Equals(fileA, fileB, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        private UnitTestProviderType DetermineUnitTestProviderType(ZipFile archive)
+        {
+            bool hasMSTest = false;
+
+            foreach (ZipEntry zipEntry in archive)
+            {
+                if (fileNameCompare(zipEntry.FileName, "XUnitLight.Silverlight.dll"))
+                    return UnitTestProviderType.XUnit;
+
+                if (zipEntry.FileName.ToLower().Contains("unitdriven"))
+                    return UnitTestProviderType.UnitDriven;
+
+                if (zipEntry.FileName.ToLower().Contains("nunit"))
+                    return UnitTestProviderType.NUnit;
+
+                if (fileNameCompare(zipEntry.FileName, "Microsoft.Silverlight.Testing.dll"))
+                    hasMSTest = true;
+            }
+
+            if (hasMSTest)
+                return UnitTestProviderType.MSTest;
+
+            return UnitTestProviderType.Undefined;
+        }
+
+        private static Assembly LoadTestAssembly(ZipFile zip1, string testAssemblyName)
+        {
+            var fileData = ReadFileIntoBytes(zip1, testAssemblyName);
+            if (fileData != null)
+                return Assembly.Load(fileData);
+            return null;
+        }
+
+        private static string GetTestAssemblyNameFromAppManifest(string appManifest)
+        {
+            var root = XElement.Parse(appManifest);
+
+            var entryPointAssemblyNode = root.Attribute("EntryPointAssembly");
+
+            if (entryPointAssemblyNode == null)
                 throw new StatLightException("Cannot find the EntryPointAssembly attribute in the AppManifest.xaml");
 
-			return entryPointAssemblyNode.Value + ".dll";
-		}
+            return entryPointAssemblyNode.Value + ".dll";
+        }
 
-		private static string LoadAppManifest(ZipFile zip1)
-		{
-			var fileData = ReadFileIntoBytes(zip1, "AppManifest.xaml");
-			if(fileData != null)
-				return Encoding.UTF8.GetString(fileData).Substring(1);
+        private static string LoadAppManifest(ZipFile zip1)
+        {
+            var fileData = ReadFileIntoBytes(zip1, "AppManifest.xaml");
+            if (fileData != null)
+                return Encoding.UTF8.GetString(fileData).Substring(1);
 
-			return null;
-		}
+            return null;
+        }
 
-		private static byte[] ReadFileIntoBytes(ZipFile zipFile, string fileName)
-		{
-			var file = zipFile[fileName];
-			if (file == null)
-				return null;
+        private static byte[] ReadFileIntoBytes(ZipFile zipFile, string fileName)
+        {
+            var file = zipFile[fileName];
+            if (file == null)
+                return null;
 
-			using (var stream = new MemoryStream())
-			{
-				file.Extract(stream);
-				return stream.ToArray();
-			}
-		}
-	}
+            using (var stream = new MemoryStream())
+            {
+                file.Extract(stream);
+                return stream.ToArray();
+            }
+        }
+    }
 }

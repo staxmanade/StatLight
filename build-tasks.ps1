@@ -18,7 +18,7 @@ properties {
 	$statLightSourcesFilePrefix = 'StatLight.Sources.'
 	$core_assembly_path = "$build_dir\StatLight.Core.dll"
 	$test_assembly_path = "src\StatLight.Core.Tests\bin\x86\$build_configuration\StatLight.Core.Tests.dll"
-	$integration_test_assembly_path = "src\StatLight.IntegrationTests\bin\x86\$build_configuration\StatLight.IntegrationTests.dll"
+	$integration_test_assembly_path = "$build_dir\StatLight.IntegrationTests.dll"
 	
 	
 	# All of the versions that this script will create compatible 
@@ -29,6 +29,8 @@ properties {
 	#  - 2. Add the version below 
 	#  - 3. Add the version to the MicrosoftTestingFrameworkVersion enum in the project
 	$microsoft_silverlight_testing_versions = @(
+		'March2010',
+
 		'December2008',
 		'March2009',
 		'July2009',
@@ -133,7 +135,7 @@ function global:Execute-Command-String {
 	Write-Host ''
 
 	$cmd >> $scriptFile
-	& $scriptFile
+	exec { . $scriptFile } 'Doh - Compile failed...'
 	Remove-If-Exists $scriptFile
 }
 
@@ -208,6 +210,12 @@ function global:CompileStatLight {
 		| foreach {$_.FullName} `
 		| where{!$_.Contains($not_build_configuration)}
 
+	$extraCompilerFlags = [string]''
+	if("$microsoft_Silverlight_Testing_Version_Name" -eq 'March2010')
+	{
+		$extraCompilerFlags = 'MSTestMarch2010'
+	}
+
 	$options = @(
 		'/noconfig',
 		'/nowarn:1701`,1702',
@@ -215,7 +223,7 @@ function global:CompileStatLight {
 		'/errorreport:prompt',
 		'/platform:anycpu',
 		'/warn:4'
-		"/define:$build_configuration``;TRACE``;SILVERLIGHT``;$microsoft_Silverlight_Testing_Version_Name",
+		"/define:$build_configuration``;TRACE``;SILVERLIGHT``;$extraCompilerFlags``;$microsoft_Silverlight_Testing_Version_Name",
 		'/debug-',
 		'/optimize+',
 		'/keyfile:src\StatLight.snk',
@@ -269,6 +277,7 @@ function global:Remove-If-Exists {
 	param($file)
 	if(Test-Path $file)
 	{
+		echo "Deleting file $file"
 		Remove-Item $file -Force -ErrorAction SilentlyContinue -Recurse
 	}
 }
@@ -279,6 +288,8 @@ function global:Build-And-Package-StatLight {
 	$statlightBuildFilePath = "$build_dir\StatLight.Client.Harness.dll"
 	
 	CompileStatLight $microsoft_Silverlight_Testing_Version_Name ".\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name" $statlightBuildFilePath
+	
+	Assert ( test-path $statlightBuildFilePath) "File should exist $statlightBuildFilePath"
 	
 	$zippedName = "$build_dir\$statlight_xap_for_prefix.$microsoft_Silverlight_Testing_Version_Name.zip"
 
@@ -367,7 +378,7 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	$scriptFile = GetTemporaryXmlFile;
 	
-	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
+	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile" "-b"
 	
 	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
 	$file = get-item $scriptFile
@@ -527,7 +538,7 @@ Task writeProperties {
 	#0	Turn script tracing off.
 	#1	Trace script lines as they are executed.
 	#2	Trace script lines, variable assignments, function calls, and scripts.
-	Set-PSDebug -Trace 0
+	#Set-PSDebug -Trace 0
 	
 	$ErrorActionPreference = "Stop"
 	
@@ -626,7 +637,7 @@ Task run-tests-in-other-assembly -depends load-nunit-assembly {
 }
 
 Task run-statlight-silverlight-tests {
-	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" "-o=MSTest" } 'run-statlight-silverlight-tests Failed'
+	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" "-b" } 'run-statlight-silverlight-tests Failed'
 }
 
 Task load-nunit-assembly {

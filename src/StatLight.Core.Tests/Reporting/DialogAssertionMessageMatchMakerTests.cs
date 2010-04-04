@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
@@ -10,32 +7,30 @@ namespace StatLight.Core.Tests.Reporting
 {
     namespace DialogAssertionMessageMatchMakerTests
     {
-        public class DialogAssertionMessageMatchMakerTestBase : FixtureBase
+        public class DialogMessageMatchMakerTestBase : FixtureBase
         {
-            private DialogAssertionMessageMatchMaker _dialogAssertionMessageMatchMaker;
-            protected DialogAssertionMessageMatchMaker DialogAssertionMessageMatchMaker { get { return _dialogAssertionMessageMatchMaker; } }
+            private DialogMessageMatchMaker _dialogAssertionMessageMatchMaker;
+            protected DialogMessageMatchMaker DialogAssertionMessageMatchMaker { get { return _dialogAssertionMessageMatchMaker; } }
 
             protected override void Before_all_tests()
             {
                 base.Before_all_tests();
 
-                _dialogAssertionMessageMatchMaker = new DialogAssertionMessageMatchMaker();
+                _dialogAssertionMessageMatchMaker = new DialogMessageMatchMaker();
             }
 
         }
 
         [TestFixture]
-        public class when_a_dialog_assertion_event_sequence_is__BeginMethod_DialogAssertion_MethodResult : DialogAssertionMessageMatchMakerTestBase
+        public class when_a_dialog_assertion_event_sequence_is__BeginMethod_DialogAssertion_MethodResult : DialogMessageMatchMakerTestBase
         {
-            private TestCaseResult _testCaseResult;
-            private TestExecutionMethodBeginClientEvent _beginEvent;
             private bool _matchMade;
             protected override void Because()
             {
                 base.Because();
 
-                DialogAssertionMessageMatchMaker.Handle(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m" });
-                DialogAssertionMessageMatchMaker.Handle(new DialogAssertionServerEvent { }, (e) => _matchMade = true);
+                DialogAssertionMessageMatchMaker.HandleMethodBeginClientEvent(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m" });
+                DialogAssertionMessageMatchMaker.AddMessageBoxHandler(new DialogAssertionServerEvent(DialogType.MessageBox), e => _matchMade = true);
             }
 
             [Test]
@@ -54,18 +49,16 @@ namespace StatLight.Core.Tests.Reporting
 
 
         [TestFixture]
-        public class when_a_dialog_assertion_event_sequence_is__DialogAssertion_BeginMethod_MethodResult : DialogAssertionMessageMatchMakerTestBase
+        public class when_a_dialog_assertion_event_sequence_is__DialogAssertion_BeginMethod_MethodResult : DialogMessageMatchMakerTestBase
         {
-            private TestCaseResult _testCaseResult;
-            private TestExecutionMethodBeginClientEvent _beginEvent;
             private bool _matchMade;
 
             protected override void Because()
             {
                 base.Because();
 
-                DialogAssertionMessageMatchMaker.Handle(new DialogAssertionServerEvent { }, (e) => _matchMade = true);
-                DialogAssertionMessageMatchMaker.Handle(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m" });
+                DialogAssertionMessageMatchMaker.AddMessageBoxHandler(new DialogAssertionServerEvent(DialogType.MessageBox), e => _matchMade = true);
+                DialogAssertionMessageMatchMaker.HandleMethodBeginClientEvent(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m" });
             }
 
             [Test]
@@ -81,6 +74,5 @@ namespace StatLight.Core.Tests.Reporting
                 _matchMade.ShouldBeTrue();
             }
         }
-
     }
 }

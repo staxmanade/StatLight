@@ -149,6 +149,7 @@ namespace StatLight.Core.Runners
 
         private void SetupDebugClientEventListener(ILogger logger)
         {
+            ((EventAggregator) EventAggregator).Logger = logger;
             if (_debugEventListener == null)
             {
                 _debugEventListener = e => logger.Debug(e.Message);

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Ionic.Zip;
+using StatLight.Core.Common;
 using StatLight.IntegrationTests.ProviderTests;
 
 namespace StatLight.IntegrationTests
@@ -24,7 +25,7 @@ namespace StatLight.IntegrationTests
 
 				string fileName = ProviderTests.TestXapFileLocations.SilverlightIntegrationTests;
 
-				_xapReadItems = new XapReader().GetTestAssembly(fileName);
+                _xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).GetTestAssembly(fileName);
 			}
 
 			[Test]
@@ -89,7 +90,7 @@ namespace StatLight.IntegrationTests
 					zipFile.Save();
 				}
 
-				_xapReadItems = new XapReader().GetTestAssembly(_xapPath);
+                _xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).GetTestAssembly(_xapPath);
 			}
 
 			protected override void After_all_tests()
@@ -125,13 +126,6 @@ namespace StatLight.IntegrationTests
 				_xapReadItems.AppManifest.ShouldBeNull();
 			}
 
-			[Test]
-			[Ignore]
-			public void Should_TODO_tie_the_logic_into_the_console_program_to_auto_detect_xap_type()
-			{
-				//#error NOTE: TODO: tie this logic into the console - to "auto-detect" xap if no parameter is specified explicetly
-				Assert.Fail("TODOD:");
-			}
 		}
 
 		[TestFixture]
@@ -164,7 +158,7 @@ namespace StatLight.IntegrationTests
 
 			private void ShouldLoadCorrectType(string fileName, UnitTestProviderType unitTestProviderType)
 			{
-				var xapReadItems = new XapReader().GetTestAssembly(fileName);
+                var xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).GetTestAssembly(fileName);
 				xapReadItems.UnitTestProvider.ShouldEqual(unitTestProviderType);
 			}
 		}

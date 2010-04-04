@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
+#if MSTestMarch2010
+using ITestHarness = Microsoft.Silverlight.Testing.Harness.UnitTestHarness;
+#else
 using Microsoft.Silverlight.Testing.Harness;
+#endif
 
 namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 {

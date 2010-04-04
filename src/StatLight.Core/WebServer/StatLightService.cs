@@ -114,8 +114,6 @@ namespace StatLight.Core.WebServer
                     _logger.Debug("     }");
 
                     _totalMessagesPostedCount = totalMessagsPostedCount;
-
-                    WaitingForMessagesToCompletePosting();
                 }
                 else
                 {
@@ -200,6 +198,7 @@ namespace StatLight.Core.WebServer
         {
             if (_totalMessagesPostedCount == _currentMessagesPostedCount)
             {
+                _logger.Debug("publishing TestRunCompletedServerEvent");
                 _eventAggregator.SendMessage(new TestRunCompletedServerEvent());
 
                 ResetTestRunStatistics();

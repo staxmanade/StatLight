@@ -10,21 +10,21 @@ namespace StatLight.IntegrationTests.Silverlight
 	public class When_a_modal_MessageBox_is_displayed
 	{
 		[TestMethod]
-		public void messageBox_overload_1()
+		public void messageBox_overload_1X()
 		{
-			MessageBox.Show("Some text");
+            MessageBox.Show("Some text - messageBox_overload_1X");
 		}
 
 		[TestMethod]
-		public void messageBox_overload_1_MessageBoxButton_OK()
+		public void messageBox_overload_1_MessageBoxButton_OKX()
 		{
-			MessageBox.Show("Some text", "some caption", MessageBoxButton.OK);
+            MessageBox.Show("Some text - messageBox_overload_1_MessageBoxButton_OKX", "some caption", MessageBoxButton.OK);
 		}
 
 		[TestMethod]
 		public void messageBox_overload_1_MessageBoxButton_OKCancel()
 		{
-			MessageBox.Show("Some text", "some caption", MessageBoxButton.OKCancel);
+            MessageBox.Show("Some text - messageBox_overload_1_MessageBoxButton_OKCancel", "some caption", MessageBoxButton.OKCancel);
 		}
 	}
 }

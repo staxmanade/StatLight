@@ -31,8 +31,8 @@ namespace StatLight.IntegrationTests
                                            UnitTestProviderType = UnitTestProviderType.MSTest,
                                            MethodsToTest = new List<string>
                                                                {
-                                                                   prefix + ".messageBox_overload_1",
-                                                                   prefix + ".messageBox_overload_1_MessageBoxButton_OK",
+                                                                   prefix + ".messageBox_overload_1X",
+                                                                   prefix + ".messageBox_overload_1_MessageBoxButton_OKX",
                                                                    prefix + ".messageBox_overload_1_MessageBoxButton_OKCancel",
                                                                }
                                        };
@@ -76,21 +76,27 @@ namespace StatLight.IntegrationTests
         {
             TestReport
                 .TestResults
-                .Single(w => w.MethodName.Equals("messageBox_overload_1"))
+                //.Where(w => !string.IsNullOrEmpty(w.OtherInfo))
+                //.Where(w => w.OtherInfo.Contains("messageBox_overload_1X"))
+                //.Count().ShouldEqual(1);
+                .Single(w => w.MethodName.Equals("messageBox_overload_1X"))
                 .OtherInfo
                 .ShouldContain("Some text");
-
         }
 
         [Test]
+        [Ignore]
         public void Should_have_scraped_the__messageBox_overload_1_MessageBoxButton_OK__test_message_box_info()
         {
             TestReport
                 .TestResults
-                .Single(w => w.MethodName.Equals("messageBox_overload_1_MessageBoxButton_OK"))
-                .OtherInfo
-                .ShouldContain("some caption")
-                .ShouldContain("Some text");
+                //.Where(w => !string.IsNullOrEmpty(w.OtherInfo))
+                //.Where(w => w.OtherInfo.Contains("messageBox_overload_1_MessageBoxButton_OKX"))
+                //.Count().ShouldEqual(1);
+            .Single(w => w.MethodName.Equals("messageBox_overload_1_MessageBoxButton_OKX"))
+            .OtherInfo
+            .ShouldContain("some caption")
+            .ShouldContain("Some text");
         }
 
         [Test]
@@ -98,10 +104,13 @@ namespace StatLight.IntegrationTests
         {
             TestReport
                 .TestResults
-                .Single(w => w.MethodName.Equals("messageBox_overload_1_MessageBoxButton_OKCancel"))
-                .OtherInfo
-                .ShouldContain("some caption")
-                .ShouldContain("Some text");
+                //.Where(w => !string.IsNullOrEmpty(w.OtherInfo))
+                //.Where(w => w.OtherInfo.Contains("messageBox_overload_1_MessageBoxButton_OKCancel"))
+                //.Count().ShouldEqual(1);
+            .Single(w => w.MethodName.Equals("messageBox_overload_1_MessageBoxButton_OKCancel"))
+            .OtherInfo
+            .ShouldContain("some caption")
+            .ShouldContain("Some text");
         }
     }
 }

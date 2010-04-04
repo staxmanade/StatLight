@@ -22,7 +22,8 @@ namespace StatLight.Core.Reporting
         private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;
         private readonly TestReport _currentReport = new TestReport();
-        private readonly DialogAssertionMessageMatchMaker _dialogAssertionMessageMatchMaker = new DialogAssertionMessageMatchMaker();
+        private readonly DialogAssertionMatchMaker _dialogAssertionMessageMatchMaker = new DialogAssertionMatchMaker();
+        private readonly DialogMessageMatchMaker _dialogMessageMatchMaker = new DialogMessageMatchMaker();
         public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator)
         {
             _logger = logger;
@@ -44,6 +45,11 @@ namespace StatLight.Core.Reporting
             if (_dialogAssertionMessageMatchMaker.WasEventAlreadyClosed(message))
             {
                 // Don't include this as a "passed" test as we had to automatically close the dialog);)
+                return;
+            }
+
+            if (_dialogMessageMatchMaker.WasEventAlreadyClosed(message))
+            {
                 return;
             }
 
@@ -72,6 +78,13 @@ namespace StatLight.Core.Reporting
                 // Don't include this as a "passed" test as we had to automatically close the dialog);)
                 return;
             }
+
+            if (_dialogMessageMatchMaker.WasEventAlreadyClosed(message))
+            {
+                return;
+            }
+
+
 
             var msg = new TestCaseResult(ResultType.Failed)
             {
@@ -118,7 +131,13 @@ namespace StatLight.Core.Reporting
                 ReportIt(msg);
             };
 
-            _dialogAssertionMessageMatchMaker.Handle(message, handler);
+            if (message.DialogType == DialogType.Assert)
+                _dialogAssertionMessageMatchMaker.AddAssertionHandler(message, handler);
+            else if (message.DialogType == DialogType.MessageBox)
+            {
+                _dialogMessageMatchMaker.AddMessageBoxHandler(message, handler);
+            }
+
         }
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
@@ -133,8 +152,10 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodBeginClientEvent message)
         {
-            _dialogAssertionMessageMatchMaker.Handle(message);
+            _dialogAssertionMessageMatchMaker.HandleMethodBeginClientEvent(message);
+            _dialogMessageMatchMaker.HandleMethodBeginClientEvent(message);
         }
+
         private void ReportIt(TestCaseResult result)
         {
             _currentReport.AddResult(result);
@@ -144,7 +165,58 @@ namespace StatLight.Core.Reporting
     }
 
 
-    public class DialogAssertionMessageMatchMaker
+    public class DialogAssertionMatchMaker
+    {
+        private readonly List<TestExecutionMethodBeginClientEvent> _completedMessage = new List<TestExecutionMethodBeginClientEvent>();
+
+        private readonly Dictionary<DialogAssertionServerEvent, Action<TestExecutionMethodBeginClientEvent>> _dialogAssertionEventsWithHandlers =
+            new Dictionary<DialogAssertionServerEvent, Action<TestExecutionMethodBeginClientEvent>>();
+
+        public void HandleMethodBeginClientEvent(TestExecutionMethodBeginClientEvent message)
+        {
+            if (_dialogAssertionEventsWithHandlers.Any(w => w.Key.Message.Contains(message.MethodName)))
+            {
+                var x = _dialogAssertionEventsWithHandlers.First(w => w.Key.Message.Contains(message.MethodName));
+                _completedMessage.Add(message);
+                x.Value(message);
+            }
+        }
+
+        public void AddAssertionHandler(DialogAssertionServerEvent message, Action<TestExecutionMethodBeginClientEvent> onMatched)
+        {
+            _dialogAssertionEventsWithHandlers.Add(message, onMatched);
+        }
+
+        public bool WasEventAlreadyClosed(TestExecutionMethod message)
+        {
+            return _completedMessage.Any(a =>
+                                         a.NamespaceName == message.NamespaceName
+                                         && a.ClassName == message.ClassName
+                                         && a.MethodName == message.MethodName);
+        }
+    }
+
+
+    public class DialogMessageMatchMakerX
+    {
+        public void HandleMethodBeginClientEvent(TestExecutionMethodBeginClientEvent message)
+        {
+        }
+
+        public void AddMessageBoxHandler(DialogAssertionServerEvent message, Action<TestExecutionMethodBeginClientEvent> onMatched)
+        {
+            var testExecutionMethodBeginClientEvent = new TestExecutionMethodBeginClientEvent { };
+            onMatched(testExecutionMethodBeginClientEvent);
+        }
+
+        public bool WasEventAlreadyClosed(TestExecutionMethod message)
+        {
+            return false;
+        }
+    }
+
+
+    public class DialogMessageMatchMaker
     {
         private readonly List<TestExecutionMethodBeginClientEvent> _completedMessage = new List<TestExecutionMethodBeginClientEvent>();
 
@@ -152,7 +224,7 @@ namespace StatLight.Core.Reporting
         private DialogAssertionServerEvent _currentDialogServerEvent;
         private Action<TestExecutionMethodBeginClientEvent> _onMatched;
 
-        public void Handle(TestExecutionMethodBeginClientEvent message)
+        public void HandleMethodBeginClientEvent(TestExecutionMethodBeginClientEvent message)
         {
             if (_currentDialogServerEvent != null)
             {
@@ -165,7 +237,7 @@ namespace StatLight.Core.Reporting
             }
         }
 
-        public void Handle(DialogAssertionServerEvent message, Action<TestExecutionMethodBeginClientEvent> onMatched)
+        public void AddMessageBoxHandler(DialogAssertionServerEvent message, Action<TestExecutionMethodBeginClientEvent> onMatched)
         {
             if (_currentBeginEvent != null)
             {

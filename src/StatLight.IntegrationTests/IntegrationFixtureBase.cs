@@ -1,4 +1,5 @@
 ﻿using System;
+using StatLight.Core.Tests;
 using StatLight.IntegrationTests.ProviderTests;
 
 namespace StatLight.IntegrationTests
@@ -9,7 +10,7 @@ namespace StatLight.IntegrationTests
     using StatLight.Core.WebServer;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.Reporting;
-using StatLight.Core.Events.Aggregation;
+    using StatLight.Core.Events.Aggregation;
 
     public abstract class IntegrationFixtureBase : FixtureBase
     {
@@ -44,11 +45,18 @@ using StatLight.Core.Events.Aggregation;
         protected override void Because()
         {
             base.Because();
+
+            var xapReadItems = new Core.WebServer.XapInspection.XapReader(_testLogger).GetTestAssembly(_pathToIntegrationTestXap);
+            xapReadItems.DebugWrite(_testLogger);
+
+            var v = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion ?? MicrosoftTestingFrameworkVersion.March2010;
+
             var serverTestRunConfiguration = new ServerTestRunConfiguration(new XapHostFileLoaderFactory(_testLogger),
-                                                                            MicrosoftTestingFrameworkVersion.Default)
-                                                 {
-                                                     DialogSmackDownElapseMilliseconds = 500,
-                                                 };
+                                                                            v)
+            {
+                DialogSmackDownElapseMilliseconds = 500,
+            };
+
             Runner = _statLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, _pathToIntegrationTestXap, ClientTestRunConfiguration, serverTestRunConfiguration, true);
             TestReport = Runner.Run();
         }

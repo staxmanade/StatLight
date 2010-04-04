@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using StatLight.Core.Reporting.Providers.Console;
+using StatLight.Core.Common;
 
 namespace StatLight.Core.Events.Aggregation
 {
@@ -38,6 +39,7 @@ namespace StatLight.Core.Events.Aggregation
     {
         private readonly List<FilteredHandler<object>> _filteredHandlers = new List<FilteredHandler<object>>();
         private readonly SynchronizationContext _context;
+        public ILogger Logger { get; set; }
         private readonly List<object> _listeners = new List<object>();
         private readonly object _locker = new object();
 
@@ -54,6 +56,9 @@ namespace StatLight.Core.Events.Aggregation
 
         public void SendMessage<T>(T message)
         {
+            //DEBUG
+            //if (Logger != null)
+            //    Logger.Debug(typeof(T).Name);
             sendAction(() => CallOnEach<IListener<T>>(all(), x => x.Handle(message)));
             sendAction(() => SendToAllFilteredListeners(message));
         }

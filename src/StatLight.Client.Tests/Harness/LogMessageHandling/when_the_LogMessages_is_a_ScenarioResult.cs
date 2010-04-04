@@ -1,5 +1,4 @@
 ﻿using Microsoft.Silverlight.Testing.Harness;
-using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using StatLight.Client.Harness.Mocks;
 using StatLight.Client.Tests;
 

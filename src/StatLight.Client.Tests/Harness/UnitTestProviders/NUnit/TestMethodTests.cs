@@ -29,7 +29,7 @@ namespace StatLight.Client.Harness.UnitTestProviders.NUnit
     }
 
     [TestClass]
-    public class when_validating_a_standard_test_fact_attribute_method : FixtureBase
+    public class when_validating_a_standard_nunit_test_attribute_method : FixtureBase
     {
         ITestMethod testMethod;
         MethodInfo methodInfo;
@@ -40,6 +40,13 @@ namespace StatLight.Client.Harness.UnitTestProviders.NUnit
 
             methodInfo = MockNUnitTestClass.GetPassingTest();
             testMethod = new TestMethod(methodInfo);
+            testMethod.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void testMethod_should_exist()
+        {
+            testMethod.ShouldNotBeNull();
         }
 
         [TestMethod]

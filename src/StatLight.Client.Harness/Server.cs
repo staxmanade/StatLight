@@ -37,10 +37,10 @@ namespace StatLight.Client.Harness
             PostMessageX(traceMessage);
         }
 
-        private static int postMessageCount;
+        private static int _postMessageCount;
         private static void PostMessageX(string message)
         {
-            postMessageCount++;
+            System.Threading.Interlocked.Increment(ref _postMessageCount);
 
             HttpPost(StatLightServiceRestApi.PostMessage.ToFullUri(), message);
         }
@@ -61,7 +61,7 @@ namespace StatLight.Client.Harness
         {
             var signalTestCompleteClientEvent = new SignalTestCompleteClientEvent
             {
-                TotalMessagesPostedCount = postMessageCount,
+                TotalMessagesPostedCount = _postMessageCount,
                 Failed = state.Failed,
                 TotalFailureCount = state.Failures,
                 TotalTestsCount = state.TotalScenarios,
@@ -71,7 +71,7 @@ namespace StatLight.Client.Harness
 
         public static void SignalTestComplete()
         {
-            SignalTestComplate(new SignalTestCompleteClientEvent { TotalMessagesPostedCount = postMessageCount });
+            SignalTestComplate(new SignalTestCompleteClientEvent { TotalMessagesPostedCount = _postMessageCount });
         }
 
         private static void SignalTestComplate(SignalTestCompleteClientEvent completeClientEvent)

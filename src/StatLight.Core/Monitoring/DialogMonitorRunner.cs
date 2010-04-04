@@ -47,7 +47,7 @@ namespace StatLight.Core.Monitoring
                     //_logger.Debug("DialogMonitorRunner.Elapsed - running = {0}".FormatWith(dialogMonitor.ToString()));
 
                     _isMonitorCurrentlyRunning[dialogMonitor.GetType()] = true;
-                    ExecuteDialogSlapdown(dialogMonitor);
+                    ExecuteDialogSlapdown(dialogMonitor, dialogMonitor.DialogType);
                     _isMonitorCurrentlyRunning[dialogMonitor.GetType()] = false;
                 }
                 else
@@ -58,10 +58,10 @@ namespace StatLight.Core.Monitoring
             }
         }
 
-        private void ExecuteDialogSlapdown(IDialogMonitor dialogMonitor)
+        private void ExecuteDialogSlapdown(IDialogMonitor dialogMonitor, DialogType dialogType)
         {
             Action<string> a = msg => _eventAggregator.SendMessage(
-                new DialogAssertionServerEvent
+                new DialogAssertionServerEvent(dialogType)
                     {
                         Message = msg,
                     });
