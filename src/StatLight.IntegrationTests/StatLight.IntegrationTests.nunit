@@ -1,6 +1,6 @@
 ﻿<NUnitProject>
   <Settings activeconfig="Default" />
-  <Config name="Default" binpathtype="Auto">
-    <assembly path="bin\x86\Debug\StatLight.IntegrationTests.dll" />
+  <Config name="Default" binpathtype="Auto" appbase="..\build\bin\Debug">
+    <assembly path="StatLight.IntegrationTests.dll" />
   </Config>
 </NUnitProject>

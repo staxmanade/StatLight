@@ -3,9 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
 using StatLight.Client.Harness.Events;
-using StatLight.Core.Events.Aggregation;
-using StatLight.Core.Reporting;
-using StatLight.Core.Runners;
 using StatLight.Core.Tests;
 using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebServer;
@@ -57,13 +54,13 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_have_correct_TotalFailed_count()
         {
-            TestReport.TotalFailed.ShouldEqual(1);
+            TestReport.TotalFailed.ShouldEqual(3);
         }
 
         [Test]
-        public void Should_have_correct_TotalPassed_count()
+        public void Should_have_correct_TotalPassed_count_except_theres_one_extra_passed_test_here_because_of_the_MessageBox_test()
         {
-            TestReport.TotalPassed.ShouldEqual(4);
+            TestReport.TotalPassed.ShouldEqual(5);
         }
 
         [Test]
@@ -97,7 +94,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_receive_the_TestExecutionMethodBeginClientEvent()
         {
-            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(5);
+            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(7);
             foreach (var e in _testExecutionMethodBeginClientEvent)
                 AssertTestExecutionClassData(e);
         }
@@ -128,7 +125,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_receive_the_TestExecutionMethodPassedClientEvent()
         {
-            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(4);
+            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(6);
         }
 
         private static void AssertTestExecutionClassData(TestExecutionClass e)
@@ -140,5 +137,28 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
                 Assert.Fail("e.ClassName is not equal to MSTestNestedClassTests or MSTestTest - actual=" + e.ClassName);
         }
         #endregion
+
+        [Test]
+        public void Should_have_reported_a_debug_assertion_error()
+        {
+            TestReport
+                .TestResults
+                .Single(w => (w.MethodName != null ? w.MethodName.Equals("Should_fail_due_to_a_dialog_assertion") : false))
+                .OtherInfo
+                .ShouldContain("Should_fail_due_to_a_dialog_assertion - message")
+                ;
+        }
+
+        [Test]
+        public void Should_have_scraped_the__messageBox_overload_1__test_message_box_info()
+        {
+            TestReport
+                .TestResults
+                .Where(w => !string.IsNullOrEmpty(w.OtherInfo))
+                .Single(w => w.OtherInfo.Contains("Should_fail_due_to_a_message_box_modal_dialog"))
+                .OtherInfo
+                .ShouldContain("Should_fail_due_to_a_message_box_modal_dialog - message");
+        }
+
     }
 }

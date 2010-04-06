@@ -23,9 +23,9 @@ namespace StatLight.Core.Reporting
         private readonly IEventAggregator _eventAggregator;
         private readonly TestReport _currentReport = new TestReport();
         private readonly DialogAssertionMatchMaker _dialogAssertionMessageMatchMaker = new DialogAssertionMatchMaker();
-        private readonly DialogMessageMatchMaker _dialogMessageMatchMaker = new DialogMessageMatchMaker();
         public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator)
         {
+            //System.Diagnostics.Debugger.Break();
             _logger = logger;
             _eventAggregator = eventAggregator;
         }
@@ -45,11 +45,6 @@ namespace StatLight.Core.Reporting
             if (_dialogAssertionMessageMatchMaker.WasEventAlreadyClosed(message))
             {
                 // Don't include this as a "passed" test as we had to automatically close the dialog);)
-                return;
-            }
-
-            if (_dialogMessageMatchMaker.WasEventAlreadyClosed(message))
-            {
                 return;
             }
 
@@ -78,13 +73,6 @@ namespace StatLight.Core.Reporting
                 // Don't include this as a "passed" test as we had to automatically close the dialog);)
                 return;
             }
-
-            if (_dialogMessageMatchMaker.WasEventAlreadyClosed(message))
-            {
-                return;
-            }
-
-
 
             var msg = new TestCaseResult(ResultType.Failed)
             {
@@ -132,10 +120,20 @@ namespace StatLight.Core.Reporting
             };
 
             if (message.DialogType == DialogType.Assert)
+            {
                 _dialogAssertionMessageMatchMaker.AddAssertionHandler(message, handler);
+            }
             else if (message.DialogType == DialogType.MessageBox)
             {
-                _dialogMessageMatchMaker.AddMessageBoxHandler(message, handler);
+                var msg = new TestCaseResult(ResultType.SystemGeneratedFailure)
+                {
+                    OtherInfo = message.Message,
+                    NamespaceName = "[StatLight]",
+                    ClassName = "[CannotFigureItOut]",
+                    MethodName = "[NotEnoughContext]",
+                };
+
+                ReportIt(msg);
             }
 
         }
@@ -153,7 +151,6 @@ namespace StatLight.Core.Reporting
         public void Handle(TestExecutionMethodBeginClientEvent message)
         {
             _dialogAssertionMessageMatchMaker.HandleMethodBeginClientEvent(message);
-            _dialogMessageMatchMaker.HandleMethodBeginClientEvent(message);
         }
 
         private void ReportIt(TestCaseResult result)
@@ -193,78 +190,6 @@ namespace StatLight.Core.Reporting
                                          a.NamespaceName == message.NamespaceName
                                          && a.ClassName == message.ClassName
                                          && a.MethodName == message.MethodName);
-        }
-    }
-
-
-    public class DialogMessageMatchMakerX
-    {
-        public void HandleMethodBeginClientEvent(TestExecutionMethodBeginClientEvent message)
-        {
-        }
-
-        public void AddMessageBoxHandler(DialogAssertionServerEvent message, Action<TestExecutionMethodBeginClientEvent> onMatched)
-        {
-            var testExecutionMethodBeginClientEvent = new TestExecutionMethodBeginClientEvent { };
-            onMatched(testExecutionMethodBeginClientEvent);
-        }
-
-        public bool WasEventAlreadyClosed(TestExecutionMethod message)
-        {
-            return false;
-        }
-    }
-
-
-    public class DialogMessageMatchMaker
-    {
-        private readonly List<TestExecutionMethodBeginClientEvent> _completedMessage = new List<TestExecutionMethodBeginClientEvent>();
-
-        private TestExecutionMethodBeginClientEvent _currentBeginEvent;
-        private DialogAssertionServerEvent _currentDialogServerEvent;
-        private Action<TestExecutionMethodBeginClientEvent> _onMatched;
-
-        public void HandleMethodBeginClientEvent(TestExecutionMethodBeginClientEvent message)
-        {
-            if (_currentDialogServerEvent != null)
-            {
-                _onMatched(message);
-                ResetWithBeginEvent(message);
-            }
-            else
-            {
-                _currentBeginEvent = message;
-            }
-        }
-
-        public void AddMessageBoxHandler(DialogAssertionServerEvent message, Action<TestExecutionMethodBeginClientEvent> onMatched)
-        {
-            if (_currentBeginEvent != null)
-            {
-                onMatched(_currentBeginEvent);
-                ResetWithBeginEvent(_currentBeginEvent);
-            }
-            else
-            {
-                _currentDialogServerEvent = message;
-                _onMatched = onMatched;
-            }
-        }
-
-        public bool WasEventAlreadyClosed(TestExecutionMethod message)
-        {
-            return _completedMessage.Any(a =>
-                                  a.NamespaceName == message.NamespaceName
-                                  && a.ClassName == message.ClassName
-                                  && a.MethodName == message.MethodName);
-        }
-
-        private void ResetWithBeginEvent(TestExecutionMethodBeginClientEvent message)
-        {
-            _completedMessage.Add(message);
-            _currentBeginEvent = null;
-            _currentDialogServerEvent = null;
-            _onMatched = null;
         }
     }
 }

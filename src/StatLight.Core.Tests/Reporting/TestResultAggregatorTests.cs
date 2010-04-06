@@ -11,6 +11,7 @@ namespace StatLight.Core.Tests.Reporting
         using StatLight.Core.Events;
         using StatLight.Core.Reporting;
         using StatLight.Core.Tests.Reporting.Providers;
+        using System.Collections.Generic;
 
         public abstract class for_a_TestResultAggregator_that_should_handle_a_ClientEvent : FixtureBase
         {
@@ -234,26 +235,45 @@ namespace StatLight.Core.Tests.Reporting
         [TestFixture]
         public class when_a_dialog_assertion_occurs_we_should_rePublish_failure_events : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
         {
+            private readonly List<TestCaseResult> _manufacturedFailedEvents = new List<TestCaseResult>();
             private TestCaseResult _manufacturedFailedEvent;
+
             protected override void Before_all_tests()
             {
                 base.Before_all_tests();
 
                 TestEventAggregator
-                    .AddListener<TestCaseResult>(e => _manufacturedFailedEvent = e);
+                    .AddListener<TestCaseResult>(e =>
+                    {
+                        if (e.ResultType == ResultType.SystemGeneratedFailure)
+                        {
+                            _manufacturedFailedEvents.Add(e);
+                        }
+                    });
             }
 
             protected override void Because()
             {
                 base.Because();
-                TestResultAggregator.Handle(new DialogAssertionServerEvent(DialogType.Assert) { Message = "m" });
-                TestResultAggregator.Handle(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m" });
+
+                TestResultAggregator.Handle(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m0" });
+                TestResultAggregator.Handle(new TestExecutionMethodPassedClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m0" });
+
+                TestResultAggregator.Handle(new DialogAssertionServerEvent(DialogType.MessageBox) { Message = "some message here" });
+
+                _manufacturedFailedEvent = _manufacturedFailedEvents.FirstOrDefault();
             }
 
             [Test]
             public void Should_have_manufactured_a_test_failed_event()
             {
                 _manufacturedFailedEvent.ShouldNotBeNull();
+            }
+
+            [Test]
+            public void should_only_have_published_one_failure()
+            {
+                _manufacturedFailedEvents.Count().ShouldEqual(1);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using Microsoft.Silverlight.Testing;
@@ -97,6 +98,18 @@ namespace StatLight.IntegrationTests.Silverlight
 
 			EnqueueConditional(() => eventRaised);
 		}
+
+        [TestMethod]
+        public void Should_fail_due_to_a_dialog_assertion()
+        {
+            Debug.Assert(false, "Should_fail_due_to_a_dialog_assertion - message");
+        }
+
+        [TestMethod]
+        public void Should_fail_due_to_a_message_box_modal_dialog()
+        {
+            MessageBox.Show("Should_fail_due_to_a_message_box_modal_dialog - message");
+        }
 
 	}
 
