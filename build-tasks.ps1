@@ -43,6 +43,8 @@ properties {
 		)
 }
 
+Task default -depends build-debug
+
 Task build-Debug -depends build-all, test-all {
 }
 
