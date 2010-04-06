@@ -1,7 +1,8 @@
 
 properties {
 	# NOTE: the $build_configuration property must be set prior to calling anything in here... default.ps1 for example
-	
+	$build_configuration = 'Debug'
+
 	$not_build_configuration = Get-Not-Build-Configuration
 	$build_dir = ".\src\build\bin\$build_configuration"
 	$program_files_dir = Get-x86-ProgramFiles-Location
@@ -542,6 +543,7 @@ Task writeProperties {
 	
 	$ErrorActionPreference = "Stop"
 	
+	echo "running build with configuration of $build_configuration"
 }
 
 Task clean {
