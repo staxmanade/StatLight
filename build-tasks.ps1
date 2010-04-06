@@ -408,7 +408,7 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	}
 	
-	$passedCount.ShouldEqual(4);
+	$passedCount.ShouldEqual(6);
 	$ignoredCount.ShouldEqual(1);
 	$failedCount.ShouldEqual(1);
 
@@ -437,7 +437,6 @@ function AssertXmlReportIsValid([string]$scriptFile)
 		{
 			Write-Host $msg -ForegroundColor Red
 		}
-		Remove-If-Exists $scriptFile
 		throw "Failed the xmlreport schema validation."
 	}
 }

@@ -30,7 +30,8 @@
                             <xs:element maxOccurs="unbounded" name="test">
                                 <xs:complexType>
                                     <xs:sequence minOccurs="0">
-                                        <xs:element name="exceptionInfo" />
+                                        <xs:element minOccurs="0" name="exceptionInfo" />
+                                        <xs:element minOccurs="0" name="otherInfo" type="xs:string" />
                                     </xs:sequence>
                                     <xs:attribute name="name" type="xs:string" use="required" />
                                     <xs:attribute name="resulttype" type="xs:string" use="required" />
