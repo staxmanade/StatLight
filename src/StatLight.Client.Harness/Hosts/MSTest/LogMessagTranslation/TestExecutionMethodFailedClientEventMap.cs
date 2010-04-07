@@ -17,10 +17,10 @@ namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
                 if (message.Is(TestGranularity.TestScenario)
                     && message.DecoratorMatches(LogDecorator.TestOutcome, v =>
                                                                               {
-                                                                                  TestOutcome outcome = (TestOutcome)v;
                                                                                   switch ((TestOutcome)v)
                                                                                   {
                                                                                       case TestOutcome.Failed:
+                                                                                      case TestOutcome.Timeout:
                                                                                       case TestOutcome.Inconclusive:
                                                                                           //TODO: reproduce case TestOutcome.Error:
                                                                                           return true;

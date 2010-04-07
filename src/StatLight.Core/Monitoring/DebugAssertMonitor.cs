@@ -59,7 +59,7 @@ namespace StatLight.Core.Monitoring
             string caption = dialogWindow.GetNamePropertyOf(AutomationTypes.ControlText);
             string text = dialogWindow.GetNamePropertyOf(AutomationTypes.ControlTitleBar);
 
-            string msg = @"A Silverlight MessageBox dialog was automatically closed.
+            string msg = @"A Silverlight Debug Assertion dialog was automatically closed.
 Caption: {0}
 Dialog Message:
 {1}".FormatWith(caption, text);
@@ -126,6 +126,7 @@ Dialog Message:
 
 
         }
+
         public DialogType DialogType
         {
             get { return DialogType.Assert; }

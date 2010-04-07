@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.Harness;
-using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-using Microsoft.Silverlight.Testing.UnitTesting.Metadata.VisualStudio;
 
 namespace XunitLight
 {

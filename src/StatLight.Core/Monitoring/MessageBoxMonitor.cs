@@ -39,6 +39,9 @@ namespace StatLight.Core.Monitoring
                 return noActionTaken;
             }
 
+            if (dialogWindow.Current.Name.Contains("Assertion Failed"))
+                return noActionTaken;
+
             var okButtonCond = new PropertyCondition(AutomationElement.LocalizedControlTypeProperty, "button");
             var okButtonNameCond = new PropertyCondition(AutomationElement.NameProperty, "OK");
             var okCond = new AndCondition(okButtonCond, okButtonNameCond);
@@ -66,6 +69,8 @@ Dialog Message:
 {1}".FormatWith(caption, text);
 
             ifSlappedAction(msg);
+
+            _logger.Debug("Clicking OK on a dialog (MessageBox)");
 
             // Close the dialgo by clicking OK
             buttonClicInvokePattern.Invoke();

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-using Microsoft.Silverlight.Testing;
+//using Microsoft.Silverlight.Testing;
 
 namespace StatLight.IntegrationTests.Silverlight
 {
@@ -18,8 +18,8 @@ namespace StatLight.IntegrationTests.Silverlight
 
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
-			UnitTestSystem.RegisterUnitTestProvider(new Microsoft.Silverlight.Testing.UnitTesting.Metadata.NUnit.NUnitProvider());
-			this.RootVisual = UnitTestSystem.CreateTestPage();
+            //UnitTestSystem.RegisterUnitTestProvider(new Microsoft.Silverlight.Testing.UnitTesting.Metadata.NUnit.NUnitProvider());
+            //this.RootVisual = UnitTestSystem.CreateTestPage();
 		}
 
 		private void Application_Exit(object sender, EventArgs e)

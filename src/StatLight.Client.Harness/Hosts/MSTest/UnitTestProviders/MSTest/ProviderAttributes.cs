@@ -19,7 +19,6 @@
 		public static string DescriptionAttribute = "DescriptionAttribute";
 		public static string ExpectedExceptionAttribute = "ExpectedExceptionAttribute";
 		public static string Priority = "Priority";
-
-
+        public static string TimeoutAttribute = "TimeoutAttribute";
 	}
 }

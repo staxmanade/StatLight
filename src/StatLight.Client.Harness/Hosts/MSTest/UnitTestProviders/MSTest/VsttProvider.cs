@@ -32,7 +32,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
             ////UnitTestProviderCapabilities.MethodCanHaveOwner | 
             ////UnitTestProviderCapabilities.MethodCanHavePriority |
             ////UnitTestProviderCapabilities.MethodCanHaveProperties |
-            ////UnitTestProviderCapabilities.MethodCanHaveTimeout |
+            UnitTestProviderCapabilities.MethodCanHaveTimeout |
             ////UnitTestProviderCapabilities.MethodCanHaveWorkItems |
             UnitTestProviderCapabilities.MethodCanIgnore;
             // UnitTestProviderCapabilities.MethodCanCategorize | // not supported by VSTT

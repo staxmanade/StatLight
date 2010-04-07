@@ -55,12 +55,9 @@ namespace StatLight.IntegrationTests
         [Test]
         public void Should_have_scraped_the__debug_assert_overload_1__test_message_box_info()
         {
-            TestReport
-                .TestResults
-                .Single(w => w.MethodName.Equals("debug_assert_overload_1"))
-                .OtherInfo
-                .ShouldContain("at When_calling_debug_assert_with_each_overload.debug_assert_overload_1()")
-                ;
+            var nonEmptyOtherInfoResults = TestReport.TestResults.Single(w => w.MethodName.Equals("debug_assert_overload_1"));
+            nonEmptyOtherInfoResults.OtherInfo
+                .ShouldContain("at When_calling_debug_assert_with_each_overload.debug_assert_overload_1()");
         }
     }
 #endif

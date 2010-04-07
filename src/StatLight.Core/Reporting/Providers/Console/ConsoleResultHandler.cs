@@ -49,6 +49,7 @@ namespace StatLight.Core.Reporting.Providers.Console
                     ".".WrapConsoleMessageWithColor(ConsoleColor.White, false);
                     break;
                 case ResultType.Failed:
+                case ResultType.SystemGeneratedFailure:
                     System.Console.WriteLine("");
                     "------------------ ".WrapConsoleMessageWithColor(ConsoleColor.DarkRed, false);
                     "Test ".WrapConsoleMessageWithColor(ConsoleColor.DarkRed, false);

@@ -6,6 +6,8 @@ using StatLight.Client.Harness.Events;
 using StatLight.Core.Tests;
 using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebServer;
+using StatLight.Core.Reporting;
+using StatLight.IntegrationTests.ProviderTests.MSTest;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
 {
@@ -54,7 +56,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_have_correct_TotalFailed_count()
         {
-            TestReport.TotalFailed.ShouldEqual(3);
+            TestReport.TotalFailed.ShouldEqual(4);
         }
 
         [Test]
@@ -94,7 +96,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_receive_the_TestExecutionMethodBeginClientEvent()
         {
-            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(7);
+            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(8);
             foreach (var e in _testExecutionMethodBeginClientEvent)
                 AssertTestExecutionClassData(e);
         }
@@ -111,7 +113,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_receive_the_TestExecutionMethodFailedClientEvent()
         {
-            _testExecutionMethodFailedClientEvent.Count().ShouldEqual(1);
+            _testExecutionMethodFailedClientEvent.Count().ShouldEqual(2);
 
             var e = _testExecutionMethodFailedClientEvent.First();
 
@@ -139,26 +141,44 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         #endregion
 
         [Test]
+        public void Should_have_reported_a_timeout_failure_correctly()
+        {
+            var failedTimeoutResult = TestReport.TestResults.SingleOrDefault(w => w.HasExceptionInfoWithCriteria(ex => ex.FullMessage.Contains("Timeout")));
+            failedTimeoutResult.ShouldNotBeNull();
+        }
+
+        [Test]
         public void Should_have_reported_a_debug_assertion_error()
         {
-            TestReport
+            var assertionResult = TestReport
                 .TestResults
-                .Single(w => (w.MethodName != null ? w.MethodName.Equals("Should_fail_due_to_a_dialog_assertion") : false))
+                .Single(w => (w.MethodName != null ? w.MethodName.Equals("Should_fail_due_to_a_dialog_assertion") : false));
+
+            assertionResult
                 .OtherInfo
-                .ShouldContain("Should_fail_due_to_a_dialog_assertion - message")
-                ;
+                .ShouldContain("Debug Assertion")
+                .ShouldContain("Should_fail_due_to_a_dialog_assertion - message");
+
+            assertionResult.ResultType.ShouldEqual(ResultType.Failed);
         }
 
         [Test]
         public void Should_have_scraped_the__messageBox_overload_1__test_message_box_info()
         {
-            TestReport
-                .TestResults
-                .Where(w => !string.IsNullOrEmpty(w.OtherInfo))
-                .Single(w => w.OtherInfo.Contains("Should_fail_due_to_a_message_box_modal_dialog"))
-                .OtherInfo
-                .ShouldContain("Should_fail_due_to_a_message_box_modal_dialog - message");
+            var nonEmptyOtherInfoResults = TestReport.TestResults.Where(w => !string.IsNullOrEmpty(w.OtherInfo));
+            var theOneWeWant = nonEmptyOtherInfoResults.Single(w => w.OtherInfo.Contains("Should_fail_due_to_a_message_box_modal_dialog"));
+            theOneWeWant.OtherInfo.ShouldContain("Should_fail_due_to_a_message_box_modal_dialog - message");
+
+            theOneWeWant.ResultType.ShouldEqual(ResultType.SystemGeneratedFailure);
         }
 
+    }
+
+    internal static class AssertionExtensions
+    {
+        public static bool HasExceptionInfoWithCriteria(this TestCaseResult testt, Func<ExceptionInfo, bool> criteria)
+        {
+            return testt.ExceptionInfo == null ? false : criteria(testt.ExceptionInfo);
+        }
     }
 }

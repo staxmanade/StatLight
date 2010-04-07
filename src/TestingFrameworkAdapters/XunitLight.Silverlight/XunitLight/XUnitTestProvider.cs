@@ -55,7 +55,7 @@ namespace XunitLight
 		/// <param name="testHarness">The unit test harness.</param>
 		/// <param name="assemblyReference">Assembly reflection object.</param>
 		/// <returns>Returns the assembly metadata interface.</returns>
-		public IAssembly GetUnitTestAssembly(ITestHarness testHarness, Assembly assemblyReference)
+        public IAssembly GetUnitTestAssembly(UnitTestHarness testHarness, Assembly assemblyReference)
 		{
 			if (_assemblyCache.ContainsKey(assemblyReference))
 			{

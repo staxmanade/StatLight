@@ -89,12 +89,20 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
                     }, name, durationMilliseconds);
                     break;
                 case ResultType.Failed:
-
                     WrapTestWithStartAndEnd(() => messageWriter.Write(
                         CommandFactory.TestFailed(
                             name,
                             message.ExceptionInfo.FullMessage,
                             message.ExceptionInfo.FullMessage)),
+                        name,
+                        durationMilliseconds);
+                    break;
+                case ResultType.SystemGeneratedFailure:
+                    WrapTestWithStartAndEnd(() => messageWriter.Write(
+                        CommandFactory.TestFailed(
+                            name,
+                            "StatLight generated test failure",
+                            message.OtherInfo)),
                         name,
                         durationMilliseconds);
                     break;

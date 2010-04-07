@@ -118,20 +118,6 @@ namespace StatLight.Core.Reporting
             }
         }
 
-        //public TestReport AddResult(MobilOtherMessageType otherMessage)
-        //{
-        //    this.otherMessages.Add(otherMessage);
-        //    DateTimeRunCompleted = DateTime.Now;
-        //    return this;
-        //}
-
-        //public TestReport AddResult(MobilScenarioResult mobilScenarioResult)
-        //{
-        //    results.Add(mobilScenarioResult);
-        //    DateTimeRunCompleted = DateTime.Now;
-        //    return this;
-        //}
-
         public TestReport AddResult(TestCaseResult result)
         {
             SetLastMessageReceivedTime();

@@ -11,9 +11,7 @@ namespace StatLight.Core.Reporting.Providers.Xml
     using System.IO;
     using System.Linq;
     using System.Xml.Linq;
-    using StatLight.Core.Common;
     using StatLight.Core.Properties;
-    using System.Text;
 
     public class XmlReport
     {
@@ -22,6 +20,9 @@ namespace StatLight.Core.Reporting.Providers.Xml
 
         public XmlReport(TestReport report, string testXapFileName)
         {
+            if (report == null)
+                throw new ArgumentNullException("report");
+
             _report = report;
             _testXapFileName = testXapFileName;
         }
@@ -37,8 +38,6 @@ namespace StatLight.Core.Reporting.Providers.Xml
 
         public string GetXmlReport()
         {
-            Debug.Assert(_report != null);
-
             IEnumerable<XElement> testItems = (from x in _report.TestResults
                                                select GetResult(x));
 

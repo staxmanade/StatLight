@@ -6,37 +6,55 @@ using Microsoft.Silverlight.Testing;
 
 namespace StatLight.IntegrationTests.Silverlight
 {
-	using System;
-	using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-	[TestClass]
-	public class MSTestTests : SilverlightTest
-	{
-		[TestClass]
-		public class MSTestNestedClassTests
-		{
-			[TestMethod]
-			public void this_should_be_a_passing_test()
-			{
-				Assert.IsTrue(true);
-			}
-		}
+    [TestClass]
+    public class MSTestTests : SilverlightTest
+    {
+        #region Passing Tests
+        [TestClass]
+        public class MSTestNestedClassTests
+        {
+            [TestMethod]
+            public void this_should_be_a_passing_test()
+            {
+                Assert.IsTrue(true);
+            }
+        }
 
-		[TestMethod]
-		public void this_should_be_a_passing_test()
-		{
-			Assert.IsTrue(true);
-		}
+        [TestMethod]
+        public void this_should_be_a_passing_test()
+        {
+            Assert.IsTrue(true);
+        }
 
-		[TestMethod]
-		public void this_should_also_be_a_passing_test()
-		{
-			Assert.IsTrue(true);
-		}
+        [TestMethod]
+        public void this_should_also_be_a_passing_test()
+        {
+            Assert.IsTrue(true);
+        }
 
-		[TestMethod]
-		public void this_should_be_a_Failing_test()
-		{
+        [TestMethod]
+        [Asynchronous]
+        public void should_be_able_to_EncueueCallback_with_asyncronous_test()
+        {
+            var eventClass = new SomeEventClass();
+            bool eventRaised = false;
+            eventClass.FiredEvent += (sender, e) => { eventRaised = true; };
+
+            EnqueueCallback(eventClass.FireTheEvent);
+            EnqueueCallback(() => Assert.IsTrue(eventRaised));
+
+            EnqueueTestComplete();
+        }
+
+        #endregion
+
+        #region Failing Tests
+        [TestMethod]
+        public void this_should_be_a_Failing_test()
+        {
             Exception ex1;
             try
             {
@@ -55,71 +73,55 @@ namespace StatLight.IntegrationTests.Silverlight
             {
                 ex2 = ex;
             }
-		    throw ex2;
-            //Assert.IsTrue(false);
-		}
-
-		[TestMethod]
-		[Ignore]
-		public void this_should_be_an_Ignored_test()
-		{
-			throw new Exception("This test should have been ignored.");
-		}
-
-
+            throw ex2;
+        }
 
         [TestMethod]
         [Asynchronous]
-        public void should_be_able_to_EncueueCallback_with_asyncronous_test()
+        [Timeout(1000)]
+        public void Should_fail_due_to_async_test_timeout()
         {
-            var eventClass = new SomeEventClass();
-            bool eventRaised = false;
-            eventClass.FiredEvent += (sender, e) => { eventRaised = true; };
-
-            WaitFor(eventClass, "FiredEvent");
-
-            EnqueueCallback(() => Assert.IsTrue(eventRaised));
-
-            eventClass.FireTheEvent();
+            EnqueueCallback(() => System.Threading.Thread.Sleep(10000));
 
             EnqueueTestComplete();
         }
 
-		protected void WaitFor<T>(T objectToWaitForItsEvent, string eventName)
-		{
-			EventInfo eventInfo = objectToWaitForItsEvent.GetType().GetEvent(eventName);
 
-			bool eventRaised = false;
-
-			if (typeof(RoutedEventHandler).IsAssignableFrom(eventInfo.EventHandlerType))
-				eventInfo.AddEventHandler(objectToWaitForItsEvent, (RoutedEventHandler)delegate { eventRaised = true; });
-			else if (typeof(EventHandler).IsAssignableFrom(eventInfo.EventHandlerType))
-				eventInfo.AddEventHandler(objectToWaitForItsEvent, (EventHandler)delegate { eventRaised = true; });
-
-			EnqueueConditional(() => eventRaised);
-		}
 
         [TestMethod]
         public void Should_fail_due_to_a_dialog_assertion()
         {
+            Assert.IsTrue(true);
             Debug.Assert(false, "Should_fail_due_to_a_dialog_assertion - message");
         }
+
+
+        #endregion
+
+        #region Ignored test
+        [TestMethod]
+        [Ignore]
+        public void this_should_be_an_Ignored_test()
+        {
+            throw new Exception("This test should have been ignored.");
+        }
+        #endregion
+
 
         [TestMethod]
         public void Should_fail_due_to_a_message_box_modal_dialog()
         {
             MessageBox.Show("Should_fail_due_to_a_message_box_modal_dialog - message");
         }
+    }
 
-	}
+    public class SomeEventClass
+    {
+        public event EventHandler FiredEvent = delegate { };
 
-	public class SomeEventClass
-	{
-		public event EventHandler FiredEvent = delegate { };
-
-		public void FireTheEvent()
-		{
-			FiredEvent(this, EventArgs.Empty);
-		}
-	}
+        public void FireTheEvent()
+        {
+            FiredEvent(this, EventArgs.Empty);
+        }
+    }
 }

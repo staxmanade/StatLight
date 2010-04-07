@@ -30,16 +30,13 @@ properties {
 	#  - 2. Add the version below 
 	#  - 3. Add the version to the MicrosoftTestingFrameworkVersion enum in the project
 	$microsoft_silverlight_testing_versions = @(
-		'March2010',
+			'March2010'
 
-		'December2008',
-		'March2009',
-		'July2009',
-		'October2009',
-		'November2009'
-
-
-#		'July2009'
+#			'December2008'
+#			'March2009'
+			'July2009'
+			'October2009'
+			'November2009'
 		)
 }
 
@@ -49,6 +46,14 @@ Task build-Debug -depends build-all, test-all {
 }
 
 Task build-full-Release -depends build-all, test-all, package-release {
+}
+
+if(!(Test-Path ('variable:hasLoadedNUnitSpecificationExtensions')))
+{
+	echo 'loading NUnitSpecificationExtensions...'
+	Update-TypeData -prependPath .\tools\PowerShell\NUnitSpecificationExtensions.ps1xml
+	[System.Reflection.Assembly]::LoadFrom((Get-Item .\tools\NUnit\nunit.framework.dll).FullName) | Out-Null
+	$global:hasLoadedNUnitSpecificationExtensions = $true;
 }
 
 
@@ -187,7 +192,7 @@ function global:StatLightIntegrationTestsReferences {
 	$references;
 }
 
-function global:CompileStatLight {
+function global:compile-StatLight {
 	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$microsoft_silverlight_testing_version_path, [string]$outAssemblyName)
 
 	$resources = @(
@@ -218,7 +223,8 @@ function global:CompileStatLight {
 	{
 		$extraCompilerFlags = 'MSTestMarch2010'
 	}
-
+	$buildConfigToUpper = $build_configuration.ToUpper();
+	echo $buildConfigToUpper
 	$options = @(
 		'/noconfig',
 		'/nowarn:1701`,1702',
@@ -226,7 +232,7 @@ function global:CompileStatLight {
 		'/errorreport:prompt',
 		'/platform:anycpu',
 		'/warn:4'
-		"/define:$build_configuration``;TRACE``;SILVERLIGHT``;$extraCompilerFlags``;$microsoft_Silverlight_Testing_Version_Name",
+		"/define:$buildConfigToUpper``;TRACE``;SILVERLIGHT``;$extraCompilerFlags``;$microsoft_Silverlight_Testing_Version_Name",
 		'/debug-',
 		'/optimize+',
 		'/keyfile:src\StatLight.snk',
@@ -239,7 +245,7 @@ function global:CompileStatLight {
 	Execute-Command-String $cmd
 }
 
-function global:CompileStatLightIntegrationTests {
+function global:compile-StatLightIntegrationTests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$microsoft_silverlight_testing_version_path, [string]$outAssemblyName)
 
 	$resources = @(
@@ -256,6 +262,8 @@ function global:CompileStatLightIntegrationTests {
 		| foreach {$_.FullName} `
 		| where{!$_.Contains($not_build_configuration)}
 
+	$buildConfigToUpper = $build_configuration.ToUpper();
+	echo $buildConfigToUpper
 	$options = @(
 		'/noconfig',
 		'/nowarn:1701`,1702',
@@ -263,7 +271,7 @@ function global:CompileStatLightIntegrationTests {
 		'/errorreport:prompt',
 		'/platform:anycpu',
 		'/warn:4'
-		"/define:$build_configuration``;TRACE``;SILVERLIGHT``;$microsoft_Silverlight_Testing_Version_Name",
+		"/define:$buildConfigToUpper``;TRACE``;SILVERLIGHT``;$microsoft_Silverlight_Testing_Version_Name",
 		'/debug-',
 		'/optimize+',
 		'/keyfile:src\StatLight.snk',
@@ -281,7 +289,7 @@ function global:Remove-If-Exists {
 	if(Test-Path $file)
 	{
 		echo "Deleting file $file"
-		Remove-Item $file -Force -ErrorAction SilentlyContinue -Recurse
+		Remove-Item $file -Force -Recurse
 	}
 }
 
@@ -290,7 +298,7 @@ function global:Build-And-Package-StatLight {
 	
 	$statlightBuildFilePath = "$build_dir\StatLight.Client.Harness.dll"
 	
-	CompileStatLight $microsoft_Silverlight_Testing_Version_Name ".\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name" $statlightBuildFilePath
+	compile-StatLight $microsoft_Silverlight_Testing_Version_Name ".\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name" $statlightBuildFilePath
 	
 	Assert ( test-path $statlightBuildFilePath) "File should exist $statlightBuildFilePath"
 	
@@ -314,7 +322,7 @@ function global:Build-And-Package-StatLight-IntegrationTests {
 
 	Remove-If-Exists $dllPath
 
-	CompileStatLightIntegrationTests $microsoft_Silverlight_Testing_Version_Name .\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name $dllPath
+	compile-StatLightIntegrationTests $microsoft_Silverlight_Testing_Version_Name .\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name $dllPath
 	
 	$zippedName = "$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.zip"
 	$zipFiles = StatLightIntegrationTestsReferences $microsoft_Silverlight_Testing_Version_Name `
@@ -390,28 +398,39 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	$passedCount = 0;
 	$ignoredCount = 0;
 	$failedCount = 0;
+	$systemGeneratedfailedCount = 0;
 
 	foreach($test in $doc.Descendants('test'))
 	{
-		if($test.Attribute('resulttype').Value -eq 'Passed')
+		$resultTypeValue = $test.Attribute('resulttype').Value
+		if($resultTypeValue -eq 'Passed')
 		{
 			$passedCount = $passedCount + 1;
 		}
-		if($test.Attribute('resulttype').Value -eq 'Ignored')
+		elseif($resultTypeValue -eq 'Ignored')
 		{
 			$ignoredCount = $ignoredCount + 1;
 		}
-		if($test.Attribute('resulttype').Value -eq 'Failed')
+		elseif($resultTypeValue -eq 'Failed')
 		{
 			$failedCount = $failedCount + 1;
+		}
+		elseif($resultTypeValue -eq 'SystemGeneratedFailure')
+		{
+			$systemGeneratedfailedCount = $systemGeneratedfailedCount + 1;
+		}
+		else
+		{
+			throw "Unknown ResultType [$resultTypeValue]"
 		}
 	
 	}
 	
-	$passedCount.ShouldEqual(6);
+	$systemGeneratedfailedCount.ShouldEqual(1);
+	$failedCount.ShouldEqual(3);
+	$passedCount.ShouldEqual(5);
 	$ignoredCount.ShouldEqual(1);
-	$failedCount.ShouldEqual(1);
-
+	
 	AssertXmlReportIsValid $scriptFile
 	
 	#added sleep to wait for file system to loose the lock on the file so we can delete it
@@ -533,7 +552,7 @@ function Zip-Files-From-Pipeline
 #
 #########################################
 
-Task writeProperties { 
+Task initialize { 
 
 	#
 	#Value	Meaning
@@ -547,10 +566,10 @@ Task writeProperties {
 	echo "running build with configuration of $build_configuration"
 }
 
-Task clean {
+Task clean-build {
 	#-ErrorAction SilentlyContinue --- because of the *.vshost which is locked and we can't delete.
-	Remove-Item $build_dir\* -Force -ErrorAction SilentlyContinue -Recurse
-	Remove-Item $release_dir -Force -ErrorAction SilentlyContinue -Recurse
+	Remove-If-Exists $build_dir\*
+	Remove-If-Exists $release_dir
 	
 	mkdir $build_dir -Force
 }
@@ -561,7 +580,7 @@ Task clean {
 #
 #########################################
 
-Task buildStatLight {
+Task compile-StatLightVersions {
 
 	rename-file-extensions -itemsPath "$build_dir\*.xap" -fromExtension ".xap" -toExtension ".zip"
 
@@ -570,7 +589,7 @@ Task buildStatLight {
 	rename-file-extensions -itemsPath "$build_dir\*.zip" -fromExtension ".zip" -toExtension ".xap"
 }
 
-Task buildStatLightIntegrationTests {
+Task compile-StatLightVersionIntegrationTests {
 	
 	rename-file-extensions -itemsPath "$build_dir\*.xap" -fromExtension ".xap" -toExtension ".zip"
 
@@ -579,7 +598,7 @@ Task buildStatLightIntegrationTests {
 	rename-file-extensions -itemsPath "$build_dir\*.zip" -fromExtension ".zip" -toExtension ".xap"
 }
 
-Task buildStatLightSolution {
+Task compile-Solution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe'
 	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 } 'msbuild failed on StatLight.sln'
 }
@@ -592,16 +611,16 @@ Task buildStatLightSolution {
 #########################################
 
 
-Task run-tests {
+Task test-core {
 	exec { & $nunit_console_path $test_assembly_path } 'Unit Tests Failed'
 }
 
-Task run-integrationTests {
-	exec { & $nunit_console_path $integration_test_assembly_path /noshadow } 'run-integrationTests Failed'
+Task test-integrationTests {
+	exec { & $nunit_console_path $integration_test_assembly_path /noshadow } 'test-integrationTests Failed'
 }
 
 
-Task run-tests-in-other-assembly -depends load-nunit-assembly {
+Task test-tests-in-other-assembly {
 	
 	$scriptFile = GetTemporaryXmlFile;
 	
@@ -614,59 +633,49 @@ Task run-tests-in-other-assembly -depends load-nunit-assembly {
 	$passedCount = 0;
 	$ignoredCount = 0;
 	$failedCount = 0;
-
+	$systemGeneratedfailedCount = 0;
+	
 	foreach($test in $doc.Descendants('test'))
 	{
-		if($test.Attribute('resulttype').Value -eq 'Passed')
+		$resultTypeValue = $test.Attribute('resulttype').Value
+
+		if($resultTypeValue -eq 'Passed')
 		{
 			$passedCount = $passedCount + 1;
 		}
-		if($test.Attribute('resulttype').Value -eq 'Ignored')
+		elseif($resultTypeValue -eq 'Ignored')
 		{
 			$ignoredCount = $ignoredCount + 1;
 		}
-		if($test.Attribute('resulttype').Value -eq 'Failed')
+		elseif($resultTypeValue -eq 'Failed')
 		{
 			$failedCount = $failedCount + 1;
 		}
-	
+		elseif($resultTypeValue -eq 'SystemGeneratedFailure')
+		{
+			$systemGeneratedfailedCount = $systemGeneratedfailedCount + 1;
+		}
+		else
+		{
+			throw "Unknown ResultType [$resultTypeValue]"
+		}
+		
 	}
 	
 	$passedCount.ShouldEqual(2);
 	$ignoredCount.ShouldEqual(1);
 	$failedCount.ShouldEqual(1);
+	$systemGeneratedfailedCount.ShouldEqual(0);
 
 	AssertXmlReportIsValid $scriptFile
 }
 
-Task run-statlight-silverlight-tests {
-	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" "-b" } 'run-statlight-silverlight-tests Failed'
+Task test-client-harness-tests {
+	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" "-b" } 'test-client-harness-tests Failed'
 }
 
-Task load-nunit-assembly {
-	if(!(Test-Path ('variable:hasLoadedNUnitSpecificationExtensions')))
-	{
-		echo 'loading NUnitSpecificationExtensions...'
-		Update-TypeData -prependPath .\tools\PowerShell\NUnitSpecificationExtensions.ps1xml
-		[System.Reflection.Assembly]::LoadFrom((Get-Item .\tools\NUnit\nunit.framework.dll).FullName) | Out-Null
-		$global:hasLoadedNUnitSpecificationExtensions = $true;
-	}
-}
-
-Task run-all-mstest-version-acceptance-tests -depends load-nunit-assembly {
+Task test-all-mstest-version-acceptance-tests {
 	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests $_ }
-}
-
-Task make-sure-there-are-not-any-NotImplementedExceptions {
-	$results = (Get-ChildItem . *.cs -Exclude *MockTestMethod.cs, *MockTestClass.cs -Recurse | Select-String NotImplementedException)
-	if($results.Count -gt 0)
-	{
-		foreach($err in $results)
-		{
-			Write-Host $err -ForegroundColor Red
-		}
-		throw "Found [$($results.Count)] NotImplementedException(s) in source code"
-	}
 }
 
 #########################################
@@ -675,7 +684,7 @@ Task make-sure-there-are-not-any-NotImplementedExceptions {
 #
 #########################################
 
-Task package-release-clean {
+Task clean-release {
 	if(-not (Test-Path $release_dir))
 	{
 		New-Item $release_dir -type directory -force | Out-Null
@@ -683,7 +692,7 @@ Task package-release-clean {
 	Remove-If-Exists "$release_dir\*" | Out-Null
 }
 
-Task zip-snapshot-project-sources {
+Task package-zip-project-sources-snapshot {
 	# files to zip ... (Get all files & run all the files thought this exclusion logic)...
 	$files = (Get-ChildItem -Path .\ -Recurse | `
 		where { !($_.PSIsContainer) } | `
@@ -713,7 +722,7 @@ Task zip-snapshot-project-sources {
 	mv $sourceZipFile $release_dir\$sourceZipFile -Force | Out-Null
 }
 
-Task package-release -depends package-release-clean, zip-snapshot-project-sources {
+Task package-release -depends clean-release, package-zip-project-sources-snapshot {
 
 	$filesToInclude = @(
 		Get-ChildItem "$build_dir\*.xap" | where{ -not $_.FullName.Contains("Integration") }
@@ -735,12 +744,17 @@ Task package-release -depends package-release-clean, zip-snapshot-project-source
 }
 
 
-Task help {
-	Dump-Tasks
+Task help -Description "Prints out the different tasks within the StatLIght build engine." {
+	Write-Documentation
 }
 
-Task test-all -depends run-tests, make-sure-there-are-not-any-NotImplementedExceptions, run-statlight-silverlight-tests, run-integrationTests, run-all-mstest-version-acceptance-tests, run-tests-in-other-assembly {
+
+Task ? -Description "Prints out the different tasks within the StatLIght build engine." {
+	Write-Documentation
 }
 
-Task build-all -depends clean, writeProperties, buildStatLightSolution, buildStatLight, buildStatLightIntegrationTests {
+Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly {
+}
+
+Task build-all -depends clean-build, initialize, compile-Solution, compile-StatLightVersions, compile-StatLightVersionIntegrationTests {
 }

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.Harness;
-using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
 namespace XunitLight
@@ -27,7 +25,7 @@ namespace XunitLight
 		/// <summary>
 		/// The unit test harness.
 		/// </summary>
-		private ITestHarness _harness;
+		private UnitTestHarness _harness;
 
 		/// <summary>
 		/// Creates a new unit test assembly wrapper.
@@ -35,7 +33,7 @@ namespace XunitLight
 		/// <param name="provider">Unit test metadata provider.</param>
 		/// <param name="unitTestHarness">A reference to the unit test harness.</param>
 		/// <param name="assembly">Assembly reflection object.</param>
-		public UnitTestFrameworkAssembly(IUnitTestProvider provider, ITestHarness unitTestHarness, Assembly assembly)
+        public UnitTestFrameworkAssembly(IUnitTestProvider provider, UnitTestHarness unitTestHarness, Assembly assembly)
 		{
 			_provider = provider;
 			_harness = unitTestHarness;
@@ -81,7 +79,7 @@ namespace XunitLight
 		/// <summary>
 		/// Gets the test harness used to initialize the assembly.
 		/// </summary>
-		public ITestHarness TestHarness
+        public UnitTestHarness TestHarness
 		{
 			get { return _harness; }
 		}
