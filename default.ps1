@@ -1,7 +1,6 @@
-
 properties {
 	# NOTE: the $build_configuration property must be set prior to calling anything in here... default.ps1 for example
-	$build_configuration = 'Debug'
+	$build_configuration =  ?? $build_configuration 'Debug'
 
 	$not_build_configuration = Get-Not-Build-Configuration
 	$build_dir = ".\src\build\bin\$build_configuration"
@@ -38,6 +37,17 @@ properties {
 			'October2009'
 			'November2009'
 		)
+}
+
+function ?? {
+    $result = $null
+	$i = 0;
+	while($args[$i] -eq $null)
+	{
+		$i = $i + 1;
+	}
+	
+	return $args[$i]
 }
 
 Task default -depends build-debug
@@ -564,6 +574,7 @@ Task initialize {
 	$ErrorActionPreference = "Stop"
 	
 	echo "running build with configuration of $build_configuration"
+	echo "running build with configuration of $build_dir"
 }
 
 Task clean-build {
