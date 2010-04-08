@@ -7,7 +7,6 @@ using StatLight.Core.Tests;
 using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebServer;
 using StatLight.Core.Reporting;
-using StatLight.IntegrationTests.ProviderTests.MSTest;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
 {
@@ -56,7 +55,11 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_have_correct_TotalFailed_count()
         {
+#if DEBUG
             TestReport.TotalFailed.ShouldEqual(4);
+#else
+            TestReport.TotalFailed.ShouldEqual(3);
+#endif
         }
 
         [Test]
@@ -96,7 +99,11 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_receive_the_TestExecutionMethodBeginClientEvent()
         {
+#if DEBUG
             _testExecutionMethodBeginClientEvent.Count().ShouldEqual(8);
+#else
+            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(7);
+#endif
             foreach (var e in _testExecutionMethodBeginClientEvent)
                 AssertTestExecutionClassData(e);
         }
@@ -127,7 +134,11 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_receive_the_TestExecutionMethodPassedClientEvent()
         {
+#if DEBUG
             _testExecutionMethodPassedClientEvent.Count.ShouldEqual(6);
+#else
+            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(5);
+#endif
         }
 
         private static void AssertTestExecutionClassData(TestExecutionClass e)
@@ -146,7 +157,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             var failedTimeoutResult = TestReport.TestResults.SingleOrDefault(w => w.HasExceptionInfoWithCriteria(ex => ex.FullMessage.Contains("Timeout")));
             failedTimeoutResult.ShouldNotBeNull();
         }
-
+#if DEBUG
         [Test]
         public void Should_have_reported_a_debug_assertion_error()
         {
@@ -161,7 +172,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
             assertionResult.ResultType.ShouldEqual(ResultType.Failed);
         }
-
+#endif
         [Test]
         public void Should_have_scraped_the__messageBox_overload_1__test_message_box_info()
         {

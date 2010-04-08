@@ -20,7 +20,6 @@ properties {
 	$test_assembly_path = "src\StatLight.Core.Tests\bin\x86\$build_configuration\StatLight.Core.Tests.dll"
 	$integration_test_assembly_path = "$build_dir\StatLight.IntegrationTests.dll"
 	
-	
 	# All of the versions that this script will create compatible 
 	# builds of the statlight silverlight client for...
 	#
@@ -437,7 +436,14 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	}
 	
 	$systemGeneratedfailedCount.ShouldEqual(1);
-	$failedCount.ShouldEqual(3);
+	if($build_configuration -eq 'Debug')
+	{
+		$failedCount.ShouldEqual(3);
+	}
+	else
+	{
+		$failedCount.ShouldEqual(2);
+	}
 	$passedCount.ShouldEqual(5);
 	$ignoredCount.ShouldEqual(1);
 	
@@ -575,6 +581,24 @@ Task initialize {
 	
 	echo "running build with configuration of $build_configuration"
 	echo "running build with configuration of $build_dir"
+	
+	
+	  
+#	foreach($propertyBlock in $script:context.Peek().properties) 
+#	{
+#		. $propertyBlock
+#	}
+
+#	foreach($key in $script:context.Peek().properties.keys)
+#	{
+#		echo "***"
+#		echo $key
+#		#set-item -path "variable:\$key" -value $properties.$key | out-null
+#	}
+
+#	$props = $script:context.Peek().properties
+#	& $props
+ 
 }
 
 Task clean-build {
@@ -635,7 +659,7 @@ Task test-tests-in-other-assembly {
 	
 	$scriptFile = GetTemporaryXmlFile;
 	
-	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" "-t=OtherAssemblyTests" "-r=$scriptFile"	
+	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" "-t=OtherAssemblyTests" "-r=$scriptFile"	"-b"
 	
 	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
 	$file = get-item $scriptFile
@@ -734,19 +758,57 @@ Task package-zip-project-sources-snapshot {
 }
 
 Task package-release -depends clean-release, package-zip-project-sources-snapshot {
+	$versionBuildPath = "$release_dir\$(get-formatted-assembly-version $core_assembly_path)"
 
-	$filesToInclude = @(
+	$expectedFilesToInclude = @(
+			'Ionic.Zip.Reduced.dll'
+			'Microsoft.Silverlight.Testing.License.txt'
+			'StatLight.Client.For.July2009.xap'
+			'StatLight.Client.For.March2010.xap'
+			'StatLight.Client.For.November2009.xap'
+			'StatLight.Client.For.October2009.xap'
+			'StatLight.Core.dll'
+			'StatLight.EULA.txt'
+			'StatLight.exe'
+			'StatLight.Sources.v*'
+		)
+
+	$knownFilesToExclude = @(
+		'Microsoft.Silverlight.Testing.dll'
+		'Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll'
+		'nunit.framework.dll'
+		'StatLight.Client.Harness.dll'
+		'StatLight.IntegrationTests.dll'
+		'StatLight.IntegrationTests.Silverlight.MSTest.dll'
+	)
+
+	$filesToCopyFromBuild = @(
 		Get-ChildItem "$build_dir\*.xap" | where{ -not $_.FullName.Contains("Integration") }
-		Get-ChildItem $build_dir\* -Include *.dll, *.txt, StatLight.exe
+		Get-ChildItem $build_dir\* -Include *.dll, *.txt, StatLight.exe #-exclude nunit.framework.dll, StatLight.Client.Harness.dll, Microsoft.Silverlight.Testing.dll, Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll, StatLight.IntegrationTests.dll, StatLight.IntegrationTests.Silverlight.MSTest.dll
 		Get-ChildItem ".\StatLight.EULA.txt"
 	)
-		
-	$versionBuildPath = "$release_dir\$(get-formatted-assembly-version $core_assembly_path)"
+
 	New-Item -Path $versionBuildPath -ItemType directory | Out-Null
-	$filesToInclude | foreach{ Copy-Item $_ "$versionBuildPath\$($_.Name)"  }
 
 	Move-Item (Get-ChildItem $release_dir\$statLightSourcesFilePrefix*) "$versionBuildPath\$($_.Name)"
+	$filesToCopyFromBuild | foreach{ Copy-Item $_ "$versionBuildPath\$($_.Name)"  }
 
+	$knownFilesToExclude | foreach{Remove-Item $versionBuildPath\$_ }
+	
+	$unexpectedFilesInReleaseDir = (Get-ChildItem $versionBuildPath -Exclude $expectedFilesToInclude)
+	if($unexpectedFilesInReleaseDir.Count)
+	{
+		$unexpectedFilesInReleaseDir
+		throw "Unexpected files in release directory"
+	}
+	
+	foreach($expectedFile in $expectedFilesToInclude)
+	{
+		Assert (Test-Path "$versionBuildPath\$expectedFile") "Could not find expected file $expectedFile in release directory $versionBuildPath"
+	}
+	
+	Assert ($assertAllFilesWereFound.Count -eq $assertAllFilesWereFound.Count) "Not all the necessary files were found in the release directory - $expectedFilesToInclude"
+	
 	$version = get-assembly-version $core_assembly_path
 
 	$release_zip_path = "$release_dir\StatLight.v$($version.Major).$($version.Minor).zip"
@@ -758,7 +820,6 @@ Task package-release -depends clean-release, package-zip-project-sources-snapsho
 Task help -Description "Prints out the different tasks within the StatLIght build engine." {
 	Write-Documentation
 }
-
 
 Task ? -Description "Prints out the different tasks within the StatLIght build engine." {
 	Write-Documentation

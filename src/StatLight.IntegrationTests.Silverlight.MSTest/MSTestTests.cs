@@ -78,23 +78,23 @@ namespace StatLight.IntegrationTests.Silverlight
 
         [TestMethod]
         [Asynchronous]
-        [Timeout(1000)]
+        [Timeout(100)]
         public void Should_fail_due_to_async_test_timeout()
         {
-            EnqueueCallback(() => System.Threading.Thread.Sleep(10000));
+            EnqueueCallback(() => System.Threading.Thread.Sleep(1000));
 
             EnqueueTestComplete();
         }
 
 
 
+#if DEBUG
         [TestMethod]
         public void Should_fail_due_to_a_dialog_assertion()
         {
-            Assert.IsTrue(true);
             Debug.Assert(false, "Should_fail_due_to_a_dialog_assertion - message");
         }
-
+#endif
 
         #endregion
 
