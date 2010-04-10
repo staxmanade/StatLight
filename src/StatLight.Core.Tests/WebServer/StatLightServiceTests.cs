@@ -99,8 +99,10 @@ namespace StatLight.Core.Tests.WebServer
                 var events = new ClientEvent[]
                             {
                                 new UnhandledExceptionClientEvent(),
-                                new TestExecutionMethodPassedClientEvent(),
-                                new TestExecutionMethodFailedClientEvent(),
+                                new TestExecutionMethodBeginClientEvent{MethodName = "a"},
+                                new TestExecutionMethodPassedClientEvent{MethodName = "a"},
+                                new TestExecutionMethodBeginClientEvent{MethodName = "b"},
+                                new TestExecutionMethodFailedClientEvent{MethodName = "b"},
                             };
                 foreach (var e in events)
                     StatLightService.PostMessage(e.Serialize().ToStream());

@@ -48,7 +48,12 @@ namespace StatLight.Core.Tests.Reporting
             protected override void Because()
             {
                 base.Because();
-
+                TestResultAggregator.Handle(new TestExecutionMethodBeginClientEvent
+                {
+                    ClassName = "Class name test",
+                    MethodName = "method name test",
+                    NamespaceName = "namespace test",
+                });
                 TestResultAggregator.Handle(_testExecutionMethodPassedClientEvent);
 
                 _passedResult =
@@ -137,7 +142,12 @@ namespace StatLight.Core.Tests.Reporting
             protected override void Because()
             {
                 base.Because();
-
+                TestResultAggregator.Handle(new TestExecutionMethodBeginClientEvent
+                {
+                    ClassName = "Class name test",
+                    MethodName = "method name test",
+                    NamespaceName = "namespace test",
+                });
                 TestResultAggregator.Handle(_testExecutionMethodFailedClientEvent);
 
                 _failedResult =
@@ -275,6 +285,29 @@ namespace StatLight.Core.Tests.Reporting
             {
                 _manufacturedFailedEvents.Count().ShouldEqual(1);
             }
+        }
+
+        [TestFixture]
+        public class when_a_completed_MethodClientEvent_arrives_before_the_TestExecutionMethodBeginClientEvent : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
+        {
+            [Test]
+            public void Should_not_complete_a_Passed_event_until_the_begin_event_arrives()
+            {
+                TestResultAggregator.Handle(new TestExecutionMethodPassedClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m0" });
+                TestResultAggregator.CurrentReport.TotalPassed.ShouldEqual(0);
+                TestResultAggregator.Handle(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m0" });
+                TestResultAggregator.CurrentReport.TotalPassed.ShouldEqual(1);
+            }
+
+            [Test]
+            public void Should_not_complete_a_Failed_event_until_the_begin_event_arrives()
+            {
+                TestResultAggregator.Handle(new TestExecutionMethodFailedClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m1" });
+                TestResultAggregator.CurrentReport.TotalPassed.ShouldEqual(0);
+                TestResultAggregator.Handle(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m1" });
+                TestResultAggregator.CurrentReport.TotalFailed.ShouldEqual(1);
+            }
+
         }
     }
 }

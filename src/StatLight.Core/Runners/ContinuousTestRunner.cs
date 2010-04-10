@@ -90,7 +90,8 @@ namespace StatLight.Core.Runners
         {
             if (disposing)
             {
-                _testResultAggregator.Dispose();
+                if (_testResultAggregator != null)
+                    _testResultAggregator.Dispose();
             }
         }
 

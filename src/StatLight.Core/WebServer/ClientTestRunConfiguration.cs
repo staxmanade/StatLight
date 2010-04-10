@@ -63,7 +63,7 @@ namespace StatLight.Core.WebServer
 
             string methodString = methodInfo.DeclaringType.FullName + "." + methodInfo.Name;
 #if SILVERLIGHT
-            Server.Trace(methodString);
+            Server.Debug(methodString);
 #endif
             if (CurrentClientTestRunConfiguration.MethodsToTest.Contains(methodString))
                 return true;

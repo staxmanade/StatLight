@@ -1,14 +1,15 @@
 ﻿
 
+using System.Linq;
+
 namespace StatLight.Core.Reporting
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Common;
     using StatLight.Core.Events;
     using StatLight.Core.Events.Aggregation;
+    using System.Collections.Generic;
 
     public class TestResultAggregator : IDisposable,
         IListener<TestExecutionMethodPassedClientEvent>,
@@ -23,6 +24,8 @@ namespace StatLight.Core.Reporting
         private readonly IEventAggregator _eventAggregator;
         private readonly TestReport _currentReport = new TestReport();
         private readonly DialogAssertionMatchMaker _dialogAssertionMessageMatchMaker = new DialogAssertionMatchMaker();
+        private readonly EventMatchMacker _eventMatchMacker = new EventMatchMacker();
+
         public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator)
         {
             //System.Diagnostics.Debugger.Break();
@@ -36,27 +39,40 @@ namespace StatLight.Core.Reporting
 
         public void Dispose()
         {
+
+            //TODO: stall while events are still arriving???
         }
 
         #endregion
 
         public void Handle(TestExecutionMethodPassedClientEvent message)
         {
-            if (_dialogAssertionMessageMatchMaker.WasEventAlreadyClosed(message))
+            Action action = () =>
             {
-                // Don't include this as a "passed" test as we had to automatically close the dialog);)
-                return;
-            }
+                //_eventMatchMacker
+                _logger.Debug(
+                    "TestExecutionMethodPassedClientEvent - {0}"
+                        .FormatWith(message.MethodName));
+                if (
+                    _dialogAssertionMessageMatchMaker.
+                        WasEventAlreadyClosed(message))
+                {
+                    // Don't include this as a "passed" test as we had to automatically close the dialog);)
+                    return;
+                }
 
-            var msg = new TestCaseResult(ResultType.Passed)
-                          {
-                              Finished = message.Finished,
-                              Started = message.Started,
-                          };
+                var msg = new TestCaseResult(ResultType.Passed)
+                {
+                    Finished = message.Finished,
+                    Started = message.Started,
+                };
 
-            TranslateCoreInfo(ref msg, message);
+                TranslateCoreInfo(ref msg, message);
 
-            ReportIt(msg);
+                ReportIt(msg);
+            };
+
+            _eventMatchMacker.AddEvent(message, action);
         }
 
         private static void TranslateCoreInfo(ref TestCaseResult result, TestExecutionMethod message)
@@ -68,30 +84,38 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodFailedClientEvent message)
         {
-            if (_dialogAssertionMessageMatchMaker.WasEventAlreadyClosed(message))
+            Action action = () =>
             {
-                // Don't include this as a "passed" test as we had to automatically close the dialog);)
-                return;
-            }
+                _logger.Debug("TestExecutionMethodFailedClientEvent - {0}".FormatWith(message.MethodName));
 
-            var msg = new TestCaseResult(ResultType.Failed)
-            {
-                Finished = message.Finished,
-                Started = message.Started,
-                ExceptionInfo = message.ExceptionInfo,
+                if (_dialogAssertionMessageMatchMaker.WasEventAlreadyClosed(message))
+                {
+                    // Don't include this as a "passed" test as we had to automatically close the dialog);)
+                    return;
+                }
+
+                var msg = new TestCaseResult(ResultType.Failed)
+                {
+                    Finished = message.Finished,
+                    Started = message.Started,
+                    ExceptionInfo = message.ExceptionInfo,
+                };
+
+                TranslateCoreInfo(ref msg, message);
+
+                ReportIt(msg);
             };
 
-            TranslateCoreInfo(ref msg, message);
-
-            ReportIt(msg);
+            _eventMatchMacker.AddEvent(message, action);
         }
 
         public void Handle(TestExecutionMethodIgnoredClientEvent message)
         {
+            _logger.Debug("TestExecutionMethodIgnoredClientEvent - {0}".FormatWith(message.MethodName));
             var msg = new TestCaseResult(ResultType.Ignored)
-                          {
-                              MethodName = message.Message,
-                          };
+            {
+                MethodName = message.Message,
+            };
             ReportIt(msg);
         }
 
@@ -150,7 +174,10 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodBeginClientEvent message)
         {
+            _logger.Debug("TestExecutionMethodBeginClientEvent - {0}".FormatWith(message.MethodName));
             _dialogAssertionMessageMatchMaker.HandleMethodBeginClientEvent(message);
+
+            _eventMatchMacker.AddBeginEvent(message);
         }
 
         private void ReportIt(TestCaseResult result)
@@ -159,37 +186,37 @@ namespace StatLight.Core.Reporting
             _eventAggregator.SendMessage(result);
         }
 
-    }
-
-
-    public class DialogAssertionMatchMaker
-    {
-        private readonly List<TestExecutionMethodBeginClientEvent> _completedMessage = new List<TestExecutionMethodBeginClientEvent>();
-
-        private readonly Dictionary<DialogAssertionServerEvent, Action<TestExecutionMethodBeginClientEvent>> _dialogAssertionEventsWithHandlers =
-            new Dictionary<DialogAssertionServerEvent, Action<TestExecutionMethodBeginClientEvent>>();
-
-        public void HandleMethodBeginClientEvent(TestExecutionMethodBeginClientEvent message)
+        private class EventMatchMacker
         {
-            if (_dialogAssertionEventsWithHandlers.Any(w => w.Key.Message.Contains(message.MethodName)))
+            private Dictionary<TestExecutionMethod, Action> _awaitingForAMatch =
+                new Dictionary<TestExecutionMethod, Action>();
+
+            public void AddEvent(TestExecutionMethod clientEvent, Action actionOnCompletion)
             {
-                var x = _dialogAssertionEventsWithHandlers.First(w => w.Key.Message.Contains(message.MethodName));
-                _completedMessage.Add(message);
-                x.Value(message);
+                if (_awaitingForAMatch.ContainsKey(clientEvent))
+                {
+                    _awaitingForAMatch.Remove(clientEvent);
+                    actionOnCompletion();
+                }
+                else
+                {
+                    _awaitingForAMatch.Add(clientEvent, actionOnCompletion);
+                }
+            }
+
+            public void AddBeginEvent(TestExecutionMethodBeginClientEvent clientEvent)
+            {
+                if (_awaitingForAMatch.ContainsKey(clientEvent))
+                {
+                    _awaitingForAMatch[clientEvent]();
+                    _awaitingForAMatch.Remove(clientEvent);
+                }
+                else
+                {
+                    _awaitingForAMatch.Add(clientEvent, null);
+                }
             }
         }
 
-        public void AddAssertionHandler(DialogAssertionServerEvent message, Action<TestExecutionMethodBeginClientEvent> onMatched)
-        {
-            _dialogAssertionEventsWithHandlers.Add(message, onMatched);
-        }
-
-        public bool WasEventAlreadyClosed(TestExecutionMethod message)
-        {
-            return _completedMessage.Any(a =>
-                                         a.NamespaceName == message.NamespaceName
-                                         && a.ClassName == message.ClassName
-                                         && a.MethodName == message.MethodName);
-        }
     }
 }

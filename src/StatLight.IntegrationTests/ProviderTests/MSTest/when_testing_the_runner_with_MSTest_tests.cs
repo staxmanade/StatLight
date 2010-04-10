@@ -17,9 +17,9 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         private ClientTestRunConfiguration _clientTestRunConfiguration;
         private InitializationOfUnitTestHarnessClientEvent _initializationOfUnitTestHarnessClientEvent;
 
-        private readonly IList<TestExecutionClassBeginClientEvent> _testExecutionClassBeginClientEvent = new List<TestExecutionClassBeginClientEvent>();
+        //private readonly IList<TestExecutionClassBeginClientEvent> _testExecutionClassBeginClientEvent = new List<TestExecutionClassBeginClientEvent>();
         private readonly IList<TestExecutionClassCompletedClientEvent> _testExecutionClassCompletedClientEvent = new List<TestExecutionClassCompletedClientEvent>();
-        private readonly IList<TestExecutionMethodBeginClientEvent> _testExecutionMethodBeginClientEvent = new List<TestExecutionMethodBeginClientEvent>();
+        //private readonly IList<TestExecutionMethodBeginClientEvent> _testExecutionMethodBeginClientEvent = new List<TestExecutionMethodBeginClientEvent>();
         private readonly IList<TestExecutionMethodIgnoredClientEvent> _testExecutionMethodIgnoredClientEvent = new List<TestExecutionMethodIgnoredClientEvent>();
         private readonly IList<TestExecutionMethodFailedClientEvent> _testExecutionMethodFailedClientEvent = new List<TestExecutionMethodFailedClientEvent>();
         private readonly IList<TestExecutionMethodPassedClientEvent> _testExecutionMethodPassedClientEvent = new List<TestExecutionMethodPassedClientEvent>();
@@ -41,9 +41,9 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
                                         };
             EventAggregator
                 .AddListener<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e)
-                .AddListener<TestExecutionClassBeginClientEvent>(e => _testExecutionClassBeginClientEvent.Add(e))
+//                .AddListener<TestExecutionClassBeginClientEvent>(e => _testExecutionClassBeginClientEvent.Add(e))
                 .AddListener<TestExecutionClassCompletedClientEvent>(e => _testExecutionClassCompletedClientEvent.Add(e))
-                .AddListener<TestExecutionMethodBeginClientEvent>(e => _testExecutionMethodBeginClientEvent.Add(e))
+//                .AddListener<TestExecutionMethodBeginClientEvent>(e => _testExecutionMethodBeginClientEvent.Add(e))
                 .AddListener<TestExecutionMethodIgnoredClientEvent>(e => _testExecutionMethodIgnoredClientEvent.Add(e))
                 .AddListener<TestExecutionMethodFailedClientEvent>(e => _testExecutionMethodFailedClientEvent.Add(e))
                 .AddListener<TestExecutionMethodPassedClientEvent>(e => _testExecutionMethodPassedClientEvent.Add(e))
@@ -82,12 +82,12 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             _initializationOfUnitTestHarnessClientEvent.ShouldNotBeNull();
         }
 
-        [Test]
-        public void Should_receive_the_TestExecutionClassBeginClientEvent()
-        {
-            _testExecutionClassBeginClientEvent.Count().ShouldEqual(2);
-            _testExecutionClassBeginClientEvent.Each(AssertTestExecutionClassData);
-        }
+        //[Test]
+        //public void Should_receive_the_TestExecutionClassBeginClientEvent()
+        //{
+        //    _testExecutionClassBeginClientEvent.Count().ShouldEqual(2);
+        //    _testExecutionClassBeginClientEvent.Each(AssertTestExecutionClassData);
+        //}
 
         [Test]
         public void Should_receive_the_TestExecutionClassCompletedClientEvent()
@@ -96,17 +96,17 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             _testExecutionClassCompletedClientEvent.Each(AssertTestExecutionClassData);
         }
 
-        [Test]
-        public void Should_receive_the_TestExecutionMethodBeginClientEvent()
-        {
-#if DEBUG
-            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(8);
-#else
-            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(7);
-#endif
-            foreach (var e in _testExecutionMethodBeginClientEvent)
-                AssertTestExecutionClassData(e);
-        }
+//        [Test]
+//        public void Should_receive_the_TestExecutionMethodBeginClientEvent()
+//        {
+//#if DEBUG
+//            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(8);
+//#else
+//            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(7);
+//#endif
+//            foreach (var e in _testExecutionMethodBeginClientEvent)
+//                AssertTestExecutionClassData(e);
+//        }
 
         [Test]
         public void Should_receive_the_TestExecutionMethodIgnoredClientEvent()

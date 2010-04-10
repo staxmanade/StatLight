@@ -65,7 +65,6 @@ While trying to reflect the assembly [{0}]. Below are the LoaderExceptions disco
 ".FormatWith(assembly.FullName, loaderExceptionMessages);
 
                 Server.Trace(msg);
-                //System.Windows.MessageBox.Show(msg);
                 return false;
             }
 
