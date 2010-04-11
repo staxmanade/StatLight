@@ -126,7 +126,7 @@
     <Compile Include="Messaging\HttpResponseCompleteEventArgs.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventHandler.cs" />
     <Compile Include="Messaging\HttpWebRequest.cs" />
-    <Compile Include="Hosts\MSTest\MSTestRunnerHost.xaml.cs" />
+    <Compile Include="Hosts\MSTest\MSTestRunnerHost.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\ExpectedException.cs" />
     <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\Priority.cs" />
