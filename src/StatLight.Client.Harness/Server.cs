@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Silverlight.Testing.Harness;
 using StatLight.Client.Harness.Events;
 using StatLight.Client.Model.Messaging;
 using StatLight.Core.Serialization;
@@ -57,15 +56,10 @@ namespace StatLight.Client.Harness
         /// Send a message back to the server signaling that all the tests have completed.
         /// </summary>
         /// <param name="state"></param>
-        public static void SignalTestComplete(TestHarnessState state)
+        public static void SignalTestComplete(SignalTestCompleteClientEvent signalTestCompleteClientEvent)
         {
-            var signalTestCompleteClientEvent = new SignalTestCompleteClientEvent
-            {
-                TotalMessagesPostedCount = _postMessageCount,
-                Failed = state.Failed,
-                TotalFailureCount = state.Failures,
-                TotalTestsCount = state.TotalScenarios,
-            };
+            signalTestCompleteClientEvent.TotalMessagesPostedCount = _postMessageCount;
+
             SignalTestComplate(signalTestCompleteClientEvent);
         }
 

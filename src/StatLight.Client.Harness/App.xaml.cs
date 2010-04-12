@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Net;
+using System.Reflection;
 using System.Windows;
 using StatLight.Client.Harness.Hosts;
-using StatLight.Client.Harness.Hosts.MSTest;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebServer;
 using StatLight.Client.Harness.Events;
@@ -11,21 +13,60 @@ namespace StatLight.Client.Harness
 {
     public partial class App : Application
     {
-        private ITestRunnerHost _testRunnerHost = new MSTestRunnerHost();
+
         private bool _testRunConfigurationDownloadComplete;
         private bool _completedTestXapRequest;
+
+        [Import(typeof(ITestRunnerHost))]
+        public ITestRunnerHost TestRunnerHost { get; set; }
 
         public App()
         {
             Startup += Application_Startup;
             Exit += Application_Exit;
             UnhandledException += Application_UnhandledException;
-
             InitializeComponent();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            try
+            {
+                var aggregateCatalog = new AggregateCatalog();
+                aggregateCatalog.Catalogs.Add(new DeploymentCatalog());
+                CompositionHost.Initialize(aggregateCatalog);
+                CompositionInitializer.SatisfyImports(this);
+            }
+            catch (ReflectionTypeLoadException rfex)
+            {
+                string loaderExceptionMessages = "";
+                //string msg = "********************* " + helperMessage + "*********************";
+                foreach (var t in rfex.LoaderExceptions)
+                {
+                    loaderExceptionMessages += "   -  ";
+                    loaderExceptionMessages += t.Message;
+                    loaderExceptionMessages += Environment.NewLine;
+                }
+
+                string msg = @"
+********************* ReflectionTypeLoadException *********************
+***** Begin Loader Exception Messages *****
+{0}
+***** End Loader Exception Messages *****
+".FormatWith(loaderExceptionMessages);
+
+                Server.Trace(msg);
+            }
+            catch (CompositionException compositionException)
+            {
+                Server.Trace(compositionException.ToString());
+                foreach (var err in compositionException.Errors)
+                    Server.Trace(err.ToString());
+            }
+
+            if (TestRunnerHost == null)
+                Server.Trace("The ITestRunnerHost was not populated by MEF. WTF?");
+
             Server.Debug("Application_Startup");
             GoGetTheTestRunConfiguration();
             GoGetTheXapUnderTest();
@@ -43,7 +84,7 @@ namespace StatLight.Client.Harness
                 ClientTestRunConfiguration.CurrentClientTestRunConfiguration = clientTestRunConfiguration;
                 _testRunConfigurationDownloadComplete = true;
 
-                _testRunnerHost.ConfigureWithClientTestRunConfiguration(clientTestRunConfiguration);
+                TestRunnerHost.ConfigureWithClientTestRunConfiguration(clientTestRunConfiguration);
 
                 DisplayTestHarness();
             };
@@ -88,7 +129,7 @@ namespace StatLight.Client.Harness
             {
                 var loadedXapData = new LoadedXapData(e.Result);
 
-                _testRunnerHost.ConfigureWithLoadedXapData(loadedXapData);
+                TestRunnerHost.ConfigureWithLoadedXapData(loadedXapData);
 
                 _completedTestXapRequest = true;
                 DisplayTestHarness();
@@ -101,7 +142,7 @@ namespace StatLight.Client.Harness
         {
             if (_testRunConfigurationDownloadComplete && _completedTestXapRequest)
             {
-                RootVisual = _testRunnerHost.StartRun();
+                RootVisual = TestRunnerHost.StartRun();
             }
         }
 

@@ -31,34 +31,43 @@ namespace StatLight.Client.Harness.UnitTestProviders.NUnit
     [TestClass]
     public class when_validating_a_standard_nunit_test_attribute_method : FixtureBase
     {
-        ITestMethod testMethod;
-        MethodInfo methodInfo;
+        ITestMethod _testMethod;
+        MethodInfo _methodInfo;
 
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
 
-            methodInfo = MockNUnitTestClass.GetPassingTest();
-            testMethod = new TestMethod(methodInfo);
+            _methodInfo = MockNUnitTestClass.GetPassingTest();
+            _testMethod = new TestMethod(_methodInfo);
+            _testMethod.ShouldNotBeNull();
+        }
+
+        [TestMethod]
+        public void Should_work()
+        {
+            var methodInfo = MockNUnitTestClass.GetPassingTest();
+            var testMethod = new TestMethod(methodInfo);
             testMethod.ShouldNotBeNull();
+
         }
 
         [TestMethod]
         public void testMethod_should_exist()
         {
-            testMethod.ShouldNotBeNull();
+            _testMethod.ShouldNotBeNull();
         }
 
         [TestMethod]
         public void test_method_name_should_be_correct()
         {
-            testMethod.Name.ShouldBeEqualTo(methodInfo.Name);
+            _testMethod.Name.ShouldBeEqualTo(_methodInfo.Name);
         }
 
         [TestMethod]
         public void the_timeout_value_should_be_correct()
         {
-            testMethod.Timeout.ShouldBeEqualTo(null);
+            _testMethod.Timeout.ShouldBeEqualTo(null);
         }
 
     }

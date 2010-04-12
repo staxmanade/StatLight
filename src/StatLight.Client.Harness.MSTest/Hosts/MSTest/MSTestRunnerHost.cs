@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.ComponentModel.Composition;
+using System.Windows;
 using Microsoft.Silverlight.Testing;
 using Microsoft.Silverlight.Testing.Harness;
+using StatLight.Client.Harness.Events;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven;
@@ -10,6 +12,7 @@ using StatLight.Core.WebServer;
 
 namespace StatLight.Client.Harness.Hosts.MSTest
 {
+    [Export(typeof(ITestRunnerHost))]
     public class MSTestRunnerHost : ITestRunnerHost
     {
         private ClientTestRunConfiguration _clientTestRunConfiguration;
@@ -36,7 +39,14 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 
         private static void CurrentHarness_TestHarnessCompleted(object sender, TestHarnessCompletedEventArgs e)
         {
-            Server.SignalTestComplete(e.State);
+            var state = e.State;
+            var signalTestCompleteClientEvent = new SignalTestCompleteClientEvent
+            {
+                Failed = state.Failed,
+                TotalFailureCount = state.Failures,
+                TotalTestsCount = state.TotalScenarios,
+            };
+            Server.SignalTestComplete(signalTestCompleteClientEvent);
         }
 
         private static void SetupUnitTestProvider(UnitTestProviderType unitTestProviderType)

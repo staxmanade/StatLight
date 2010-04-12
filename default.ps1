@@ -174,6 +174,9 @@ function global:StatLightReferences {
 		"$silverlight_libraries_client_assemblies\System.Xml.Serialization.dll",
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.Silverlight.Testing.dll"
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"
+		".\lib\Silverlight\MEF\System.ComponentModel.Composition.dll"
+		".\lib\Silverlight\MEF\System.ComponentModel.Composition.Initialization.dll"
+		".\src\build\bin\$build_configuration\StatLight.Client.Harness.dll"
 	)
 	$references;
 }
@@ -196,36 +199,33 @@ function global:StatLightIntegrationTestsReferences {
 		"$silverlight_libraries_client_assemblies\System.Xml.Serialization.dll",
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.Silverlight.Testing.dll"
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"
+		".\lib\Silverlight\MEF\System.ComponentModel.Composition.dll"
+		".\lib\Silverlight\MEF\System.ComponentModel.Composition.Initialization.dll"
+		".\src\build\bin\$build_configuration\StatLight.Client.Harness.dll"
 	)
 
 	$references;
 }
 
-function global:compile-StatLight {
+function global:compile-StatLight-MSTestHost {
 	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$microsoft_silverlight_testing_version_path, [string]$outAssemblyName)
 
-	$resources = @(
-		"src\StatLight.Client.Harness\obj\$build_configuration\StatLight.Client.Harness.g.resources"
-	)
+#	$resources = @(
+#		"src\StatLight.Client.Harness\obj\$build_configuration\StatLight.Client.Harness.g.resources"
+#	)
 
 	$references = StatLightReferences $microsoft_Silverlight_Testing_Version_Name
 
 	$sourceFiles = @(
-		"src\AssemblyInfo.cs",
-		"src\StatLight.Core\CommonExtensions.cs",
-		"src\StatLight.Core\Reporting\Messages\LogMessageType.cs",
-		"src\StatLight.Core\Reporting\Messages\MobilOtherMessageType.cs",
-		"src\StatLight.Core\Reporting\Messages\MobilScenarioResult.cs",
-		"src\StatLight.Core\Reporting\Messages\TestOutcome.cs",
-		"src\StatLight.core\UnitTestProviders\UnitTestProviderTypes.cs",
-		"src\StatLight.Core\WebServer\StatLightServiceRestApi.cs",
-		"src\StatLight.Core\WebServer\ClientTestRunConfiguration.cs"
+		"src\AssemblyInfo.cs"
 	)
 
-	$sourceFiles += Get-ChildItem 'src\StatLight.Client.Harness\' -recurse `
+	$sourceFiles += Get-ChildItem 'src\StatLight.Client.Harness.MSTest\' -recurse `
 		| where{$_.Extension -like "*.cs"} `
 		| foreach {$_.FullName} `
 		| where{!$_.Contains($not_build_configuration)}
+
+echo $sourceFiles
 
 	$extraCompilerFlags = [string]''
 	if("$microsoft_Silverlight_Testing_Version_Name" -eq 'March2010')
@@ -254,7 +254,7 @@ function global:compile-StatLight {
 	Execute-Command-String $cmd
 }
 
-function global:compile-StatLightIntegrationTests {
+function global:compile-StatLight-MSTestHostIntegrationTests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$microsoft_silverlight_testing_version_path, [string]$outAssemblyName)
 
 	$resources = @(
@@ -302,28 +302,48 @@ function global:Remove-If-Exists {
 	}
 }
 
-function global:Build-And-Package-StatLight {
+function global:Build-And-Package-StatLight-MSTest {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
 	
-	$statlightBuildFilePath = "$build_dir\StatLight.Client.Harness.dll"
+	$statlightBuildFilePath = "$build_dir\StatLight.Client.Harness.MSTest.dll"
 	
-	compile-StatLight $microsoft_Silverlight_Testing_Version_Name ".\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name" $statlightBuildFilePath
+	compile-StatLight-MSTestHost $microsoft_Silverlight_Testing_Version_Name ".\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name" $statlightBuildFilePath
 	
 	Assert ( test-path $statlightBuildFilePath) "File should exist $statlightBuildFilePath"
 	
 	$zippedName = "$build_dir\$statlight_xap_for_prefix.$microsoft_Silverlight_Testing_Version_Name.zip"
 
+	$newAppManifestFile = "$(($pwd).Path)\src\build\AppManifest.xaml"
+
+	# the below chunk will add the StatLight.Client.Harness.MSTest to the AppManifest
+	$appManifestContent = [xml](get-content ".\src\StatLight.Client.Harness\Bin\$build_configuration\AppManifest.xaml")
+#	$assemblyPart = $appManifestContent.CreateElement("AssemblyPart")
+	#$assemblyPart.SetAttribute("Name", "http://schemas.microsoft.com/client/2007/deployment", "StatLight.Client.Harness.MSTest")
+#	$assemblyPart.SetAttribute("Name", "StatLight.Client.Harness.MSTest")
+#	$assemblyPart.SetAttribute("Source", "StatLight.Client.Harness.MSTest.dll")
+#	$appManifestContent.Deployment."Deployment.Parts".AppendChild($assemblyPart)
+$extraStuff = '
+    <AssemblyPart x:Name="StatLight.Client.Harness.MSTest" Source="StatLight.Client.Harness.MSTest.dll" />
+    <AssemblyPart x:Name="Microsoft.Silverlight.Testing" Source="Microsoft.Silverlight.Testing.dll" />
+    <AssemblyPart x:Name="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight" Source="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll" />
+'
+	$appManifestContent.Deployment."Deployment.Parts".InnerXml = $appManifestContent.Deployment."Deployment.Parts".InnerXml + $extraStuff
+	$appManifestContent.Save($newAppManifestFile);
+
+
+#cat $newAppManifestFile
+#throw 'test'
 	$zipFiles = StatLightReferences $microsoft_Silverlight_Testing_Version_Name `
 				| Where-Object { -not $_.Contains($silverlight_core_assemblies_location) } `
 				| foreach{ Get-Item $_}
 	$zipFiles += @(
-					Get-Item ".\src\StatLight.Client.Harness\Bin\$build_configuration\AppManifest.xaml"
+					Get-Item $newAppManifestFile
 					Get-Item $statlightBuildFilePath
 				)
 	Create-Xap $zippedName $zipFiles
 }
 
-function global:Build-And-Package-StatLight-IntegrationTests {
+function global:Build-And-Package-StatLight-MSTest-IntegrationTests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
 
 	$dllName = 'StatLight.IntegrationTests.Silverlight.MSTest.dll'
@@ -331,7 +351,7 @@ function global:Build-And-Package-StatLight-IntegrationTests {
 
 	Remove-If-Exists $dllPath
 
-	compile-StatLightIntegrationTests $microsoft_Silverlight_Testing_Version_Name .\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name $dllPath
+	compile-StatLight-MSTestHostIntegrationTests $microsoft_Silverlight_Testing_Version_Name .\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name $dllPath
 	
 	$zippedName = "$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.zip"
 	$zipFiles = StatLightIntegrationTestsReferences $microsoft_Silverlight_Testing_Version_Name `
@@ -615,20 +635,20 @@ Task clean-build {
 #
 #########################################
 
-Task compile-StatLightVersions {
+Task compile-StatLight-MSTestHostVersions {
 
 	rename-file-extensions -itemsPath "$build_dir\*.xap" -fromExtension ".xap" -toExtension ".zip"
 
-	$microsoft_silverlight_testing_versions | foreach { Build-And-Package-StatLight $_ }
+	$microsoft_silverlight_testing_versions | foreach { Build-And-Package-StatLight-MSTest $_ }
 
 	rename-file-extensions -itemsPath "$build_dir\*.zip" -fromExtension ".zip" -toExtension ".xap"
 }
 
-Task compile-StatLightVersionIntegrationTests {
+Task compile-StatLight-MSTestHostVersionIntegrationTests {
 	
 	rename-file-extensions -itemsPath "$build_dir\*.xap" -fromExtension ".xap" -toExtension ".zip"
 
-	$microsoft_silverlight_testing_versions | foreach { Build-And-Package-StatLight-IntegrationTests $_ }
+	$microsoft_silverlight_testing_versions | foreach { Build-And-Package-StatLight-MSTest-IntegrationTests $_ }
 
 	rename-file-extensions -itemsPath "$build_dir\*.zip" -fromExtension ".zip" -toExtension ".xap"
 }
@@ -828,5 +848,5 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly {
 }
 
-Task build-all -depends clean-build, initialize, compile-Solution, compile-StatLightVersions, compile-StatLightVersionIntegrationTests {
+Task build-all -depends clean-build, initialize, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLight-MSTestHostVersionIntegrationTests {
 }

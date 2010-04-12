@@ -1,0 +1,138 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StatLight.Client.Harness</RootNamespace>
+    <AssemblyName>StatLight.Client.Harness.MSTest</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\StatLight.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT; MSTestMarch2010</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT; MSTestMarch2010</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=2c5c654d367bf4a7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Silverlight\Microsoft\March2010\Microsoft.Silverlight.Testing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=2c5c654d367bf4a7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Silverlight\Microsoft\March2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition, Version=2010.2.11.0, Culture=neutral, PublicKeyToken=9f7f221db79a30d0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Silverlight\MEF\System.ComponentModel.Composition.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="mscorlib" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="AssemblyInfo.This.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\ILogMessageToClientEventTranslation.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\InitializationOfUnitTestHarnessClientEventMap.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\LogMessageTranslator.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\ReflectionInfoHelper.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionClassBeginClientEventMap.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionClassCompletedClientEventMap.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionDoNotReportMessageMap.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionMethodBeginClientEventMap.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionMethodFailedClientEventMap.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionMethodIgnoredClientEventMap.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionMethodPassedClientEventMap.cs" />
+    <Compile Include="Hosts\MSTest\LogMessagTranslation\UnitTestResultProviderExtensions.cs" />
+    <Compile Include="Hosts\MSTest\MSTestRunnerHost.cs" />
+    <Compile Include="Hosts\MSTest\ServerHandlingLogProvider.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\DynamicAttributeHelper.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\LazyDynamicAssemblyMethodInfo.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\LazyDynamicMethodInfo.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\ExpectedException.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\Priority.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\ProviderAttributes.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\TestClass.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\TestMethod.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\UnitTestFrameworkAssembly.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\VsttProvider.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\ExpectedException.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\NUnitAttributes.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\NUnitTestProvider.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\TestClass.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\TestMethod.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\UnitTestFrameworkAssembly.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\ExpectedException.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\Priority.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\ProviderAttributes.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\TestClass.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\TestMethod.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\UnitDrivenTestProvider.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\UnitTestFrameworkAssembly.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\Xunit\TestClass.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\Xunit\TestMethod.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\Xunit\UnitTestFrameworkAssembly.cs" />
+    <Compile Include="Hosts\MSTest\UnitTestProviders\Xunit\XUnitTestProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StatLight.Client.Harness\StatLight.Client.Harness.csproj">
+      <Project>{163315C4-D4D6-4342-B386-F6D80975CF95}</Project>
+      <Name>StatLight.Client.Harness</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\StatLight.snk">
+      <Link>StatLight.snk</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

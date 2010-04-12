@@ -36,8 +36,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>Bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT, MSTestMarch2010</DefineConstants>
+    <OutputPath>..\build\bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -46,21 +46,21 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>Bin\Release\</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT; MSTestMarch2010</DefineConstants>
+    <OutputPath>..\build\bin\Release\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=2c5c654d367bf4a7, processorArchitecture=MSIL">
+    <Reference Include="System.ComponentModel.Composition, Version=2010.2.11.0, Culture=neutral, PublicKeyToken=9f7f221db79a30d0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Silverlight\Microsoft\March2010\Microsoft.Silverlight.Testing.dll</HintPath>
+      <HintPath>..\..\lib\Silverlight\MEF\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=2c5c654d367bf4a7, processorArchitecture=MSIL">
+    <Reference Include="System.ComponentModel.Composition.Initialization, Version=2010.2.11.0, Culture=neutral, PublicKeyToken=9f7f221db79a30d0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Silverlight\Microsoft\March2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+      <HintPath>..\..\lib\Silverlight\MEF\System.ComponentModel.Composition.Initialization.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -109,53 +109,12 @@
     <Compile Include="AssemblyInfo.This.cs" />
     <Compile Include="Events\ExceptionInfo.cs" />
     <Compile Include="Events\TestFailedEvent.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\ILogMessageToClientEventTranslation.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\InitializationOfUnitTestHarnessClientEventMap.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\LogMessageTranslator.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\ReflectionInfoHelper.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionClassBeginClientEventMap.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionClassCompletedClientEventMap.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionDoNotReportMessageMap.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionMethodBeginClientEventMap.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionMethodFailedClientEventMap.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionMethodIgnoredClientEventMap.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionMethodPassedClientEventMap.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\UnitTestResultProviderExtensions.cs" />
     <Compile Include="Hosts\ITestRunnerHost.cs" />
     <Compile Include="LoadedXapData.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventArgs.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventHandler.cs" />
     <Compile Include="Messaging\HttpWebRequest.cs" />
-    <Compile Include="Hosts\MSTest\MSTestRunnerHost.cs" />
     <Compile Include="Server.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\ExpectedException.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\Priority.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\ProviderAttributes.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\TestClass.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\TestMethod.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\UnitTestFrameworkAssembly.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\UnitDriven\UnitDrivenTestProvider.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\DynamicAttributeHelper.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\LazyDynamicAssemblyMethodInfo.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\LazyDynamicMethodInfo.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\ExpectedException.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\Priority.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\ProviderAttributes.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\TestClass.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\TestMethod.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\UnitTestFrameworkAssembly.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\MSTest\VsttProvider.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\ExpectedException.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\NUnitAttributes.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\TestClass.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\TestMethod.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\NUnitTestProvider.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\NUnit\UnitTestFrameworkAssembly.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\Xunit\TestClass.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\Xunit\TestMethod.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\Xunit\UnitTestFrameworkAssembly.cs" />
-    <Compile Include="Hosts\MSTest\UnitTestProviders\Xunit\XUnitTestProvider.cs" />
-    <Compile Include="Hosts\MSTest\ServerHandlingLogProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

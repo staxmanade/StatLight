@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.OtherTestAssembly", "StatLight.IntegrationTests.Silverlight.OtherTestAssembly\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.csproj", "{E99066B4-F2FC-469D-B427-CA1793BB0B23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Harness.MSTest", "StatLight.Client.Harness.MSTest\StatLight.Client.Harness.MSTest.csproj", "{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -163,6 +165,14 @@ Global
 		{E99066B4-F2FC-469D-B427-CA1793BB0B23}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E99066B4-F2FC-469D-B427-CA1793BB0B23}.Release|x86.ActiveCfg = Release|Any CPU
 		{E99066B4-F2FC-469D-B427-CA1793BB0B23}.Release|x86.Build.0 = Release|Any CPU
+		{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}.Debug|x86.Build.0 = Debug|Any CPU
+		{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}.Release|x86.ActiveCfg = Release|Any CPU
+		{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
