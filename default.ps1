@@ -62,17 +62,17 @@ if(!(Test-Path ('variable:hasLoadedNUnitSpecificationExtensions')))
 	echo 'loading NUnitSpecificationExtensions...'
 	Update-TypeData -prependPath .\tools\PowerShell\NUnitSpecificationExtensions.ps1xml
 	[System.Reflection.Assembly]::LoadFrom((Get-Item .\tools\NUnit\nunit.framework.dll).FullName) | Out-Null
-	$global:hasLoadedNUnitSpecificationExtensions = $true;
+	$hasLoadedNUnitSpecificationExtensions = $true;
 }
 
 
 # Is this a Win64 machine regardless of whether or not we are currently 
 # running in a 64 bit mode 
-function global:Test-Win64Machine() {
+function Test-Win64Machine() {
     return test-path (join-path $env:WinDir "SysWow64")
 }
 
-function global:rename-file-extensions {
+function rename-file-extensions {
 	param([string]$itemsPath, [string]$fromExtension, [string]$toExtension)
 	Get-Item "$itemsPath" | foreach{ Move-Item $_.FullName $_.FullName.Replace($fromExtension, $toExtension) }
 }
@@ -97,7 +97,7 @@ function get-formatted-assembly-version() {
 	"v$($version.Major).$($version.Minor).$($version.Build).$($version.Revision)"
 }
 
-function global:Build-Csc-Command {
+function Build-Csc-Command {
 	param([array]$options, [array]$sourceFiles, [array]$references, [array]$resources)
 	
 	$csc = 'C:\Windows\Microsoft.NET\Framework\v3.5\csc.exe'
@@ -127,7 +127,7 @@ function global:Build-Csc-Command {
 	$cmd;
 }
 
-function global:Execute-Command-String {
+function Execute-Command-String {
 	param([string]$cmd)
 	
 	# this drove me crazy... all I wanted to do was execute
@@ -156,7 +156,7 @@ function global:Execute-Command-String {
 	Remove-If-Exists $scriptFile
 }
 
-function global:StatLightReferences {
+function StatLightReferences {
 	param([string]$microsoft_silverlight_testing_version_name)
 	
 	$references = @(
@@ -181,7 +181,7 @@ function global:StatLightReferences {
 	$references;
 }
 
-function global:StatLightIntegrationTestsReferences {
+function StatLightIntegrationTestsReferences {
 	param([string]$microsoft_silverlight_testing_version_name)
 	
 	$references = @(
@@ -207,12 +207,8 @@ function global:StatLightIntegrationTestsReferences {
 	$references;
 }
 
-function global:compile-StatLight-MSTestHost {
+function compile-StatLight-MSTestHost {
 	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$microsoft_silverlight_testing_version_path, [string]$outAssemblyName)
-
-#	$resources = @(
-#		"src\StatLight.Client.Harness\obj\$build_configuration\StatLight.Client.Harness.g.resources"
-#	)
 
 	$references = StatLightReferences $microsoft_Silverlight_Testing_Version_Name
 
@@ -224,8 +220,6 @@ function global:compile-StatLight-MSTestHost {
 		| where{$_.Extension -like "*.cs"} `
 		| foreach {$_.FullName} `
 		| where{!$_.Contains($not_build_configuration)}
-
-echo $sourceFiles
 
 	$extraCompilerFlags = [string]''
 	if("$microsoft_Silverlight_Testing_Version_Name" -eq 'March2010')
@@ -254,7 +248,7 @@ echo $sourceFiles
 	Execute-Command-String $cmd
 }
 
-function global:compile-StatLight-MSTestHostIntegrationTests {
+function compile-StatLight-MSTestHostIntegrationTests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$microsoft_silverlight_testing_version_path, [string]$outAssemblyName)
 
 	$resources = @(
@@ -293,7 +287,7 @@ function global:compile-StatLight-MSTestHostIntegrationTests {
 	Execute-Command-String $cmd
 }
 
-function global:Remove-If-Exists {
+function Remove-If-Exists {
 	param($file)
 	if(Test-Path $file)
 	{
@@ -302,7 +296,7 @@ function global:Remove-If-Exists {
 	}
 }
 
-function global:Build-And-Package-StatLight-MSTest {
+function Build-And-Package-StatLight-MSTest {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
 	
 	$statlightBuildFilePath = "$build_dir\StatLight.Client.Harness.MSTest.dll"
@@ -317,12 +311,7 @@ function global:Build-And-Package-StatLight-MSTest {
 
 	# the below chunk will add the StatLight.Client.Harness.MSTest to the AppManifest
 	$appManifestContent = [xml](get-content ".\src\StatLight.Client.Harness\Bin\$build_configuration\AppManifest.xaml")
-#	$assemblyPart = $appManifestContent.CreateElement("AssemblyPart")
-	#$assemblyPart.SetAttribute("Name", "http://schemas.microsoft.com/client/2007/deployment", "StatLight.Client.Harness.MSTest")
-#	$assemblyPart.SetAttribute("Name", "StatLight.Client.Harness.MSTest")
-#	$assemblyPart.SetAttribute("Source", "StatLight.Client.Harness.MSTest.dll")
-#	$appManifestContent.Deployment."Deployment.Parts".AppendChild($assemblyPart)
-$extraStuff = '
+	$extraStuff = '
     <AssemblyPart x:Name="StatLight.Client.Harness.MSTest" Source="StatLight.Client.Harness.MSTest.dll" />
     <AssemblyPart x:Name="Microsoft.Silverlight.Testing" Source="Microsoft.Silverlight.Testing.dll" />
     <AssemblyPart x:Name="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight" Source="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll" />
@@ -330,9 +319,6 @@ $extraStuff = '
 	$appManifestContent.Deployment."Deployment.Parts".InnerXml = $appManifestContent.Deployment."Deployment.Parts".InnerXml + $extraStuff
 	$appManifestContent.Save($newAppManifestFile);
 
-
-#cat $newAppManifestFile
-#throw 'test'
 	$zipFiles = StatLightReferences $microsoft_Silverlight_Testing_Version_Name `
 				| Where-Object { -not $_.Contains($silverlight_core_assemblies_location) } `
 				| foreach{ Get-Item $_}
@@ -343,7 +329,7 @@ $extraStuff = '
 	Create-Xap $zippedName $zipFiles
 }
 
-function global:Build-And-Package-StatLight-MSTest-IntegrationTests {
+function Build-And-Package-StatLight-MSTest-IntegrationTests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
 
 	$dllName = 'StatLight.IntegrationTests.Silverlight.MSTest.dll'
@@ -365,14 +351,14 @@ function global:Build-And-Package-StatLight-MSTest-IntegrationTests {
 	Create-Xap $zippedName $zipFiles
 }
 
-function global:Create-Xap {
+function Create-Xap {
 	param($newZipFileName, $filesToInclude)
 	Remove-If-Exists $newZipFileName
 	$filesToInclude | Zip-Files-From-Pipeline $newZipFileName
 	Move-Item $newZipFileName $newZipFileName.Replace(".zip", ".xap")
 }
 
-function global:Get-x86-ProgramFiles-Location {
+function Get-x86-ProgramFiles-Location {
 	$program_files_dir = 'C:\Program Files'	
 	if(Test-Win64Machine)
 	{
@@ -381,7 +367,7 @@ function global:Get-x86-ProgramFiles-Location {
 	$program_files_dir;
 }
 
-function global:Is-Release-Build {
+function Is-Release-Build {
 	if($build_configuration.Equals('Release'))
 	{
 		$return = $true
@@ -393,7 +379,7 @@ function global:Is-Release-Build {
 	$return;
 }
 
-function global:Get-Not-Build-Configuration {
+function Get-Not-Build-Configuration {
 	if(Is-Release-Build)
 	{
 		$not_build_configuration = 'Debug'
@@ -472,7 +458,7 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	#added sleep to wait for file system to loose the lock on the file so we can delete it
 	[System.Threading.Thread]::Sleep(500);
 	Remove-If-Exists $scriptFile
-	#rm "$($pwd.Path)\temp_statlight-integration-output-*"
+	Remove-If-Exists ".\temp_statlight-integration-output-*"
 }
 
 function AssertXmlReportIsValid([string]$scriptFile)
@@ -504,7 +490,7 @@ function LoadZipAssembly {
 
 		echo "loading Zipping assembly [$zippingAssembly]..."
 		[System.Reflection.Assembly]::LoadFrom($zippingAssembly) | Out-Null
-		$global:hasLoadedIonicZipDll = $true;
+		$hasLoadedIonicZipDll = $true;
 	}
 }
 
@@ -602,23 +588,6 @@ Task initialize {
 	echo "running build with configuration of $build_configuration"
 	echo "running build with configuration of $build_dir"
 	
-	
-	  
-#	foreach($propertyBlock in $script:context.Peek().properties) 
-#	{
-#		. $propertyBlock
-#	}
-
-#	foreach($key in $script:context.Peek().properties.keys)
-#	{
-#		echo "***"
-#		echo $key
-#		#set-item -path "variable:\$key" -value $properties.$key | out-null
-#	}
-
-#	$props = $script:context.Peek().properties
-#	& $props
- 
 }
 
 Task clean-build {
