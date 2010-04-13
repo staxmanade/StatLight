@@ -10,8 +10,9 @@ properties {
 	$silverlight_libraries_client_assemblies = "$program_files_dir\Microsoft SDKs\Silverlight\v3.0\Libraries\Client"
 #C:\Program Files\Reference Assemblies\Microsoft\Framework\Silverlight\v3.0	
 	$statlight_xap_for_prefix = "StatLight.Client.For" 
-
 	$release_dir = 'Release'
+	
+	$clientHarnessBuildOutputDir = ".\src\StatLight.Client.Harness\bin\$build_configuration"
 	
 	$nunit_console_path = 'Tools\NUnit\nunit-console-x86.exe'
 
@@ -57,12 +58,12 @@ Task build-Debug -depends build-all, test-all {
 Task build-full-Release -depends build-all, test-all, package-release {
 }
 
-if(!(Test-Path ('variable:hasLoadedNUnitSpecificationExtensions')))
+if(!($Global:hasLoadedNUnitSpecificationExtensions))
 {
 	echo 'loading NUnitSpecificationExtensions...'
 	Update-TypeData -prependPath .\tools\PowerShell\NUnitSpecificationExtensions.ps1xml
 	[System.Reflection.Assembly]::LoadFrom((Get-Item .\tools\NUnit\nunit.framework.dll).FullName) | Out-Null
-	$hasLoadedNUnitSpecificationExtensions = $true;
+	$Global:hasLoadedNUnitSpecificationExtensions = $true;
 }
 
 
@@ -176,7 +177,7 @@ function StatLightReferences {
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"
 		".\lib\Silverlight\MEF\System.ComponentModel.Composition.dll"
 		".\lib\Silverlight\MEF\System.ComponentModel.Composition.Initialization.dll"
-		".\src\build\bin\$build_configuration\StatLight.Client.Harness.dll"
+		"$clientHarnessBuildOutputDir\StatLight.Client.Harness.dll"
 	)
 	$references;
 }
@@ -201,7 +202,7 @@ function StatLightIntegrationTestsReferences {
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"
 		".\lib\Silverlight\MEF\System.ComponentModel.Composition.dll"
 		".\lib\Silverlight\MEF\System.ComponentModel.Composition.Initialization.dll"
-		".\src\build\bin\$build_configuration\StatLight.Client.Harness.dll"
+		"$clientHarnessBuildOutputDir\StatLight.Client.Harness.dll"
 	)
 
 	$references;
@@ -308,9 +309,10 @@ function Build-And-Package-StatLight-MSTest {
 	$zippedName = "$build_dir\$statlight_xap_for_prefix.$microsoft_Silverlight_Testing_Version_Name.zip"
 
 	$newAppManifestFile = "$(($pwd).Path)\src\build\AppManifest.xaml"
+	Remove-If-Exists $newAppManifestFile
 
 	# the below chunk will add the StatLight.Client.Harness.MSTest to the AppManifest
-	$appManifestContent = [xml](get-content ".\src\StatLight.Client.Harness\Bin\$build_configuration\AppManifest.xaml")
+	$appManifestContent = [xml](get-content "$clientHarnessBuildOutputDir\AppManifest.xaml")
 	$extraStuff = '
     <AssemblyPart x:Name="StatLight.Client.Harness.MSTest" Source="StatLight.Client.Harness.MSTest.dll" />
     <AssemblyPart x:Name="Microsoft.Silverlight.Testing" Source="Microsoft.Silverlight.Testing.dll" />
@@ -766,7 +768,7 @@ Task package-release -depends clean-release, package-zip-project-sources-snapsho
 		'Microsoft.Silverlight.Testing.dll'
 		'Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll'
 		'nunit.framework.dll'
-		'StatLight.Client.Harness.dll'
+		#'StatLight.Client.Harness.dll'
 		'StatLight.IntegrationTests.dll'
 		'StatLight.IntegrationTests.Silverlight.MSTest.dll'
 	)
