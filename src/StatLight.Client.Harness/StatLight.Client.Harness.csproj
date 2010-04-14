@@ -110,6 +110,7 @@
     <Compile Include="Events\ExceptionInfo.cs" />
     <Compile Include="Events\TestFailedEvent.cs" />
     <Compile Include="Hosts\ITestRunnerHost.cs" />
+    <Compile Include="Hosts\ReflectionInfoHelper.cs" />
     <Compile Include="LoadedXapData.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventArgs.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventHandler.cs" />

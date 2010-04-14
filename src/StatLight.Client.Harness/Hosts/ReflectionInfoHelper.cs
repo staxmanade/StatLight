@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
+namespace StatLight.Client.Harness.Hosts
 {
     public static class ReflectionInfoHelper
     {

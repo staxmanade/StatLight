@@ -67,7 +67,6 @@
     <Compile Include="Hosts\MSTest\LogMessagTranslation\ILogMessageToClientEventTranslation.cs" />
     <Compile Include="Hosts\MSTest\LogMessagTranslation\InitializationOfUnitTestHarnessClientEventMap.cs" />
     <Compile Include="Hosts\MSTest\LogMessagTranslation\LogMessageTranslator.cs" />
-    <Compile Include="Hosts\MSTest\LogMessagTranslation\ReflectionInfoHelper.cs" />
     <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionClassBeginClientEventMap.cs" />
     <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionClassCompletedClientEventMap.cs" />
     <Compile Include="Hosts\MSTest\LogMessagTranslation\TestExecutionDoNotReportMessageMap.cs" />
