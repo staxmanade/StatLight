@@ -626,7 +626,7 @@ Task compile-StatLight-MSTestHostVersionIntegrationTests {
 
 Task compile-Solution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe'
-	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 } 'msbuild failed on StatLight.sln'
+	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 /verbosity:quiet } 'msbuild failed on StatLight.sln'
 }
 
 
@@ -697,7 +697,7 @@ Task test-tests-in-other-assembly {
 }
 
 Task test-client-harness-tests {
-	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" "-b" } 'test-client-harness-tests Failed'
+	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" -b -o=MSTest } 'test-client-harness-tests Failed'
 }
 
 Task test-all-mstest-version-acceptance-tests {
