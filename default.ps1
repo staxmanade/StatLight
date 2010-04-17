@@ -629,6 +629,40 @@ Task compile-Solution {
 	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 /verbosity:quiet } 'msbuild failed on StatLight.sln'
 }
 
+Task compile-StatLIght-UnitDrivenHost {
+	$unitDrivenXapFile = ".\src\StatLight.Client.Harness.UnitDriven\Bin\$build_configuration\StatLight.Client.Harness.dll"
+	$references = (ls .\src\StatLight.Client.Harness.UnitDriven\Bin\Debug\*.dll)
+	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
+
+	$zippedName = "$build_dir\$statlight_xap_for_prefix.UnitDrivenDecember2009.zip"
+
+	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="3.0.40818.0">
+		<Deployment.Parts>'
+	
+	$referencedNames | foreach { 
+		$ass = $_
+		$extraStuff = "
+			<AssemblyPart x:Name=""$ass"" Source=""$ass.dll"" />"
+		$appManifestContent += $extraStuff	
+	}
+
+	$appManifestContent += '	</Deployment.Parts>
+	</Deployment>'
+
+	$newAppManifestFile = "$(($pwd).Path)\src\build\AppManifest.xaml"
+	Remove-If-Exists $newAppManifestFile
+	([xml]$appManifestContent).Save($newAppManifestFile);
+
+	$zipFiles = $references
+	$zipFiles += @(
+					Get-Item $newAppManifestFile
+				)
+
+	Remove-If-Exists $zippedName
+	#throw 'a'
+	$zipFiles | Zip-Files-From-Pipeline $zippedName | Out-Null
+	#Create-Xap $zippedName $zipFiles
+}
 
 #########################################
 #
@@ -819,5 +853,5 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly {
 }
 
-Task build-all -depends clean-build, initialize, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLight-MSTestHostVersionIntegrationTests {
+Task build-all -depends clean-build, initialize, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {
 }

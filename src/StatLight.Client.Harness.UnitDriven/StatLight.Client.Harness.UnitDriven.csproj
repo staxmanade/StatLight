@@ -41,12 +41,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Silverlight\MEF\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Windows.Browser" />
+    <Reference Include="System.Windows" />
     <Reference Include="UnitDrivenLight, Version=0.0.3.0, Culture=neutral, PublicKeyToken=63bff5533f9bedec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Silverlight\UnitDriven\UnitDrivenLight.dll</HintPath>
