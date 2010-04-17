@@ -633,7 +633,8 @@ Task compile-StatLIght-UnitDrivenHost {
 	$unitDrivenXapFile = ".\src\StatLight.Client.Harness.UnitDriven\Bin\$build_configuration\StatLight.Client.Harness.dll"
 	$references = (ls .\src\StatLight.Client.Harness.UnitDriven\Bin\Debug\*.dll)
 	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
-
+	
+	
 	$zippedName = "$build_dir\$statlight_xap_for_prefix.UnitDrivenDecember2009.zip"
 
 	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="3.0.40818.0">

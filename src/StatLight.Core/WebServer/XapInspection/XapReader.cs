@@ -149,7 +149,12 @@ namespace StatLight.Core.WebServer.XapInspection
         {
             var fileData = ReadFileIntoBytes(zip1, "AppManifest.xaml");
             if (fileData != null)
-                return Encoding.UTF8.GetString(fileData).Substring(1);
+            {
+                string xaml = Encoding.UTF8.GetString(fileData);
+                if(xaml[0] == '<')
+                    return xaml;
+                return xaml.Substring(1);
+            }
 
             return null;
         }

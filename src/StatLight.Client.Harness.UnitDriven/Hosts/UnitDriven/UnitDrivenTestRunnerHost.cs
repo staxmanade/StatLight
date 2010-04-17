@@ -24,7 +24,7 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
         public UIElement StartRun()
         {
-            throw new NotImplementedException();
+            Server.Debug("UnitDriven: EntryPointAssembly = {0}".FormatWith(_loadedXapData.EntryPointAssembly));
             var testEngine = new TestEngine(_loadedXapData.EntryPointAssembly);
             testEngine.Context.Run();
 
