@@ -109,6 +109,7 @@
     <Compile Include="SpecificationExtensions.cs" />
     <Compile Include="WebServer\TestRunConfigurationTests.cs" />
     <Compile Include="WebServer\WebServerLocationTests.cs" />
+    <Compile Include="WebServer\XapHost\XapHostFileLoaderFactoryTests.cs" />
     <Compile Include="WebServer\XapReader\XapReaderTests.cs" />
     <Compile Include="WebServer\XapWatcherTests.cs" />
     <Compile Include="FixtureBase.cs" />

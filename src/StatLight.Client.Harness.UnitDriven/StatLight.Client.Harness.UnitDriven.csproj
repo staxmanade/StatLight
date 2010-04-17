@@ -47,6 +47,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
+    <Reference Include="UnitDrivenLight, Version=0.0.3.0, Culture=neutral, PublicKeyToken=63bff5533f9bedec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Silverlight\UnitDriven\UnitDrivenLight.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Hosts\UnitDriven\UnitDrivenTestRunnerHost.cs" />

@@ -75,9 +75,9 @@ namespace StatLight.Core.Tests
 			}
 			var mockXapHostFileLoaderFactory = new Mock<XapHostFileLoaderFactory>(TestLogger);
             mockXapHostFileLoaderFactory
-				.Setup(s => s.LoadXapHostFor(It.IsAny<MicrosoftTestingFrameworkVersion>()))
+				.Setup(s => s.LoadXapHostFor(It.IsAny<XapHostType>()))
 				.Returns(new byte[] { 0, 1, 1, 2, 3, 1, });
-            _mockServerTestRunConfiguration = new ServerTestRunConfiguration(mockXapHostFileLoaderFactory.Object, MicrosoftTestingFrameworkVersion.March2010);
+            _mockServerTestRunConfiguration = new ServerTestRunConfiguration(mockXapHostFileLoaderFactory.Object, XapHostType.MSTestMarch2010);
 
 			Assert.IsTrue(File.Exists(_pathToTempXapFile));
         }

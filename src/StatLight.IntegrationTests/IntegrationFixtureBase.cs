@@ -51,8 +51,9 @@ namespace StatLight.IntegrationTests
 
             var v = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion ?? MicrosoftTestingFrameworkVersion.March2010;
 
-            var serverTestRunConfiguration = new ServerTestRunConfiguration(new XapHostFileLoaderFactory(_testLogger),
-                                                                            v)
+            var f = new XapHostFileLoaderFactory(_testLogger);
+            var t = f.MapToXapHostType(ClientTestRunConfiguration.UnitTestProviderType, v);
+            var serverTestRunConfiguration = new ServerTestRunConfiguration(f, t)
             {
                 DialogSmackDownElapseMilliseconds = 500,
             };

@@ -1,4 +1,5 @@
-﻿using StatLight.Core.Common;
+﻿using System;
+using StatLight.Core.Common;
 
 namespace StatLight.Core.WebServer
 {
@@ -7,14 +8,14 @@ namespace StatLight.Core.WebServer
     public class ServerTestRunConfiguration
     {
         private readonly XapHostFileLoaderFactory _xapHostFileLoaderFactory;
-        private readonly MicrosoftTestingFrameworkVersion _microsoftTestingFrameworkVersion;
+        private readonly XapHostType _xapHostType;
         private byte[] _hostXap;
         public long DialogSmackDownElapseMilliseconds { get; set; }
 
-        public ServerTestRunConfiguration(XapHostFileLoaderFactory xapHostFileLoaderFactory, MicrosoftTestingFrameworkVersion microsoftTestingFrameworkVersion)
+        public ServerTestRunConfiguration(XapHostFileLoaderFactory xapHostFileLoaderFactory, XapHostType xapHostType)
         {
             _xapHostFileLoaderFactory = xapHostFileLoaderFactory;
-            _microsoftTestingFrameworkVersion = microsoftTestingFrameworkVersion;
+            _xapHostType = xapHostType;
 
             DialogSmackDownElapseMilliseconds = 5000;
         }
@@ -24,7 +25,7 @@ namespace StatLight.Core.WebServer
             get
             {
                 if (_hostXap == null)
-                    _hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(_microsoftTestingFrameworkVersion);
+                    _hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(_xapHostType);
 
                 return _hostXap;
             }

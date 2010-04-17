@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Windows;
 using StatLight.Core.WebServer;
+using UnitDriven;
 
 namespace StatLight.Client.Harness.Hosts.UnitDriven
 {
@@ -24,20 +25,10 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
         public UIElement StartRun()
         {
             throw new NotImplementedException();
-            //return UnitTestSystem.CreateTestPage(settings);
-        }
+            var testEngine = new TestEngine(_loadedXapData.EntryPointAssembly);
+            testEngine.Context.Run();
 
-        //TODO: TestComplete event?
-        //private static void CurrentHarness_TestHarnessCompleted(object sender, TestHarnessCompletedEventArgs e)
-        //{
-        //    var state = e.State;
-        //    var signalTestCompleteClientEvent = new SignalTestCompleteClientEvent
-        //    {
-        //        Failed = state.Failed,
-        //        TotalFailureCount = state.Failures,
-        //        TotalTestsCount = state.TotalScenarios,
-        //    };
-        //    Server.SignalTestComplete(signalTestCompleteClientEvent);
-        //}
+            return testEngine;
+        }
     }
 }

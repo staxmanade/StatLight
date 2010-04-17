@@ -174,8 +174,10 @@ Try: (the following two steps that should allow StatLight to start a web server 
         {
             IRunner runner;
             var statLightRunnerFactory = new StatLightRunnerFactory();
-
-            var serverTestRunConfiguration = new ServerTestRunConfiguration(new XapHostFileLoaderFactory(logger), microsoftTestingFrameworkVersion);
+            
+            var xapHostFileLoaderFactory = new XapHostFileLoaderFactory(logger);
+            XapHostType xapHostType = xapHostFileLoaderFactory.MapToXapHostType(config.UnitTestProviderType, microsoftTestingFrameworkVersion);
+            var serverTestRunConfiguration = new ServerTestRunConfiguration(xapHostFileLoaderFactory, xapHostType);
 
             if (useTeamCity)
             {

@@ -20,6 +20,8 @@ namespace StatLight.Client.Harness
             }
         }
 
+        public Assembly EntryPointAssembly { get; private set; }
+
         public LoadedXapData(Stream xapStream)
         {
             if (xapStream == null)
@@ -60,6 +62,12 @@ namespace StatLight.Client.Harness
                             throw new Exception(string.Format("Assembly resource missing for [{0}]. (file not found in xap)", assemblyPart.Source));
 
                         Assembly ass = assemblyPart.Load(assemblyStream.Stream);
+
+                        if (part == entryPoint + ".dll")
+                        {
+                            EntryPointAssembly = ass;
+                        }
+
                         if (ass != null)
                         {
                             if (!ass.FullName.StartsWith("Microsoft.Silverlight.Testing,"))
