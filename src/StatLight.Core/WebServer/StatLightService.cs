@@ -72,13 +72,15 @@ namespace StatLight.Core.WebServer
             _publishMethods = clientEventType
                 .Assembly.GetTypes()
                 .Where(w => w.Namespace == clientEventType.Namespace)
+                .Where(w => w.Name.EndsWith("ClientEvent"))
                 .ToDictionary(key => key, value => makeGenericMethod.MakeGenericMethod(value));
         }
 
         private void PublishIt<T>(string xmlMessage)
+            where T : ClientEvent
         {
-            //_logger.Warning(xmlMessage);
             var result = xmlMessage.Deserialize<T>();
+            //DebugLogClientEvent(result);
             _eventAggregator.SendMessage(result);
         }
 
@@ -156,6 +158,24 @@ namespace StatLight.Core.WebServer
             _logger.Debug("StatLightService.GetTestXap()");
 
             return _xapTestFile.OpenRead();
+        }
+
+        private void DebugLogClientEvent(ClientEvent clientEvent)
+        {
+            var type = clientEvent.GetType();
+            Action<string> log = msg => _logger.Debug(msg);
+
+            var properties = type.GetProperties();
+
+            log(type.Name);
+            log("  {");
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(clientEvent, null);
+                var msg = "    {0,24}: {1}".FormatWith(propertyInfo.Name, value);
+                log(msg);
+            }
+            log("  }");
         }
 
         //public Stream ClientAccessPolicy()

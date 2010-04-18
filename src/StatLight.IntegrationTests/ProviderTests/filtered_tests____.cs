@@ -29,7 +29,7 @@ namespace StatLight.IntegrationTests.ProviderTests
         }
 
         [Test]
-        public void should_execute_class_test()
+        public virtual void should_execute_nested_class_test()
         {
             TestCaseResults()
                 .Where(w => w.ClassName == NestedClassTestName)
@@ -41,6 +41,5 @@ namespace StatLight.IntegrationTests.ProviderTests
         {
             return TestReport.TestResults;
         }
-
     }
 }

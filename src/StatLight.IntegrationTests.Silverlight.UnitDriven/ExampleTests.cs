@@ -13,15 +13,16 @@ namespace StatLight.IntegrationTests.Silverlight.UnitDriven
 	[TestClass]
 	public class ExampleTests
 	{
-		[TestClass]
-		public class UnitDrivenNestedClassTests
-		{
-			[TestMethod]
-			public void this_should_be_a_passing_test()
-			{
-				Assert.IsTrue(true);
-			}
-		}
+        // UnitDriven doesn't currently support Nested test classes...
+        //[TestClass]
+        //public class UnitDrivenNestedClassTests
+        //{
+        //    [TestMethod]
+        //    public void this_should_be_a_passing_test()
+        //    {
+        //        Assert.IsTrue(true);
+        //    }
+        //}
 
 		[TestMethod]
 		public void EmptyTest()

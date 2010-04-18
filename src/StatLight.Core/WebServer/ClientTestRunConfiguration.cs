@@ -50,7 +50,24 @@ namespace StatLight.Core.WebServer
             };
         }
 
-        public static ClientTestRunConfiguration CurrentClientTestRunConfiguration { get; set; }
+        private static ClientTestRunConfiguration _currentClientTestRunConfiguration;
+        public static ClientTestRunConfiguration CurrentClientTestRunConfiguration
+        {
+            get { return _currentClientTestRunConfiguration; }
+            set
+            {
+                _currentClientTestRunConfiguration = value;
+
+#if SILVERLIGHT
+                var expectedTestsToFindAndRunMessage = string.Join(
+                    " *** Method Filter: {0}".FormatWith(Environment.NewLine),
+                            _currentClientTestRunConfiguration.MethodsToTest.ToArray());
+                Server.Debug(expectedTestsToFindAndRunMessage);
+#endif
+
+            }
+        }
+
         public static bool ContainsMethod(MethodInfo methodInfo)
         {
             if (CurrentClientTestRunConfiguration == null)
@@ -62,13 +79,15 @@ namespace StatLight.Core.WebServer
                 return true;
 
             string methodString = methodInfo.DeclaringType.FullName + "." + methodInfo.Name;
-#if SILVERLIGHT
-            Server.Debug(methodString);
-#endif
-            if (CurrentClientTestRunConfiguration.MethodsToTest.Contains(methodString))
-                return true;
 
-            return false;
+            var containsMethod = CurrentClientTestRunConfiguration.MethodsToTest.Contains(methodString);
+
+#if SILVERLIGHT
+            var expectedTestsToFindAndRunMessage = " *** Contains Method: {0}, {1}".FormatWith(containsMethod, methodString);
+            Server.Debug(expectedTestsToFindAndRunMessage);
+#endif
+
+            return containsMethod;
         }
     }
 }

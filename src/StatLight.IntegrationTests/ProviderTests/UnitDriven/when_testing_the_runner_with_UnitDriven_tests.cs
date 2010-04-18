@@ -1,3 +1,4 @@
+using System.Linq;
 using NUnit.Framework;
 using StatLight.Core.Reporting;
 using StatLight.Core.Tests;
@@ -31,32 +32,20 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
         [Test]
         public void Should_have_correct_TotalFailed_count()
         {
-            // note: should be 4, but not currently supporting the async tests
-            TestReport.TotalFailed.ShouldEqual(2);
+            TestReport.TotalFailed.ShouldEqual(4);
         }
 
 
         [Test]
-        public void Should_have_total_results_of_11_but_currently_9_because_not_supported_async_failures()
+        public void Should_have_correct_number_of_TotalResults()
         {
-            TestReport.TotalResults.ShouldEqual(9);
-        }
-
-        [Test]
-        [Ignore("TODO: Fix this???")]
-        public void Should_have_error_message_for_async_failed_tests()
-        {
-            //_testReport
-            //    .Results
-            //    .Where(w => w.Result == TestOutcome.Failed)
-            //    .Where(w => string.IsNullOrEmpty(w.Message))
-            //    .Count().ShouldBeLessThan(1);
+            TestReport.TotalResults.ShouldEqual(12);
         }
 
         [Test]
         public void Should_have_correct_TotalPassed_count()
         {
-            TestReport.TotalPassed.ShouldEqual(7);
+            TestReport.TotalPassed.ShouldEqual(6);
         }
 
         [Test]

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebServer;
@@ -6,7 +7,7 @@ using StatLight.Core.WebServer;
 namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
 {
 	[TestFixture]
-	public class when_testing_the_runner_with_UnitDrive_tests_filtered_by_certain_methods
+	public class when_testing_the_runner_with_UnitDriven_tests_filtered_by_certain_methods
 		: filtered_tests____
 	{
 		private ClientTestRunConfiguration _clientTestRunConfiguration;
@@ -39,5 +40,10 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
 			                        	};
 
     	}
+
+        [Ignore("UnitDriven's host doesn't do Nested classes.")]
+        public override void should_execute_nested_class_test()
+        {
+        }
 	}
 }

@@ -626,7 +626,8 @@ Task compile-StatLight-MSTestHostVersionIntegrationTests {
 
 Task compile-Solution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe'
-	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 /verbosity:quiet } 'msbuild failed on StatLight.sln'
+	$verbosity = "/verbosity:quiet"
+	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity } 'msbuild failed on StatLight.sln'
 }
 
 Task compile-StatLIght-UnitDrivenHost {
