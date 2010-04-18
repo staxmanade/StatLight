@@ -120,5 +120,27 @@ namespace StatLight.IntegrationTests.Silverlight.UnitDriven
 				// in Silverlight and throw an exception in .NET
 			}
 		}
+
+        [TestMethod]
+        public void Async_test_should_timeout()
+        {
+            using (UnitTestContext context = GetContext())
+            {
+                BackgroundWorker worker = new BackgroundWorker();
+                worker.DoWork += (o, e) =>
+                {
+                    Thread.Sleep(60000);
+                };
+                worker.RunWorkerCompleted += (o, e) =>
+                {
+                    // The failed Assert will pass failed test information to the context.
+                    context.Assert.Fail();
+                };
+                worker.RunWorkerAsync();
+
+                // The disposed context will see the failed test and will pass it back 
+                // in Silverlight and throw an exception in .NET
+            }
+        }
 	}
 }

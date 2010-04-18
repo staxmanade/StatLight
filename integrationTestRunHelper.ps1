@@ -5,5 +5,5 @@
 #& 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.ProviderTests.NUnit.when_testing_the_runner_with_NUnit_tests
 #& 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.ProviderTests.NUnit.when_testing_the_runner_with_NUnit_tests_filtered_by_certain_methods
 
-.\src\build\bin\Debug\StatLight.exe "-x=.\src\StatLight.IntegrationTests.Silverlight.UnitDriven\Bin\Debug\StatLight.IntegrationTests.Silverlight.UnitDriven.xap"
+.\src\build\bin\Debug\StatLight.exe "-x=.\src\StatLight.IntegrationTests.Silverlight.UnitDriven\Bin\Debug\StatLight.IntegrationTests.Silverlight.UnitDriven.xap" -b
 #& "src\build\bin\Debug\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\Debug\StatLight.Client.Tests.xap" "-o=MSTest" "-b" 
