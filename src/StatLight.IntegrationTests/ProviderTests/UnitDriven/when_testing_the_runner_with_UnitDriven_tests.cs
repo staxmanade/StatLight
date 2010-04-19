@@ -39,19 +39,29 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
         [Test]
         public void Should_have_correct_number_of_TotalResults()
         {
-            TestReport.TotalResults.ShouldEqual(12);
+            TestReport.TotalResults.ShouldEqual(11);
         }
 
         [Test]
         public void Should_have_correct_TotalPassed_count()
         {
-            TestReport.TotalPassed.ShouldEqual(6);
+            TestReport.TotalPassed.ShouldEqual(7);
         }
 
         [Test]
         public void Should_have_correct_TotalIgnored_count()
         {
             TestReport.TotalIgnored.ShouldEqual(0);
+        }
+
+        [Test]
+        public void Should_have_a_timeout_exception()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName == "Async_test_should_timeout")
+                .Single()
+                .ExceptionInfo.FullMessage.ToLower().ShouldContain("timeout");
         }
     }
 }
