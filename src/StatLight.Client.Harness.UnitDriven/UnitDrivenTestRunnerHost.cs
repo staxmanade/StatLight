@@ -17,13 +17,18 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
     [Export(typeof(ITestRunnerHost))]
     public class UnitDrivenRunnerHost : ITestRunnerHost
     {
-        private ClientTestRunConfiguration _clientTestRunConfiguration;
+        //private ClientTestRunConfiguration _clientTestRunConfiguration;
         private LoadedXapData _loadedXapData;
         private Dispatcher _dispatcher;
+        private int _totalFailedCount;
+        private int _totalTestsExpectedToRun;
+        private int _totalTestsRun;
+        private readonly object _sync = new object();
+        private readonly List<string> _alreadySentMessages = new List<string>();
 
         public void ConfigureWithClientTestRunConfiguration(ClientTestRunConfiguration clientTestRunConfiguration)
         {
-            _clientTestRunConfiguration = clientTestRunConfiguration;
+            //_clientTestRunConfiguration = clientTestRunConfiguration;
         }
 
         public void ConfigureWithLoadedXapData(LoadedXapData loadedXapData)
@@ -44,7 +49,6 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
             var testEngine = new TestEngine(_loadedXapData.EntryPointAssembly);
 
             Application.Current.RootVisual = testEngine;
-
             _dispatcher = Application.Current.RootVisual.Dispatcher;
 
             WireUpTestEngineMonitoring(testEngine.Context);
@@ -54,25 +58,21 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
         private void WireUpTestEngineMonitoring(TestContext testContext)
         {
-            // Get a list of all the test methods & filter out any un-wanted
-            // tests based on the ClientTestRunConfiguration
-            var allMethodTesters = testContext.Testers
-                .SelectMany(s => s.Methods.Select(methods => methods))
-                .Where(w => ClientTestRunConfiguration.ContainsMethod(w.Method))
-                .ToList();
+            List<MethodTester> allMethodTesters = GetMethodTestersToRun(testContext).ToList();
 
-            _totalTestsExpectedToRun = allMethodTesters.Count();
-
-            foreach (var methodTester in allMethodTesters)
-            {
-                methodTester.PropertyChanged += (sender, e) =>
-                    OnMethodTesterPropertyChanged((MethodTester)sender, e.PropertyName);
-            }
+            _totalTestsExpectedToRun = allMethodTesters.Count;
 
             foreach (var methodTester in allMethodTesters)
             {
                 SetupMethodTesterCommand(methodTester);
             }
+        }
+
+        private static IEnumerable<MethodTester> GetMethodTestersToRun(TestContext testContext)
+        {
+            return testContext.Testers
+                .SelectMany(s => s.Methods.Select(methods => methods))
+                .Where(w => ClientTestRunConfiguration.ContainsMethod(w.Method));
         }
 
         private void OnMethodTesterPropertyChanged(MethodTester mt, string propertyName)
@@ -82,23 +82,16 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
                 if (mt.Status == TestResult.Fail ||
                     mt.Status == TestResult.Success)
                 {
-
                     var m = mt.Method.FullName();
-                    lock (_sync)
-                    {
-                        if (_alreadySentMessages.Contains(m))
-                        {
-                            return;
-                        }
-                    }
-                    _alreadySentMessages.Add(m);
-                    Server.PostMessage(new TestExecutionMethodBeginClientEvent
-                                           {
-                                               NamespaceName = mt.Method.DeclaringType.Namespace,
-                                               ClassName = mt.Method.DeclaringType.ReadClassName(),
-                                               MethodName = mt.Method.Name
-                                           });
-                    Interlocked.Increment(ref _totalTestsRun);
+
+                    if (!ShouldReportedThis(m))
+                        return;
+
+                    // The Server requires both a begin and end test event
+                    // It doesn't look easy to report the start of a test thorugh UnitDriven (at least yet...)
+                    // So just send it now - an repor the final event right after that.
+                    SendTestBeginClientEvent(mt);
+
                     if (mt.Status == TestResult.Fail)
                     {
                         Interlocked.Increment(ref _totalFailedCount);
@@ -109,6 +102,8 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
                     {
                         SendTestPassedClientEvent(mt.Method);
                     }
+
+                    Interlocked.Increment(ref _totalTestsRun);
                 }
 
                 if (_totalTestsRun == _totalTestsExpectedToRun)
@@ -118,6 +113,33 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
             {
                 Server.Debug("Status: {0}".FormatWith(mt.Status));
             }
+        }
+
+        private bool ShouldReportedThis(string m)
+        {
+            // Using the property changed events to report messages 
+            // puts in a place where we could potentially report multiple 
+            // of the same messages... Keep track of what we're reporting 
+            // and only report it once.
+
+            lock (_sync)
+            {
+                if (_alreadySentMessages.Contains(m))
+                {
+                    return false;
+                }
+
+                _alreadySentMessages.Add(m);
+
+                return true;
+            }
+        }
+
+        private static void SendTestBeginClientEvent(MethodTester methodTester)
+        {
+            var e = PopulateCoreInfo(new TestExecutionMethodBeginClientEvent(), methodTester.Method);
+
+            Server.PostMessage(e);
         }
 
         private static void SendTestFailureClientEvent(MethodInfo method, string message)
@@ -160,6 +182,8 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
         private void SetupMethodTesterCommand(MethodTester methodTester)
         {
+            methodTester.PropertyChanged += (sender, e) => OnMethodTesterPropertyChanged((MethodTester)sender, e.PropertyName);
+
             var command = new TestCommand(methodTester);
             command.Complete += (o, e) => OnCommandComplete(methodTester, (TestCompleteEventArgs)e);
             CommandQueue.Enqueue(command);
@@ -176,11 +200,5 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
             methodTester2.Status = args.Result;
             methodTester2.IsRunning = false;
         }
-
-        private int _totalFailedCount;
-        private int _totalTestsExpectedToRun;
-        private int _totalTestsRun;
-        private readonly object _sync = new object();
-        private readonly List<string> _alreadySentMessages = new List<string>();
     }
 }
