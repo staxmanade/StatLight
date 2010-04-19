@@ -77,14 +77,15 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
         private void OnMethodTesterPropertyChanged(MethodTester mt, string propertyName)
         {
+            //TODO: how to we figure out when the test has started?
+
+            //TODO: Is the the best key to figure out if we're done with the test?
             if (propertyName == "IsRunning" && !mt.IsRunning)
             {
-                if (mt.Status == TestResult.Fail ||
-                    mt.Status == TestResult.Success)
+                if (IsFinalResultStatus(mt))
                 {
-                    var m = mt.Method.FullName();
-
-                    if (!ShouldReportedThis(m))
+                    MethodInfo methodInfo = mt.Method;
+                    if (!ShouldReportedThisInstanceOfTheFinalResult(methodInfo))
                         return;
 
                     // The Server requires both a begin and end test event
@@ -92,44 +93,47 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
                     // So just send it now - an repor the final event right after that.
                     SendTestBeginClientEvent(mt);
 
-                    if (mt.Status == TestResult.Fail)
+                    switch (mt.Status)
                     {
-                        Interlocked.Increment(ref _totalFailedCount);
-
-                        SendTestFailureClientEvent(mt.Method, mt.Message);
-                    }
-                    else if (mt.Status == TestResult.Success)
-                    {
-                        SendTestPassedClientEvent(mt.Method);
+                        case TestResult.Fail:
+                            SendTestFailureClientEvent(methodInfo, mt.Message);
+                            Interlocked.Increment(ref _totalFailedCount);
+                            break;
+                        case TestResult.Success:
+                            SendTestPassedClientEvent(methodInfo);
+                            break;
                     }
 
                     Interlocked.Increment(ref _totalTestsRun);
-                }
 
-                if (_totalTestsRun == _totalTestsExpectedToRun)
-                    SendTestCompleteClientEvent();
-            }
-            else
-            {
-                Server.Debug("Status: {0}".FormatWith(mt.Status));
+                    if (_totalTestsRun == _totalTestsExpectedToRun)
+                        SendTestCompleteClientEvent();
+                }
             }
         }
 
-        private bool ShouldReportedThis(string m)
+        private static bool IsFinalResultStatus(MethodTester methodTester)
         {
+            return methodTester.Status == TestResult.Fail ||
+                   methodTester.Status == TestResult.Success;
+        }
+
+        private bool ShouldReportedThisInstanceOfTheFinalResult(MethodInfo methodInfo)
+        {
+            var fullName = methodInfo.FullName();
+
             // Using the property changed events to report messages 
             // puts in a place where we could potentially report multiple 
             // of the same messages... Keep track of what we're reporting 
             // and only report it once.
-
             lock (_sync)
             {
-                if (_alreadySentMessages.Contains(m))
+                if (_alreadySentMessages.Contains(fullName))
                 {
                     return false;
                 }
 
-                _alreadySentMessages.Add(m);
+                _alreadySentMessages.Add(fullName);
 
                 return true;
             }
@@ -147,6 +151,8 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
             var failureEvent = new TestExecutionMethodFailedClientEvent
                                    {
                                        ExceptionInfo = new Exception(message),
+                                       Started = new DateTime(),
+                                       Finished = new DateTime(),
                                    };
 
             PopulateCoreInfo(failureEvent, method);
@@ -156,7 +162,12 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
         private static void SendTestPassedClientEvent(MethodInfo method)
         {
-            var e = PopulateCoreInfo(new TestExecutionMethodPassedClientEvent(), method);
+            var passedClientEvent = new TestExecutionMethodPassedClientEvent
+                                        {
+                                            Started = new DateTime(),
+                                            Finished = new DateTime(),
+                                        };
+            var e = PopulateCoreInfo(passedClientEvent, method);
 
             Server.PostMessage(e);
         }
