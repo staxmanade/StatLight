@@ -55,6 +55,7 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
         }
 
         [Test]
+        [Ignore]
         public void Should_have_a_timeout_exception()
         {
             TestReport
