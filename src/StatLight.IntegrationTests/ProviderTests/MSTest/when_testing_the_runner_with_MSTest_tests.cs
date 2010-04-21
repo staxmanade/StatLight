@@ -41,9 +41,9 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
                                         };
             EventAggregator
                 .AddListener<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e)
-//                .AddListener<TestExecutionClassBeginClientEvent>(e => _testExecutionClassBeginClientEvent.Add(e))
+                //                .AddListener<TestExecutionClassBeginClientEvent>(e => _testExecutionClassBeginClientEvent.Add(e))
                 .AddListener<TestExecutionClassCompletedClientEvent>(e => _testExecutionClassCompletedClientEvent.Add(e))
-//                .AddListener<TestExecutionMethodBeginClientEvent>(e => _testExecutionMethodBeginClientEvent.Add(e))
+                //                .AddListener<TestExecutionMethodBeginClientEvent>(e => _testExecutionMethodBeginClientEvent.Add(e))
                 .AddListener<TestExecutionMethodIgnoredClientEvent>(e => _testExecutionMethodIgnoredClientEvent.Add(e))
                 .AddListener<TestExecutionMethodFailedClientEvent>(e => _testExecutionMethodFailedClientEvent.Add(e))
                 .AddListener<TestExecutionMethodPassedClientEvent>(e => _testExecutionMethodPassedClientEvent.Add(e))
@@ -96,17 +96,17 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             _testExecutionClassCompletedClientEvent.Each(AssertTestExecutionClassData);
         }
 
-//        [Test]
-//        public void Should_receive_the_TestExecutionMethodBeginClientEvent()
-//        {
-//#if DEBUG
-//            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(8);
-//#else
-//            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(7);
-//#endif
-//            foreach (var e in _testExecutionMethodBeginClientEvent)
-//                AssertTestExecutionClassData(e);
-//        }
+        //        [Test]
+        //        public void Should_receive_the_TestExecutionMethodBeginClientEvent()
+        //        {
+        //#if DEBUG
+        //            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(8);
+        //#else
+        //            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(7);
+        //#endif
+        //            foreach (var e in _testExecutionMethodBeginClientEvent)
+        //                AssertTestExecutionClassData(e);
+        //        }
 
         [Test]
         public void Should_receive_the_TestExecutionMethodIgnoredClientEvent()
@@ -181,6 +181,19 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             theOneWeWant.OtherInfo.ShouldContain("Should_fail_due_to_a_message_box_modal_dialog - message");
 
             theOneWeWant.ResultType.ShouldEqual(ResultType.SystemGeneratedFailure);
+        }
+
+
+        [Test]
+        [Ignore("TODO")]
+        public void Should_be_able_to_detect_and_use_the_ServiceReferenceClientConfig_file()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName != null)
+                .Where(w => w.MethodName.Contains("ServiceReferenceClientConfig"))
+                .SingleOrDefault()
+                .ShouldBeNull();
         }
 
     }
