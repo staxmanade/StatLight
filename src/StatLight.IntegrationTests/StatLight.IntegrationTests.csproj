@@ -90,6 +90,7 @@
     <Compile Include="DebugAssertMonitorTests.cs" />
     <Compile Include="IntegrationFixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceReferenceClientConfigTests.ClientConfigTests.cs" />
     <Compile Include="XapReaderTests.cs" />
   </ItemGroup>
   <ItemGroup>

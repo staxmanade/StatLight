@@ -182,20 +182,6 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
             theOneWeWant.ResultType.ShouldEqual(ResultType.SystemGeneratedFailure);
         }
-
-
-        [Test]
-        [Ignore("TODO")]
-        public void Should_be_able_to_detect_and_use_the_ServiceReferenceClientConfig_file()
-        {
-            TestReport
-                .TestResults
-                .Where(w => w.MethodName != null)
-                .Where(w => w.MethodName.Contains("ServiceReferenceClientConfig"))
-                .SingleOrDefault()
-                .ShouldBeNull();
-        }
-
     }
 
     internal static class AssertionExtensions
