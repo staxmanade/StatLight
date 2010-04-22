@@ -179,6 +179,10 @@ Try: (the following two steps that should allow StatLight to start a web server 
             XapHostType xapHostType = xapHostFileLoaderFactory.MapToXapHostType(config.UnitTestProviderType, microsoftTestingFrameworkVersion);
             var serverTestRunConfiguration = new ServerTestRunConfiguration(logger, xapHostFileLoaderFactory, xapHostType, xapReadItems);
 
+            //HACK - the March2010 requires the view and we can't hide the window
+            if(microsoftTestingFrameworkVersion == MicrosoftTestingFrameworkVersion.March2010)
+                showTestingBrowserHost = true;
+
             if (useTeamCity)
             {
                 logger.LogChatterLevel = LogChatterLevels.None;

@@ -406,7 +406,7 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	$scriptFile = GetTemporaryXmlFile;
 	
-	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile" "-b"
+	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
 	
 	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
 	$file = get-item $scriptFile
@@ -686,7 +686,7 @@ Task test-tests-in-other-assembly {
 	
 	$scriptFile = GetTemporaryXmlFile;
 	
-	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" "-t=OtherAssemblyTests" "-r=$scriptFile"	"-b"
+	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" "-t=OtherAssemblyTests" "-r=$scriptFile"
 	
 	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
 	$file = get-item $scriptFile
@@ -733,7 +733,7 @@ Task test-tests-in-other-assembly {
 }
 
 Task test-client-harness-tests {
-	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" -b -o=MSTest } 'test-client-harness-tests Failed'
+	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" -o=MSTest } 'test-client-harness-tests Failed'
 }
 
 Task test-all-mstest-version-acceptance-tests {

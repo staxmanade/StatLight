@@ -1,6 +1,7 @@
 ﻿
 
 using StatLight.Client.Harness.Events;
+using StatLight.Core.UnitTestProviders;
 
 namespace StatLight.Core.Runners
 {
@@ -115,6 +116,7 @@ namespace StatLight.Core.Runners
             out StatLightServiceHost statLightServiceHost,
             out BrowserFormHost browserFormHost)
         {
+
             var location = new WebServerLocation();
             var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
             var dialogMonitors = new List<IDialogMonitor>
