@@ -6,7 +6,7 @@ using StatLight.Core.Events;
 
 namespace StatLight.Core.Reporting
 {
-    public class DialogAssertionMatchMaker
+    public class DialogAssertionMatchmaker
     {
         private readonly List<TestExecutionMethodBeginClientEvent> _completedMessage = new List<TestExecutionMethodBeginClientEvent>();
 

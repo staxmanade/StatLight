@@ -17,18 +17,20 @@ namespace StatLight.Core.Events.Aggregation
     {
         // Sending messages
         void SendMessage<T>(T message);
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         void SendMessage<T>() where T : new();
 
         // Explicit registration
-        IEventAggregator AddListener<T>(Action<T> handler);
-        IEventAggregator AddListener<T>(Action handler);
+        IEventAggregator AddListener<T>(Action<T> listener);
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        IEventAggregator AddListener<T>(Action listener);
 
-        IEventAggregator AddListener(Action<object> handler, Predicate<object> filter);
-        IEventAggregator AddListener(Action handler, Predicate<object> filter);
+        IEventAggregator AddListener(Action<object> listener, Predicate<object> filter);
+        IEventAggregator AddListener(Action listener, Predicate<object> filter);
 
         // Listeners that apply a filter before handling
-        IEventAggregator AddListener<T>(Action<T> handler, Predicate<T> filter);
-        IEventAggregator AddListener<T>(Action handler, Predicate<T> filter);
+        IEventAggregator AddListener<T>(Action<T> listener, Predicate<T> filter);
+        IEventAggregator AddListener<T>(Action listener, Predicate<T> filter);
 
         IEventAggregator AddListener(object listener);
 
@@ -37,7 +39,7 @@ namespace StatLight.Core.Events.Aggregation
 
     public class EventAggregator : IEventAggregator
     {
-        private readonly List<FilteredHandler<object>> _filteredHandlers = new List<FilteredHandler<object>>();
+        private readonly List<FilteredListener<object>> _filteredListeners = new List<FilteredListener<object>>();
         private readonly SynchronizationContext _context;
         public ILogger Logger { get; set; }
         private readonly List<object> _listeners = new List<object>();
@@ -59,10 +61,11 @@ namespace StatLight.Core.Events.Aggregation
             //DEBUG
             //if (Logger != null)
             //    Logger.Debug(typeof(T).Name);
-            sendAction(() => CallOnEach<IListener<T>>(all(), x => x.Handle(message)));
-            sendAction(() => SendToAllFilteredListeners(message));
+            SendAction(() => CallOnEach<IListener<T>>(all(), x => x.Handle(message)));
+            SendAction(() => SendToAllFilteredListeners(message));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public void SendMessage<T>() where T : new()
         {
             SendMessage(new T());
@@ -81,16 +84,17 @@ namespace StatLight.Core.Events.Aggregation
 
 
 
-        public IEventAggregator AddListener<T>(Action<T> handler)
+        public IEventAggregator AddListener<T>(Action<T> listener)
         {
-            var delegateListener = new DelegateListener<T>(handler);
+            var delegateListener = new DelegateListener<T>(listener);
             AddListener(delegateListener);
             return this;
         }
 
-        public IEventAggregator AddListener<T>(Action handler)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public IEventAggregator AddListener<T>(Action listener)
         {
-            var delegateListener = new DelegateListener<T>(msg => handler());
+            var delegateListener = new DelegateListener<T>(msg => listener());
             AddListener(delegateListener);
             return this;
         }
@@ -99,7 +103,7 @@ namespace StatLight.Core.Events.Aggregation
 
         private void SendToAllFilteredListeners(object message)
         {
-            foreach (FilteredHandler<object> listener in allFiltered())
+            foreach (FilteredListener<object> listener in allFiltered())
             {
                 listener.Handle(message);
             }
@@ -109,10 +113,10 @@ namespace StatLight.Core.Events.Aggregation
         {
             lock (_locker)
             {
-                var filteredHandler = new FilteredHandler<object>(listener, filter);
-                if (_filteredHandlers.Contains(filteredHandler))
+                var filteredListener = new FilteredListener<object>(listener, filter);
+                if (_filteredListeners.Contains(filteredListener))
                     return this;
-                _filteredHandlers.Add(filteredHandler);
+                _filteredListeners.Add(filteredListener);
             }
             return this;
         }
@@ -126,7 +130,7 @@ namespace StatLight.Core.Events.Aggregation
         //{
         //    lock (_locker)
         //    {
-        //        _filteredHandlers.Remove(listener);
+        //        _filteredListeners.Remove(listener);
         //    }
         //    return this;
         //}
@@ -141,15 +145,15 @@ namespace StatLight.Core.Events.Aggregation
             return this;
         }
 
-        public IEventAggregator AddListener<T>(Action<T> handler, Predicate<T> filter)
+        public IEventAggregator AddListener<T>(Action<T> listener, Predicate<T> filter)
         {
-            AddListener(new FilteredHandler<T>(handler, filter));
+            AddListener(new FilteredListener<T>(listener, filter));
             return this;
         }
 
-        public IEventAggregator AddListener<T>(Action handler, Predicate<T> filter)
+        public IEventAggregator AddListener<T>(Action listener, Predicate<T> filter)
         {
-            AddListener(new FilteredHandler<T>(msg => handler(), filter));
+            AddListener(new FilteredListener<T>(msg => listener(), filter));
             return this;
         }
 
@@ -163,21 +167,22 @@ namespace StatLight.Core.Events.Aggregation
             }
         }
 
-        private IEnumerable<FilteredHandler<object>> allFiltered()
+        private IEnumerable<FilteredListener<object>> allFiltered()
         {
             lock (_locker)
             {
-                return _filteredHandlers.ToArray();
+                return _filteredListeners.ToArray();
             }
         }
 
-        protected virtual void sendAction(Action action)
+        protected virtual void SendAction(Action action)
         {
             _context.Send(state => action(), null);
         }
 
         public void AddListeners(params object[] listeners)
         {
+            if (listeners == null) throw new ArgumentNullException("listeners");
             foreach (object listener in listeners)
             {
                 AddListener(listener);
@@ -186,6 +191,7 @@ namespace StatLight.Core.Events.Aggregation
 
         public bool HasListener(object listener)
         {
+            if (listener == null) throw new ArgumentNullException("listener");
             return _listeners.Contains(listener);
         }
 
@@ -206,6 +212,7 @@ namespace StatLight.Core.Events.Aggregation
         public static void CallOn<T>(object target, Action<T> action)
             where T : class
         {
+            if (action == null) throw new ArgumentNullException("action");
             var subject = target as T;
             if (subject != null)
             {
@@ -216,6 +223,8 @@ namespace StatLight.Core.Events.Aggregation
         public static void CallOnEach<TListener>(IEnumerable enumerable, Action<TListener> action)
             where TListener : class
         {
+            if (enumerable == null) throw new ArgumentNullException("enumerable");
+            if (action == null) throw new ArgumentNullException("action");
             foreach (object o in enumerable)
             {
                 CallOn(o, action);
@@ -225,41 +234,41 @@ namespace StatLight.Core.Events.Aggregation
 
         private class DelegateListener<T> : IListener<T>
         {
-            private readonly Action<T> _handler;
+            private readonly Action<T> _listener;
 
-            public DelegateListener(Action<T> handler)
+            public DelegateListener(Action<T> listener)
             {
-                _handler = handler;
+                _listener = listener;
             }
 
             public void Handle(T message)
             {
-                _handler(message);
+                _listener(message);
             }
         }
 
 
-        private class FilteredHandler<T>
+        private class FilteredListener<T>
             : IListener<T>
         {
             private readonly Predicate<T> _filter;
-            private readonly Action<T> _handler;
+            private readonly Action<T> _listener;
 
-            public FilteredHandler(Action<T> handler, Predicate<T> filter)
+            public FilteredListener(Action<T> listener, Predicate<T> filter)
             {
-                _handler = handler;
+                _listener = listener;
                 _filter = filter;
             }
 
             public void Handle(T message)
             {
                 if (_filter(message))
-                    _handler(message);
+                    _listener(message);
             }
 
             public override int GetHashCode()
             {
-                return _handler.GetHashCode();
+                return _listener.GetHashCode();
             }
         }
 

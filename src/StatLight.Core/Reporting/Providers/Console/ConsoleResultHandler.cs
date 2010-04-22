@@ -16,6 +16,7 @@ namespace StatLight.Core.Reporting.Providers.Console
 
         public void Handle(TraceClientEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             _logger.Warning(Environment.NewLine);
             _logger.Warning(message.Message);
             _logger.Warning(Environment.NewLine);
@@ -23,11 +24,13 @@ namespace StatLight.Core.Reporting.Providers.Console
 
         public void Handle(DialogAssertionServerEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             WriteString(message.Message);
         }
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             WriteString(message.Message);
         }
 
@@ -40,6 +43,7 @@ namespace StatLight.Core.Reporting.Providers.Console
 
         public void Handle(TestCaseResult message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             switch (message.ResultType)
             {
                 case ResultType.Ignored:

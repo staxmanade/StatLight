@@ -23,7 +23,7 @@ namespace StatLight.Core.Reporting
         private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;
         private readonly TestReport _currentReport = new TestReport();
-        private readonly DialogAssertionMatchMaker _dialogAssertionMessageMatchMaker = new DialogAssertionMatchMaker();
+        private readonly DialogAssertionMatchmaker _dialogAssertionMessageMatchmaker = new DialogAssertionMatchmaker();
         private readonly EventMatchMacker _eventMatchMacker = new EventMatchMacker();
 
         public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator)
@@ -47,6 +47,7 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodPassedClientEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             Action action = () =>
             {
                 //_eventMatchMacker
@@ -54,7 +55,7 @@ namespace StatLight.Core.Reporting
                     "TestExecutionMethodPassedClientEvent - {0}"
                         .FormatWith(message.MethodName));
                 if (
-                    _dialogAssertionMessageMatchMaker.
+                    _dialogAssertionMessageMatchmaker.
                         WasEventAlreadyClosed(message))
                 {
                     // Don't include this as a "passed" test as we had to automatically close the dialog);)
@@ -84,11 +85,12 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodFailedClientEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             Action action = () =>
             {
                 _logger.Debug("TestExecutionMethodFailedClientEvent - {0}".FormatWith(message.MethodName));
 
-                if (_dialogAssertionMessageMatchMaker.WasEventAlreadyClosed(message))
+                if (_dialogAssertionMessageMatchmaker.WasEventAlreadyClosed(message))
                 {
                     // Don't include this as a "passed" test as we had to automatically close the dialog);)
                     return;
@@ -111,6 +113,7 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodIgnoredClientEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             _logger.Debug("TestExecutionMethodIgnoredClientEvent - {0}".FormatWith(message.MethodName));
             var msg = new TestCaseResult(ResultType.Ignored)
             {
@@ -145,7 +148,7 @@ namespace StatLight.Core.Reporting
 
             if (message.DialogType == DialogType.Assert)
             {
-                _dialogAssertionMessageMatchMaker.AddAssertionHandler(message, handler);
+                _dialogAssertionMessageMatchmaker.AddAssertionHandler(message, handler);
             }
             else if (message.DialogType == DialogType.MessageBox)
             {
@@ -164,6 +167,7 @@ namespace StatLight.Core.Reporting
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             var msg = new TestCaseResult(ResultType.Failed)
             {
                 OtherInfo = message.Message,
@@ -174,8 +178,9 @@ namespace StatLight.Core.Reporting
 
         public void Handle(TestExecutionMethodBeginClientEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             _logger.Debug("TestExecutionMethodBeginClientEvent - {0}".FormatWith(message.MethodName));
-            _dialogAssertionMessageMatchMaker.HandleMethodBeginClientEvent(message);
+            _dialogAssertionMessageMatchmaker.HandleMethodBeginClientEvent(message);
 
             _eventMatchMacker.AddBeginEvent(message);
         }

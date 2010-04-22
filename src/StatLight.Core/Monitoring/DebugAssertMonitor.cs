@@ -48,11 +48,11 @@ namespace StatLight.Core.Monitoring
                 return noActionTaken;
             }
 
-            var buttonClicInvokePattern = okButton.GetCurrentPattern(InvokePattern.Pattern) as InvokePattern;
+            var buttonClickInvokePattern = okButton.GetCurrentPattern(InvokePattern.Pattern) as InvokePattern;
 
-            if (buttonClicInvokePattern == null)
+            if (buttonClickInvokePattern == null)
             {
-                _logger.Debug("COULD NOT FIND THE buttonClicInvokePattern");
+                _logger.Debug("COULD NOT FIND THE buttonClickInvokePattern");
                 return noActionTaken;
             }
 
@@ -67,7 +67,7 @@ Dialog Message:
             ifSlappedAction(msg);
 
             // Close the dialgo by clicking OK
-            buttonClicInvokePattern.Invoke();
+            buttonClickInvokePattern.Invoke();
 
             return new DialogMonitorResult
             {

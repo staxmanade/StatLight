@@ -43,11 +43,13 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
         public void Handle(TraceClientEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             messageWriter.Write(message.Message);
         }
 
         public void Handle(DialogAssertionServerEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             string writeMessage = message.Message;
             WriteServerEventFailure("DialogAssertionServerEvent", writeMessage);
         }
@@ -67,6 +69,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             string writeMessage = message.Message;
             WriteServerEventFailure("BrowserHostCommunicationTimeoutServerEvent", writeMessage);
         }

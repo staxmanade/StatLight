@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Resources;
@@ -35,5 +36,5 @@ using System.Resources;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.9.*")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
-
+[assembly: CLSCompliant(true)]
 //TODO: [assembly: AssemblyKeyFile("StatLight.snk")]

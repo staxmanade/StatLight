@@ -43,6 +43,7 @@ namespace StatLight
         {
             if (items == null)
                 return null;
+            if (action == null) throw new ArgumentNullException("action");
 
             foreach (var item in items)
                 action(item);

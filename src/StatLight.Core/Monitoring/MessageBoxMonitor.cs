@@ -88,7 +88,7 @@ Dialog Message:
         }
     }
 
-    public static class AutomationTypes
+    internal static class AutomationTypes
     {
         public static string ControlTitleBar = "title bar";
         public static string ControlText = "text";
@@ -101,8 +101,4 @@ Dialog Message:
         }
     }
 
-    public interface IAutomationWrapper
-    {
-
-    }
 }

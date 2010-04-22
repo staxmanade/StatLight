@@ -1,9 +1,12 @@
-﻿namespace StatLight.Core.Reporting.Providers.TeamCity
+﻿using System;
+
+namespace StatLight.Core.Reporting.Providers.TeamCity
 {
     internal sealed class ConsoleCommandWriter : ICommandWriter
     {
         public void Write(Command command)
         {
+            if (command == null) throw new ArgumentNullException("command");
             Write(command.ToString());
         }
 

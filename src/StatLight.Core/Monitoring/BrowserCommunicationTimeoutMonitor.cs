@@ -9,15 +9,16 @@ namespace StatLight.Core.Monitoring
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly ITimer _maxTimeoutTimer;
-        private readonly TimeSpan _maxTimeAllowedBeforeCommErrorSent;
+        private readonly TimeSpan _maxTimeAllowedBeforeCommunicationErrorSent;
         private DateTime _lastTimeAnyEventArrived;
         private bool _hasPublishedEvent;
 
-        public BrowserCommunicationTimeoutMonitor(IEventAggregator eventAggregator, ITimer maxTimeoutTimer, TimeSpan maxTimeAllowedBeforeCommErrorSent)
+        public BrowserCommunicationTimeoutMonitor(IEventAggregator eventAggregator, ITimer maxTimeoutTimer, TimeSpan maxTimeAllowedBeforeCommunicationErrorSent)
         {
+            if (maxTimeoutTimer == null) throw new ArgumentNullException("maxTimeoutTimer");
             _eventAggregator = eventAggregator;
             _maxTimeoutTimer = maxTimeoutTimer;
-            _maxTimeAllowedBeforeCommErrorSent = maxTimeAllowedBeforeCommErrorSent;
+            _maxTimeAllowedBeforeCommunicationErrorSent = maxTimeAllowedBeforeCommunicationErrorSent;
 
             _maxTimeoutTimer.Elapsed += maxTimeoutTimer_Elapsed;
             _lastTimeAnyEventArrived = DateTime.Now;
@@ -41,7 +42,7 @@ namespace StatLight.Core.Monitoring
 
             if (!_hasPublishedEvent)
             {
-                if (ticksElapsedSinceLastMessage > _maxTimeAllowedBeforeCommErrorSent.Ticks)
+                if (ticksElapsedSinceLastMessage > _maxTimeAllowedBeforeCommunicationErrorSent.Ticks)
                 {
                     _hasPublishedEvent = true;
 
@@ -49,7 +50,7 @@ namespace StatLight.Core.Monitoring
                         .SendMessage(
                             new BrowserHostCommunicationTimeoutServerEvent
                                 {
-                                    Message = "No communication from the web browser has been detected. We've waited longer than the configured time of {0}".FormatWith(new TimeSpan(_maxTimeAllowedBeforeCommErrorSent.Ticks))
+                                    Message = "No communication from the web browser has been detected. We've waited longer than the configured time of {0}".FormatWith(new TimeSpan(_maxTimeAllowedBeforeCommunicationErrorSent.Ticks))
                                 }
                         );
 
