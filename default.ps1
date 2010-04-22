@@ -736,6 +736,54 @@ Task test-client-harness-tests {
 	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" -o=MSTest } 'test-client-harness-tests Failed'
 }
 
+
+Task test-specific-method-filter {
+	$scriptFile = GetTemporaryXmlFile;
+	
+	& "$build_dir\StatLight.exe" "-x=src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" '--methodsToTest="StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_passing_test;StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_Failing_test;"' "-o=MSTest" "-r=$scriptFile"
+
+	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
+	$file = get-item $scriptFile
+	$doc = [System.Xml.Linq.XDocument]::Load($file)
+
+	$passedCount = 0;
+	$ignoredCount = 0;
+	$failedCount = 0;
+	$systemGeneratedfailedCount = 0;
+	
+	foreach($test in $doc.Descendants('test'))
+	{
+		$resultTypeValue = $test.Attribute('resulttype').Value
+
+		if($resultTypeValue -eq 'Passed')
+		{
+			$passedCount = $passedCount + 1;
+		}
+		elseif($resultTypeValue -eq 'Ignored')
+		{
+			$ignoredCount = $ignoredCount + 1;
+		}
+		elseif($resultTypeValue -eq 'Failed')
+		{
+			$failedCount = $failedCount + 1;
+		}
+		elseif($resultTypeValue -eq 'SystemGeneratedFailure')
+		{
+			$systemGeneratedfailedCount = $systemGeneratedfailedCount + 1;
+		}
+		else
+		{
+			throw "Unknown ResultType [$resultTypeValue]"
+		}
+		
+	}
+	
+	$passedCount.ShouldEqual(1);
+	$ignoredCount.ShouldEqual(0);
+	$failedCount.ShouldEqual(1);
+	$systemGeneratedfailedCount.ShouldEqual(0);	 
+}
+
 Task test-all-mstest-version-acceptance-tests {
 	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests $_ }
 }
@@ -854,7 +902,7 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 	Write-Documentation
 }
 
-Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly {
+Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter {
 }
 
 Task build-all -depends clean-build, initialize, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {

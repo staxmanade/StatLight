@@ -16,6 +16,7 @@ namespace StatLight.Console
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.UnitTestProviders;
     using StatLight.Core.WebServer.XapInspection;
+    using System.Collections.Generic;
 
     class Program
     {
@@ -47,6 +48,7 @@ namespace StatLight.Console
                     bool showTestingBrowserHost = options.ShowTestingBrowserHost;
                     bool useTeamCity = options.OutputForTeamCity;
                     bool startWebServerOnly = options.StartWebServerOnly;
+                    List<string> methodsToTest = options.MethodsToTest;
                     MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion =
                         options.MicrosoftTestingFrameworkVersion;
 
@@ -80,6 +82,7 @@ namespace StatLight.Console
                     }
 
                     var config = ClientTestRunConfiguration.CreateDefault();
+                    config.MethodsToTest = methodsToTest;
                     config.TagFilter = options.TagFilters;
                     config.UnitTestProviderType = unitTestProviderType;
 

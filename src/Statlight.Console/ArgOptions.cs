@@ -41,20 +41,20 @@ namespace StatLight.Console
         public bool OutputForTeamCity { get; private set; }
 
         public bool StartWebServerOnly { get; private set; }
-
+        public List<string> MethodsToTest { get; private set; }
         public UnitTestProviderType UnitTestProviderType { get; private set; }
 
         public MicrosoftTestingFrameworkVersion? MicrosoftTestingFrameworkVersion { get; private set; }
 
         private ArgOptions()
+            : this(new string[]{})
         {
-            optionSet = GetOptions();
         }
 
         public ArgOptions(string[] args)
         {
             LicenseKey = string.Empty;
-
+            MethodsToTest = new List<string>();
             this.optionSet = GetOptions();
 
             _args = args;
@@ -91,6 +91,11 @@ namespace StatLight.Console
                 .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, Mono.Options.OptionValueType.Optional)
                 .Add<string>("c|Continuous", "Runs a single test run, and then monitors the xap for build changes and re-runs the tests automatically.", v => ContinuousIntegrationMode = true)
                 .Add<string>("b|ShowTestingBrowserHost", "Show the browser that is running the tests - necessary to run UI specific tests (hidden by default)", v => ShowTestingBrowserHost = true)
+                .Add("methodsToTest", "Semicolon seperated list of full method names to execute. EX: --methodsToTest=\"RootNamespace.ChildNamespace.ClassName.MethodUnderTest;RootNamespace.ChildNamespace.ClassName.Method2UnderTest;\"", v =>
+                    {
+                        v = v ?? string.Empty;
+                        MethodsToTest = v.Split(';').Where(w => !string.IsNullOrEmpty(w)).ToList();
+                    })
                 .Add("o|OverrideTestProvider", "Allows you to override the default test provider of MSTest. Pass in one of the following [{0}]".FormatWith(string.Join(" | ", Enum.GetNames(typeof(UnitTestProviderType)))), v =>
                     {
                         v = v ?? string.Empty;
