@@ -632,7 +632,7 @@ Task compile-Solution {
 
 Task compile-StatLIght-UnitDrivenHost {
 	$unitDrivenXapFile = ".\src\StatLight.Client.Harness.UnitDriven\Bin\$build_configuration\StatLight.Client.Harness.dll"
-	$references = (ls .\src\StatLight.Client.Harness.UnitDriven\Bin\Debug\*.dll)
+	$references = (ls .\src\StatLight.Client.Harness.UnitDriven\Bin\$build_configuration\*.dll)
 	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
 	
 	
