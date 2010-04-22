@@ -53,7 +53,7 @@ namespace StatLight.IntegrationTests
 
             var f = new XapHostFileLoaderFactory(_testLogger);
             var t = f.MapToXapHostType(ClientTestRunConfiguration.UnitTestProviderType, v);
-            var serverTestRunConfiguration = new ServerTestRunConfiguration(f, t)
+            var serverTestRunConfiguration = new ServerTestRunConfiguration(this._testLogger, f, t, xapReadItems)
             {
                 DialogSmackDownElapseMilliseconds = 500,
             };

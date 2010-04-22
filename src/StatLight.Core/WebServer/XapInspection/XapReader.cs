@@ -1,17 +1,17 @@
-using System.Linq;
-using System.Security.Cryptography;
-using StatLight.Core.Common;
-using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer.XapHost;
 
 namespace StatLight.Core.WebServer.XapInspection
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
+    using System.Security.Cryptography;
     using System.Text;
     using System.Xml.Linq;
     using Ionic.Zip;
+    using StatLight.Core.Common;
+    using StatLight.Core.UnitTestProviders;
+    using StatLight.Core.WebServer.XapHost;
 
     public class XapReader
     {
@@ -42,6 +42,12 @@ namespace StatLight.Core.WebServer.XapInspection
                 if (xapItems.UnitTestProvider == UnitTestProviderType.MSTest)
                     xapItems.MicrosoftSilverlightTestingFrameworkVersion = DetermineUnitTestVersion(archive);
 
+                xapItems.FilesContianedWithinXap = (from zipEntry in archive
+                                                    let fileBytes = ReadFileIntoBytes(archive, zipEntry.FileName)
+                                                    select new XapFile(zipEntry.FileName, fileBytes)).Cast<IXapFile>().ToList();
+
+                foreach (var item in xapItems.FilesContianedWithinXap)
+                    _logger.Debug("XapItems.FilesContainedWithinXap = {0}".FormatWith(item.FileName));
             }
             return xapItems;
         }
@@ -151,7 +157,7 @@ namespace StatLight.Core.WebServer.XapInspection
             if (fileData != null)
             {
                 string xaml = Encoding.UTF8.GetString(fileData);
-                if(xaml[0] == '<')
+                if (xaml[0] == '<')
                     return xaml;
                 return xaml.Substring(1);
             }

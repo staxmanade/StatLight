@@ -58,10 +58,10 @@ namespace StatLight.Console
 
                     var unitTestProviderType = options.UnitTestProviderType;
 
-                    XapReadItems xapReadItems;
+                    var xapReadItems = new XapReader(logger).GetTestAssembly(xapPath);
+
                     if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
                     {
-                        xapReadItems = new XapReader(logger).GetTestAssembly(xapPath);
                         //TODO: Print message telling the user what the type is - and if they give it
                         // we don't have to "reflect" on the xap to determine the test provider type.
 
@@ -84,8 +84,8 @@ namespace StatLight.Console
                     config.UnitTestProviderType = unitTestProviderType;
 
                     var testReport = RunTestAndGetTestReport(logger, xapPath, continuousIntegrationMode, 
-                        showTestingBrowserHost, useTeamCity, startWebServerOnly, config, 
-                        microsoftTestingFrameworkVersion ?? MicrosoftTestingFrameworkVersion.March2010);
+                        showTestingBrowserHost, useTeamCity, startWebServerOnly, config,
+                        microsoftTestingFrameworkVersion ?? MicrosoftTestingFrameworkVersion.March2010, xapReadItems);
 
                     if (!string.IsNullOrEmpty(options.XmlReportOutputPath))
                     {
@@ -170,14 +170,14 @@ Try: (the following two steps that should allow StatLight to start a web server 
             System.Console.WriteLine("*********************************");
         }
 
-        private static TestReport RunTestAndGetTestReport(ILogger logger, string xapPath, bool continuousIntegrationMode, bool showTestingBrowserHost, bool useTeamCity, bool startWebServerOnly, ClientTestRunConfiguration config, MicrosoftTestingFrameworkVersion microsoftTestingFrameworkVersion)
+        private static TestReport RunTestAndGetTestReport(ILogger logger, string xapPath, bool continuousIntegrationMode, bool showTestingBrowserHost, bool useTeamCity, bool startWebServerOnly, ClientTestRunConfiguration config, MicrosoftTestingFrameworkVersion microsoftTestingFrameworkVersion, XapReadItems xapReadItems)
         {
             IRunner runner;
             var statLightRunnerFactory = new StatLightRunnerFactory();
             
             var xapHostFileLoaderFactory = new XapHostFileLoaderFactory(logger);
             XapHostType xapHostType = xapHostFileLoaderFactory.MapToXapHostType(config.UnitTestProviderType, microsoftTestingFrameworkVersion);
-            var serverTestRunConfiguration = new ServerTestRunConfiguration(xapHostFileLoaderFactory, xapHostType);
+            var serverTestRunConfiguration = new ServerTestRunConfiguration(logger, xapHostFileLoaderFactory, xapHostType, xapReadItems);
 
             if (useTeamCity)
             {

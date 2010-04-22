@@ -21,5 +21,6 @@ namespace StatLight.IntegrationTests.Silverlight
 
             Assert.AreEqual(1, endpoints.Count());
         }
+
     }
 }
