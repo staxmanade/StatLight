@@ -34,11 +34,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             base.Before_all_tests();
 
             PathToIntegrationTestXap = TestXapFileLocations.MSTest;
-            _clientTestRunConfiguration = new ClientTestRunConfiguration
-                                        {
-                                            TagFilter = string.Empty,
-                                            UnitTestProviderType = UnitTestProviderType.MSTest,
-                                        };
+            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration();
             EventAggregator
                 .AddListener<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e)
                 //                .AddListener<TestExecutionClassBeginClientEvent>(e => _testExecutionClassBeginClientEvent.Add(e))

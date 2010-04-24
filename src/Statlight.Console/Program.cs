@@ -49,57 +49,48 @@ namespace StatLight.Console
                     bool useTeamCity = options.OutputForTeamCity;
                     bool startWebServerOnly = options.StartWebServerOnly;
                     List<string> methodsToTest = options.MethodsToTest;
-                    MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion =
-                        options.MicrosoftTestingFrameworkVersion;
-
+                    string xmlReportOutputPath = options.XmlReportOutputPath;
+                    MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = options.MicrosoftTestingFrameworkVersion;
+                    string tagFilters = options.TagFilters;
+                    UnitTestProviderType unitTestProviderType = options.UnitTestProviderType;
+                    //Debugger.Break();
                     if (options.ShowHelp)
                     {
                         ArgOptions.ShowHelpMessage(System.Console.Out, options);
                         return;
                     }
+                    logger.Debug("unitTestProviderType = {0}".FormatWith(unitTestProviderType));
 
-                    var unitTestProviderType = options.UnitTestProviderType;
+                    var statLightRunnerFactory = new StatLightRunnerFactory();
 
-                    var xapReadItems = new XapReader(logger).GetTestAssembly(xapPath);
+                    StatLightConfiguration statLightConfiguration =
+                        StatLightConfiguration.GetStatLightConfiguration(
+                            logger, 
+                            unitTestProviderType, 
+                            xapPath, microsoftTestingFrameworkVersion, 
+                            methodsToTest, 
+                            tagFilters);
 
-                    if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
-                    {
-                        //TODO: Print message telling the user what the type is - and if they give it
-                        // we don't have to "reflect" on the xap to determine the test provider type.
+                    var testReport = 
+                        RunTestAndGetTestReport(
+                            logger, 
+                            continuousIntegrationMode,
+                            showTestingBrowserHost, 
+                            useTeamCity, 
+                            startWebServerOnly, 
+                            statLightConfiguration,
+                            statLightRunnerFactory);
 
-                        if (unitTestProviderType == UnitTestProviderType.Undefined)
-                            unitTestProviderType = xapReadItems.UnitTestProvider;
-
-                        if (xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest
-                            && microsoftTestingFrameworkVersion == null)
-                        {
-                            microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
-                            if(microsoftTestingFrameworkVersion == null)
-                            {
-                                logger.Debug("microsoftTestingFrameworkVersion == null");
-                            }
-                        }
-                    }
-
-                    var config = ClientTestRunConfiguration.CreateDefault();
-                    config.MethodsToTest = methodsToTest;
-                    config.TagFilter = options.TagFilters;
-                    config.UnitTestProviderType = unitTestProviderType;
-
-                    var testReport = RunTestAndGetTestReport(logger, xapPath, continuousIntegrationMode, 
-                        showTestingBrowserHost, useTeamCity, startWebServerOnly, config,
-                        microsoftTestingFrameworkVersion ?? MicrosoftTestingFrameworkVersion.March2010, xapReadItems);
-
-                    if (!string.IsNullOrEmpty(options.XmlReportOutputPath))
+                    if (!string.IsNullOrEmpty(xmlReportOutputPath))
                     {
                         var xmlReport = new XmlReport(testReport, xapPath);
-                        xmlReport.WriteXmlReport(options.XmlReportOutputPath);
+                        xmlReport.WriteXmlReport(xmlReportOutputPath);
 
                         "*********************************"
                             .WrapConsoleMessageWithColor(ConsoleColor.White, true);
 
                         "Wrote XML report to:{0}{1}"
-                            .FormatWith(Environment.NewLine, new FileInfo(options.XmlReportOutputPath).FullName)
+                            .FormatWith(Environment.NewLine, new FileInfo(xmlReportOutputPath).FullName)
                             .WrapConsoleMessageWithColor(ConsoleColor.Yellow, true);
 
                         "*********************************"
@@ -173,35 +164,28 @@ Try: (the following two steps that should allow StatLight to start a web server 
             System.Console.WriteLine("*********************************");
         }
 
-        private static TestReport RunTestAndGetTestReport(ILogger logger, string xapPath, bool continuousIntegrationMode, bool showTestingBrowserHost, bool useTeamCity, bool startWebServerOnly, ClientTestRunConfiguration config, MicrosoftTestingFrameworkVersion microsoftTestingFrameworkVersion, XapReadItems xapReadItems)
+        private static TestReport RunTestAndGetTestReport(ILogger logger, bool continuousIntegrationMode,
+            bool showTestingBrowserHost, bool useTeamCity, bool startWebServerOnly,
+            StatLightConfiguration statLightConfiguration, StatLightRunnerFactory statLightRunnerFactory)
         {
             IRunner runner;
-            var statLightRunnerFactory = new StatLightRunnerFactory();
-            
-            var xapHostFileLoaderFactory = new XapHostFileLoaderFactory(logger);
-            XapHostType xapHostType = xapHostFileLoaderFactory.MapToXapHostType(config.UnitTestProviderType, microsoftTestingFrameworkVersion);
-            var serverTestRunConfiguration = new ServerTestRunConfiguration(logger, xapHostFileLoaderFactory, xapHostType, xapReadItems);
-
-            //HACK - the March2010 requires the view and we can't hide the window
-            if(microsoftTestingFrameworkVersion == MicrosoftTestingFrameworkVersion.March2010)
-                showTestingBrowserHost = true;
 
             if (useTeamCity)
             {
                 logger.LogChatterLevel = LogChatterLevels.None;
-                runner = statLightRunnerFactory.CreateTeamCityRunner(xapPath, config, serverTestRunConfiguration);
+                runner = statLightRunnerFactory.CreateTeamCityRunner(statLightConfiguration);
             }
             else if (startWebServerOnly)
             {
-                runner = statLightRunnerFactory.CreateWebServerOnlyRunner(logger, xapPath, config, serverTestRunConfiguration);
+                runner = statLightRunnerFactory.CreateWebServerOnlyRunner(logger, statLightConfiguration);
             }
             else if (continuousIntegrationMode)
             {
-                runner = statLightRunnerFactory.CreateContinuousTestRunner(logger, xapPath, config, showTestingBrowserHost, serverTestRunConfiguration);
+                runner = statLightRunnerFactory.CreateContinuousTestRunner(logger, statLightConfiguration, showTestingBrowserHost);
             }
             else
             {
-                runner = statLightRunnerFactory.CreateOnetimeConsoleRunner(logger, xapPath, config, serverTestRunConfiguration, showTestingBrowserHost);
+                runner = statLightRunnerFactory.CreateOnetimeConsoleRunner(logger, statLightConfiguration, showTestingBrowserHost);
             }
 
             return runner.Run();

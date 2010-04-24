@@ -1,5 +1,6 @@
 ﻿using System;
 using StatLight.Core.Tests;
+using StatLight.Core.UnitTestProviders;
 using StatLight.IntegrationTests.ProviderTests;
 
 namespace StatLight.IntegrationTests
@@ -41,29 +42,32 @@ namespace StatLight.IntegrationTests
         protected TestReport TestReport { get; private set; }
         private IRunner Runner { get; set; }
         protected abstract ClientTestRunConfiguration ClientTestRunConfiguration { get; }
+        protected virtual MicrosoftTestingFrameworkVersion? MSTestVersion
+        {
+            get
+            {
+                if (ClientTestRunConfiguration.UnitTestProviderType == UnitTestProviderType.MSTest)
+                    return MicrosoftTestingFrameworkVersion.March2010;
+                return null;
+            }
+        }
 
         protected override void Because()
         {
             base.Because();
 
-            var xapReadItems = new Core.WebServer.XapInspection.XapReader(_testLogger).GetTestAssembly(_pathToIntegrationTestXap);
-            xapReadItems.DebugWrite(_testLogger);
+            var statLightConfiguration = StatLightConfiguration.GetStatLightConfiguration(
+                _testLogger,
+                ClientTestRunConfiguration.UnitTestProviderType,
+                _pathToIntegrationTestXap,
+                MSTestVersion,
+                ClientTestRunConfiguration.MethodsToTest,
+                ClientTestRunConfiguration.TagFilter);
 
-            var microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion ?? MicrosoftTestingFrameworkVersion.March2010;
+            bool showTestingBrowserHost = MSTestVersion == MicrosoftTestingFrameworkVersion.March2010;
 
-            var xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_testLogger);
-            XapHostType mapToXapHostType = xapHostFileLoaderFactory.MapToXapHostType(ClientTestRunConfiguration.UnitTestProviderType, microsoftTestingFrameworkVersion);
-            var serverTestRunConfiguration = new ServerTestRunConfiguration(this._testLogger, xapHostFileLoaderFactory, mapToXapHostType, xapReadItems)
-            {
-                DialogSmackDownElapseMilliseconds = 500,
-            };
+            Runner = _statLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, statLightConfiguration, showTestingBrowserHost);
 
-            bool showTestingBrowserHost = false;
-
-            if (microsoftTestingFrameworkVersion == MicrosoftTestingFrameworkVersion.March2010)
-                showTestingBrowserHost = true;
-
-            Runner = _statLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, _pathToIntegrationTestXap, ClientTestRunConfiguration, serverTestRunConfiguration, showTestingBrowserHost);
             TestReport = Runner.Run();
         }
 

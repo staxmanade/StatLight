@@ -23,7 +23,7 @@
 					new NullLogger(),
 					base.TestEventAggregator,
 					base.PathToTempXapFile,
-					ClientTestRunConfiguration.CreateDefault(),
+					base.CreateTestDefaultClinetTestRunConfiguraiton(),
 					MockServerTestRunConfiguration);
 			}
 		}

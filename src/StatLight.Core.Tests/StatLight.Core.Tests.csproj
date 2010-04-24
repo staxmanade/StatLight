@@ -107,7 +107,6 @@
     <Compile Include="WebServer\StatLightServiceMessagePostedTests.cs" />
     <Compile Include="WebServer\StatLightServiceTests.cs" />
     <Compile Include="SpecificationExtensions.cs" />
-    <Compile Include="WebServer\TestRunConfigurationTests.cs" />
     <Compile Include="WebServer\WebServerLocationTests.cs" />
     <Compile Include="WebServer\XapHost\XapHostFileLoaderFactoryTests.cs" />
     <Compile Include="WebServer\XapReader\XapReaderTests.cs" />

@@ -44,7 +44,7 @@ namespace StatLight.Core.Tests.WebServer
 
                 _hostXap = serverConfig.HostXap;
 
-                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, PathToTempXapFile, ClientTestRunConfiguration.CreateDefault(), serverConfig);
+                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, PathToTempXapFile, base.CreateTestDefaultClinetTestRunConfiguraiton(), serverConfig);
             }
 
             protected void SignalTestComplete(IStatLightService statLightService, int postCount)
@@ -138,7 +138,7 @@ namespace StatLight.Core.Tests.WebServer
             {
                 base.Before_all_tests();
 
-                var config = new ClientTestRunConfiguration { TagFilter = _tagFilter };
+                var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), _tagFilter);
 
                 _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, PathToTempXapFile, config, MockServerTestRunConfiguration);
             }
@@ -148,23 +148,6 @@ namespace StatLight.Core.Tests.WebServer
             {
                 _statLightService.GetTestRunConfiguration().ShouldNotBeNull();
             }
-
-
-            [Test]
-            public void the_default_UnitTestProviderType_should_be_Undefined()
-            {
-                _statLightService.GetTestRunConfiguration().UnitTestProviderType
-                    .ShouldEqual(UnitTestProviderType.Undefined);
-            }
-
-            //[Test]
-            //public void should_be_able_to_override_the_default_UnitTestProviderType()
-            //{
-            //    _statLightService.GetTestRunConfiguration().UnitTestProviderType = StatLight.Core.UnitTestProviders.UnitTestProviderType.XUnit;
-            //    _statLightService.GetTestRunConfiguration().UnitTestProviderType
-            //        .ShouldEqual(UnitTestProviderType.XUnit);
-            //}
-
         }
 
         [TestFixture]
@@ -174,7 +157,7 @@ namespace StatLight.Core.Tests.WebServer
             [Test]
             public void should_throw_FileNotFoundException_when_given_bad_file_path()
             {
-                typeof(FileNotFoundException).ShouldBeThrownBy(() => new StatLightService(new NullLogger(), TestEventAggregator, "missingFile", ClientTestRunConfiguration.CreateDefault(), MockServerTestRunConfiguration));
+                typeof(FileNotFoundException).ShouldBeThrownBy(() => new StatLightService(new NullLogger(), TestEventAggregator, "missingFile", base.CreateTestDefaultClinetTestRunConfiguraiton(), MockServerTestRunConfiguration));
             }
 
             [Test]

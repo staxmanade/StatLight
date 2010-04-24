@@ -23,11 +23,7 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
             base.Before_all_tests();
            
             base.PathToIntegrationTestXap = TestXapFileLocations.XUnit;
-			this._clientTestRunConfiguration = new ClientTestRunConfiguration
-			                             	{
-			                             		TagFilter = string.Empty,
-			                             		UnitTestProviderType = UnitTestProviderType.XUnit
-			                             	};
+			this._clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.XUnit);
 
 		}
 

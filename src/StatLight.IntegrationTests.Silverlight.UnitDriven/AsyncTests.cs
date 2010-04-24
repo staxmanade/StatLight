@@ -129,7 +129,7 @@ namespace StatLight.IntegrationTests.Silverlight.UnitDriven
                 BackgroundWorker worker = new BackgroundWorker();
                 worker.DoWork += (o, e) =>
                 {
-                    Thread.Sleep(60000);
+                    Thread.Sleep(6000);
                 };
                 worker.RunWorkerCompleted += (o, e) =>
                 {

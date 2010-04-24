@@ -1,4 +1,6 @@
-﻿namespace StatLight.Core.WebServer
+﻿using StatLight.Core.UnitTestProviders;
+
+namespace StatLight.Core.WebServer
 {
     using System;
     using System.Collections.Generic;
@@ -9,39 +11,47 @@
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.WebServer.XapInspection;
 
-    public class ServerTestRunConfiguration
+    public class ServerTestRunConfigurationFactory
     {
+        public const int DefaultDialogSmackDownElapseMilliseconds = 5000;
+
         private readonly ILogger _logger;
         private readonly XapHostFileLoaderFactory _xapHostFileLoaderFactory;
-        private readonly XapHostType _xapHostType;
-        private readonly XapReadItems _xapReadItems;
-        private byte[] _hostXap;
-        public long DialogSmackDownElapseMilliseconds { get; set; }
 
-        public ServerTestRunConfiguration(ILogger logger, XapHostFileLoaderFactory xapHostFileLoaderFactory, XapHostType xapHostType, XapReadItems xapReadItems)
+        public ServerTestRunConfigurationFactory(ILogger logger, XapHostFileLoaderFactory xapHostFileLoaderFactory)
         {
             _logger = logger;
             _xapHostFileLoaderFactory = xapHostFileLoaderFactory;
-            _xapHostType = xapHostType;
-            _xapReadItems = xapReadItems;
-
-            DialogSmackDownElapseMilliseconds = 5000;
+        }
+        public ServerTestRunConfiguration CreateServerConfiguration(
+            string xapPath,
+            UnitTestProviderType unitTestProviderType,
+            MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion,
+            XapReadItems xapReadItems)
+        {
+            return CreateServerConfiguration(xapPath, unitTestProviderType, microsoftTestingFrameworkVersion, xapReadItems, DefaultDialogSmackDownElapseMilliseconds);
         }
 
-        public byte[] HostXap
+        public ServerTestRunConfiguration CreateServerConfiguration(
+            string xapPath,
+            UnitTestProviderType unitTestProviderType,
+            MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion,
+            XapReadItems xapReadItems,
+            long dialogSmackDownElapseMilliseconds
+            )
         {
-            get
-            {
-                _hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(_xapHostType);
-                _hostXap = RewriteXapWithSpecialFiles(_hostXap);
+            XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
 
-                return _hostXap;
-            }
+            var hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
+            hostXap = RewriteXapWithSpecialFiles(hostXap, xapReadItems);
+
+            return new ServerTestRunConfiguration(hostXap, dialogSmackDownElapseMilliseconds, xapPath);
         }
 
-        private byte[] RewriteXapWithSpecialFiles(byte[] xapHost)
+
+        private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, XapReadItems xapReadItems)
         {
-            if (_xapReadItems != null)
+            if (xapReadItems != null)
             {
                 //TODO: maybe specify this list as something passed in by the user???
                 var specialFilesToCopyIntoHostXap = new List<string>
@@ -49,14 +59,14 @@
                                                             "ServiceReferences.ClientConfig",
                                                         };
 
-                var filesToCopyIntoHostXap = (from x in _xapReadItems.FilesContianedWithinXap
+                var filesToCopyIntoHostXap = (from x in xapReadItems.FilesContianedWithinXap
                                               from specialFile in specialFilesToCopyIntoHostXap
                                               where x.FileName.Equals(specialFile, StringComparison.OrdinalIgnoreCase)
                                               select x).ToList();
 
                 if (filesToCopyIntoHostXap.Any())
                 {
-                    xapHost = RewriteZipHostWithFiles(_hostXap, filesToCopyIntoHostXap);
+                    xapHost = RewriteZipHostWithFiles(xapHost, filesToCopyIntoHostXap);
                 }
             }
 
@@ -80,5 +90,20 @@
                 return stream.ToArray();
             }
         }
+    }
+
+    public class ServerTestRunConfiguration
+    {
+        public ServerTestRunConfiguration(byte[] xapHost, long dialogSmackDownElapseMilliseconds, string xapToTest)
+        {
+            HostXap = xapHost;
+            DialogSmackDownElapseMilliseconds = dialogSmackDownElapseMilliseconds;
+            XapToTestPath = xapToTest;
+        }
+
+        public long DialogSmackDownElapseMilliseconds { get; private set; }
+        public byte[] HostXap { get; private set; }
+
+        public string XapToTestPath { get; private set; }
     }
 }

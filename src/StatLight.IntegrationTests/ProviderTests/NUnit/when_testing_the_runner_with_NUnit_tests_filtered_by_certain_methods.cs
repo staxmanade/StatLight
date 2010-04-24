@@ -19,23 +19,19 @@ namespace StatLight.IntegrationTests.ProviderTests.NUnit
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
-
+            
             PathToIntegrationTestXap = TestXapFileLocations.NUnit;
             const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.";
 
             NormalClassTestName = "NUnitTests";
             NestedClassTestName = "NUnitTests+NUnitNestedClassTests";
 
-            _clientTestRunConfiguration = new ClientTestRunConfiguration
-                                        {
-                                            TagFilter = string.Empty,
-                                            UnitTestProviderType = UnitTestProviderType.NUnit,
-                                            MethodsToTest = new List<string>
-                                                                {
-		                		                                    namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
-		                		                                    namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
-			                        		                	}
-                                        };
+            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.NUnit,
+                new List<string>
+                        {
+                            namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
+                            namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
+                        });
         }
     }
 }

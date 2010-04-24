@@ -28,16 +28,14 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             NormalClassTestName = "MSTestTests";
             NestedClassTestName = "MSTestTests+MSTestNestedClassTests";
 
-            _clientTestRunConfiguration = new ClientTestRunConfiguration
-                    {
-                        TagFilter = string.Empty,
-                        UnitTestProviderType = UnitTestProviderType.MSTest,
-                        MethodsToTest = new List<string>
+            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration
+                    (
+                        new List<string>
 		                    {
 		                		namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
 		                		namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
 		                	}
-                    };
+                    );
 
         }
     }

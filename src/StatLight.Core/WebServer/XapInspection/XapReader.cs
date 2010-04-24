@@ -39,8 +39,7 @@ namespace StatLight.Core.WebServer.XapInspection
 
                 xapItems.UnitTestProvider = DetermineUnitTestProviderType(archive);
 
-                if (xapItems.UnitTestProvider == UnitTestProviderType.MSTest)
-                    xapItems.MicrosoftSilverlightTestingFrameworkVersion = DetermineUnitTestVersion(archive);
+                xapItems.MicrosoftSilverlightTestingFrameworkVersion = DetermineUnitTestVersion(archive);
 
                 xapItems.FilesContianedWithinXap = (from zipEntry in archive
                                                     let fileBytes = ReadFileIntoBytes(archive, zipEntry.FileName)
@@ -67,8 +66,9 @@ namespace StatLight.Core.WebServer.XapInspection
         {
             var incomingHash = (from zipEntry in archive
                                 where fileNameCompare(zipEntry.FileName, "Microsoft.Silverlight.Testing.dll")
-                                select SHA1Encryption(ReadFileIntoBytes(archive, zipEntry.FileName))).First();
-
+                                select SHA1Encryption(ReadFileIntoBytes(archive, zipEntry.FileName))).SingleOrDefault();
+            if(incomingHash == null)
+                return null;
             var definedVersions = new[]
             {
                 /* Not supported anymore

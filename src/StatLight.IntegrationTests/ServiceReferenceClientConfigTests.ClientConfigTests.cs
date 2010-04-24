@@ -2,7 +2,6 @@ using System.Linq;
 using NUnit.Framework;
 using StatLight.Core.Tests;
 using StatLight.Core.WebServer;
-using StatLight.Core.UnitTestProviders;
 using System.Collections.Generic;
 
 namespace StatLight.IntegrationTests
@@ -20,15 +19,11 @@ namespace StatLight.IntegrationTests
         {
             base.Before_all_tests();
 
-            _clientTestRunConfiguration = new ClientTestRunConfiguration
-            {
-                TagFilter = string.Empty,
-                UnitTestProviderType = UnitTestProviderType.MSTest,
-                MethodsToTest = new List<string>()
-                       {
-                            "StatLight.IntegrationTests.Silverlight.When_trying_to_get_at_the_ServiceReferenceClientConfig.Should_be_able_to_read_info_from_the_ServiceReferenceClientConfig",
-                       }
-            };
+            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
+                new List<string>
+                    {
+                        "StatLight.IntegrationTests.Silverlight.When_trying_to_get_at_the_ServiceReferenceClientConfig.Should_be_able_to_read_info_from_the_ServiceReferenceClientConfig",
+                    });
         }
         [Test]
         public void Should_be_able_to_detect_and_use_the_ServiceReferenceClientConfig_file()

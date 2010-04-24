@@ -131,6 +131,7 @@
     <Compile Include="Monitoring\DebugAssertMonitor.cs">
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Runners\StatLightConfiguration.cs" />
     <Compile Include="Runners\WebServerOnlyRunner.cs" />
     <Compile Include="Runners\IRunner.cs" />
     <Compile Include="WebServer\IXapFileBuildChangedMonitor.cs" />
