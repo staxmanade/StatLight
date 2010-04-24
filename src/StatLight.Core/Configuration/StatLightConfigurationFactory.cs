@@ -26,6 +26,11 @@ namespace StatLight.Core.Configuration
 
         public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, List<string> methodsToTest, string tagFilters)
         {
+            if(!File.Exists(xapPath))
+            {
+                throw new FileNotFoundException("File could not be found. [{0}]".FormatWith(xapPath));
+            }
+
             XapReadItems xapReadItems = new XapReader(_logger).GetTestAssembly(xapPath);
             if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
             {
