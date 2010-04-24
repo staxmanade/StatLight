@@ -1,29 +1,69 @@
-﻿using StatLight.Core.UnitTestProviders;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Ionic.Zip;
+using StatLight.Core.Common;
+using StatLight.Core.Runners;
+using StatLight.Core.UnitTestProviders;
+using StatLight.Core.WebServer;
+using StatLight.Core.WebServer.XapHost;
+using StatLight.Core.WebServer.XapInspection;
 
-namespace StatLight.Core.WebServer
+namespace StatLight.Core.Configuration
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using Ionic.Zip;
-    using StatLight.Core.Common;
-    using StatLight.Core.WebServer.XapHost;
-    using StatLight.Core.WebServer.XapInspection;
-
-    public class ServerTestRunConfigurationFactory
+    public class StatLightConfigurationFactory
     {
         public const int DefaultDialogSmackDownElapseMilliseconds = 5000;
-
         private readonly ILogger _logger;
         private readonly XapHostFileLoaderFactory _xapHostFileLoaderFactory;
 
-        public ServerTestRunConfigurationFactory(ILogger logger, XapHostFileLoaderFactory xapHostFileLoaderFactory)
+        public StatLightConfigurationFactory(ILogger logger)
         {
             _logger = logger;
-            _xapHostFileLoaderFactory = xapHostFileLoaderFactory;
+            _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
         }
-        public ServerTestRunConfiguration CreateServerConfiguration(
+
+        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, List<string> methodsToTest, string tagFilters)
+        {
+            XapReadItems xapReadItems = new XapReader(_logger).GetTestAssembly(xapPath);
+            if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
+            {
+                //TODO: Print message telling the user what the type is - and if they give it
+                // we don't have to "reflect" on the xap to determine the test provider type.
+                _logger.Debug("a");
+
+                if (unitTestProviderType == UnitTestProviderType.Undefined)
+                    unitTestProviderType = xapReadItems.UnitTestProvider;
+
+                _logger.Debug("xapReadItems.UnitTestProvider = {0}".FormatWith(xapReadItems.UnitTestProvider));
+                if (
+                    (xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest || unitTestProviderType == UnitTestProviderType.MSTest)
+                    && microsoftTestingFrameworkVersion == null)
+                {
+                    _logger.Debug("b.1");
+                    microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
+                    if (microsoftTestingFrameworkVersion == null)
+                    {
+                        _logger.Debug("microsoftTestingFrameworkVersion == null");
+                    }
+                }
+            }
+
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters);
+
+            var serverConfig = CreateServerConfiguration(
+                xapPath,
+                clientConfig.UnitTestProviderType,
+                microsoftTestingFrameworkVersion,
+                xapReadItems);
+
+            return new StatLightConfiguration(clientConfig, serverConfig);
+        }
+
+
+
+        private ServerTestRunConfiguration CreateServerConfiguration(
             string xapPath,
             UnitTestProviderType unitTestProviderType,
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion,
@@ -32,7 +72,7 @@ namespace StatLight.Core.WebServer
             return CreateServerConfiguration(xapPath, unitTestProviderType, microsoftTestingFrameworkVersion, xapReadItems, DefaultDialogSmackDownElapseMilliseconds);
         }
 
-        public ServerTestRunConfiguration CreateServerConfiguration(
+        private ServerTestRunConfiguration CreateServerConfiguration(
             string xapPath,
             UnitTestProviderType unitTestProviderType,
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion,
@@ -90,20 +130,5 @@ namespace StatLight.Core.WebServer
                 return stream.ToArray();
             }
         }
-    }
-
-    public class ServerTestRunConfiguration
-    {
-        public ServerTestRunConfiguration(byte[] xapHost, long dialogSmackDownElapseMilliseconds, string xapToTest)
-        {
-            HostXap = xapHost;
-            DialogSmackDownElapseMilliseconds = dialogSmackDownElapseMilliseconds;
-            XapToTestPath = xapToTest;
-        }
-
-        public long DialogSmackDownElapseMilliseconds { get; private set; }
-        public byte[] HostXap { get; private set; }
-
-        public string XapToTestPath { get; private set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿
 
+using StatLight.Core.Configuration;
+
 namespace StatLight.Core.Runners
 {
     using System;

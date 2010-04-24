@@ -1,4 +1,6 @@
-﻿namespace StatLight.Core.Tests.Runners
+﻿using StatLight.Core.Configuration;
+
+namespace StatLight.Core.Tests.Runners
 {
     using Moq;
     using NUnit.Framework;

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using StatLight.Client.Harness.Events;
+using StatLight.Core.Configuration;
 using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Reporting.Messages;
 using StatLight.Core.WebServer.HelperExtensions;

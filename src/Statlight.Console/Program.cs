@@ -1,21 +1,19 @@
-﻿using System.IO;
+﻿
 
 namespace StatLight.Console
 {
     using System;
-    using System.Diagnostics;
+    using System.IO;
     using System.Reflection;
     using System.ServiceModel;
     using StatLight.Console.Tools;
+    using StatLight.Core.Configuration;
     using StatLight.Core.Common;
     using StatLight.Core.Reporting;
-    using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.Reporting.Providers.Xml;
     using StatLight.Core.Runners;
-    using StatLight.Core.WebServer;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.UnitTestProviders;
-    using StatLight.Core.WebServer.XapInspection;
     using System.Collections.Generic;
 
     class Program
@@ -42,6 +40,11 @@ namespace StatLight.Console
                 try
                 {
                     options = new ArgOptions(args);
+                    if (options.ShowHelp)
+                    {
+                        ArgOptions.ShowHelpMessage(Console.Out, options);
+                        return;
+                    }
 
                     string xapPath = options.XapPath;
                     bool continuousIntegrationMode = options.ContinuousIntegrationMode;
@@ -53,33 +56,28 @@ namespace StatLight.Console
                     MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = options.MicrosoftTestingFrameworkVersion;
                     string tagFilters = options.TagFilters;
                     UnitTestProviderType unitTestProviderType = options.UnitTestProviderType;
-                    //Debugger.Break();
-                    if (options.ShowHelp)
-                    {
-                        ArgOptions.ShowHelpMessage(System.Console.Out, options);
-                        return;
-                    }
-                    logger.Debug("unitTestProviderType = {0}".FormatWith(unitTestProviderType));
 
                     var statLightRunnerFactory = new StatLightRunnerFactory();
+                    var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
 
-                    StatLightConfiguration statLightConfiguration =
-                        StatLightConfiguration.GetStatLightConfiguration(
-                            logger, 
-                            unitTestProviderType, 
-                            xapPath, microsoftTestingFrameworkVersion, 
-                            methodsToTest, 
+                    StatLightConfiguration statLightConfiguration = statLightConfigurationFactory
+                        .GetStatLightConfiguration(
+                            unitTestProviderType,
+                            xapPath,
+                            microsoftTestingFrameworkVersion,
+                            methodsToTest,
                             tagFilters);
 
-                    var testReport = 
-                        RunTestAndGetTestReport(
-                            logger, 
-                            continuousIntegrationMode,
-                            showTestingBrowserHost, 
-                            useTeamCity, 
-                            startWebServerOnly, 
+                    var runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly);
+
+                    var runner = GetRunner(
+                            logger,
+                            runnerType,
+                            showTestingBrowserHost,
                             statLightConfiguration,
                             statLightRunnerFactory);
+
+                    TestReport testReport = runner.Run();
 
                     if (!string.IsNullOrEmpty(xmlReportOutputPath))
                     {
@@ -164,33 +162,48 @@ Try: (the following two steps that should allow StatLight to start a web server 
             System.Console.WriteLine("*********************************");
         }
 
-        private static TestReport RunTestAndGetTestReport(ILogger logger, bool continuousIntegrationMode,
-            bool showTestingBrowserHost, bool useTeamCity, bool startWebServerOnly,
+        private static IRunner GetRunner(ILogger logger, RunnerType runnerType, bool showTestingBrowserHost,
             StatLightConfiguration statLightConfiguration, StatLightRunnerFactory statLightRunnerFactory)
         {
-            IRunner runner;
+            switch (runnerType)
+            {
+                case RunnerType.TeamCity:
+                    logger.LogChatterLevel = LogChatterLevels.None;
+                    return statLightRunnerFactory.CreateTeamCityRunner(statLightConfiguration);
 
-            if (useTeamCity)
-            {
-                logger.LogChatterLevel = LogChatterLevels.None;
-                runner = statLightRunnerFactory.CreateTeamCityRunner(statLightConfiguration);
-            }
-            else if (startWebServerOnly)
-            {
-                runner = statLightRunnerFactory.CreateWebServerOnlyRunner(logger, statLightConfiguration);
-            }
-            else if (continuousIntegrationMode)
-            {
-                runner = statLightRunnerFactory.CreateContinuousTestRunner(logger, statLightConfiguration, showTestingBrowserHost);
-            }
-            else
-            {
-                runner = statLightRunnerFactory.CreateOnetimeConsoleRunner(logger, statLightConfiguration, showTestingBrowserHost);
-            }
+                case RunnerType.ContinuousTest:
+                    return statLightRunnerFactory.CreateContinuousTestRunner(logger, statLightConfiguration, showTestingBrowserHost);
 
-            return runner.Run();
+                case RunnerType.WebServerOnly:
+                    return statLightRunnerFactory.CreateWebServerOnlyRunner(logger, statLightConfiguration);
+
+                default:
+                    return statLightRunnerFactory.CreateOnetimeConsoleRunner(logger, statLightConfiguration, showTestingBrowserHost);
+            }
+            throw new NotSupportedException("Could not figure out which test runner to use... WTF?");
         }
 
+        private static RunnerType DetermineRunnerType(bool continuousIntegrationMode,
+            bool useTeamCity,
+            bool startWebServerOnly)
+        {
+            if (useTeamCity)
+            {
+                return RunnerType.TeamCity;
+            }
+
+            if (startWebServerOnly)
+            {
+                return RunnerType.WebServerOnly;
+            }
+
+            if (continuousIntegrationMode)
+            {
+                return RunnerType.ContinuousTest;
+            }
+
+            return RunnerType.OneTimeConsole;
+        }
 
         private static void PrintNameVersionAndCopyright()
         {

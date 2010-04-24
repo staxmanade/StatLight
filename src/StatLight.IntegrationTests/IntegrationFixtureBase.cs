@@ -1,4 +1,5 @@
 ﻿using System;
+using StatLight.Core.Configuration;
 using StatLight.Core.Tests;
 using StatLight.Core.UnitTestProviders;
 using StatLight.IntegrationTests.ProviderTests;
@@ -56,8 +57,9 @@ namespace StatLight.IntegrationTests
         {
             base.Because();
 
-            var statLightConfiguration = StatLightConfiguration.GetStatLightConfiguration(
-                _testLogger,
+            var statLightConfigurationFactory = new StatLightConfigurationFactory(_testLogger);
+
+            var statLightConfiguration = statLightConfigurationFactory.GetStatLightConfiguration(
                 ClientTestRunConfiguration.UnitTestProviderType,
                 _pathToIntegrationTestXap,
                 MSTestVersion,

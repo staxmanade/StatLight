@@ -1,4 +1,5 @@
 ﻿
+using StatLight.Core.Configuration;
 using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.WebServer
