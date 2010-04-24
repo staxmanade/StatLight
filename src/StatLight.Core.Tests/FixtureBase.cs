@@ -73,6 +73,8 @@ namespace StatLight.Core.Tests
 
             _pathToTempXapFile = Path.GetTempFileName();
 
+            Func<byte[]> xapToTestFactory = () => File.ReadAllBytes(_pathToTempXapFile);
+
             using (var writer = File.CreateText(_pathToTempXapFile))
             {
                 writer.Close();
@@ -81,7 +83,7 @@ namespace StatLight.Core.Tests
             mockXapHostFileLoaderFactory
                 .Setup(s => s.LoadXapHostFor(It.IsAny<XapHostType>()))
                 .Returns(new byte[] { 0, 1, 1, 2, 3, 1, });
-            _mockServerTestRunConfiguration = new ServerTestRunConfiguration(new byte[] { 1, 2 }, 500, _pathToTempXapFile);
+            _mockServerTestRunConfiguration = new ServerTestRunConfiguration(new byte[] { 1, 2 }, 500, _pathToTempXapFile, XapHostType.MSTestNovember2009, xapToTestFactory);
 
             Assert.IsTrue(File.Exists(_pathToTempXapFile));
         }

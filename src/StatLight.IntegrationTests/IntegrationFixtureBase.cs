@@ -1,18 +1,16 @@
-﻿using System;
-using StatLight.Core.Configuration;
-using StatLight.Core.Tests;
-using StatLight.Core.UnitTestProviders;
-using StatLight.IntegrationTests.ProviderTests;
-
+﻿
 namespace StatLight.IntegrationTests
 {
     using System.IO;
     using StatLight.Core.Common;
+    using StatLight.Core.Configuration;
+    using StatLight.Core.Events.Aggregation;
+    using StatLight.Core.Reporting;
     using StatLight.Core.Runners;
+    using StatLight.Core.UnitTestProviders;
     using StatLight.Core.WebServer;
     using StatLight.Core.WebServer.XapHost;
-    using StatLight.Core.Reporting;
-    using StatLight.Core.Events.Aggregation;
+    using StatLight.IntegrationTests.ProviderTests;
 
     public abstract class IntegrationFixtureBase : FixtureBase
     {
@@ -66,8 +64,8 @@ namespace StatLight.IntegrationTests
                 ClientTestRunConfiguration.MethodsToTest,
                 ClientTestRunConfiguration.TagFilter);
 
-            bool showTestingBrowserHost = MSTestVersion == MicrosoftTestingFrameworkVersion.March2010;
-
+            bool showTestingBrowserHost = statLightConfiguration.Server.XapHostType == XapHostType.MSTestMarch2010;
+            _testLogger.Debug("Setting up xaphost {0}".FormatWith(statLightConfiguration.Server.XapHostType));
             Runner = _statLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, statLightConfiguration, showTestingBrowserHost);
 
             TestReport = Runner.Run();

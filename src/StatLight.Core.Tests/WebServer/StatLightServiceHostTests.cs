@@ -22,7 +22,6 @@
 				_statLightService = new StatLightService(
 					new NullLogger(),
 					base.TestEventAggregator,
-					base.PathToTempXapFile,
 					base.CreateTestDefaultClinetTestRunConfiguraiton(),
 					MockServerTestRunConfiguration);
 			}

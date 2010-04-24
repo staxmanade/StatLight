@@ -1,13 +1,10 @@
-﻿
-
-using StatLight.Core.Configuration;
-
-namespace StatLight.Core.Runners
+﻿namespace StatLight.Core.Runners
 {
     using System;
     using System.Collections.Generic;
     using System.Threading;
     using StatLight.Client.Harness.Events;
+    using StatLight.Core.Configuration;
     using StatLight.Core.Common;
     using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Monitoring;
@@ -93,7 +90,7 @@ namespace StatLight.Core.Runners
         {
             var location = new WebServerLocation();
 
-            var statLightService = new StatLightService(logger, EventAggregator, statLightConfiguration.Server.XapToTestPath, statLightConfiguration.Client, statLightConfiguration.Server);
+            var statLightService = new StatLightService(logger, EventAggregator, statLightConfiguration.Client, statLightConfiguration.Server);
             var statLightServiceHost = new StatLightServiceHost(logger, statLightService, location.BaseUrl);
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
@@ -122,7 +119,7 @@ namespace StatLight.Core.Runners
 			};
             var dialogMonitorRunner = new DialogMonitorRunner(logger, EventAggregator, debugAssertMonitorTimer, dialogMonitors);
             SetupDebugClientEventListener(logger);
-            statLightService = new StatLightService(logger, EventAggregator, serverTestRunConfiguration.XapToTestPath, clientTestRunConfiguration, serverTestRunConfiguration);
+            statLightService = new StatLightService(logger, EventAggregator, clientTestRunConfiguration, serverTestRunConfiguration);
             statLightServiceHost = new StatLightServiceHost(logger, statLightService, location.BaseUrl);
             browserFormHost = new BrowserFormHost(logger, location.TestPageUrl, showTestingBrowserHost, dialogMonitorRunner);
 
@@ -151,7 +148,7 @@ namespace StatLight.Core.Runners
             if (_debugEventListener == null)
             {
                 _debugEventListener = e => logger.Debug(e.Message);
-                EventAggregator.AddListener<DebugClientEvent>(_debugEventListener);
+                EventAggregator.AddListener(_debugEventListener);
             }
         }
 

@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Ionic.Zip;
-using StatLight.Core.Common;
-using StatLight.Core.Runners;
-using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer;
-using StatLight.Core.WebServer.XapHost;
-using StatLight.Core.WebServer.XapInspection;
-
+﻿
 namespace StatLight.Core.Configuration
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using Ionic.Zip;
+    using StatLight.Core.Common;
+    using StatLight.Core.UnitTestProviders;
+    using StatLight.Core.WebServer;
+    using StatLight.Core.WebServer.XapHost;
+    using StatLight.Core.WebServer.XapInspection;
+
     public class StatLightConfigurationFactory
     {
         public const int DefaultDialogSmackDownElapseMilliseconds = 5000;
@@ -26,10 +26,7 @@ namespace StatLight.Core.Configuration
 
         public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, List<string> methodsToTest, string tagFilters)
         {
-            if(!File.Exists(xapPath))
-            {
-                throw new FileNotFoundException("File could not be found. [{0}]".FormatWith(xapPath));
-            }
+            AssertXapToTestFileExists(xapPath);
 
             XapReadItems xapReadItems = new XapReader(_logger).GetTestAssembly(xapPath);
             if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
@@ -66,7 +63,13 @@ namespace StatLight.Core.Configuration
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
 
-
+        private static void AssertXapToTestFileExists(string xapPath)
+        {
+            if (!File.Exists(xapPath))
+            {
+                throw new FileNotFoundException("File could not be found. [{0}]".FormatWith(xapPath));
+            }
+        }
 
         private ServerTestRunConfiguration CreateServerConfiguration(
             string xapPath,
@@ -87,10 +90,16 @@ namespace StatLight.Core.Configuration
         {
             XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
 
-            var hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
+            byte[] hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
             hostXap = RewriteXapWithSpecialFiles(hostXap, xapReadItems);
 
-            return new ServerTestRunConfiguration(hostXap, dialogSmackDownElapseMilliseconds, xapPath);
+            Func<byte[]> xapToTestFactory = () =>
+            {
+                AssertXapToTestFileExists(xapPath);
+                return File.ReadAllBytes(xapPath);
+            };
+
+            return new ServerTestRunConfiguration(hostXap, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, xapToTestFactory);
         }
 
 

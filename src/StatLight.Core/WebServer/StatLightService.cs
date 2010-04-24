@@ -1,30 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
-using StatLight.Client.Harness.Events;
-using StatLight.Core.Configuration;
-using StatLight.Core.Events.Aggregation;
-using StatLight.Core.Reporting.Messages;
-using StatLight.Core.WebServer.HelperExtensions;
-
+﻿
 namespace StatLight.Core.WebServer
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.ServiceModel;
     using System.ServiceModel.Web;
+    using System.Threading;
     using System.Web;
+    using StatLight.Client.Harness.Events;
     using StatLight.Core.Common;
+    using StatLight.Core.Configuration;
     using StatLight.Core.Events;
+    using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Properties;
     using StatLight.Core.Serialization;
-    using System.Threading;
+    using StatLight.Core.WebServer.HelperExtensions;
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class StatLightService : IStatLightService
     {
-        private readonly FileInfo _xapTestFile;
         private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;
         private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
@@ -42,8 +39,7 @@ namespace StatLight.Core.WebServer
             }
         }
 
-        public StatLightService(ILogger logger, IEventAggregator eventAggregator, string xapTestFile,
-            ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
+        public StatLightService(ILogger logger, IEventAggregator eventAggregator, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
         {
             if (clientTestRunConfiguration == null)
                 throw new ArgumentNullException("clientTestRunConfiguration");
@@ -53,17 +49,8 @@ namespace StatLight.Core.WebServer
             _logger = logger;
             _eventAggregator = eventAggregator;
 
-            if (!File.Exists(xapTestFile))
-            {
-                throw new FileNotFoundException("File could not be found. [{0}]".FormatWith(xapTestFile));
-            }
-
             _clientTestRunConfiguration = clientTestRunConfiguration;
             _serverTestRunConfiguration = serverTestRunConfiguration;
-
-            _logger.Debug("StatLightService.ctor() - Initializing StatLightService with xapTestFile[{0}]".FormatWith(xapTestFile));
-
-            _xapTestFile = new FileInfo(xapTestFile);
 
             ResetTestRunStatistics();
 
@@ -120,7 +107,7 @@ namespace StatLight.Core.WebServer
                 }
                 else
                 {
-                    Action<string> _unknownMsg = (msg) =>
+                    Action<string> unknownMsg = msg =>
                          {
                              _logger.Error("Unknown message posted...");
                              _logger.Error(xmlMessage);
@@ -135,12 +122,12 @@ namespace StatLight.Core.WebServer
                         }
                         else
                         {
-                            _unknownMsg(xmlMessage);
+                            unknownMsg(xmlMessage);
                         }
                     }
                     else
                     {
-                        _unknownMsg(xmlMessage);
+                        unknownMsg(xmlMessage);
                     }
                 }
             }
@@ -158,7 +145,7 @@ namespace StatLight.Core.WebServer
         {
             _logger.Debug("StatLightService.GetTestXap()");
 
-            return _xapTestFile.OpenRead();
+            return _serverTestRunConfiguration.XapToTest.ToStream();
         }
 
         private void DebugLogClientEvent(ClientEvent clientEvent)
@@ -179,6 +166,8 @@ namespace StatLight.Core.WebServer
             log("  }");
         }
 
+        // Not sure why but can't seem to get this to work... (would be nice to 
+        // get done - as it might speed up a StatLight run in general
         //public Stream ClientAccessPolicy()
         //{
         //    WebOperationContext.Current.OutgoingResponse.ContentType = "text/xml";
@@ -203,7 +192,7 @@ namespace StatLight.Core.WebServer
             return Resources.TestPage.ToStream();
         }
 
-        private void SetOutgoingResponceContentType(string contentType)
+        private static void SetOutgoingResponceContentType(string contentType)
         {
             if (WebOperationContext.Current != null)
                 WebOperationContext.Current.OutgoingResponse.ContentType = contentType;

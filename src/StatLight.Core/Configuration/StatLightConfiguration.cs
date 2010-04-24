@@ -1,4 +1,5 @@
-﻿using StatLight.Core.WebServer;
+﻿using System;
+using StatLight.Core.WebServer;
 
 namespace StatLight.Core.Configuration
 {
@@ -9,6 +10,9 @@ namespace StatLight.Core.Configuration
 
         public StatLightConfiguration(ClientTestRunConfiguration clientConfig, ServerTestRunConfiguration serverConfig)
         {
+            if (clientConfig == null) throw new ArgumentNullException("clientConfig");
+            if (serverConfig == null) throw new ArgumentNullException("serverConfig");
+
             Client = clientConfig;
             Server = serverConfig;
         }
