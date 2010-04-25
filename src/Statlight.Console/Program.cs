@@ -153,13 +153,13 @@ Try: (the following two steps that should allow StatLight to start a web server 
 
         private static void WriteErrorToConsole(string errorMessage, string beginMsg)
         {
-            System.Console.WriteLine("");
-            System.Console.WriteLine("");
-            ArgOptions.ShowHelpMessage(System.Console.Out);
-            System.Console.WriteLine("");
-            System.Console.WriteLine("************* " + beginMsg + " *************");
+            Write("");
+            Write("");
+            ArgOptions.ShowHelpMessage(Console.Out);
+            Write("");
+            Write("************* " + beginMsg + " *************");
             errorMessage.WrapConsoleMessageWithColor(ConsoleColor.Red, true);
-            System.Console.WriteLine("*********************************");
+            Write("*********************************");
         }
 
         private static IRunner GetRunner(ILogger logger, RunnerType runnerType, bool showTestingBrowserHost,
@@ -180,7 +180,6 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 default:
                     return statLightRunnerFactory.CreateOnetimeConsoleRunner(logger, statLightConfiguration, showTestingBrowserHost);
             }
-            throw new NotSupportedException("Could not figure out which test runner to use... WTF?");
         }
 
         private static RunnerType DetermineRunnerType(bool continuousIntegrationMode,
@@ -212,11 +211,16 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 .GetName()
                 .Version;
 
-            Console.WriteLine("");
-            Console.WriteLine("StatLight - Version {0}.{1}.{2}", version.Major, version.Minor, version.Build);
-            Console.WriteLine("Copyright (C) 2009 Jason Jarrett");
-            Console.WriteLine("All Rights Reserved.");
-            Console.WriteLine("");
+            Write("");
+            Write("StatLight - Version {0}.{1}.{2}", version.Major, version.Minor, version.Build);
+            Write("Copyright (C) 2009 Jason Jarrett");
+            Write("All Rights Reserved.");
+            Write("");
+        }
+
+        private static void Write(string msg, params object[] args)
+        {
+            Console.WriteLine(msg, args);
         }
     }
 }

@@ -8,42 +8,42 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
     public class TeamCityTestResultHandler : ITestingReportEvents
     {
-        private readonly ICommandWriter messageWriter;
-        private readonly string assemblyName;
+        private readonly ICommandWriter _messageWriter;
+        private readonly string _assemblyName;
 
         public TeamCityTestResultHandler(ICommandWriter messageWriter, string assemblyName)
         {
-            this.messageWriter = messageWriter;
-            this.assemblyName = assemblyName;
+            _messageWriter = messageWriter;
+            _assemblyName = assemblyName;
         }
 
         public void PublishStart()
         {
-            messageWriter.Write(
-                CommandFactory.TestSuiteStarted(assemblyName));
+            _messageWriter.Write(
+                CommandFactory.TestSuiteStarted(_assemblyName));
         }
 
         public void PublishStop()
         {
-            messageWriter.Write(
-                CommandFactory.TestSuiteFinished(assemblyName));
+            _messageWriter.Write(
+                CommandFactory.TestSuiteFinished(_assemblyName));
         }
 
         private void WrapTestWithStartAndEnd(Command command, string name, long durationMilliseconds)
         {
-            WrapTestWithStartAndEnd(() => messageWriter.Write(command), name, durationMilliseconds);
+            WrapTestWithStartAndEnd(() => _messageWriter.Write(command), name, durationMilliseconds);
         }
 
         private void WrapTestWithStartAndEnd(Action action, string name, long durationMilliseconds)
         {
-            messageWriter.Write(CommandFactory.TestStarted(name));
+            _messageWriter.Write(CommandFactory.TestStarted(name));
             action();
-            messageWriter.Write(CommandFactory.TestFinished(name, durationMilliseconds));
+            _messageWriter.Write(CommandFactory.TestFinished(name, durationMilliseconds));
         }
 
         public void Handle(TraceClientEvent message)
         {
-            messageWriter.Write(message.Message);
+            _messageWriter.Write(message.Message);
         }
 
         public void Handle(DialogAssertionServerEvent message)
@@ -56,13 +56,13 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
         {
             const int durationMilliseconds = 0;
 
-            WrapTestWithStartAndEnd(() => messageWriter.Write(
+            WrapTestWithStartAndEnd(() => _messageWriter.Write(
                 CommandFactory.TestFailed(
                     name,
                     writeMessage,
                     writeMessage)),
-                                    name,
-                                    durationMilliseconds);
+                name,
+                durationMilliseconds);
         }
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
@@ -73,7 +73,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
         public void Handle(TestCaseResult message)
         {
-            var name = message.ClassName + "." + message.MethodName;
+            var name = message.FullMethodName();
             var durationMilliseconds = message.TimeToComplete.Milliseconds;
 
             switch (message.ResultType)
@@ -89,7 +89,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
                     }, name, durationMilliseconds);
                     break;
                 case ResultType.Failed:
-                    WrapTestWithStartAndEnd(() => messageWriter.Write(
+                    WrapTestWithStartAndEnd(() => _messageWriter.Write(
                         CommandFactory.TestFailed(
                             name,
                             message.ExceptionInfo.FullMessage,
@@ -98,7 +98,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
                         durationMilliseconds);
                     break;
                 case ResultType.SystemGeneratedFailure:
-                    WrapTestWithStartAndEnd(() => messageWriter.Write(
+                    WrapTestWithStartAndEnd(() => _messageWriter.Write(
                         CommandFactory.TestFailed(
                             name,
                             "StatLight generated test failure",

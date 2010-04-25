@@ -34,6 +34,14 @@ namespace StatLight.Core.Reporting
         public ExceptionInfo ExceptionInfo { get; set; }
 
         public ResultType ResultType { get; private set; }
+
+        public string FullMethodName()
+        {
+            const string delimiter = ".";
+            return (NamespaceName ?? string.Empty) + delimiter +
+                   (ClassName ?? string.Empty) + delimiter +
+                   (MethodName ?? string.Empty) + delimiter;
+        }
     }
 
     public enum ResultType
