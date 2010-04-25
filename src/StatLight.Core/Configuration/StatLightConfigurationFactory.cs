@@ -8,7 +8,6 @@ namespace StatLight.Core.Configuration
     using Ionic.Zip;
     using StatLight.Core.Common;
     using StatLight.Core.UnitTestProviders;
-    using StatLight.Core.WebServer;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.WebServer.XapInspection;
 
@@ -33,22 +32,17 @@ namespace StatLight.Core.Configuration
             {
                 //TODO: Print message telling the user what the type is - and if they give it
                 // we don't have to "reflect" on the xap to determine the test provider type.
-                _logger.Debug("a");
 
                 if (unitTestProviderType == UnitTestProviderType.Undefined)
+                {
                     unitTestProviderType = xapReadItems.UnitTestProvider;
+                }
 
-                _logger.Debug("xapReadItems.UnitTestProvider = {0}".FormatWith(xapReadItems.UnitTestProvider));
                 if (
                     (xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest || unitTestProviderType == UnitTestProviderType.MSTest)
                     && microsoftTestingFrameworkVersion == null)
                 {
-                    _logger.Debug("b.1");
                     microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
-                    if (microsoftTestingFrameworkVersion == null)
-                    {
-                        _logger.Debug("microsoftTestingFrameworkVersion == null");
-                    }
                 }
             }
 

@@ -1,9 +1,7 @@
 using NUnit.Framework;
-using StatLight.Core.Reporting;
+using StatLight.Core.Configuration;
 using StatLight.Core.Tests;
 using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer;
-using StatLight.Core.WebServer.XapInspection;
 
 namespace StatLight.IntegrationTests.ProviderTests.XUnit
 {

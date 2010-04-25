@@ -1,25 +1,21 @@
-﻿
-using System;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using NUnit.Framework;
+using StatLight.Client.Harness.Events;
+using StatLight.Core.Common;
+using StatLight.Core.Events;
+using StatLight.Core.Serialization;
+using StatLight.Core.Tests.Mocks;
+using StatLight.Core.UnitTestProviders;
+using StatLight.Core.WebServer;
+using StatLight.Core.Configuration;
 using StatLight.Core.Reporting;
 
 namespace StatLight.Core.Tests.WebServer
 {
     namespace StatLightServiceTests
     {
-        using System.Collections.Generic;
-        using System.IO;
-        using System.Linq;
-        using NUnit.Framework;
-        using StatLight.Client.Harness.Events;
-        using StatLight.Core.Common;
-        using StatLight.Core.Events;
-        using StatLight.Core.Reporting.Messages;
-        using StatLight.Core.Serialization;
-        using StatLight.Core.Tests.Mocks;
-        using StatLight.Core.UnitTestProviders;
-        using StatLight.Core.WebServer;
-        using LogMessageType = Core.Reporting.Messages.LogMessageType;
-        using TestOutcome = Core.Reporting.Messages.TestOutcome;
 
         public class with_an_instance_of_the_StatLightService : using_a_random_temp_file_for_testing
         {

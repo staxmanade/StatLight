@@ -1,5 +1,6 @@
 using System.Linq;
 using NUnit.Framework;
+using StatLight.Core.Configuration;
 using StatLight.Core.Tests;
 using StatLight.Core.WebServer;
 using System.Collections.Generic;

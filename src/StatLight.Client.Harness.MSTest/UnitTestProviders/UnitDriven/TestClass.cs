@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-using StatLight.Core.WebServer;
+using StatLight.Core.Configuration;
 
 namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven
 {

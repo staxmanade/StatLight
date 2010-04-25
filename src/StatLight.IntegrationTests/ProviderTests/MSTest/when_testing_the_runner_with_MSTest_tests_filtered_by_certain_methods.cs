@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
-using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer;
+using StatLight.Core.Configuration;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
 {
