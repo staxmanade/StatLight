@@ -1,25 +1,21 @@
-﻿
-using System;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using NUnit.Framework;
+using StatLight.Client.Harness.Events;
+using StatLight.Core.Common;
+using StatLight.Core.Events;
+using StatLight.Core.Serialization;
+using StatLight.Core.Tests.Mocks;
+using StatLight.Core.UnitTestProviders;
+using StatLight.Core.WebServer;
+using StatLight.Core.Configuration;
 using StatLight.Core.Reporting;
 
 namespace StatLight.Core.Tests.WebServer
 {
     namespace StatLightServiceTests
     {
-        using System.Collections.Generic;
-        using System.IO;
-        using System.Linq;
-        using NUnit.Framework;
-        using StatLight.Client.Harness.Events;
-        using StatLight.Core.Common;
-        using StatLight.Core.Events;
-        using StatLight.Core.Reporting.Messages;
-        using StatLight.Core.Serialization;
-        using StatLight.Core.Tests.Mocks;
-        using StatLight.Core.UnitTestProviders;
-        using StatLight.Core.WebServer;
-        using LogMessageType = Core.Reporting.Messages.LogMessageType;
-        using TestOutcome = Core.Reporting.Messages.TestOutcome;
 
         public class with_an_instance_of_the_StatLightService : using_a_random_temp_file_for_testing
         {
@@ -44,7 +40,7 @@ namespace StatLight.Core.Tests.WebServer
 
                 _hostXap = serverConfig.HostXap;
 
-                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, PathToTempXapFile, ClientTestRunConfiguration.CreateDefault(), serverConfig);
+                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, base.CreateTestDefaultClinetTestRunConfiguraiton(), serverConfig);
             }
 
             protected void SignalTestComplete(IStatLightService statLightService, int postCount)
@@ -138,9 +134,9 @@ namespace StatLight.Core.Tests.WebServer
             {
                 base.Before_all_tests();
 
-                var config = new ClientTestRunConfiguration { TagFilter = _tagFilter };
+                var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), _tagFilter);
 
-                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, PathToTempXapFile, config, MockServerTestRunConfiguration);
+                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, config, MockServerTestRunConfiguration);
             }
 
             [Test]
@@ -148,34 +144,11 @@ namespace StatLight.Core.Tests.WebServer
             {
                 _statLightService.GetTestRunConfiguration().ShouldNotBeNull();
             }
-
-
-            [Test]
-            public void the_default_UnitTestProviderType_should_be_Undefined()
-            {
-                _statLightService.GetTestRunConfiguration().UnitTestProviderType
-                    .ShouldEqual(UnitTestProviderType.Undefined);
-            }
-
-            //[Test]
-            //public void should_be_able_to_override_the_default_UnitTestProviderType()
-            //{
-            //    _statLightService.GetTestRunConfiguration().UnitTestProviderType = StatLight.Core.UnitTestProviders.UnitTestProviderType.XUnit;
-            //    _statLightService.GetTestRunConfiguration().UnitTestProviderType
-            //        .ShouldEqual(UnitTestProviderType.XUnit);
-            //}
-
         }
 
         [TestFixture]
         public class when_testing_the_use_of_an_instance_of_the_StatLightService_it : with_an_instance_of_the_StatLightService
         {
-
-            [Test]
-            public void should_throw_FileNotFoundException_when_given_bad_file_path()
-            {
-                typeof(FileNotFoundException).ShouldBeThrownBy(() => new StatLightService(new NullLogger(), TestEventAggregator, "missingFile", ClientTestRunConfiguration.CreateDefault(), MockServerTestRunConfiguration));
-            }
 
             [Test]
             public void should_be_able_to_get_the_same_hostXap_as_configured_in_the_config()

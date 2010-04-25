@@ -60,6 +60,9 @@ namespace StatLight.Core.Reporting.Providers.Console
                     "Failed".WrapConsoleMessageWithColor(ConsoleColor.Red, false);
                     " ------------------".WrapConsoleMessageWithColor(ConsoleColor.DarkRed, true);
 
+                    "Test Namespace:  ".WrapConsoleMessageWithColor(ConsoleColor.White, false);
+                    message.NamespaceName.WrapConsoleMessageWithColor(ConsoleColor.Red, true);
+
                     "Test Class:  ".WrapConsoleMessageWithColor(ConsoleColor.White, false);
                     message.ClassName.WrapConsoleMessageWithColor(ConsoleColor.Red, true);
 

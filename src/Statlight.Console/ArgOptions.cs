@@ -41,20 +41,20 @@ namespace StatLight.Console
         public bool OutputForTeamCity { get; private set; }
 
         public bool StartWebServerOnly { get; private set; }
-
+        public List<string> MethodsToTest { get; private set; }
         public UnitTestProviderType UnitTestProviderType { get; private set; }
 
         public MicrosoftTestingFrameworkVersion? MicrosoftTestingFrameworkVersion { get; private set; }
 
         private ArgOptions()
+            : this(new string[] { })
         {
-            optionSet = GetOptions();
         }
 
         public ArgOptions(string[] args)
         {
             LicenseKey = string.Empty;
-
+            MethodsToTest = new List<string>();
             this.optionSet = GetOptions();
 
             _args = args;
@@ -91,25 +91,34 @@ namespace StatLight.Console
                 .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, Mono.Options.OptionValueType.Optional)
                 .Add<string>("c|Continuous", "Runs a single test run, and then monitors the xap for build changes and re-runs the tests automatically.", v => ContinuousIntegrationMode = true)
                 .Add<string>("b|ShowTestingBrowserHost", "Show the browser that is running the tests - necessary to run UI specific tests (hidden by default)", v => ShowTestingBrowserHost = true)
-                .Add("o|OverrideTestProvider", "Allows you to override the default test provider of MSTest. Pass in one of the following [{0}]".FormatWith(string.Join(" | ", Enum.GetNames(typeof(UnitTestProviderType)))), v =>
+                .Add("methodsToTest", "Semicolon seperated list of full method names to execute. EX: --methodsToTest=\"RootNamespace.ChildNamespace.ClassName.MethodUnderTest;RootNamespace.ChildNamespace.ClassName.Method2UnderTest;\"", v =>
                     {
                         v = v ?? string.Empty;
-                        if (string.Equals(v, "xunit", StringComparison.InvariantCultureIgnoreCase))
-                            this.UnitTestProviderType = UnitTestProviderType.XUnit;
-                        else if (string.Equals(v, "nunit", StringComparison.InvariantCultureIgnoreCase))
-                            this.UnitTestProviderType = UnitTestProviderType.NUnit;
-                        else if (string.Equals(v, "unitdriven", StringComparison.InvariantCultureIgnoreCase))
-                            this.UnitTestProviderType = UnitTestProviderType.UnitDriven;
-                        else if (string.Equals(v, "mstest", StringComparison.InvariantCultureIgnoreCase))
-                            this.UnitTestProviderType = UnitTestProviderType.MSTest;
-                        else if (string.Equals(v, string.Empty, StringComparison.InvariantCultureIgnoreCase))
-                            this.UnitTestProviderType = UnitTestProviderType.MSTest;
+                        MethodsToTest = v.Split(';').Where(w => !string.IsNullOrEmpty(w)).ToList();
+                    })
+                .Add("o|OverrideTestProvider", "Allows you to override the default test provider of MSTest. Pass in one of the following [{0}]".FormatWith(typeof(UnitTestProviderType).FormatEnumString()), v =>
+                    {
+                        v = v ?? string.Empty;
+                        UnitTestProviderType result;
+
+                        if (v.Is("xunit"))
+                            result = UnitTestProviderType.XUnit;
+                        else if (v.Is("nunit"))
+                            result = UnitTestProviderType.NUnit;
+                        else if (v.Is("unitdriven"))
+                            result = UnitTestProviderType.UnitDriven;
+                        else if (v.Is("mstest"))
+                            result = UnitTestProviderType.MSTest;
+                        else if (v.Is(string.Empty))
+                            result = UnitTestProviderType.MSTest;
                         else
                         {
-                            throw new Exception("Could not find an OverrideTestProvider defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, string.Join(" | ", Enum.GetNames(typeof(UnitTestProviderType)))));
+                            throw new Exception("Could not find an OverrideTestProvider defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, typeof(UnitTestProviderType).FormatEnumString()));
                         }
+
+                        this.UnitTestProviderType = result;
                     })
-                .Add("v|Version", "Specify a specific Microsoft.Silverlight.Testing build version. Pass in one of the following [{0}]".FormatWith(string.Join(" | ", Enum.GetNames(typeof(MicrosoftTestingFrameworkVersion)))), v =>
+                .Add("v|Version", "Specify a specific Microsoft.Silverlight.Testing build version. Pass in one of the following [{0}]".FormatWith(typeof(MicrosoftTestingFrameworkVersion).FormatEnumString()), v =>
                     {
                         v = v ?? string.Empty;
 
@@ -121,7 +130,7 @@ namespace StatLight.Console
                             if (msTestVersions.ContainsKey(loweredV))
                                 this.MicrosoftTestingFrameworkVersion = msTestVersions[loweredV];
                             else
-                                throw new Exception("Could not find a version defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, string.Join(" | ", Enum.GetNames(typeof(MicrosoftTestingFrameworkVersion)))));
+                                throw new Exception("Could not find a version defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, typeof(MicrosoftTestingFrameworkVersion).FormatEnumString()));
                         }
                     })
                 .Add("r|ReportOutputFile", "File path to write xml report.", v =>
@@ -191,5 +200,31 @@ namespace StatLight.Console
             //@out.WriteLine("--- webserveronly          - {0}".FormatWith(options.StartWebServerOnly));
         }
 
+    }
+
+    static class HelperExtension
+    {
+        public static bool Is(this string actualValue, string expectedValue)
+        {
+            if (actualValue == null && expectedValue == null)
+                return true;
+            if (actualValue == null)
+                return false;
+
+            if (actualValue.Equals(expectedValue, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static string FormatEnumString(this Type enumType)
+        {
+            if(!enumType.IsEnum)
+                throw new ArgumentException("Must be an enum Type={0}".FormatWith(enumType.FullName));
+
+            return string.Join(" | ", Enum.GetNames(enumType));
+        }
     }
 }

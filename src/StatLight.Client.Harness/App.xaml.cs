@@ -5,6 +5,7 @@ using System.Net;
 using System.Reflection;
 using System.Windows;
 using StatLight.Client.Harness.Hosts;
+using StatLight.Core.Configuration;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebServer;
 using StatLight.Client.Harness.Events;

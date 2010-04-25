@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.Configuration;
+
 namespace StatLight.Core.WebServer
 {
     using System.IO;

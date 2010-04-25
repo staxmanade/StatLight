@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
+using StatLight.Core.Configuration;
 using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer;
 
 namespace StatLight.IntegrationTests.ProviderTests.XUnit
 {
@@ -27,18 +27,14 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
             NormalClassTestName = "XunitTests";
             NestedClassTestName = "XunitTests+XunitNestedClassTests";
 
-			_clientTestRunConfiguration = new ClientTestRunConfiguration
-			                        	{
-			                        		TagFilter = string.Empty,
-			                        		UnitTestProviderType = UnitTestProviderType.XUnit,
-			                        		MethodsToTest = new List<string>()
-			                        		                	{
-		                		namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
-		                		namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
-			                        		                	}
-			                        	};
-
-
+            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
+            		UnitTestProviderType.XUnit,
+            		new List<string>()
+	                	{
+                		    namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
+                		    namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
+	                	}
+                	);
 		}
 	}
 }

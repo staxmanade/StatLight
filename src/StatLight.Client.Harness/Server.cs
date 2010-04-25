@@ -51,11 +51,9 @@ namespace StatLight.Client.Harness
 
         #region SignalTestComplate
 
-
         /// <summary>
         /// Send a message back to the server signaling that all the tests have completed.
         /// </summary>
-        /// <param name="state"></param>
         public static void SignalTestComplete(SignalTestCompleteClientEvent signalTestCompleteClientEvent)
         {
             signalTestCompleteClientEvent.TotalMessagesPostedCount = _postMessageCount;

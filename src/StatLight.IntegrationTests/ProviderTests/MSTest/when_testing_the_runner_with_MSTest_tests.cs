@@ -3,9 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
 using StatLight.Client.Harness.Events;
+using StatLight.Core.Configuration;
 using StatLight.Core.Tests;
-using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer;
 using StatLight.Core.Reporting;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
@@ -34,11 +33,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             base.Before_all_tests();
 
             PathToIntegrationTestXap = TestXapFileLocations.MSTest;
-            _clientTestRunConfiguration = new ClientTestRunConfiguration
-                                        {
-                                            TagFilter = string.Empty,
-                                            UnitTestProviderType = UnitTestProviderType.MSTest,
-                                        };
+            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration();
             EventAggregator
                 .AddListener<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e)
                 //                .AddListener<TestExecutionClassBeginClientEvent>(e => _testExecutionClassBeginClientEvent.Add(e))
@@ -182,20 +177,6 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
             theOneWeWant.ResultType.ShouldEqual(ResultType.SystemGeneratedFailure);
         }
-
-
-        [Test]
-        [Ignore("TODO")]
-        public void Should_be_able_to_detect_and_use_the_ServiceReferenceClientConfig_file()
-        {
-            TestReport
-                .TestResults
-                .Where(w => w.MethodName != null)
-                .Where(w => w.MethodName.Contains("ServiceReferenceClientConfig"))
-                .SingleOrDefault()
-                .ShouldBeNull();
-        }
-
     }
 
     internal static class AssertionExtensions

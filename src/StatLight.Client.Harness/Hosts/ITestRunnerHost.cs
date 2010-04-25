@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using StatLight.Core.WebServer;
+using StatLight.Core.Configuration;
 
 namespace StatLight.Client.Harness.Hosts
 {

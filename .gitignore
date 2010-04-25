@@ -3,7 +3,7 @@
 [Rr]elease/
 *.suo
 _ReSharper.*/
-*.xap
+src/**/*.xap
 TestResult.xml
 *.sln.cache
 *.VisualState.xml

@@ -1,11 +1,9 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
+using StatLight.Core.Configuration;
 using StatLight.Core.Tests;
-using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer;
 using StatLight.Core.Reporting;
-using System.Diagnostics;
 
 namespace StatLight.IntegrationTests
 {
@@ -25,17 +23,13 @@ namespace StatLight.IntegrationTests
             base.Before_all_tests();
 
             const string prefix = "StatLight.IntegrationTests.Silverlight.When_a_modal_MessageBox_is_displayed";
-            clientTestRunConfiguration = new ClientTestRunConfiguration
-                                       {
-                                           TagFilter = string.Empty,
-                                           UnitTestProviderType = UnitTestProviderType.MSTest,
-                                           MethodsToTest = new List<string>
-                                                               {
-                                                                   prefix + ".messageBox_overload_1X",
-                                                                   prefix + ".messageBox_overload_1_MessageBoxButton_OKX",
-                                                                   prefix + ".messageBox_overload_1_MessageBoxButton_OKCancel",
-                                                               }
-                                       };
+            clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
+                new List<string>
+                   {
+                       prefix + ".messageBox_overload_1X",
+                       prefix + ".messageBox_overload_1_MessageBoxButton_OKX",
+                       prefix + ".messageBox_overload_1_MessageBoxButton_OKCancel",
+                   });
         }
 
         [Test]

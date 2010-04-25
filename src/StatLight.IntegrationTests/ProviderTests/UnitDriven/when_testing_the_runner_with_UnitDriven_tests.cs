@@ -1,9 +1,8 @@
 using System.Linq;
 using NUnit.Framework;
-using StatLight.Core.Reporting;
+using StatLight.Core.Configuration;
 using StatLight.Core.Tests;
 using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer;
 
 namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
 {
@@ -22,11 +21,7 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
         {
             base.Before_all_tests();
             PathToIntegrationTestXap = TestXapFileLocations.UnitDriven;
-            _clientTestRunConfiguration = new ClientTestRunConfiguration
-                                        {
-                                                TagFilter = string.Empty,
-                                                UnitTestProviderType = UnitTestProviderType.UnitDriven
-                                            };
+            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.UnitDriven);
         }
 
         [Test]

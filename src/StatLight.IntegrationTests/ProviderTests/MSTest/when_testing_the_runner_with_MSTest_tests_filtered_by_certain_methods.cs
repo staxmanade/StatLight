@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
-using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer;
+using StatLight.Core.Configuration;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
 {
@@ -28,16 +26,14 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             NormalClassTestName = "MSTestTests";
             NestedClassTestName = "MSTestTests+MSTestNestedClassTests";
 
-            _clientTestRunConfiguration = new ClientTestRunConfiguration
-                    {
-                        TagFilter = string.Empty,
-                        UnitTestProviderType = UnitTestProviderType.MSTest,
-                        MethodsToTest = new List<string>
+            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration
+                    (
+                        new List<string>
 		                    {
 		                		namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
 		                		namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
 		                	}
-                    };
+                    );
 
         }
     }

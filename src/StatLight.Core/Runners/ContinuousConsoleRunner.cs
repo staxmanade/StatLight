@@ -4,7 +4,6 @@ using StatLight.Core.Events.Aggregation;
 namespace StatLight.Core.Runners
 {
 	using System;
-	using System.Globalization;
 	using System.Threading;
 	using StatLight.Core.Common;
 	using StatLight.Core.Reporting;
@@ -13,9 +12,9 @@ namespace StatLight.Core.Runners
 
     internal class ContinuousConsoleRunner : IRunner, IDisposable
 	{
-		private readonly IWebServer webServer;
-		private readonly Thread continuousRunnerThread;
-		private readonly XapFileBuildChangedMonitor xapFileBuildChangedMonitor;
+		private readonly IWebServer _webServer;
+		private readonly Thread _continuousRunnerThread;
+		private readonly XapFileBuildChangedMonitor _xapFileBuildChangedMonitor;
 
 		internal ContinuousConsoleRunner(
 			ILogger logger,
@@ -25,14 +24,14 @@ namespace StatLight.Core.Runners
 			IWebServer webServer,
 			IBrowserFormHost browserFormHost)
 		{
-			this.webServer = webServer;
-			xapFileBuildChangedMonitor = new XapFileBuildChangedMonitor(xapPath);
+			_webServer = webServer;
+			_xapFileBuildChangedMonitor = new XapFileBuildChangedMonitor(xapPath);
 
-			this.continuousRunnerThread = new Thread(() =>
+			_continuousRunnerThread = new Thread(() =>
 			{
-				var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, statLightService, xapFileBuildChangedMonitor);
+				var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, statLightService, _xapFileBuildChangedMonitor);
 				string line;
-				while ((line = System.Console.ReadLine()).ToLower(CultureInfo.CurrentCulture) != "exit")
+				while ((line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))
 				{
 					runner.ForceFilteredTest(line);
 				}
@@ -41,10 +40,10 @@ namespace StatLight.Core.Runners
 
 		public TestReport Run()
 		{
-			webServer.Start();
+			_webServer.Start();
 
-			continuousRunnerThread.Start();
-			continuousRunnerThread.Join();
+			_continuousRunnerThread.Start();
+			_continuousRunnerThread.Join();
 
 			return new TestReport();
 		}
@@ -53,7 +52,7 @@ namespace StatLight.Core.Runners
 		{
 			if (disposing)
 			{
-				xapFileBuildChangedMonitor.Dispose();
+				_xapFileBuildChangedMonitor.Dispose();
 			}
 		}
 

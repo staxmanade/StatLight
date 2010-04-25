@@ -157,6 +157,9 @@
     <Compile Include="Monitoring\DebugAssertMonitor.cs">
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Configuration\StatLightConfiguration.cs" />
+    <Compile Include="Configuration\StatLightConfigurationFactory.cs" />
+    <Compile Include="Runners\RunnerType.cs" />
     <Compile Include="Runners\WebServerOnlyRunner.cs" />
     <Compile Include="Runners\IRunner.cs" />
     <Compile Include="WebServer\IXapFileBuildChangedMonitor.cs" />
@@ -187,12 +190,12 @@
     <Compile Include="Reporting\Messages\MobilScenarioResult.cs" />
     <Compile Include="WebBrowser\IBrowserFormHost.cs" />
     <Compile Include="WebServer\IWebServer.cs" />
-    <Compile Include="WebServer\ServerTestRunConfiguration.cs" />
+    <Compile Include="Configuration\ServerTestRunConfiguration.cs" />
     <Compile Include="WebServer\StatLightServiceRestApi.cs" />
     <Compile Include="WebServer\IStatLightService.cs" />
     <Compile Include="WebServer\StatLightService.cs" />
     <Compile Include="WebServer\StatLightServiceHost.cs" />
-    <Compile Include="WebServer\ClientTestRunConfiguration.cs" />
+    <Compile Include="Configuration\ClientTestRunConfiguration.cs" />
     <Compile Include="WebServer\WebServerLocation.cs" />
     <Compile Include="WebServer\XapFileBuildChangedMonitor.cs" />
     <Compile Include="WebServer\XapFileBuildChangedArgs.cs" />
@@ -203,6 +206,8 @@
     <Compile Include="WebServer\XapHost\MicrosoftTestingFrameworkVersion.cs" />
     <Compile Include="WebServer\XapHost\StatLightClientXapNames.cs" />
     <Compile Include="WebServer\XapHost\XapHostFileLoaderFactory.cs" />
+    <Compile Include="WebServer\XapInspection\IXapFile.cs" />
+    <Compile Include="WebServer\XapInspection\XapFile.cs" />
     <Compile Include="WebServer\XapInspection\XapReadItems.cs" />
     <Compile Include="WebServer\XapInspection\XapReader.cs" />
   </ItemGroup>

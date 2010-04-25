@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using StatLight.Core.Configuration;
 using StatLight.Core.Tests;
-using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer;
 using StatLight.Core.Reporting;
 
 namespace StatLight.IntegrationTests
@@ -26,18 +25,13 @@ namespace StatLight.IntegrationTests
             base.Before_all_tests();
 
             const string prefix = "StatLight.IntegrationTests.Silverlight.When_calling_debug_assert_with_each_overload";
-            clientTestRunConfiguration = new ClientTestRunConfiguration
-                                       {
-                                           TagFilter = string.Empty,
-                                           UnitTestProviderType = UnitTestProviderType.MSTest,
-                                           MethodsToTest = new List<string>
+            clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(new List<string>
                                                                {
                                                                    prefix + ".debug_assert_overload_1",
                                                                    prefix + ".debug_assert_overload_2",
                                                                    prefix + ".debug_assert_overload_3",
                                                                    prefix + ".debug_assert_overload_4",
-                                                               }
-                                       };
+                                                               });
         }
 
         [Test]
