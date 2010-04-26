@@ -9,4 +9,4 @@ TestResult.xml
 *.VisualState.xml
 *.csproj.user
 src/build/*
-temp-*.xml
+temp_build*.ps1
