@@ -1,41 +1,56 @@
 ﻿
 using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
 
 namespace StatLight.Console.Tools
 {
 	internal class ConsoleIconSwapper : IDisposable
 	{
-		IntPtr consoleWindowHwnd;
-
-		private const int WM_SETICON = 0x80;	// Api constant
-		private const int ICON_SMALL = 0;	// Api constant
-
-		[DllImport("user32.dll")]
-		private static extern int SendMessage(IntPtr hwnd, int message, int wParam, IntPtr lParam);
-
-		[DllImport("kernel32")]
-		private static extern IntPtr GetConsoleWindow();
-
+	    readonly IntPtr _consoleWindowHwnd;
+        private bool _disposed;
+        
 		public ConsoleIconSwapper()
 		{
-			consoleWindowHwnd = GetConsoleWindow();
+            _consoleWindowHwnd = NativeMethods.GetConsoleWindow();
 		}
+
+        ~ConsoleIconSwapper()
+        {
+            Dispose(false);
+        }
+
 
 		public void ShowConsoleIcon(Icon icon)
 		{
-			SendMessage(consoleWindowHwnd, WM_SETICON, ICON_SMALL, icon.Handle);
+            NativeMethods.SendMessage(_consoleWindowHwnd, NativeMethods.WmSeticon, NativeMethods.IconSmall, icon.Handle);
 		}
 
 		public void ChangeIconback()
 		{
-			SendMessage(consoleWindowHwnd, WM_SETICON, ICON_SMALL, (IntPtr)0);
+            NativeMethods.SendMessage(_consoleWindowHwnd, NativeMethods.WmSeticon, NativeMethods.IconSmall, (IntPtr)0);
 		}
 
 		public void Dispose()
 		{
-			ChangeIconback();
+            Dispose(true);
 		}
+
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                // Dispose of resources held by this instance.
+                ChangeIconback();
+                _disposed = true;
+
+                // Suppress finalization of this disposed instance.
+                if (disposing)
+                {
+                    GC.SuppressFinalize(this);
+                }
+            }
+        }
+
 	}
 }

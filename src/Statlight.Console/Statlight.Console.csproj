@@ -59,7 +59,8 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>..\build\bin\Release\</OutputPath>
@@ -94,9 +95,11 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ArgOptions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Tools\ConsoleIconSwapper.cs" />
     <Compile Include="Tools\Mono.Options.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Tools\NativeMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StatLight.Core\StatLight.Core.csproj">
@@ -147,6 +150,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
     <Content Include="NDesk.Options.License.txt" />
   </ItemGroup>
   <ItemGroup>

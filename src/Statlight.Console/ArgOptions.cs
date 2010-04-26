@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.Common;
+
 namespace StatLight.Console
 {
     using System;
@@ -7,14 +9,6 @@ namespace StatLight.Console
     using System.Collections.Generic;
     using StatLight.Core.UnitTestProviders;
     using StatLight.Core.WebServer.XapHost;
-
-    public sealed class OptionException : Exception
-    {
-        public OptionException(string message)
-            : base(message)
-        {
-        }
-    }
 
     public class ArgOptions
     {
@@ -73,6 +67,7 @@ namespace StatLight.Console
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         private Mono.Options.OptionSet GetOptions()
         {
             var msTestVersions = (from MicrosoftTestingFrameworkVersion version in Enum.GetValues(typeof(MicrosoftTestingFrameworkVersion))
@@ -113,16 +108,15 @@ namespace StatLight.Console
                             result = UnitTestProviderType.MSTest;
                         else
                         {
-                            throw new Exception("Could not find an OverrideTestProvider defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, typeof(UnitTestProviderType).FormatEnumString()));
+                            throw new StatLightException("Could not find an OverrideTestProvider defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, typeof(UnitTestProviderType).FormatEnumString()));
                         }
-
                         this.UnitTestProviderType = result;
                     })
                 .Add("v|Version", "Specify a specific Microsoft.Silverlight.Testing build version. Pass in one of the following [{0}]".FormatWith(typeof(MicrosoftTestingFrameworkVersion).FormatEnumString()), v =>
                     {
                         v = v ?? string.Empty;
 
-                        if (v == string.Empty || string.Equals(v, "Default", StringComparison.CurrentCultureIgnoreCase))
+                        if (string.IsNullOrEmpty(v))
                             this.MicrosoftTestingFrameworkVersion = null;
                         else
                         {
@@ -130,7 +124,7 @@ namespace StatLight.Console
                             if (msTestVersions.ContainsKey(loweredV))
                                 this.MicrosoftTestingFrameworkVersion = msTestVersions[loweredV];
                             else
-                                throw new Exception("Could not find a version defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, typeof(MicrosoftTestingFrameworkVersion).FormatEnumString()));
+                                throw new StatLightException("Could not find a version defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, typeof(MicrosoftTestingFrameworkVersion).FormatEnumString()));
                         }
                     })
                 .Add("r|ReportOutputFile", "File path to write xml report.", v =>
@@ -149,6 +143,8 @@ namespace StatLight.Console
 
         public static void ShowHelpMessage(TextWriter @out)
         {
+            if (@out == null) throw new ArgumentNullException("out");
+
             @out.WriteLine("Usage: statlight -x=\"PathTo/UnitTests.xap\" [OPTIONS]");
             @out.WriteLine("");
             @out.WriteLine("More documentation: http://www.StatLight.net");

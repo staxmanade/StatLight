@@ -118,10 +118,6 @@ Try: (the following two steps that should allow StatLight to start a web server 
 
                     WriteErrorToConsole(helpMessage, "Error");
                 }
-                catch (OptionException optionException)
-                {
-                    HandleKnownError(optionException);
-                }
                 catch (FileNotFoundException fileNotFoundException)
                 {
                     HandleKnownError(fileNotFoundException);
