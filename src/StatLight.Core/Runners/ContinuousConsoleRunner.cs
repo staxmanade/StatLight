@@ -27,15 +27,17 @@ namespace StatLight.Core.Runners
 			_webServer = webServer;
 			_xapFileBuildChangedMonitor = new XapFileBuildChangedMonitor(xapPath);
 
-			_continuousRunnerThread = new Thread(() =>
-			{
-				var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, statLightService, _xapFileBuildChangedMonitor);
-				string line;
-				while ((line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))
-				{
-					runner.ForceFilteredTest(line);
-				}
-			});
+            _continuousRunnerThread = new Thread(() =>
+            {
+                using (var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, statLightService, _xapFileBuildChangedMonitor))
+                {
+                    string line;
+                    while ((line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))
+                    {
+                        runner.ForceFilteredTest(line);
+                    }
+                }
+            });
 		}
 
 		public TestReport Run()

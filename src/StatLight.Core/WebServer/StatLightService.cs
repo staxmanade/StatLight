@@ -60,7 +60,7 @@ namespace StatLight.Core.WebServer
             _publishMethods = clientEventType
                 .Assembly.GetTypes()
                 .Where(w => w.Namespace == clientEventType.Namespace)
-                .Where(w => w.Name.EndsWith("ClientEvent"))
+                .Where(w => w.Name.EndsWith("ClientEvent", StringComparison.OrdinalIgnoreCase))
                 .ToDictionary(key => key, value => makeGenericMethod.MakeGenericMethod(value));
         }
 
@@ -112,7 +112,7 @@ namespace StatLight.Core.WebServer
                              _logger.Error("Unknown message posted...");
                              _logger.Error(xmlMessage);
                          };
-                    if (xmlMessage.StartsWith("<") && xmlMessage.IndexOf(' ') != -1)
+                    if (xmlMessage.StartsWith("<", StringComparison.OrdinalIgnoreCase) && xmlMessage.IndexOf(' ') != -1)
                     {
                         string eventName = xmlMessage.Substring(1, xmlMessage.IndexOf(' ')).Trim();
                         if (_publishMethods.Any(w => w.Key.Name == eventName))
@@ -245,7 +245,9 @@ namespace StatLight.Core.WebServer
         {
             public static bool Is<T>(this string xmlMessage)
             {
-                if (xmlMessage.StartsWith("<" + typeof(T).Name + " xmlns"))
+                if (xmlMessage == null) throw new ArgumentNullException("xmlMessage");
+
+                if (xmlMessage.StartsWith("<" + typeof(T).Name + " xmlns", StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }

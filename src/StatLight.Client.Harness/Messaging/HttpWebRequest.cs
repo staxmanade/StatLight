@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Windows.Browser;
+using StatLight.Client.Harness;
 
 namespace StatLight.Client.Model.Messaging
 {
@@ -74,7 +75,7 @@ namespace StatLight.Client.Model.Messaging
             }
             catch (Exception ex)
             {
-                //TODO: why in IE8 this bombs out, and yet, still seems to work fine?
+                Server.Trace(ex.ToString());
             }
         }
     }

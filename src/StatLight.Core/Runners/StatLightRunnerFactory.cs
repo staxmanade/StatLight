@@ -22,6 +22,8 @@
         private Action<DebugClientEvent> _debugEventListener;
         public IRunner CreateContinuousTestRunner(ILogger logger, StatLightConfiguration statLightConfiguration, bool showTestingBrowserHost)
         {
+            if (logger == null) throw new ArgumentNullException("logger");
+            if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             StatLightService statLightService;
             StatLightServiceHost statLightServiceHost;
             BrowserFormHost browserFormHost;
@@ -43,6 +45,7 @@
 
         public IRunner CreateTeamCityRunner(StatLightConfiguration statLightConfiguration)
         {
+            if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             ILogger logger = new NullLogger();
 
             StatLightService statLightService;
@@ -67,6 +70,8 @@
 
         public IRunner CreateOnetimeConsoleRunner(ILogger logger, StatLightConfiguration statLightConfiguration, bool showTestingBrowserHost)
         {
+            if (logger == null) throw new ArgumentNullException("logger");
+            if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             StatLightService statLightService;
             StatLightServiceHost statLightServiceHost;
             BrowserFormHost browserFormHost;
@@ -88,6 +93,8 @@
 
         public IRunner CreateWebServerOnlyRunner(ILogger logger, StatLightConfiguration statLightConfiguration)
         {
+            if (logger == null) throw new ArgumentNullException("logger");
+            if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             var location = new WebServerLocation();
 
             var statLightService = new StatLightService(logger, EventAggregator, statLightConfiguration.Client, statLightConfiguration.Server);

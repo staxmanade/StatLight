@@ -59,10 +59,11 @@ namespace StatLight.Core.Runners
 
         protected virtual void Dispose(bool disposing)
         {
-            browserFormHost.Dispose();
-            _eventAggregator.RemoveListener(this);
             if (disposing)
             {
+                browserFormHost.Dispose();
+                _eventAggregator.RemoveListener(this);
+                _browserThreadWaitHandle.Close();
                 testResultAggregator.Dispose();
             }
         }

@@ -67,17 +67,17 @@ namespace StatLight.Core.Configuration
             }
         }
 
-        public static bool ContainsMethod(MethodInfo methodInfo)
+        public static bool ContainsMethod(MemberInfo memberInfo)
         {
             if (CurrentClientTestRunConfiguration == null)
                 return false;
-            if (methodInfo == null)
-                throw new ArgumentNullException("methodInfo");
+            if (memberInfo == null)
+                throw new ArgumentNullException("memberInfo");
 
             if (CurrentClientTestRunConfiguration.MethodsToTest.Count == 0)
                 return true;
 
-            string methodString = methodInfo.DeclaringType.FullName + "." + methodInfo.Name;
+            string methodString = memberInfo.DeclaringType.FullName + "." + memberInfo.Name;
 
             var containsMethod = CurrentClientTestRunConfiguration.MethodsToTest.Contains(methodString);
 

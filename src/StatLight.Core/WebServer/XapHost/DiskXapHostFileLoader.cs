@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using StatLight.Core.Common;
 
@@ -12,6 +13,9 @@ namespace StatLight.Core.WebServer.XapHost
 
         public DiskXapHostFileLoader(ILogger logger, string fileName)
         {
+            if (logger == null) throw new ArgumentNullException("logger");
+            if (fileName == null) throw new ArgumentNullException("fileName");
+
             _logger = logger;
             var pathToThisExe = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             _fileName = Path.Combine(pathToThisExe, fileName);

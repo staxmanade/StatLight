@@ -76,6 +76,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
         public void Handle(TestCaseResult message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             var name = message.FullMethodName();
             var durationMilliseconds = message.TimeToComplete.Milliseconds;
 

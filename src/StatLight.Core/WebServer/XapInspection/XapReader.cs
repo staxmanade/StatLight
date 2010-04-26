@@ -55,11 +55,14 @@ namespace StatLight.Core.WebServer.XapInspection
         {
             var encryptedString = new StringBuilder();
 
-            var result = new SHA1Managed().ComputeHash(bytes);
-            foreach (byte outputByte in result)
-                // convert each byte to a Hexadecimal upper case string
-                encryptedString.Append(outputByte.ToString("x2").ToUpper());
-            return encryptedString.ToString();
+            using (var sha = new SHA1Managed())
+            {
+                var result = sha.ComputeHash(bytes);
+                foreach (byte outputByte in result)
+                    // convert each byte to a Hexadecimal upper case string
+                    encryptedString.Append(outputByte.ToString("x2").ToUpper());
+                return encryptedString.ToString();
+            }
         }
 
         private MicrosoftTestingFrameworkVersion? DetermineUnitTestVersion(ZipFile archive)
@@ -67,7 +70,7 @@ namespace StatLight.Core.WebServer.XapInspection
             var incomingHash = (from zipEntry in archive
                                 where fileNameCompare(zipEntry.FileName, "Microsoft.Silverlight.Testing.dll")
                                 select SHA1Encryption(ReadFileIntoBytes(archive, zipEntry.FileName))).SingleOrDefault();
-            if(incomingHash == null)
+            if (incomingHash == null)
                 return null;
             var definedVersions = new[]
             {
