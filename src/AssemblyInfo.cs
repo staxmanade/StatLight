@@ -36,5 +36,5 @@ using System.Resources;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.9.*")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
-[assembly: CLSCompliant(true)]
+[assembly: CLSCompliant(false)]
 //TODO: [assembly: AssemblyKeyFile("StatLight.snk")]
