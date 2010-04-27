@@ -45,7 +45,7 @@ namespace StatLight.Core.WebServer.XapHost
             {
                 case UnitTestProviderType.NUnit:
                 case UnitTestProviderType.XUnit:
-                    return XapHostType.MSTestMarch2010;
+                    return XapHostType.MSTestApril2010;
 
                 case UnitTestProviderType.MSTest:
                     switch (microsoftTestingFrameworkVersion)
@@ -56,6 +56,7 @@ namespace StatLight.Core.WebServer.XapHost
                         case MicrosoftTestingFrameworkVersion.October2009: return XapHostType.MSTestOctober2009;
                         case MicrosoftTestingFrameworkVersion.November2009: return XapHostType.MSTestNovember2009;
                         case MicrosoftTestingFrameworkVersion.March2010: return XapHostType.MSTestMarch2010;
+                        case MicrosoftTestingFrameworkVersion.April2010: return XapHostType.MSTestApril2010;
                         default:
                             throwNotSupportedException();
                             break;

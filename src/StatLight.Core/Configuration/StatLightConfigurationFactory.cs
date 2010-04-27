@@ -90,6 +90,7 @@ namespace StatLight.Core.Configuration
             Func<byte[]> xapToTestFactory = () =>
             {
                 AssertXapToTestFileExists(xapPath);
+                _logger.Debug("Loading XapToTest {0}".FormatWith(xapPath));
                 return File.ReadAllBytes(xapPath);
             };
 

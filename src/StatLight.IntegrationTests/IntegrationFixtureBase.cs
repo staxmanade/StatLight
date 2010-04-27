@@ -8,15 +8,15 @@ namespace StatLight.IntegrationTests
     using StatLight.Core.Reporting;
     using StatLight.Core.Runners;
     using StatLight.Core.UnitTestProviders;
-    using StatLight.Core.WebServer;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.IntegrationTests.ProviderTests;
 
     public abstract class IntegrationFixtureBase : FixtureBase
     {
-        readonly StatLightRunnerFactory _statLightRunnerFactory = new StatLightRunnerFactory();
+        private StatLightRunnerFactory _statLightRunnerFactory;
         private string _pathToIntegrationTestXap;
         private readonly ILogger _testLogger;
+        private EventAggregator _eventAggregator;
 
         protected IntegrationFixtureBase()
         {
@@ -36,7 +36,7 @@ namespace StatLight.IntegrationTests
             }
         }
 
-        protected IEventAggregator EventAggregator { get { return _statLightRunnerFactory.EventAggregator; } }
+        protected IEventAggregator EventAggregator { get { return _eventAggregator; } }
 
         protected TestReport TestReport { get; private set; }
         private IRunner Runner { get; set; }
@@ -46,9 +46,16 @@ namespace StatLight.IntegrationTests
             get
             {
                 if (ClientTestRunConfiguration.UnitTestProviderType == UnitTestProviderType.MSTest)
-                    return MicrosoftTestingFrameworkVersion.March2010;
+                    return MicrosoftTestingFrameworkVersion.April2010;
                 return null;
             }
+        }
+
+        protected override void Before_all_tests()
+        {
+            base.Before_all_tests();
+            _eventAggregator = new EventAggregator();
+            _statLightRunnerFactory = new StatLightRunnerFactory(_eventAggregator);
         }
 
         protected override void Because()
@@ -64,7 +71,7 @@ namespace StatLight.IntegrationTests
                 ClientTestRunConfiguration.MethodsToTest,
                 ClientTestRunConfiguration.TagFilter);
 
-            bool showTestingBrowserHost = statLightConfiguration.Server.XapHostType == XapHostType.MSTestMarch2010;
+            bool showTestingBrowserHost = statLightConfiguration.Server.XapHostType == XapHostType.MSTestApril2010;
             _testLogger.Debug("Setting up xaphost {0}".FormatWith(statLightConfiguration.Server.XapHostType));
             Runner = _statLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, statLightConfiguration, showTestingBrowserHost);
 

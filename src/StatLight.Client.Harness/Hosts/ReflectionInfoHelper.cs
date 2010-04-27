@@ -12,9 +12,10 @@ namespace StatLight.Client.Harness.Hosts
 
         public static string FullName(this MethodInfo methodInfo)
         {
-            string m = methodInfo.DeclaringType.Namespace +
-                       methodInfo.DeclaringType.ReadClassName() +
-                       methodInfo.Name;
+            string m = "{0}.{1}.{2}".FormatWith(
+                        methodInfo.DeclaringType.Namespace,
+                        methodInfo.DeclaringType.ReadClassName(),
+                        methodInfo.Name);
             return m;
         }
     }

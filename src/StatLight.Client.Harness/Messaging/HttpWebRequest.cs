@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Windows.Browser;
@@ -75,7 +76,7 @@ namespace StatLight.Client.Model.Messaging
             }
             catch (Exception ex)
             {
-                Server.Trace(ex.ToString());
+                //Server.Trace(ex.ToString());
             }
         }
     }

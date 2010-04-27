@@ -1,8 +1,9 @@
-﻿namespace StatLight.Core.Runners
+﻿using StatLight.Core.WebServer.XapHost;
+
+namespace StatLight.Core.Runners
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Configuration;
     using StatLight.Core.Common;
@@ -16,10 +17,20 @@
 
     public class StatLightRunnerFactory
     {
-        internal IEventAggregator EventAggregator = new EventAggregator(new SynchronizationContext());
+        private readonly IEventAggregator _eventAggregator;
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
         private ConsoleResultHandler _consoleResultHandler;
         private Action<DebugClientEvent> _debugEventListener;
+
+        public StatLightRunnerFactory()
+            : this(new EventAggregator())
+        {}
+
+        public StatLightRunnerFactory(IEventAggregator eventAggregator)
+        {
+            _eventAggregator = eventAggregator;
+        }
+
         public IRunner CreateContinuousTestRunner(ILogger logger, StatLightConfiguration statLightConfiguration, bool showTestingBrowserHost)
         {
             if (logger == null) throw new ArgumentNullException("logger");
@@ -39,7 +50,7 @@
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
 
-            IRunner runner = new ContinuousConsoleRunner(logger, EventAggregator, statLightConfiguration.Server.XapToTestPath, statLightService, statLightServiceHost, browserFormHost);
+            IRunner runner = new ContinuousConsoleRunner(logger, _eventAggregator, statLightConfiguration.Server.XapToTestPath, statLightService, statLightServiceHost, browserFormHost);
             return runner;
         }
 
@@ -62,8 +73,8 @@
                 out browserFormHost);
 
             var teamCityTestResultHandler = new TeamCityTestResultHandler(new ConsoleCommandWriter(), statLightConfiguration.Server.XapToTestPath);
-            EventAggregator.AddListener(teamCityTestResultHandler);
-            IRunner runner = new TeamCityRunner(new NullLogger(), EventAggregator, statLightServiceHost, browserFormHost, teamCityTestResultHandler);
+            _eventAggregator.AddListener(teamCityTestResultHandler);
+            IRunner runner = new TeamCityRunner(new NullLogger(), _eventAggregator, statLightServiceHost, browserFormHost, teamCityTestResultHandler);
 
             return runner;
         }
@@ -87,7 +98,7 @@
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
 
-            IRunner runner = new OnetimeRunner(logger, EventAggregator, statLightServiceHost, browserFormHost);
+            IRunner runner = new OnetimeRunner(logger, _eventAggregator, statLightServiceHost, browserFormHost);
             return runner;
         }
 
@@ -97,12 +108,12 @@
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             var location = new WebServerLocation();
 
-            var statLightService = new StatLightService(logger, EventAggregator, statLightConfiguration.Client, statLightConfiguration.Server);
+            var statLightService = new StatLightService(logger, _eventAggregator, statLightConfiguration.Client, statLightConfiguration.Server);
             var statLightServiceHost = new StatLightServiceHost(logger, statLightService, location.BaseUrl);
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
             SetupDebugClientEventListener(logger);
-            IRunner runner = new WebServerOnlyRunner(logger, EventAggregator, statLightServiceHost, location.TestPageUrl);
+            IRunner runner = new WebServerOnlyRunner(logger, _eventAggregator, statLightServiceHost, location.TestPageUrl);
 
             return runner;
         }
@@ -124,10 +135,17 @@
 				new DebugAssertMonitor(logger),
 				new MessageBoxMonitor(logger),
 			};
-            var dialogMonitorRunner = new DialogMonitorRunner(logger, EventAggregator, debugAssertMonitorTimer, dialogMonitors);
+            var dialogMonitorRunner = new DialogMonitorRunner(logger, _eventAggregator, debugAssertMonitorTimer, dialogMonitors);
             SetupDebugClientEventListener(logger);
-            statLightService = new StatLightService(logger, EventAggregator, clientTestRunConfiguration, serverTestRunConfiguration);
+            statLightService = new StatLightService(logger, _eventAggregator, clientTestRunConfiguration, serverTestRunConfiguration);
             statLightServiceHost = new StatLightServiceHost(logger, statLightService, location.BaseUrl);
+
+            // The new March/April 2010 will fail in the "minimized mode" 
+            //TODO figure out how to not get the errors when these are minimized
+            if (serverTestRunConfiguration.XapHostType == XapHostType.MSTestMarch2010 ||
+                serverTestRunConfiguration.XapHostType == XapHostType.MSTestApril2010)
+                showTestingBrowserHost = true;
+
             browserFormHost = new BrowserFormHost(logger, location.TestPageUrl, showTestingBrowserHost, dialogMonitorRunner);
 
             StartupBrowserCommunicationTimeoutMonitor(new TimeSpan(0, 0, 5, 0));
@@ -136,7 +154,7 @@
         private void StartupBrowserCommunicationTimeoutMonitor(TimeSpan maxTimeAllowedBeforeCommErrorSent)
         {
             if (_browserCommunicationTimeoutMonitor == null)
-                _browserCommunicationTimeoutMonitor = new BrowserCommunicationTimeoutMonitor(EventAggregator, new TimerWrapper(3000), maxTimeAllowedBeforeCommErrorSent);
+                _browserCommunicationTimeoutMonitor = new BrowserCommunicationTimeoutMonitor(_eventAggregator, new TimerWrapper(3000), maxTimeAllowedBeforeCommErrorSent);
         }
 
 
@@ -145,17 +163,17 @@
             if (_consoleResultHandler == null)
             {
                 _consoleResultHandler = new ConsoleResultHandler(logger);
-                EventAggregator.AddListener(_consoleResultHandler);
+                _eventAggregator.AddListener(_consoleResultHandler);
             }
         }
 
         private void SetupDebugClientEventListener(ILogger logger)
         {
-            ((EventAggregator) EventAggregator).Logger = logger;
+            ((EventAggregator) _eventAggregator).Logger = logger;
             if (_debugEventListener == null)
             {
                 _debugEventListener = e => logger.Debug(e.Message);
-                EventAggregator.AddListener(_debugEventListener);
+                _eventAggregator.AddListener(_debugEventListener);
             }
         }
 

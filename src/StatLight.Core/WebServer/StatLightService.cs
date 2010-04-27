@@ -72,6 +72,8 @@ namespace StatLight.Core.WebServer
             _eventAggregator.SendMessage(result);
         }
 
+        private bool _alreadyHadSignalTestCompleteClientEventPosted = false;
+
         public void PostMessage(Stream stream)
         {
             try
@@ -101,9 +103,17 @@ namespace StatLight.Core.WebServer
                     _logger.Debug("         TotalMessagesPostedCount = {0}".FormatWith(result.TotalMessagesPostedCount));
                     _logger.Debug("         TotalTestsCount = {0}".FormatWith(result.TotalTestsCount));
                     _logger.Debug("         TotalFailureCount = {0}".FormatWith(result.TotalFailureCount));
+                    _logger.Debug("         OtherInfo = {0}".FormatWith(result.OtherInfo));
                     _logger.Debug("     }");
 
                     _totalMessagesPostedCount = totalMessagsPostedCount;
+
+                    // HACK - for some reason we're now getting 2 of these events in some cases...
+                    // TODO: figure out why?
+                    if (_alreadyHadSignalTestCompleteClientEventPosted)
+                        _totalMessagesPostedCount = _currentMessagesPostedCount;
+
+                    _alreadyHadSignalTestCompleteClientEventPosted = true;
                 }
                 else
                 {

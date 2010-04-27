@@ -58,10 +58,10 @@ namespace StatLight.Core.Configuration
                 _currentClientTestRunConfiguration = value;
 
 #if SILVERLIGHT
-                var expectedTestsToFindAndRunMessage = string.Join(
-                    " *** Method Filter: {0}".FormatWith(Environment.NewLine),
-                            _currentClientTestRunConfiguration.MethodsToTest.ToArray());
-                StatLight.Client.Harness.Server.Debug(expectedTestsToFindAndRunMessage);
+                //var expectedTestsToFindAndRunMessage = string.Join(
+                //    " *** Method Filter: {0}".FormatWith(Environment.NewLine),
+                //            _currentClientTestRunConfiguration.MethodsToTest.ToArray());
+                //StatLight.Client.Harness.Server.Debug(expectedTestsToFindAndRunMessage);
 #endif
 
             }
@@ -82,8 +82,8 @@ namespace StatLight.Core.Configuration
             var containsMethod = CurrentClientTestRunConfiguration.MethodsToTest.Contains(methodString);
 
 #if SILVERLIGHT
-            var expectedTestsToFindAndRunMessage = " *** Contains Method: {0}, {1}".FormatWith(containsMethod, methodString);
-            StatLight.Client.Harness.Server.Debug(expectedTestsToFindAndRunMessage);
+            //var expectedTestsToFindAndRunMessage = " *** Contains Method: {0}, {1}".FormatWith(containsMethod, methodString);
+            //StatLight.Client.Harness.Server.Debug(expectedTestsToFindAndRunMessage);
 #endif
 
             return containsMethod;

@@ -79,14 +79,14 @@ While trying to reflect the assembly [{0}]. Below are the LoaderExceptions disco
             IList<Type> types;
             if (assembly.TryGetTypes(out types))
             {
-                Server.Debug("Total Types Found [{0}] in Assembly [{1}]".FormatWith(types.Count, assembly.FullName));
+                //Server.Debug("Total Types Found [{0}] in Assembly [{1}]".FormatWith(types.Count, assembly.FullName));
                 var tests = new List<ITestClass>();
                 foreach (Type type in types.Where(filter))
                 {
-                    Server.Debug("type={0}".FormatWith(type.FullName));
+                    //Server.Debug("type={0}".FormatWith(type.FullName));
                     tests.Add(createType(type));
                 }
-                Server.Debug("Total Types Found [{0}] in Assembly [{1}]".FormatWith(tests.Count, assembly.FullName));
+                //Server.Debug("Total Types Found [{0}] in Assembly [{1}]".FormatWith(tests.Count, assembly.FullName));
                 return tests;
             }
             return new List<ITestClass>();

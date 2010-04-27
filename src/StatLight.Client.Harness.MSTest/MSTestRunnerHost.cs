@@ -15,6 +15,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
     [Export(typeof(ITestRunnerHost))]
     public class MSTestRunnerHost : ITestRunnerHost
     {
+        private bool _sentSignalCompleteMessage;
         private ClientTestRunConfiguration _clientTestRunConfiguration;
         private LoadedXapData _loadedXapData;
 
@@ -31,13 +32,13 @@ namespace StatLight.Client.Harness.Hosts.MSTest
         public UIElement StartRun()
         {
             SetupUnitTestProvider(_clientTestRunConfiguration.UnitTestProviderType);
-            
+
             var settings = ConfigureSettings();
 
             return UnitTestSystem.CreateTestPage(settings);
         }
 
-        private static void CurrentHarness_TestHarnessCompleted(object sender, TestHarnessCompletedEventArgs e)
+        private void CurrentHarness_TestHarnessCompleted(object sender, TestHarnessCompletedEventArgs e)
         {
             var state = e.State;
             var signalTestCompleteClientEvent = new SignalTestCompleteClientEvent

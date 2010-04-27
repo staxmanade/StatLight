@@ -24,13 +24,15 @@ namespace StatLight.Core.Reporting
         private readonly IEventAggregator _eventAggregator;
         private readonly TestReport _currentReport = new TestReport();
         private readonly DialogAssertionMatchmaker _dialogAssertionMessageMatchmaker = new DialogAssertionMatchmaker();
-        private readonly EventMatchMacker _eventMatchMacker = new EventMatchMacker();
+        private readonly EventMatchMacker _eventMatchMacker;
 
         public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator)
         {
             //System.Diagnostics.Debugger.Break();
             _logger = logger;
             _eventAggregator = eventAggregator;
+
+            _eventMatchMacker = new EventMatchMacker(_logger);
         }
 
         public TestReport CurrentReport { get { return _currentReport; } }
@@ -48,12 +50,9 @@ namespace StatLight.Core.Reporting
         public void Handle(TestExecutionMethodPassedClientEvent message)
         {
             if (message == null) throw new ArgumentNullException("message");
+            //_logger.Debug("Handle - TestExecutionMethodPassedClientEvent - {0}".FormatWith(message.FullMethodName));
             Action action = () =>
             {
-                //_eventMatchMacker
-                _logger.Debug(
-                    "TestExecutionMethodPassedClientEvent - {0}"
-                        .FormatWith(message.MethodName));
                 if (
                     _dialogAssertionMessageMatchmaker.
                         WasEventAlreadyClosed(message))
@@ -86,10 +85,9 @@ namespace StatLight.Core.Reporting
         public void Handle(TestExecutionMethodFailedClientEvent message)
         {
             if (message == null) throw new ArgumentNullException("message");
+            //_logger.Debug("Handle - TestExecutionMethodFailedClientEvent - {0}".FormatWith(message.FullMethodName));
             Action action = () =>
             {
-                _logger.Debug("TestExecutionMethodFailedClientEvent - {0}".FormatWith(message.MethodName));
-
                 if (_dialogAssertionMessageMatchmaker.WasEventAlreadyClosed(message))
                 {
                     // Don't include this as a "passed" test as we had to automatically close the dialog);)
@@ -114,7 +112,7 @@ namespace StatLight.Core.Reporting
         public void Handle(TestExecutionMethodIgnoredClientEvent message)
         {
             if (message == null) throw new ArgumentNullException("message");
-            _logger.Debug("TestExecutionMethodIgnoredClientEvent - {0}".FormatWith(message.MethodName));
+            //_logger.Debug("Handle - TestExecutionMethodIgnoredClientEvent - {0}".FormatWith(message.FullMethodName));
             var msg = new TestCaseResult(ResultType.Ignored)
             {
                 MethodName = message.Message,
@@ -176,10 +174,19 @@ namespace StatLight.Core.Reporting
             ReportIt(msg);
         }
 
+        private List<TestExecutionMethodBeginClientEvent> _beginEventsAlreadyFired =
+            new List<TestExecutionMethodBeginClientEvent>();
+
         public void Handle(TestExecutionMethodBeginClientEvent message)
         {
             if (message == null) throw new ArgumentNullException("message");
-            _logger.Debug("TestExecutionMethodBeginClientEvent - {0}".FormatWith(message.MethodName));
+
+            if (_beginEventsAlreadyFired.Contains(message))
+                return;
+
+            _beginEventsAlreadyFired.Add(message);
+
+            //_logger.Debug("Handle - TestExecutionMethodBeginClientEvent - {0}".FormatWith(message.FullMethodName));
             _dialogAssertionMessageMatchmaker.HandleMethodBeginClientEvent(message);
 
             _eventMatchMacker.AddBeginEvent(message);
@@ -193,33 +200,65 @@ namespace StatLight.Core.Reporting
 
         private class EventMatchMacker
         {
+            private readonly ILogger _logger;
+
+            public EventMatchMacker(ILogger logger)
+            {
+                _logger = logger;
+            }
+            private static object _sync = new object();
             private Dictionary<TestExecutionMethod, Action> _awaitingForAMatch =
                 new Dictionary<TestExecutionMethod, Action>();
 
             public void AddEvent(TestExecutionMethod clientEvent, Action actionOnCompletion)
             {
-                if (_awaitingForAMatch.ContainsKey(clientEvent))
+                lock (_sync)
                 {
-                    _awaitingForAMatch.Remove(clientEvent);
-                    actionOnCompletion();
-                }
-                else
-                {
-                    _awaitingForAMatch.Add(clientEvent, actionOnCompletion);
+                    if (_awaitingForAMatch.ContainsKey(clientEvent))
+                    {
+                        Log("- AddEvent: ", clientEvent);
+                        _awaitingForAMatch.Remove(clientEvent);
+                        actionOnCompletion();
+                    }
+                    else
+                    {
+                        Log("+ AddEvent: ", clientEvent);
+                        _awaitingForAMatch.Add(clientEvent, actionOnCompletion);
+                    }
                 }
             }
 
             public void AddBeginEvent(TestExecutionMethodBeginClientEvent clientEvent)
             {
-                if (_awaitingForAMatch.ContainsKey(clientEvent))
+                lock (_sync)
                 {
-                    _awaitingForAMatch[clientEvent]();
-                    _awaitingForAMatch.Remove(clientEvent);
+                    if (_awaitingForAMatch.ContainsKey(clientEvent))
+                    {
+                        Log("- AddBeginEvent: ", clientEvent);
+
+                        Action a = _awaitingForAMatch[clientEvent];
+                        if(a != null)
+                        {
+                            a();
+                        }
+                        else
+                        {
+                            Log("grrrrr: ", clientEvent);
+                        }
+                        _awaitingForAMatch.Remove(clientEvent);
+                    }
+                    else
+                    {
+                        Log("+ AddBeginEvent: No Match add null", clientEvent);
+                        _awaitingForAMatch.Add(clientEvent, null);
+                    }
                 }
-                else
-                {
-                    _awaitingForAMatch.Add(clientEvent, null);
-                }
+            }
+
+            private void Log(string msg, TestExecutionMethod testExecutionMethod)
+            {
+                _logger.Debug("{0} - {1}.{2}".FormatWith(msg, testExecutionMethod.ClassName,
+                                                         testExecutionMethod.MethodName));
             }
         }
 

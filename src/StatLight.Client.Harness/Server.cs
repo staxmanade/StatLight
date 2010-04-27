@@ -57,14 +57,10 @@ namespace StatLight.Client.Harness
         public static void SignalTestComplete(SignalTestCompleteClientEvent signalTestCompleteClientEvent)
         {
             signalTestCompleteClientEvent.TotalMessagesPostedCount = _postMessageCount;
-
+            
             SignalTestComplate(signalTestCompleteClientEvent);
         }
 
-        public static void SignalTestComplete()
-        {
-            SignalTestComplate(new SignalTestCompleteClientEvent { TotalMessagesPostedCount = _postMessageCount });
-        }
 
         private static void SignalTestComplate(SignalTestCompleteClientEvent completeClientEvent)
         {

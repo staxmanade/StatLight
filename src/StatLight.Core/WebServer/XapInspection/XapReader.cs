@@ -89,6 +89,9 @@ namespace StatLight.Core.WebServer.XapInspection
 
                 // Mix 2010 Preview
                 new { Version = MicrosoftTestingFrameworkVersion.March2010, Hash = "4b41678001f2000720a5b7479e4d20ea77820605", Supported = true, },
+
+                // April SL 4 release
+                new { Version = MicrosoftTestingFrameworkVersion.April2010, Hash = "357a677957f309ae85c3e5aeeda43a32bca23ad3", Supported = true, },
             };
 
             var foundVersion = definedVersions.Where(w => w.Hash.Equals(incomingHash, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();

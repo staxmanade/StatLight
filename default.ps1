@@ -5,10 +5,10 @@ properties {
 	$not_build_configuration = Get-Not-Build-Configuration
 	$build_dir = ".\src\build\bin\$build_configuration"
 	$program_files_dir = Get-x86-ProgramFiles-Location
-#	$silverlight_core_assemblies_location = "$program_files_dir\Microsoft Silverlight\3.0.40818.0"
-	$silverlight_core_assemblies_location = "$program_files_dir\Reference Assemblies\Microsoft\Framework\Silverlight\v3.0"
-	$silverlight_libraries_client_assemblies = "$program_files_dir\Microsoft SDKs\Silverlight\v3.0\Libraries\Client"
-#C:\Program Files\Reference Assemblies\Microsoft\Framework\Silverlight\v3.0	
+
+	$silverlight_core_assemblies_location = "$program_files_dir\Reference Assemblies\Microsoft\Framework\Silverlight\v4.0"
+	$silverlight_libraries_client_assemblies = "$program_files_dir\Microsoft SDKs\Silverlight\v4.0\Libraries\Client"
+
 	$statlight_xap_for_prefix = "StatLight.Client.For" 
 	$release_dir = 'Release'
 	
@@ -30,6 +30,7 @@ properties {
 	#  - 3. Add the version to the MicrosoftTestingFrameworkVersion enum in the project
 	$microsoft_silverlight_testing_versions = @(
 			'March2010'
+			'April2010'
 
 #			'December2008'
 #			'March2009'
@@ -101,7 +102,7 @@ function get-formatted-assembly-version() {
 function Build-Csc-Command {
 	param([array]$options, [array]$sourceFiles, [array]$references, [array]$resources)
 	
-	$csc = 'C:\Windows\Microsoft.NET\Framework\v3.5\csc.exe'
+	$csc = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe'
 
 	# can't say I'm doing delimeters correctly, but seems to work ???
 	$delim = [string]""""
@@ -175,8 +176,8 @@ function StatLightReferences {
 		"$silverlight_libraries_client_assemblies\System.Xml.Serialization.dll",
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.Silverlight.Testing.dll"
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"
-		".\lib\Silverlight\MEF\System.ComponentModel.Composition.dll"
-		".\lib\Silverlight\MEF\System.ComponentModel.Composition.Initialization.dll"
+		"$silverlight_libraries_client_assemblies\System.ComponentModel.Composition.dll"
+		"$silverlight_libraries_client_assemblies\System.ComponentModel.Composition.Initialization.dll"
 		"$clientHarnessBuildOutputDir\StatLight.Client.Harness.dll"
 	)
 	$references;
@@ -200,8 +201,8 @@ function StatLightIntegrationTestsReferences {
 		"$silverlight_libraries_client_assemblies\System.Xml.Serialization.dll",
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.Silverlight.Testing.dll"
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"
-		".\lib\Silverlight\MEF\System.ComponentModel.Composition.dll"
-		".\lib\Silverlight\MEF\System.ComponentModel.Composition.Initialization.dll"
+		"$silverlight_libraries_client_assemblies\System.ComponentModel.Composition.dll"
+		"$silverlight_libraries_client_assemblies\System.ComponentModel.Composition.Initialization.dll"
 		"$clientHarnessBuildOutputDir\StatLight.Client.Harness.dll"
 	)
 
@@ -220,13 +221,24 @@ function compile-StatLight-MSTestHost {
 	$sourceFiles += Get-ChildItem 'src\StatLight.Client.Harness.MSTest\' -recurse `
 		| where{$_.Extension -like "*.cs"} `
 		| foreach {$_.FullName} `
-		| where{!$_.Contains($not_build_configuration)}
+		| where{!$_.Contains($not_build_configuration)} `
+		| where{!$_.Contains('App.g.cs')}
+echo $sourceFiles
 
 	$extraCompilerFlags = [string]''
-	if("$microsoft_Silverlight_Testing_Version_Name" -eq 'March2010')
+
+
+	
+	
+	if("$microsoft_Silverlight_Testing_Version_Name" -eq 'July2009' -or "$microsoft_Silverlight_Testing_Version_Name" -eq 'October2009' -or "$microsoft_Silverlight_Testing_Version_Name" -eq 'November2009')
+	{
+		$extraCompilerFlags = ''
+	}
+	else
 	{
 		$extraCompilerFlags = 'MSTestMarch2010'
 	}
+	
 	$buildConfigToUpper = $build_configuration.ToUpper();
 	echo $buildConfigToUpper
 	$options = @(
@@ -264,7 +276,9 @@ function compile-StatLight-MSTestHostIntegrationTests {
 	$sourceFiles += Get-ChildItem 'src\StatLight.IntegrationTests.Silverlight.MSTest\' -recurse `
 		| where{$_.Extension -like "*.cs"} `
 		| foreach {$_.FullName} `
-		| where{!$_.Contains($not_build_configuration)}
+		| where{!$_.Contains($not_build_configuration)} #`
+		#| where{!$_.Contains('App.g.cs')}
+echo $sourceFiles
 
 	$buildConfigToUpper = $build_configuration.ToUpper();
 	echo $buildConfigToUpper
@@ -625,9 +639,9 @@ Task compile-StatLight-MSTestHostVersionIntegrationTests {
 }
 
 Task compile-Solution {
-	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe'
+	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
 	$verbosity = "/verbosity:quiet"
-	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity } 'msbuild failed on StatLight.sln'
+	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo } 'msbuild failed on StatLight.sln'
 }
 
 Task compile-StatLIght-UnitDrivenHost {
@@ -638,7 +652,7 @@ Task compile-StatLIght-UnitDrivenHost {
 	
 	$zippedName = "$build_dir\$statlight_xap_for_prefix.UnitDrivenDecember2009.zip"
 
-	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="3.0.40818.0">
+	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="4.0.50401.00">
 		<Deployment.Parts>'
 	
 	$referencedNames | foreach { 

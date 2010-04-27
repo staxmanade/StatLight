@@ -209,6 +209,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit
 		/// <param name="instance">Instance of the test class.</param>
 		public virtual void Invoke(object instance)
 		{
+            //Server.Debug("Invoke - {0}".FormatWith(_methodInfo.FullName()));
 			_methodInfo.Invoke(instance, None);
 		}
 	}

@@ -26,6 +26,8 @@ namespace StatLight.Client.Harness.Events
         public bool Failed { get; set; }
         public int TotalFailureCount { get; set; }
         public int TotalTestsCount { get; set; }
+
+        public string OtherInfo { get; set; }
     }
 
 
@@ -91,10 +93,10 @@ namespace StatLight.Client.Harness.Events
             }
         }
 
-        //public string FullMethodName
-        //{
-        //    get { return "{0}.{1}.{2}".FormatWith(NamespaceName, ClassName, MethodName); }
-        //}
+        public string FullMethodName
+        {
+            get { return "{0}.{1}.{2}".FormatWith(NamespaceName, ClassName, MethodName); }
+        }
     }
 
     public class TestExecutionMethodBeginClientEvent : TestExecutionMethod
