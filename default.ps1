@@ -276,8 +276,8 @@ function compile-StatLight-MSTestHostIntegrationTests {
 	$sourceFiles += Get-ChildItem 'src\StatLight.IntegrationTests.Silverlight.MSTest\' -recurse `
 		| where{$_.Extension -like "*.cs"} `
 		| foreach {$_.FullName} `
-		| where{!$_.Contains($not_build_configuration)} #`
-		#| where{!$_.Contains('App.g.cs')}
+		| where{!$_.Contains($not_build_configuration)} `
+		| where{!$_.Contains('App.g.cs')}
 echo $sourceFiles
 
 	$buildConfigToUpper = $build_configuration.ToUpper();

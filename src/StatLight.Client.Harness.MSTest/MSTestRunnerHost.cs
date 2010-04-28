@@ -77,9 +77,9 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 
 #if MSTestMarch2010
             settings.StartRunImmediately = true;
+            settings.ShowTagExpressionEditor = false;
 #else
 #endif
-
             // Below is the custom stuff...
             settings.TagExpression = _clientTestRunConfiguration.TagFilter;
             settings.LogProviders.Add(new ServerHandlingLogProvider());
