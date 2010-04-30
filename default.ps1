@@ -846,7 +846,7 @@ Task package-zip-project-sources-snapshot {
 	mv $sourceZipFile $release_dir\$sourceZipFile -Force | Out-Null
 }
 
-Task package-release -depends clean-release, package-zip-project-sources-snapshot {
+Task package-release -depends clean-release {
 	$versionBuildPath = "$release_dir\$(get-formatted-assembly-version $core_assembly_path)"
 
 	$expectedFilesToInclude = @(
@@ -860,7 +860,7 @@ Task package-release -depends clean-release, package-zip-project-sources-snapsho
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'
-			'StatLight.Sources.v*'
+			#'StatLight.Sources.v*'
 		)
 
 	$knownFilesToExclude = @(
@@ -881,7 +881,7 @@ Task package-release -depends clean-release, package-zip-project-sources-snapsho
 
 	New-Item -Path $versionBuildPath -ItemType directory | Out-Null
 
-	Move-Item (Get-ChildItem $release_dir\$statLightSourcesFilePrefix*) "$versionBuildPath\$($_.Name)"
+	#Move-Item (Get-ChildItem $release_dir\$statLightSourcesFilePrefix*) "$versionBuildPath\$($_.Name)"
 	$filesToCopyFromBuild | foreach{ Copy-Item $_ "$versionBuildPath\$($_.Name)"  }
 
 	$knownFilesToExclude | foreach{Remove-Item $versionBuildPath\$_ }
