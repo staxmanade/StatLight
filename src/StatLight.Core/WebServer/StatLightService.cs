@@ -158,23 +158,6 @@ namespace StatLight.Core.WebServer
             return _serverTestRunConfiguration.XapToTest.ToStream();
         }
 
-        private void DebugLogClientEvent(ClientEvent clientEvent)
-        {
-            var type = clientEvent.GetType();
-            Action<string> log = msg => _logger.Debug(msg);
-
-            var properties = type.GetProperties();
-
-            log(type.Name);
-            log("  {");
-            foreach (var propertyInfo in properties)
-            {
-                var value = propertyInfo.GetValue(clientEvent, null);
-                var msg = "    {0,24}: {1}".FormatWith(propertyInfo.Name, value);
-                log(msg);
-            }
-            log("  }");
-        }
 
         // Not sure why but can't seem to get this to work... (would be nice to 
         // get done - as it might speed up a StatLight run in general

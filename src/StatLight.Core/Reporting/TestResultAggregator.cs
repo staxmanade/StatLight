@@ -1,7 +1,5 @@
 ﻿
 
-using System.Linq;
-
 namespace StatLight.Core.Reporting
 {
     using System;
@@ -25,6 +23,7 @@ namespace StatLight.Core.Reporting
         private readonly TestReport _currentReport = new TestReport();
         private readonly DialogAssertionMatchmaker _dialogAssertionMessageMatchmaker = new DialogAssertionMatchmaker();
         private readonly EventMatchMacker _eventMatchMacker;
+        private readonly List<string> _beginEventsAlreadyFired = new List<string>();
 
         public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator)
         {
@@ -174,17 +173,18 @@ namespace StatLight.Core.Reporting
             ReportIt(msg);
         }
 
-        private List<TestExecutionMethodBeginClientEvent> _beginEventsAlreadyFired =
-            new List<TestExecutionMethodBeginClientEvent>();
-
         public void Handle(TestExecutionMethodBeginClientEvent message)
         {
             if (message == null) throw new ArgumentNullException("message");
 
-            if (_beginEventsAlreadyFired.Contains(message))
-                return;
+            if (_beginEventsAlreadyFired.Contains(message.FullMethodName))
+            {
+                _logger.Debug(message.WriteDebug());
 
-            _beginEventsAlreadyFired.Add(message);
+                return;
+            }
+
+            _beginEventsAlreadyFired.Add(message.FullMethodName);
 
             //_logger.Debug("Handle - TestExecutionMethodBeginClientEvent - {0}".FormatWith(message.FullMethodName));
             _dialogAssertionMessageMatchmaker.HandleMethodBeginClientEvent(message);
@@ -206,24 +206,24 @@ namespace StatLight.Core.Reporting
             {
                 _logger = logger;
             }
-            private static object _sync = new object();
-            private Dictionary<TestExecutionMethod, Action> _awaitingForAMatch =
-                new Dictionary<TestExecutionMethod, Action>();
+            private static readonly object _sync = new object();
+            private readonly Dictionary<string, Action> _awaitingForAMatch =
+                new Dictionary<string, Action>();
 
             public void AddEvent(TestExecutionMethod clientEvent, Action actionOnCompletion)
             {
                 lock (_sync)
                 {
-                    if (_awaitingForAMatch.ContainsKey(clientEvent))
+                    if (_awaitingForAMatch.ContainsKey(clientEvent.FullMethodName))
                     {
                         Log("- AddEvent: ", clientEvent);
-                        _awaitingForAMatch.Remove(clientEvent);
+                        _awaitingForAMatch.Remove(clientEvent.FullMethodName);
                         actionOnCompletion();
                     }
                     else
                     {
                         Log("+ AddEvent: ", clientEvent);
-                        _awaitingForAMatch.Add(clientEvent, actionOnCompletion);
+                        _awaitingForAMatch.Add(clientEvent.FullMethodName, actionOnCompletion);
                     }
                 }
             }
@@ -232,11 +232,11 @@ namespace StatLight.Core.Reporting
             {
                 lock (_sync)
                 {
-                    if (_awaitingForAMatch.ContainsKey(clientEvent))
+                    if (_awaitingForAMatch.ContainsKey(clientEvent.FullMethodName))
                     {
                         Log("- AddBeginEvent: ", clientEvent);
 
-                        Action a = _awaitingForAMatch[clientEvent];
+                        Action a = _awaitingForAMatch[clientEvent.FullMethodName];
                         if(a != null)
                         {
                             a();
@@ -245,12 +245,12 @@ namespace StatLight.Core.Reporting
                         {
                             Log("grrrrr: ", clientEvent);
                         }
-                        _awaitingForAMatch.Remove(clientEvent);
+                        _awaitingForAMatch.Remove(clientEvent.FullMethodName);
                     }
                     else
                     {
                         Log("+ AddBeginEvent: No Match add null", clientEvent);
-                        _awaitingForAMatch.Add(clientEvent, null);
+                        _awaitingForAMatch.Add(clientEvent.FullMethodName, null);
                     }
                 }
             }
