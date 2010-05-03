@@ -1,0 +1,19 @@
+﻿<#@ template language="C#" #>
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace StatLight.IntegrationTests.Silverlight.LotsOfTests
+{
+    [TestClass]
+    public class With_a_class_that_has_lots_of_tests
+    {
+<# for(int i = 0; i < 1000; i++){#>
+        [TestMethod]
+        public void Number_<#= i #>_of_many_passing_tests()
+        {
+            Assert.IsTrue(true);
+        }
+<#}#>
+
+    }
+}

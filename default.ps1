@@ -216,13 +216,15 @@ function compile-StatLight-MSTestHost {
 
 	$sourceFiles = @(
 		"src\AssemblyInfo.cs"
+		".\src\StatLight.Client.Harness.MSTest\App.g.cs"
 	)
 
 	$sourceFiles += Get-ChildItem 'src\StatLight.Client.Harness.MSTest\' -recurse `
 		| where{$_.Extension -like "*.cs"} `
 		| foreach {$_.FullName} `
 		| where{!$_.Contains($not_build_configuration)} `
-		| where{!$_.Contains('App.g.cs')}
+		| where{!$_.Contains('App.g.cs')} `
+		| where{!$_.Contains('App.g.i.cs')}
 echo $sourceFiles
 
 	$extraCompilerFlags = [string]''
@@ -270,14 +272,16 @@ function compile-StatLight-MSTestHostIntegrationTests {
 
 	$references = StatLightIntegrationTestsReferences $microsoft_Silverlight_Testing_Version_Name
 
-	$sourceFiles = @( #no manual files...
+	$sourceFiles = @(
+		".\src\StatLight.IntegrationTests.Silverlight.MSTest\App.g.cs"
 	)
 
 	$sourceFiles += Get-ChildItem 'src\StatLight.IntegrationTests.Silverlight.MSTest\' -recurse `
 		| where{$_.Extension -like "*.cs"} `
 		| foreach {$_.FullName} `
-		| where{!$_.Contains($not_build_configuration)} #`
-		#| where{!$_.Contains('App.g.cs')}
+		| where{!$_.Contains($not_build_configuration)} `
+		| where{!$_.Contains('App.g.cs')} `
+		| where{!$_.Contains('App.g.i.cs')}
 echo $sourceFiles
 
 	$buildConfigToUpper = $build_configuration.ToUpper();
