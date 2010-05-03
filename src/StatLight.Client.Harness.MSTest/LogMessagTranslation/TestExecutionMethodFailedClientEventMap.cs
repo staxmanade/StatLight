@@ -45,12 +45,10 @@ namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
             var clientEventX = new TestExecutionMethodFailedClientEvent
                                    {
                                        ExceptionInfo = exception,
-                                       ClassName = testMethod.Method.DeclaringType.ReadClassName(),
-                                       NamespaceName = testMethod.Method.DeclaringType.Namespace,
-                                       MethodName = testMethod.Method.Name,
                                        Finished = scenarioResult.Finished,
                                        Started = scenarioResult.Started,
                                    };
+            clientEventX.AssignTestExecutionMethodInfo(testMethod.Method);
 
             return clientEventX;
         }

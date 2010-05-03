@@ -82,6 +82,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="DebugAssertTests.cs" />
+    <Compile Include="NestedClassInheritanceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TeamCityTests.cs" />
     <Compile Include="MessageBoxTests.cs" />

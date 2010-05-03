@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="FixtureBase.cs" />
     <Compile Include="IntegrationTestClientTestRunConfiguration.ClientConfigTests.cs" />
+    <Compile Include="NestedClassInheritanceTests.cs" />
     <Compile Include="ProviderTests\filtered_tests____.cs" />
     <Compile Include="ProviderTests\MSTest\when_testing_the_runner_with_MSTest_tests.cs" />
     <Compile Include="ProviderTests\NUnit\when_testing_the_runner_with_NUnit_tests.cs" />

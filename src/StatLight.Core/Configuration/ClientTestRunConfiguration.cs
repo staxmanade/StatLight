@@ -3,7 +3,9 @@ using System.Runtime.Serialization;
 using StatLight.Core.UnitTestProviders;
 using System.Collections.Generic;
 using System.Reflection;
-
+#if SILVERLIGHT
+using StatLight.Client.Harness.Hosts;
+#endif
 namespace StatLight.Core.Configuration
 {
     [DataContract]
@@ -49,6 +51,7 @@ namespace StatLight.Core.Configuration
             set { _methodsToTest = value; }
         }
 
+#if SILVERLIGHT
         private static ClientTestRunConfiguration _currentClientTestRunConfiguration;
         public static ClientTestRunConfiguration CurrentClientTestRunConfiguration
         {
@@ -57,12 +60,10 @@ namespace StatLight.Core.Configuration
             {
                 _currentClientTestRunConfiguration = value;
 
-#if SILVERLIGHT
                 //var expectedTestsToFindAndRunMessage = string.Join(
                 //    " *** Method Filter: {0}".FormatWith(Environment.NewLine),
                 //            _currentClientTestRunConfiguration.MethodsToTest.ToArray());
                 //StatLight.Client.Harness.Server.Debug(expectedTestsToFindAndRunMessage);
-#endif
 
             }
         }
@@ -77,16 +78,15 @@ namespace StatLight.Core.Configuration
             if (CurrentClientTestRunConfiguration.MethodsToTest.Count == 0)
                 return true;
 
-            string methodString = memberInfo.DeclaringType.FullName + "." + memberInfo.Name;
+            string methodString = memberInfo.FullName();
 
             var containsMethod = CurrentClientTestRunConfiguration.MethodsToTest.Contains(methodString);
 
-#if SILVERLIGHT
             //var expectedTestsToFindAndRunMessage = " *** Contains Method: {0}, {1}".FormatWith(containsMethod, methodString);
             //StatLight.Client.Harness.Server.Debug(expectedTestsToFindAndRunMessage);
-#endif
 
             return containsMethod;
         }
+#endif
     }
 }

@@ -31,11 +31,9 @@ namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
             var testMethod = (ITestMethod)message.Decorators[UnitTestLogDecorator.TestMethodMetadata];
             var clientEventX = new TestExecutionMethodBeginClientEvent
                                    {
-                                       ClassName = testMethod.Method.DeclaringType.ReadClassName(),
-                                       NamespaceName = testMethod.Method.DeclaringType.Namespace,
-                                       MethodName = testMethod.Method.Name,
                                        Started = DateTime.Now,
                                    };
+            clientEventX.AssignTestExecutionMethodInfo(testMethod.Method);
             return clientEventX;
         }
     }

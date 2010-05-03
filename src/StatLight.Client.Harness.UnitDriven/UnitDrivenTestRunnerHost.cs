@@ -174,8 +174,8 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
         private static TestExecutionMethod PopulateCoreInfo(TestExecutionMethod testExecutionMethod, MethodInfo method)
         {
-            testExecutionMethod.NamespaceName = method.DeclaringType.Namespace;
-            testExecutionMethod.ClassName = method.DeclaringType.ReadClassName();
+            testExecutionMethod.NamespaceName = method.ReflectedType.Namespace;
+            testExecutionMethod.ClassName = method.ReflectedType.ReadClassName();
             testExecutionMethod.MethodName = method.Name;
             return testExecutionMethod;
         }
