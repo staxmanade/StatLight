@@ -27,10 +27,5 @@ namespace StatLight.Client.Harness.Hosts
                         methodInfo.Name);
             return m;
         }
-
-        //public static string FullName(this MethodInfo methodInfo)
-        //{
-        //    return ((MemberInfo)methodInfo).FullName();
-        //}
     }
 }

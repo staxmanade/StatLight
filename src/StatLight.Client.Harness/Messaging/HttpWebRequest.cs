@@ -74,8 +74,11 @@ namespace StatLight.Client.Model.Messaging
                     helper.OnResponseComplete(new HttpResponseCompleteEventArgs(reader.ReadToEnd()));
                 }
             }
+#pragma warning disable 168
             catch (Exception ex)
+#pragma warning restore 168
             {
+                //TODO: Research why these errors potentially happen - and how to fix
                 //Server.Trace(ex.ToString());
             }
         }

@@ -15,7 +15,6 @@ namespace StatLight.Client.Harness.Hosts.MSTest
     [Export(typeof(ITestRunnerHost))]
     public class MSTestRunnerHost : ITestRunnerHost
     {
-        private bool _sentSignalCompleteMessage;
         private ClientTestRunConfiguration _clientTestRunConfiguration;
         private LoadedXapData _loadedXapData;
 
