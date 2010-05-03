@@ -23,7 +23,7 @@ namespace StatLight.Core.Reporting
         private readonly TestReport _currentReport = new TestReport();
         private readonly DialogAssertionMatchmaker _dialogAssertionMessageMatchmaker = new DialogAssertionMatchmaker();
         private readonly EventMatchMacker _eventMatchMacker;
-        private readonly List<string> _beginEventsAlreadyFired = new List<string>();
+        private readonly List<int> _beginEventsAlreadyFired = new List<int>();
 
         public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator)
         {
@@ -177,14 +177,14 @@ namespace StatLight.Core.Reporting
         {
             if (message == null) throw new ArgumentNullException("message");
 
-            if (_beginEventsAlreadyFired.Contains(message.FullMethodName))
+            if (_beginEventsAlreadyFired.Contains(message.FullMethodName.GetHashCode()))
             {
                 _logger.Debug(message.WriteDebug());
 
                 return;
             }
 
-            _beginEventsAlreadyFired.Add(message.FullMethodName);
+            _beginEventsAlreadyFired.Add(message.FullMethodName.GetHashCode());
 
             //_logger.Debug("Handle - TestExecutionMethodBeginClientEvent - {0}".FormatWith(message.FullMethodName));
             _dialogAssertionMessageMatchmaker.HandleMethodBeginClientEvent(message);
