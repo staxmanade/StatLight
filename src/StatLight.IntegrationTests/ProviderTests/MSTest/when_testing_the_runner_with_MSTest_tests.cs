@@ -108,6 +108,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         {
             _testExecutionMethodIgnoredClientEvent.Count().ShouldEqual(1);
             _testExecutionMethodIgnoredClientEvent.First().MethodName.ShouldEqual("this_should_be_an_Ignored_test");
+            _testExecutionMethodIgnoredClientEvent.First().Message.ShouldEqual("this_should_be_an_Ignored_test");
             //AssertTestExecutionClassData(_testExecutionMethodIgnoredClientEvent.First());
             //TODO: figure out how to get the class/namespace for the ignored test.
         }

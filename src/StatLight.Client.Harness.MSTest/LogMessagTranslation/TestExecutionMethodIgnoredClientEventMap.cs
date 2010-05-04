@@ -33,6 +33,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
                                        ClassName = null,
                                        NamespaceName = null,
                                        MethodName = testName,
+                                       Message = testName,
                                        Started = DateTime.Now,
                                    };
 
