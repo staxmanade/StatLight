@@ -802,6 +802,53 @@ Task test-specific-method-filter {
 	$systemGeneratedfailedCount.ShouldEqual(0);	 
 }
 
+
+Task test-specific-mutiple-browser-runner {
+	$scriptFile = GetTemporaryXmlFile;
+	
+	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight.LotsOfTests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.LotsOfTests.xap" "-r=$scriptFile" "-NumberOfBrowserHosts=5"
+
+	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
+	$file = get-item $scriptFile
+	$doc = [System.Xml.Linq.XDocument]::Load($file)
+
+	$passedCount = 0;
+	$ignoredCount = 0;
+	$failedCount = 0;
+	$systemGeneratedfailedCount = 0;
+	
+	foreach($test in $doc.Descendants('test'))
+	{
+		$resultTypeValue = $test.Attribute('resulttype').Value
+
+		if($resultTypeValue -eq 'Passed')
+		{
+			$passedCount = $passedCount + 1;
+		}
+		elseif($resultTypeValue -eq 'Ignored')
+		{
+			$ignoredCount = $ignoredCount + 1;
+		}
+		elseif($resultTypeValue -eq 'Failed')
+		{
+			$failedCount = $failedCount + 1;
+		}
+		elseif($resultTypeValue -eq 'SystemGeneratedFailure')
+		{
+			$systemGeneratedfailedCount = $systemGeneratedfailedCount + 1;
+		}
+		else
+		{
+			throw "Unknown ResultType [$resultTypeValue]"
+		}
+	}
+	
+	$passedCount.ShouldEqual(1000);
+	$ignoredCount.ShouldEqual(0);
+	$failedCount.ShouldEqual(0);
+	$systemGeneratedfailedCount.ShouldEqual(0);	 
+}
+
 Task test-all-mstest-version-acceptance-tests {
 	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests $_ }
 }
