@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.ObjectModel;
+
 namespace StatLight.Core.Configuration
 {
     using System;
@@ -23,7 +25,7 @@ namespace StatLight.Core.Configuration
             _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
         }
 
-        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, List<string> methodsToTest, string tagFilters, int numberOfBrowserHosts)
+        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts)
         {
             AssertXapToTestFileExists(xapPath);
 

@@ -207,8 +207,7 @@ namespace StatLight.Core.Reporting
                 _logger = logger;
             }
             private static readonly object _sync = new object();
-            private readonly Dictionary<string, Action> _awaitingForAMatch =
-                new Dictionary<string, Action>();
+            private readonly Dictionary<string, Action> _awaitingForAMatch = new Dictionary<string, Action>();
 
             public void AddEvent(TestExecutionMethod clientEvent, Action actionOnCompletion)
             {
@@ -216,13 +215,11 @@ namespace StatLight.Core.Reporting
                 {
                     if (_awaitingForAMatch.ContainsKey(clientEvent.FullMethodName))
                     {
-                        Log("- AddEvent: ", clientEvent);
                         _awaitingForAMatch.Remove(clientEvent.FullMethodName);
                         actionOnCompletion();
                     }
                     else
                     {
-                        Log("+ AddEvent: ", clientEvent);
                         _awaitingForAMatch.Add(clientEvent.FullMethodName, actionOnCompletion);
                     }
                 }
@@ -234,31 +231,18 @@ namespace StatLight.Core.Reporting
                 {
                     if (_awaitingForAMatch.ContainsKey(clientEvent.FullMethodName))
                     {
-                        Log("- AddBeginEvent: ", clientEvent);
-
                         Action a = _awaitingForAMatch[clientEvent.FullMethodName];
                         if(a != null)
                         {
                             a();
                         }
-                        else
-                        {
-                            Log("grrrrr: ", clientEvent);
-                        }
                         _awaitingForAMatch.Remove(clientEvent.FullMethodName);
                     }
                     else
                     {
-                        Log("+ AddBeginEvent: No Match add null", clientEvent);
                         _awaitingForAMatch.Add(clientEvent.FullMethodName, null);
                     }
                 }
-            }
-
-            private void Log(string msg, TestExecutionMethod testExecutionMethod)
-            {
-                //_logger.Debug("{0} - {1}.{2}".FormatWith(msg, testExecutionMethod.ClassName,
-                //                                         testExecutionMethod.MethodName));
             }
         }
 

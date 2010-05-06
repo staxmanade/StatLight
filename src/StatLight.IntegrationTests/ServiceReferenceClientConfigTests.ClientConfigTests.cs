@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Linq;
 using NUnit.Framework;
 using StatLight.Core.Configuration;
@@ -21,7 +22,7 @@ namespace StatLight.IntegrationTests
             base.Before_all_tests();
 
             _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
-                new List<string>
+                new Collection<string>
                     {
                         "StatLight.IntegrationTests.Silverlight.When_trying_to_get_at_the_ServiceReferenceClientConfig.Should_be_able_to_read_info_from_the_ServiceReferenceClientConfig",
                     });

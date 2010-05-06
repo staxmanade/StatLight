@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using Moq;
@@ -108,7 +109,7 @@ namespace StatLight.Core.Tests
 
         protected ClientTestRunConfiguration CreateTestDefaultClinetTestRunConfiguraiton()
         {
-            return new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(),
+            return new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new Collection<string>(),
                                                                          string.Empty, 1);
         }
     }

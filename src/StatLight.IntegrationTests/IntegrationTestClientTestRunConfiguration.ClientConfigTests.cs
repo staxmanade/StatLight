@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using StatLight.Core.Configuration;
 using StatLight.Core.UnitTestProviders;
 
@@ -10,7 +11,7 @@ namespace StatLight.IntegrationTests
             : base(UnitTestProviderType.MSTest, new List<string>(), string.Empty, 1)
         { }
 
-        public IntegrationTestClientTestRunConfiguration(List<string> methodsToTest)
+        public IntegrationTestClientTestRunConfiguration(IEnumerable<string> methodsToTest)
             : base(UnitTestProviderType.MSTest, methodsToTest, string.Empty, 1)
         { }
 
@@ -18,7 +19,7 @@ namespace StatLight.IntegrationTests
             : base(unitTestProviderType, new List<string>(), string.Empty, 1)
         { }
 
-        public IntegrationTestClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, List<string> methodsToTest)
+        public IntegrationTestClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest)
             : base(unitTestProviderType, methodsToTest, string.Empty, 1)
         { }
     }

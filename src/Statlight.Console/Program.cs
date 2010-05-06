@@ -1,5 +1,7 @@
 ﻿
 
+using System.Collections.ObjectModel;
+
 namespace StatLight.Console
 {
     using System;
@@ -51,7 +53,7 @@ namespace StatLight.Console
                     bool showTestingBrowserHost = options.ShowTestingBrowserHost;
                     bool useTeamCity = options.OutputForTeamCity;
                     bool startWebServerOnly = options.StartWebServerOnly;
-                    List<string> methodsToTest = options.MethodsToTest;
+                    Collection<string> methodsToTest = options.MethodsToTest;
                     string xmlReportOutputPath = options.XmlReportOutputPath;
                     MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = options.MicrosoftTestingFrameworkVersion;
                     string tagFilters = options.TagFilters;

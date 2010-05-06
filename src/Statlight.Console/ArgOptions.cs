@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.ObjectModel;
+
 namespace StatLight.Console
 {
     using System;
@@ -32,7 +34,7 @@ namespace StatLight.Console
         public bool OutputForTeamCity { get; private set; }
 
         public bool StartWebServerOnly { get; private set; }
-        public List<string> MethodsToTest { get; private set; }
+        public Collection<string> MethodsToTest { get; private set; }
         public UnitTestProviderType UnitTestProviderType { get; private set; }
 
         public MicrosoftTestingFrameworkVersion? MicrosoftTestingFrameworkVersion { get; private set; }
@@ -46,7 +48,7 @@ namespace StatLight.Console
 
         public ArgOptions(string[] args)
         {
-            MethodsToTest = new List<string>();
+            MethodsToTest = new Collection<string>();
             _optionSet = GetOptions();
             NumberOfBrowserHosts = 1;
             _args = args;
@@ -87,7 +89,7 @@ namespace StatLight.Console
                 .Add("MethodsToTest", "Semicolon seperated list of full method names to execute. EX: --methodsToTest=\"RootNamespace.ChildNamespace.ClassName.MethodUnderTest;RootNamespace.ChildNamespace.ClassName.Method2UnderTest;\"", v =>
                     {
                         v = v ?? string.Empty;
-                        MethodsToTest = v.Split(';').Where(w => !string.IsNullOrEmpty(w)).ToList();
+                        MethodsToTest = v.Split(';').Where(w => !string.IsNullOrEmpty(w)).ToCollection();
                     })
                 .Add("o|OverrideTestProvider", "Allows you to override the default test provider of MSTest. Pass in one of the following [{0}]".FormatWith(typeof(UnitTestProviderType).FormatEnumString()), v =>
                     {

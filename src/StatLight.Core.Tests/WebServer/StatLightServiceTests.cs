@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -135,7 +136,7 @@ namespace StatLight.Core.Tests.WebServer
             {
                 base.Before_all_tests();
 
-                var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), _tagFilter, 1);
+                var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new Collection<string>(), _tagFilter, 1);
 
                 _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, config, MockServerTestRunConfiguration);
             }

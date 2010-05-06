@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -15,9 +16,9 @@ namespace StatLight.Core.Configuration
     public class ClientTestRunConfiguration
     {
         private string _tagFilters = string.Empty;
-        private List<string> _methodsToTest;
+        private Collection<string> _methodsToTest;
 
-        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, List<string> methodsToTest, string tagFilters, int numberOfBrowserHosts)
+        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts)
         {
             if (methodsToTest == null) throw new ArgumentNullException("methodsToTest");
             if (unitTestProviderType == UnitTestProviderType.Undefined)
@@ -26,7 +27,7 @@ namespace StatLight.Core.Configuration
             if (numberOfBrowserHosts <= 0)
                 throw new ArgumentOutOfRangeException("numberOfBrowserHosts", "Must be greater than 0");
 
-            _methodsToTest = methodsToTest;
+            _methodsToTest = methodsToTest.ToCollection();
             _tagFilters = tagFilters ?? string.Empty;
             UnitTestProviderType = unitTestProviderType;
             NumberOfBrowserHosts = numberOfBrowserHosts;
@@ -56,9 +57,9 @@ namespace StatLight.Core.Configuration
         public UnitTestProviderType UnitTestProviderType { get; set; }
 
         [DataMember]
-        public List<string> MethodsToTest
+        public Collection<string> MethodsToTest
         {
-            get { return (_methodsToTest ?? (_methodsToTest = new List<string>())); }
+            get { return (_methodsToTest ?? (_methodsToTest = new Collection<string>())); }
             set { _methodsToTest = value; }
         }
 

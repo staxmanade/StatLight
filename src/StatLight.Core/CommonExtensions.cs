@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace StatLight
 {
@@ -49,6 +50,15 @@ namespace StatLight
                 action(item);
 
             return items;
+        }
+
+        public static Collection<T> ToCollection<T>(this IEnumerable<T> items)
+        {
+            if (items == null) throw new ArgumentNullException("items");
+            var collection = new Collection<T>();
+            foreach(var item in items)
+                collection.Add(item);
+            return collection;
         }
     }
 
