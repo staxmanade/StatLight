@@ -56,6 +56,7 @@ namespace StatLight.Console
                     MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = options.MicrosoftTestingFrameworkVersion;
                     string tagFilters = options.TagFilters;
                     UnitTestProviderType unitTestProviderType = options.UnitTestProviderType;
+                    int numberOfBrowserHosts = options.NumberOfBrowserHosts;
 
                     var statLightRunnerFactory = new StatLightRunnerFactory();
                     var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
@@ -66,7 +67,8 @@ namespace StatLight.Console
                             xapPath,
                             microsoftTestingFrameworkVersion,
                             methodsToTest,
-                            tagFilters);
+                            tagFilters,
+                            numberOfBrowserHosts);
 
                     var runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly);
 

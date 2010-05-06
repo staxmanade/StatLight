@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.Runners
@@ -17,7 +18,7 @@ namespace StatLight.Core.Runners
 			ILogger logger,
 			IEventAggregator eventAggregator,
 			IWebServer webServer,
-			IBrowserFormHost browserFormHost,
+			List<IBrowserFormHost> browserFormHost,
 			TeamCityTestResultHandler teamCityCommandPublisher)
 			: base(logger, eventAggregator, webServer, browserFormHost)
 		{

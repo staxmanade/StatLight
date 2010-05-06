@@ -257,8 +257,8 @@ namespace StatLight.Core.Reporting
 
             private void Log(string msg, TestExecutionMethod testExecutionMethod)
             {
-                _logger.Debug("{0} - {1}.{2}".FormatWith(msg, testExecutionMethod.ClassName,
-                                                         testExecutionMethod.MethodName));
+                //_logger.Debug("{0} - {1}.{2}".FormatWith(msg, testExecutionMethod.ClassName,
+                //                                         testExecutionMethod.MethodName));
             }
         }
 

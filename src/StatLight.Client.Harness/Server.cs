@@ -3,6 +3,7 @@ using StatLight.Client.Harness.Events;
 using StatLight.Client.Model.Messaging;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebServer;
+using StatLight.Core.Configuration;
 
 namespace StatLight.Client.Harness
 {
@@ -56,17 +57,10 @@ namespace StatLight.Client.Harness
         /// </summary>
         public static void SignalTestComplete(SignalTestCompleteClientEvent signalTestCompleteClientEvent)
         {
-            signalTestCompleteClientEvent.TotalMessagesPostedCount = _postMessageCount;
-            
-            SignalTestComplate(signalTestCompleteClientEvent);
+            signalTestCompleteClientEvent.TotalMessagesPostedCount = _postMessageCount+1;
+            signalTestCompleteClientEvent.BrowserInstanceId = ClientTestRunConfiguration.InstanceNumber;
+            PostMessage(signalTestCompleteClientEvent);
         }
-
-
-        private static void SignalTestComplate(SignalTestCompleteClientEvent completeClientEvent)
-        {
-            PostMessage(completeClientEvent);
-        }
-
 
         #endregion
     }

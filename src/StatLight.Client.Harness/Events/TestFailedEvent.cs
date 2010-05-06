@@ -5,7 +5,7 @@ namespace StatLight.Client.Harness.Events
 {
     public abstract class ClientEvent
     {
-        private static int _currentEventCreationOrder;
+        internal static int _currentEventCreationOrder;
 
         protected ClientEvent()
         {
@@ -28,6 +28,8 @@ namespace StatLight.Client.Harness.Events
         public int TotalTestsCount { get; set; }
 
         public string OtherInfo { get; set; }
+
+        public int BrowserInstanceId { get; set; }
     }
 
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -46,11 +47,11 @@ namespace StatLight.Core.Tests.WebServer
             protected void SignalTestComplete(IStatLightService statLightService, int postCount)
             {
                 var signalCompleteMsg = (new SignalTestCompleteClientEvent
-                {
-                    TotalMessagesPostedCount = postCount
-                })
-                          .Serialize()
-                          .ToStream();
+                    {
+                        TotalMessagesPostedCount = postCount
+                    })
+                .Serialize()
+                .ToStream();
 
                 statLightService.PostMessage(signalCompleteMsg);
             }
@@ -78,12 +79,12 @@ namespace StatLight.Core.Tests.WebServer
 
                 var postCount = PostMessagesToService();
 
-                SignalTestComplete(StatLightService, postCount);
+                SignalTestComplete(StatLightService, postCount + 1);
             }
 
             protected virtual int PostMessagesToService()
             {
-                return 0;
+                return 1;
             }
         }
 
@@ -134,7 +135,7 @@ namespace StatLight.Core.Tests.WebServer
             {
                 base.Before_all_tests();
 
-                var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), _tagFilter);
+                var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), _tagFilter, 1);
 
                 _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, config, MockServerTestRunConfiguration);
             }
@@ -184,7 +185,7 @@ namespace StatLight.Core.Tests.WebServer
                 TestEventAggregator
                     .AddListener<TestRunCompletedServerEvent>(o => wasSignaledTestComplete = true);
 
-                SignalTestComplete(StatLightService, 0);
+                SignalTestComplete(StatLightService, 1);
 
                 wasSignaledTestComplete.ShouldBeTrue();
             }
@@ -199,7 +200,7 @@ namespace StatLight.Core.Tests.WebServer
 
                 // Signal completion of the test with a total of 2 messages 
                 // (that should have been posted to the server)
-                SignalTestComplete(StatLightService, 2);
+                SignalTestComplete(StatLightService, 3);
                 wasSignaledTestComplete.ShouldBeFalse();
 
                 // Post the first 1
@@ -224,7 +225,7 @@ namespace StatLight.Core.Tests.WebServer
                     .AddListener<TestRunCompletedServerEvent>(o => wasSignaledTestComplete = true);
 
                 StatLightService.PostMessage(MessageFactory.Create<TraceClientEvent>());
-                SignalTestComplete(StatLightService, 1);
+                SignalTestComplete(StatLightService, 2);
                 System.Threading.Thread.Sleep(10);
 
                 wasSignaledTestComplete.ShouldBeTrue();
@@ -234,7 +235,7 @@ namespace StatLight.Core.Tests.WebServer
                 wasSignaledTestComplete = false;
 
                 StatLightService.PostMessage(MessageFactory.Create<TraceClientEvent>());
-                SignalTestComplete(StatLightService, 1);
+                SignalTestComplete(StatLightService, 2);
                 System.Threading.Thread.Sleep(10);
 
                 wasSignaledTestComplete.ShouldBeTrue();
@@ -256,8 +257,8 @@ namespace StatLight.Core.Tests.WebServer
 
             protected void PostMessage(ClientEvent message)
             {
-                StatLightService.PostMessage(message.Serialize().ToStream());
                 _messagesSent++;
+                StatLightService.PostMessage(message.Serialize().ToStream());
             }
 
             protected override int PostMessagesToService()

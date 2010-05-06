@@ -1,18 +1,17 @@
 ﻿
-using StatLight.Core.Common;
-
 namespace StatLight.Console
 {
     using System;
     using System.IO;
     using System.Linq;
     using System.Collections.Generic;
+    using StatLight.Core.Common;
     using StatLight.Core.UnitTestProviders;
     using StatLight.Core.WebServer.XapHost;
 
     public class ArgOptions
     {
-        private Mono.Options.OptionSet optionSet;
+        private readonly Mono.Options.OptionSet _optionSet;
 
         private readonly string[] _args;
 
@@ -21,8 +20,6 @@ namespace StatLight.Console
         public string XmlReportOutputPath { get; private set; }
 
         public string TagFilters { get; private set; }
-
-        public string LicenseKey { get; private set; }
 
         public bool ContinuousIntegrationMode { get; private set; }
 
@@ -40,6 +37,8 @@ namespace StatLight.Console
 
         public MicrosoftTestingFrameworkVersion? MicrosoftTestingFrameworkVersion { get; private set; }
 
+        public int NumberOfBrowserHosts { get; private set; }
+
         private ArgOptions()
             : this(new string[] { })
         {
@@ -47,17 +46,16 @@ namespace StatLight.Console
 
         public ArgOptions(string[] args)
         {
-            LicenseKey = string.Empty;
             MethodsToTest = new List<string>();
-            this.optionSet = GetOptions();
-
+            _optionSet = GetOptions();
+            NumberOfBrowserHosts = 1;
             _args = args;
             //IsValid = true;
             List<string> extra;
 
             try
             {
-                extra = optionSet.Parse(_args);
+                extra = _optionSet.Parse(_args);
             }
             catch (Mono.Options.OptionException e)
             {
@@ -86,7 +84,7 @@ namespace StatLight.Console
                 .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, Mono.Options.OptionValueType.Optional)
                 .Add<string>("c|Continuous", "Runs a single test run, and then monitors the xap for build changes and re-runs the tests automatically.", v => ContinuousIntegrationMode = true)
                 .Add<string>("b|ShowTestingBrowserHost", "Show the browser that is running the tests - necessary to run UI specific tests (hidden by default)", v => ShowTestingBrowserHost = true)
-                .Add("methodsToTest", "Semicolon seperated list of full method names to execute. EX: --methodsToTest=\"RootNamespace.ChildNamespace.ClassName.MethodUnderTest;RootNamespace.ChildNamespace.ClassName.Method2UnderTest;\"", v =>
+                .Add("MethodsToTest", "Semicolon seperated list of full method names to execute. EX: --methodsToTest=\"RootNamespace.ChildNamespace.ClassName.MethodUnderTest;RootNamespace.ChildNamespace.ClassName.Method2UnderTest;\"", v =>
                     {
                         v = v ?? string.Empty;
                         MethodsToTest = v.Split(';').Where(w => !string.IsNullOrEmpty(w)).ToList();
@@ -135,6 +133,19 @@ namespace StatLight.Console
                         else
                             throw new DirectoryNotFoundException("Could not find directory in [{0}]".FormatWith(v));
                     })
+                .Add("NumberOfBrowserHosts", "Default is 1. Allows you to specify the number of browser windows to spread work across.", v =>
+                    {
+                        int value;
+                        v = v ?? string.Empty;
+                        if (int.TryParse(v, out value))
+                        {
+                            NumberOfBrowserHosts = value;
+                        }
+                        else
+                        {
+                            throw new StatLightException("Could not parse parameter [{0}] for numberofbrowsers into an integer.".FormatWith(v));
+                        }
+                    })
                 .Add<string>("teamcity", "Changes the console output to generate the teamcity message spec.", v => OutputForTeamCity = true)
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)
@@ -151,7 +162,7 @@ namespace StatLight.Console
             @out.WriteLine("");
             @out.WriteLine("Options:");
 
-            new ArgOptions().optionSet.WriteOptionDescriptions(@out);
+            new ArgOptions()._optionSet.WriteOptionDescriptions(@out);
 
             @out.WriteLine("");
             @out.WriteLine("Examples:");

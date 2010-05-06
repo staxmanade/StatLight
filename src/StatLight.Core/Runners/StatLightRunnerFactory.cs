@@ -1,4 +1,5 @@
-﻿using StatLight.Core.WebServer.XapHost;
+﻿using System.Linq;
+using StatLight.Core.WebServer.XapHost;
 
 namespace StatLight.Core.Runners
 {
@@ -37,7 +38,7 @@ namespace StatLight.Core.Runners
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             StatLightService statLightService;
             StatLightServiceHost statLightServiceHost;
-            BrowserFormHost browserFormHost;
+            List<IBrowserFormHost> browserFormHost;
 
             BuildAndReturnWebServiceAndBrowser(
                 logger,
@@ -50,7 +51,7 @@ namespace StatLight.Core.Runners
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
 
-            IRunner runner = new ContinuousConsoleRunner(logger, _eventAggregator, statLightConfiguration.Server.XapToTestPath, statLightService, statLightServiceHost, browserFormHost);
+            IRunner runner = new ContinuousConsoleRunner(logger, _eventAggregator, statLightConfiguration.Server.XapToTestPath, statLightService, statLightServiceHost, browserFormHost.First());
             return runner;
         }
 
@@ -61,7 +62,7 @@ namespace StatLight.Core.Runners
 
             StatLightService statLightService;
             StatLightServiceHost statLightServiceHost;
-            BrowserFormHost browserFormHost;
+            List<IBrowserFormHost> browserFormHost;
 
             BuildAndReturnWebServiceAndBrowser(
                 logger,
@@ -85,7 +86,7 @@ namespace StatLight.Core.Runners
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             StatLightService statLightService;
             StatLightServiceHost statLightServiceHost;
-            BrowserFormHost browserFormHost;
+            List<IBrowserFormHost> browserFormHost;
 
             BuildAndReturnWebServiceAndBrowser(
                 logger,
@@ -125,7 +126,7 @@ namespace StatLight.Core.Runners
             ServerTestRunConfiguration serverTestRunConfiguration,
             out StatLightService statLightService,
             out StatLightServiceHost statLightServiceHost,
-            out BrowserFormHost browserFormHost)
+            out List<IBrowserFormHost> browserFormHosts)
         {
 
             var location = new WebServerLocation();
@@ -146,7 +147,10 @@ namespace StatLight.Core.Runners
                 serverTestRunConfiguration.XapHostType == XapHostType.MSTestApril2010)
                 showTestingBrowserHost = true;
 
-            browserFormHost = new BrowserFormHost(logger, location.TestPageUrl, showTestingBrowserHost, dialogMonitorRunner);
+            browserFormHosts = Enumerable.Range(1, clientTestRunConfiguration.NumberOfBrowserHosts)
+                .Select(browserI => new BrowserFormHost(logger, location.TestPageUrl, showTestingBrowserHost, dialogMonitorRunner))
+                .Cast<IBrowserFormHost>()
+                .ToList();
 
             StartupBrowserCommunicationTimeoutMonitor(new TimeSpan(0, 0, 5, 0));
         }

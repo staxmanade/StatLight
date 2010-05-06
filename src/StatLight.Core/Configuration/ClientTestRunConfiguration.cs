@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Globalization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using StatLight.Core.UnitTestProviders;
 using System.Collections.Generic;
 using System.Reflection;
@@ -14,16 +17,24 @@ namespace StatLight.Core.Configuration
         private string _tagFilters = string.Empty;
         private List<string> _methodsToTest;
 
-        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, List<string> methodsToTest, string tagFilters)
+        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, List<string> methodsToTest, string tagFilters, int numberOfBrowserHosts)
         {
             if (methodsToTest == null) throw new ArgumentNullException("methodsToTest");
             if (unitTestProviderType == UnitTestProviderType.Undefined)
                 throw new ArgumentException("Must be defined", "unitTestProviderType");
 
+            if (numberOfBrowserHosts <= 0)
+                throw new ArgumentOutOfRangeException("numberOfBrowserHosts", "Must be greater than 0");
+
             _methodsToTest = methodsToTest;
             _tagFilters = tagFilters ?? string.Empty;
             UnitTestProviderType = unitTestProviderType;
+            NumberOfBrowserHosts = numberOfBrowserHosts;
         }
+
+        [DataMember]
+        public int NumberOfBrowserHosts { get; set; }
+
 
         [DataMember]
         public string TagFilter
@@ -51,8 +62,10 @@ namespace StatLight.Core.Configuration
             set { _methodsToTest = value; }
         }
 
+
 #if SILVERLIGHT
         private static ClientTestRunConfiguration _currentClientTestRunConfiguration;
+
         public static ClientTestRunConfiguration CurrentClientTestRunConfiguration
         {
             get { return _currentClientTestRunConfiguration; }
@@ -68,6 +81,11 @@ namespace StatLight.Core.Configuration
             }
         }
 
+        private static int? _instanceNumber;
+
+        private static readonly IEqualityComparer<string> _ignoreCaseStringComparer =
+            StringComparer.Create(CultureInfo.InvariantCulture, true);
+
         public static bool ContainsMethod(MemberInfo memberInfo)
         {
             if (CurrentClientTestRunConfiguration == null)
@@ -75,17 +93,39 @@ namespace StatLight.Core.Configuration
             if (memberInfo == null)
                 throw new ArgumentNullException("memberInfo");
 
+            var methodName = memberInfo.FullName();
             if (CurrentClientTestRunConfiguration.MethodsToTest.Count == 0)
-                return true;
+                return ShouldItBeRunInThisInstance(methodName);
 
-            string methodString = memberInfo.FullName();
-
-            var containsMethod = CurrentClientTestRunConfiguration.MethodsToTest.Contains(methodString);
-
-            //var expectedTestsToFindAndRunMessage = " *** Contains Method: {0}, {1}".FormatWith(containsMethod, methodString);
-            //StatLight.Client.Harness.Server.Debug(expectedTestsToFindAndRunMessage);
-
+            var containsMethod = CurrentClientTestRunConfiguration.MethodsToTest.Contains(methodName, _ignoreCaseStringComparer);
             return containsMethod;
+        }
+
+        public static int InstanceNumber
+        {
+            get
+            {
+                if (!_instanceNumber.HasValue)
+                {
+                    string initParam = System.Windows.Application.Current.Host.InitParams["InstaneNumber"];
+                    _instanceNumber = int.Parse(initParam);
+                }
+                return _instanceNumber.Value;
+            }
+        }
+
+        private static bool ShouldItBeRunInThisInstance(string methodName)
+        {
+            if (CurrentClientTestRunConfiguration.NumberOfBrowserHosts <= 1)
+            {
+                return true;
+            }
+
+            int methodNameHashCode = Math.Abs(methodName.GetHashCode());
+
+            int moddedHash = methodNameHashCode % CurrentClientTestRunConfiguration.NumberOfBrowserHosts;
+
+            return moddedHash == InstanceNumber;
         }
 #endif
     }

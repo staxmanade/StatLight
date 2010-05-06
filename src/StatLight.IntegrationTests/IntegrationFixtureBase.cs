@@ -69,7 +69,8 @@ namespace StatLight.IntegrationTests
                 _pathToIntegrationTestXap,
                 MSTestVersion,
                 ClientTestRunConfiguration.MethodsToTest,
-                ClientTestRunConfiguration.TagFilter);
+                ClientTestRunConfiguration.TagFilter,
+                1);
 
             bool showTestingBrowserHost = statLightConfiguration.Server.XapHostType == XapHostType.MSTestApril2010;
             _testLogger.Debug("Setting up xaphost {0}".FormatWith(statLightConfiguration.Server.XapHostType));

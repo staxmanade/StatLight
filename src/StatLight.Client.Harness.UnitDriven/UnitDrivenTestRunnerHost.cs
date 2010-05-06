@@ -62,6 +62,12 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
             _totalTestsExpectedToRun = allMethodTesters.Count;
 
+            if(_totalTestsExpectedToRun == 0)
+            {
+                SendTestCompleteClientEvent();
+                return;
+            }
+
             foreach (var methodTester in allMethodTesters)
             {
                 SetupMethodTesterCommand(methodTester);

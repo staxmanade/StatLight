@@ -23,7 +23,7 @@ namespace StatLight.Core.Configuration
             _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
         }
 
-        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, List<string> methodsToTest, string tagFilters)
+        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, List<string> methodsToTest, string tagFilters, int numberOfBrowserHosts)
         {
             AssertXapToTestFileExists(xapPath);
 
@@ -46,7 +46,7 @@ namespace StatLight.Core.Configuration
                 }
             }
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters);
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts);
 
             var serverConfig = CreateServerConfiguration(
                 xapPath,

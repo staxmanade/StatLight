@@ -109,7 +109,7 @@ namespace StatLight.Core.Tests
         protected ClientTestRunConfiguration CreateTestDefaultClinetTestRunConfiguraiton()
         {
             return new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(),
-                                                                         string.Empty);
+                                                                         string.Empty, 1);
         }
     }
 

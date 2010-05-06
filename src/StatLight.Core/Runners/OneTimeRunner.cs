@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Reporting.Providers.Console;
@@ -19,7 +20,7 @@ namespace StatLight.Core.Runners
         private readonly ILogger logger;
         private readonly IEventAggregator _eventAggregator;
         private readonly IWebServer statLightServiceHost;
-        private readonly IBrowserFormHost browserFormHost;
+        private readonly List<IBrowserFormHost> browserFormHost;
         private readonly TestResultAggregator testResultAggregator;
         readonly AutoResetEvent _browserThreadWaitHandle = new AutoResetEvent(false);
 
@@ -28,7 +29,7 @@ namespace StatLight.Core.Runners
             ILogger logger,
             IEventAggregator eventAggregator,
             IWebServer statLightServiceHost,
-            IBrowserFormHost browserFormHost)
+            List<IBrowserFormHost> browserFormHost)
         {
             this.logger = logger;
             _eventAggregator = eventAggregator;
@@ -47,9 +48,11 @@ namespace StatLight.Core.Runners
                 .FormatWith(DateTime.Now, Environment.NewLine));
 
             statLightServiceHost.Start();
-            browserFormHost.Start();
+            foreach(var browser in browserFormHost)
+                browser.Start();
             _browserThreadWaitHandle.WaitOne();
-            browserFormHost.Stop();
+            foreach (var browser in browserFormHost)
+                browser.Stop();
             statLightServiceHost.Stop();
 
             var testReport = testResultAggregator.CurrentReport;
@@ -61,7 +64,8 @@ namespace StatLight.Core.Runners
         {
             if (disposing)
             {
-                browserFormHost.Dispose();
+                foreach (var browser in browserFormHost)
+                    browser.Dispose();
                 _eventAggregator.RemoveListener(this);
                 _browserThreadWaitHandle.Close();
                 testResultAggregator.Dispose();

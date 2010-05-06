@@ -1,4 +1,6 @@
 ﻿
+using System.Diagnostics;
+
 namespace StatLight.Core.WebServer
 {
     using System;
@@ -26,9 +28,13 @@ namespace StatLight.Core.WebServer
         private readonly IEventAggregator _eventAggregator;
         private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
         private int _currentMessagesPostedCount;
-        private int _totalMessagesPostedCount;
+        private int? _totalMessagesPostedCount;
         private readonly ServerTestRunConfiguration _serverTestRunConfiguration;
         private readonly IDictionary<Type, MethodInfo> _publishMethods;
+
+        // Browser InstanceId, Total Messages sent count
+        private readonly Dictionary<int, int> _browserInstancesComplete = new Dictionary<int, int>();
+        private int _instanceId = 0;
 
         public string TagFilters
         {
@@ -72,8 +78,6 @@ namespace StatLight.Core.WebServer
             _eventAggregator.SendMessage(result);
         }
 
-        private bool _alreadyHadSignalTestCompleteClientEventPosted = false;
-
         public void PostMessage(Stream stream)
         {
             try
@@ -88,32 +92,26 @@ namespace StatLight.Core.WebServer
 
                 if (xmlMessage.Is<SignalTestCompleteClientEvent>())
                 {
-                    Interlocked.Decrement(ref _currentMessagesPostedCount);
 
                     var result = xmlMessage.Deserialize<SignalTestCompleteClientEvent>();
                     _eventAggregator.SendMessage(result);
                     var totalMessagsPostedCount = result.TotalMessagesPostedCount;
 
                     _logger.Debug("");
-                    _logger.Debug("StatLightService.TestComplete() with {0} total messages posted - Currently have {1} registered".FormatWith(totalMessagsPostedCount, _currentMessagesPostedCount));
+                    _logger.Debug("StatLightService.TestComplete() with {0} total messages posted - Currently have {1} registered"
+                        .FormatWith(totalMessagsPostedCount, _currentMessagesPostedCount));
+                    _logger.Debug(result.WriteDebug());
 
-                    _logger.Debug("SignalTestCompleteClientEvent");
-                    _logger.Debug("     {");
-                    _logger.Debug("         Failed = {0}".FormatWith(result.Failed));
-                    _logger.Debug("         TotalMessagesPostedCount = {0}".FormatWith(result.TotalMessagesPostedCount));
-                    _logger.Debug("         TotalTestsCount = {0}".FormatWith(result.TotalTestsCount));
-                    _logger.Debug("         TotalFailureCount = {0}".FormatWith(result.TotalFailureCount));
-                    _logger.Debug("         OtherInfo = {0}".FormatWith(result.OtherInfo));
-                    _logger.Debug("     }");
+                    if (!_browserInstancesComplete.ContainsKey(result.BrowserInstanceId))
+                        _browserInstancesComplete.Add(result.BrowserInstanceId, totalMessagsPostedCount);
 
-                    _totalMessagesPostedCount = totalMessagsPostedCount;
+                    if (_browserInstancesComplete.Count == _clientTestRunConfiguration.NumberOfBrowserHosts)
+                    {
+                        _totalMessagesPostedCount = _browserInstancesComplete.Sum(s => s.Value);
+                        _logger.Debug("Awaiting a total of {0} messages - currently have {1}".FormatWith(_totalMessagesPostedCount, _currentMessagesPostedCount));
+                    }
 
-                    // HACK - for some reason we're now getting 2 of these events in some cases...
-                    // TODO: figure out why?
-                    if (_alreadyHadSignalTestCompleteClientEventPosted)
-                        _totalMessagesPostedCount = _currentMessagesPostedCount;
 
-                    _alreadyHadSignalTestCompleteClientEventPosted = true;
                 }
                 else
                 {
@@ -179,10 +177,12 @@ namespace StatLight.Core.WebServer
         public Stream GetHtmlTestPage()
         {
             _logger.Debug("StatLightService.GetHtmlTestPage()");
-
             SetOutgoingResponceContentType("text/html");
 
-            return Resources.TestPage.ToStream();
+            var page = Resources.TestPage;
+            page = page.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", _instanceId.ToString());
+            _instanceId++;
+            return page.ToStream();
         }
 
         private static void SetOutgoingResponceContentType(string contentType)
@@ -199,7 +199,7 @@ namespace StatLight.Core.WebServer
 
         private void WaitingForMessagesToCompletePosting()
         {
-            if (_totalMessagesPostedCount == _currentMessagesPostedCount)
+            if (_totalMessagesPostedCount.HasValue && _currentMessagesPostedCount >= _totalMessagesPostedCount)
             {
                 _logger.Debug("publishing TestRunCompletedServerEvent");
                 _eventAggregator.SendMessage(new TestRunCompletedServerEvent());
@@ -210,8 +210,13 @@ namespace StatLight.Core.WebServer
 
         private void ResetTestRunStatistics()
         {
-            _totalMessagesPostedCount = 0;
+            _instanceId = 0;
+            _browserInstancesComplete.Clear();
+            _totalMessagesPostedCount = null;
             _currentMessagesPostedCount = 0;
+
+            //TODO: I think this is only necessary to support the unit tests
+            ClientEvent._currentEventCreationOrder = 0;
         }
 
         private static string GetPostedMessage(Stream stream)

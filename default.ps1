@@ -758,7 +758,7 @@ Task test-client-harness-tests {
 Task test-specific-method-filter {
 	$scriptFile = GetTemporaryXmlFile;
 	
-	& "$build_dir\StatLight.exe" "-x=src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" '--methodsToTest="StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_passing_test;StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_Failing_test;"' "-o=MSTest" "-r=$scriptFile"
+	& "$build_dir\StatLight.exe" "-x=src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" '--MethodsToTest="StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_passing_test;StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_Failing_test;"' "-o=MSTest" "-r=$scriptFile"
 
 	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
 	$file = get-item $scriptFile
