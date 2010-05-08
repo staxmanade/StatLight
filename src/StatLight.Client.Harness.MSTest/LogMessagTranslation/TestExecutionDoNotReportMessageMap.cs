@@ -110,6 +110,25 @@ Decorators:
                 }
             }
 
+            /*
+MessageType=TestExecution
+Message=Unit Testing
+Decorators:
+KeyType(typeof,string)=Microsoft.Silverlight.Testing.Harness.UnitTestLogDecorator, IsUnitTestMessage, ValueType=System.Boolean, True
+KeyType(typeof,string)=Microsoft.Silverlight.Testing.Harness.LogDecorator, NameProperty, ValueType=System.String, Unit Testing
+KeyType(typeof,string)=Microsoft.Silverlight.Testing.Harness.LogDecorator, TestGranularity, ValueType=Microsoft.Silverlight.Testing.Harness.TestGranularity, Harness
+KeyType(typeof,string)=Microsoft.Silverlight.Testing.Harness.UnitTestLogDecorator, UnitTestHarness, ValueType=Microsoft.Silverlight.Testing.Harness.UnitTestHarness, Microsoft.Silverlight.Testing.Harness.UnitTestHarness
+KeyType(typeof,string)=Microsoft.Silverlight.Testing.Harness.LogDecorator, TestStage, ValueType=Microsoft.Silverlight.Testing.Harness.TestStage, Finishing
+            */
+            if (message.Is(TestStage.Finishing)
+                && message.Is(TestGranularity.Harness)
+                )
+            {
+                return true;
+            }
+
+
+
             return false;
         }
 
