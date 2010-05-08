@@ -426,54 +426,14 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
 	
-	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
-	$file = get-item $scriptFile
-	$doc = [System.Xml.Linq.XDocument]::Load($file)
-
-	$passedCount = 0;
-	$ignoredCount = 0;
-	$failedCount = 0;
-	$systemGeneratedfailedCount = 0;
-
-	foreach($test in $doc.Descendants('test'))
-	{
-		$resultTypeValue = $test.Attribute('resulttype').Value
-		if($resultTypeValue -eq 'Passed')
-		{
-			$passedCount = $passedCount + 1;
-		}
-		elseif($resultTypeValue -eq 'Ignored')
-		{
-			$ignoredCount = $ignoredCount + 1;
-		}
-		elseif($resultTypeValue -eq 'Failed')
-		{
-			$failedCount = $failedCount + 1;
-		}
-		elseif($resultTypeValue -eq 'SystemGeneratedFailure')
-		{
-			$systemGeneratedfailedCount = $systemGeneratedfailedCount + 1;
-		}
-		else
-		{
-			throw "Unknown ResultType [$resultTypeValue]"
-		}
-	
-	}
-	
-	$systemGeneratedfailedCount.ShouldEqual(1);
 	if($build_configuration -eq 'Debug')
 	{
-		$failedCount.ShouldEqual(3);
+		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
 	else
 	{
-		$failedCount.ShouldEqual(2);
+		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
-	$passedCount.ShouldEqual(5);
-	$ignoredCount.ShouldEqual(1);
-	
-	AssertXmlReportIsValid $scriptFile
 	
 	#added sleep to wait for file system to loose the lock on the file so we can delete it
 	[System.Threading.Thread]::Sleep(500);
@@ -706,48 +666,7 @@ Task test-tests-in-other-assembly {
 	
 	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" "-t=OtherAssemblyTests" "-r=$scriptFile"
 	
-	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
-	$file = get-item $scriptFile
-	$doc = [System.Xml.Linq.XDocument]::Load($file)
-
-	$passedCount = 0;
-	$ignoredCount = 0;
-	$failedCount = 0;
-	$systemGeneratedfailedCount = 0;
-	
-	foreach($test in $doc.Descendants('test'))
-	{
-		$resultTypeValue = $test.Attribute('resulttype').Value
-
-		if($resultTypeValue -eq 'Passed')
-		{
-			$passedCount = $passedCount + 1;
-		}
-		elseif($resultTypeValue -eq 'Ignored')
-		{
-			$ignoredCount = $ignoredCount + 1;
-		}
-		elseif($resultTypeValue -eq 'Failed')
-		{
-			$failedCount = $failedCount + 1;
-		}
-		elseif($resultTypeValue -eq 'SystemGeneratedFailure')
-		{
-			$systemGeneratedfailedCount = $systemGeneratedfailedCount + 1;
-		}
-		else
-		{
-			throw "Unknown ResultType [$resultTypeValue]"
-		}
-		
-	}
-	
-	$passedCount.ShouldEqual(2);
-	$ignoredCount.ShouldEqual(1);
-	$failedCount.ShouldEqual(1);
-	$systemGeneratedfailedCount.ShouldEqual(0);
-
-	AssertXmlReportIsValid $scriptFile
+	Assert-statlight-xml-report-results -message "test-tests-in-other-assembly" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 2 -expectedFailedCount 1 -expectedIgnoredCount 1
 }
 
 Task test-client-harness-tests {
@@ -760,46 +679,7 @@ Task test-specific-method-filter {
 	
 	& "$build_dir\StatLight.exe" "-x=src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" '--MethodsToTest="StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_passing_test;StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_Failing_test;"' "-o=MSTest" "-r=$scriptFile"
 
-	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
-	$file = get-item $scriptFile
-	$doc = [System.Xml.Linq.XDocument]::Load($file)
-
-	$passedCount = 0;
-	$ignoredCount = 0;
-	$failedCount = 0;
-	$systemGeneratedfailedCount = 0;
-	
-	foreach($test in $doc.Descendants('test'))
-	{
-		$resultTypeValue = $test.Attribute('resulttype').Value
-
-		if($resultTypeValue -eq 'Passed')
-		{
-			$passedCount = $passedCount + 1;
-		}
-		elseif($resultTypeValue -eq 'Ignored')
-		{
-			$ignoredCount = $ignoredCount + 1;
-		}
-		elseif($resultTypeValue -eq 'Failed')
-		{
-			$failedCount = $failedCount + 1;
-		}
-		elseif($resultTypeValue -eq 'SystemGeneratedFailure')
-		{
-			$systemGeneratedfailedCount = $systemGeneratedfailedCount + 1;
-		}
-		else
-		{
-			throw "Unknown ResultType [$resultTypeValue]"
-		}
-		
-	}
-	
-	$passedCount.ShouldEqual(1);
-	$ignoredCount.ShouldEqual(0);
-	$failedCount.ShouldEqual(1);
-	$systemGeneratedfailedCount.ShouldEqual(0);	 
+	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1 -expectedFailedCount 1
 }
 
 
@@ -807,6 +687,21 @@ Task test-specific-mutiple-browser-runner {
 	$scriptFile = GetTemporaryXmlFile;
 	
 	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight.LotsOfTests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.LotsOfTests.xap" "-r=$scriptFile" "-NumberOfBrowserHosts=5"
+	
+	Assert-statlight-xml-report-results -message "test-specific-mutiple-browser-runner" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1000
+}
+
+
+function Assert-statlight-xml-report-results
+{
+	param ( $message,
+		$resultsXmlTextFilePath,
+		$expectedPassedCount = 0,
+		$expectedIgnoredCount = 0,
+		$expectedFailedCount = 0,
+		$expectedSystemGeneratedfailedCount = 0 )
+	Echo "Asserting xml report results for $message. File=$resultsXmlTextFilePath"
+	AssertXmlReportIsValid $scriptFile
 
 	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
 	$file = get-item $scriptFile
@@ -843,10 +738,10 @@ Task test-specific-mutiple-browser-runner {
 		}
 	}
 	
-	$passedCount.ShouldEqual(1000);
-	$ignoredCount.ShouldEqual(0);
-	$failedCount.ShouldEqual(0);
-	$systemGeneratedfailedCount.ShouldEqual(0);	 
+	$passedCount.ShouldEqual($expectedPassedCount);
+	$ignoredCount.ShouldEqual($expectedIgnoredCount);
+	$failedCount.ShouldEqual($expectedFailedCount);
+	$systemGeneratedfailedCount.ShouldEqual($expectedSystemGeneratedfailedCount);	 
 }
 
 Task test-all-mstest-version-acceptance-tests {
