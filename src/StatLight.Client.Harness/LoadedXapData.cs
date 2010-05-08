@@ -43,7 +43,11 @@ namespace StatLight.Client.Harness
             if (root != null)
             {
                 string entryPoint = root.Attribute("EntryPointAssembly").Value;
-                var partsElement = root.FirstNode as XElement;
+
+                //TODO: There has to be a better way to get the Deployment.Parts out of the xml than this...
+                var partsElement = root.Elements()
+                    .Where(w => w.Name.LocalName.Equals("Deployment.Parts", StringComparison.OrdinalIgnoreCase))
+                    .SingleOrDefault();
 
                 if (partsElement != null)
                 {
@@ -82,7 +86,7 @@ namespace StatLight.Client.Harness
                     }
                 }
                 else
-                    throw new InvalidOperationException("The application manifest did not contain any assembly part xml nodes.");
+                    throw new InvalidOperationException("The application manifest does not contain a Deployment.Parts xml element.");
 
                 if (_testAssemblies.Count == 0)
                     throw new InvalidOperationException("Could not find the entry poing assembly [{0}].".FormatWith(entryPoint));

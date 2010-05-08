@@ -8,3 +8,7 @@ look into replacing Default testing framework version - also the string file nam
 wrap real unit tests around the XapReader
 
 cleanup logger passed into XapReader
+
+
+OOB notes:
+http://debuggingblog.com/wp/2009/07/17/silverlight-3-outofbrowseroob-explained-and-how-to-host-any-xap-package-by-modifying-the-metadata/

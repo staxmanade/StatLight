@@ -1,0 +1,7 @@
+<OutOfBrowserSettings ShortName="StatLight.IntegrationTests.OutOfBrowser Application" EnableGPUAcceleration="False" ShowInstallMenuItem="True">
+  <OutOfBrowserSettings.Blurb>StatLight.IntegrationTests.OutOfBrowser Application on your desktop; at home, at work or on the go.</OutOfBrowserSettings.Blurb>
+  <OutOfBrowserSettings.WindowSettings>
+    <WindowSettings Title="StatLight.IntegrationTests.OutOfBrowser Application" />
+  </OutOfBrowserSettings.WindowSettings>
+  <OutOfBrowserSettings.Icons />
+</OutOfBrowserSettings>
