@@ -32,7 +32,7 @@ namespace StatLight.Core.Runners
                 using (var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, statLightService, _xapFileBuildChangedMonitor))
                 {
                     string line;
-                    while ((line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))
+                    while ( !(line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))
                     {
                         runner.ForceFilteredTest(line);
                     }
