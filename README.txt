@@ -10,6 +10,9 @@ Project Resource Links and Information
 Source code location: http://github.com/staxmanade/StatLight
 Documentation, Issue tracking, Discussion, etc located: http://statlight.codeplex.com
 
+Where do I get the most current release?
+=========================
+http://statlight.codeplex.com
 
 How to build?
 =========================
