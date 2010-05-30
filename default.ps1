@@ -801,6 +801,8 @@ Task package-release -depends clean-release {
 			'Microsoft.Silverlight.Testing.License.txt'
 			'StatLight.Client.For.July2009.xap'
 			'StatLight.Client.For.March2010.xap'
+			'StatLight.Client.For.April2010.xap'
+			'StatLight.Client.For.May2010.xap'
 			'StatLight.Client.For.November2009.xap'
 			'StatLight.Client.For.October2009.xap'
 			'StatLight.Client.For.UnitDrivenDecember2009.xap'
