@@ -31,6 +31,7 @@ properties {
 	$microsoft_silverlight_testing_versions = @(
 			'March2010'
 			'April2010'
+			'May2010'
 
 #			'December2008'
 #			'March2009'

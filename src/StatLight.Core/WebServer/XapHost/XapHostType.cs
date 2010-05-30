@@ -9,6 +9,7 @@
         MSTestNovember2009,
         MSTestMarch2010,
         MSTestApril2010,
+        MSTestMay2010,
 
         UnitDrivenDecember2009,
     }

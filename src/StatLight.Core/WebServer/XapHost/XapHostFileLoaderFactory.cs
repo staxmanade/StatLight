@@ -48,19 +48,16 @@ namespace StatLight.Core.WebServer.XapHost
                     return XapHostType.MSTestApril2010;
 
                 case UnitTestProviderType.MSTest:
-                    switch (microsoftTestingFrameworkVersion)
+
+                    if(microsoftTestingFrameworkVersion.HasValue)
                     {
-                        case MicrosoftTestingFrameworkVersion.December2008: return XapHostType.MSTestDecember2008;
-                        case MicrosoftTestingFrameworkVersion.March2009: return XapHostType.MSTestMarch2009;
-                        case MicrosoftTestingFrameworkVersion.July2009: return XapHostType.MSTestJuly2009;
-                        case MicrosoftTestingFrameworkVersion.October2009: return XapHostType.MSTestOctober2009;
-                        case MicrosoftTestingFrameworkVersion.November2009: return XapHostType.MSTestNovember2009;
-                        case MicrosoftTestingFrameworkVersion.March2010: return XapHostType.MSTestMarch2010;
-                        case MicrosoftTestingFrameworkVersion.April2010: return XapHostType.MSTestApril2010;
-                        default:
-                            throwNotSupportedException();
-                            break;
+                        var msTestVersionXapHostStringName = "MSTest" + microsoftTestingFrameworkVersion.Value;
+
+                        if (Enum.IsDefined(typeof(XapHostType), msTestVersionXapHostStringName))
+                            return (XapHostType)Enum.Parse(typeof(XapHostType), msTestVersionXapHostStringName);
                     }
+
+                    throwNotSupportedException();
                     break;
 
                 case UnitTestProviderType.UnitDriven:
