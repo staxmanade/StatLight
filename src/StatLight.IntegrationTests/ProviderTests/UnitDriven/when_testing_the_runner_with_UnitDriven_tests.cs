@@ -50,14 +50,13 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
         }
 
         [Test]
-        [Ignore]
         public void Should_have_a_timeout_exception()
         {
             TestReport
                 .TestResults
                 .Where(w => w.MethodName == "Async_test_should_timeout")
                 .Single()
-                .ExceptionInfo.FullMessage.ToLower().ShouldContain("timeout");
+                .ExceptionInfo.FullMessage.ToLower().ShouldContain("test timed out");
         }
     }
 }
