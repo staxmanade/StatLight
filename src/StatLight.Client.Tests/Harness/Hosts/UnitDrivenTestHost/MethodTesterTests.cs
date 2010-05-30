@@ -1,4 +1,3 @@
-using System;
 using UnitDriven;
 namespace StatLight.Client.Tests.Harness.Hosts.UnitDrivenTestHost
 {
