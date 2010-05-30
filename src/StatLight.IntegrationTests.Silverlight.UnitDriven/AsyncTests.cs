@@ -126,15 +126,17 @@ namespace StatLight.IntegrationTests.Silverlight.UnitDriven
         {
             using (UnitTestContext context = GetContext())
             {
+				context.SetTimeout(TimeSpan.FromSeconds(2));
+
                 BackgroundWorker worker = new BackgroundWorker();
                 worker.DoWork += (o, e) =>
                 {
-                    Thread.Sleep(6000);
+                    Thread.Sleep(TimeSpan.FromSeconds(5));
                 };
                 worker.RunWorkerCompleted += (o, e) =>
                 {
                     // The failed Assert will pass failed test information to the context.
-                    context.Assert.Fail();
+                    context.Assert.Fail("This is not correct! It should have timed out.");
                 };
                 worker.RunWorkerAsync();
 

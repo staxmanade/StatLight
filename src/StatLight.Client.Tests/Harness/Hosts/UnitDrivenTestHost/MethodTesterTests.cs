@@ -1,4 +1,3 @@
-using System;
 using UnitDriven;
 namespace StatLight.Client.Tests.Harness.Hosts.UnitDrivenTestHost
 {
@@ -12,9 +11,10 @@ namespace StatLight.Client.Tests.Harness.Hosts.UnitDrivenTestHost
             base.Before_all_tests();
 
             var classUnderTest = new ClassUnderTest();
-            var methodUnderTest = classUnderTest.GetType().GetMethod("PassingMethodUnderTest");
+			var testType = classUnderTest.GetType();
+            var methodUnderTest = testType.GetMethod("PassingMethodUnderTest");
 
-            _methodTester = new MethodTester(methodUnderTest);
+            _methodTester = new MethodTester(methodUnderTest, testType);
             _methodTesterMonitor = new MethodTesterMonitor(_methodTester);
             _methodTester.Initialize();
         }

@@ -68,7 +68,7 @@
       <Link>AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.This.cs" />
-    <Compile Include="UnitDrivenTestRunnerHost.cs" />
+    <Compile Include="UnitDrivenRunnerHost.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\StatLight.snk">
