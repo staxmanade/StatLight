@@ -92,6 +92,9 @@ namespace StatLight.Core.WebServer.XapInspection
 
                 // April SL 4 release
                 new { Version = MicrosoftTestingFrameworkVersion.April2010, Hash = "357a677957f309ae85c3e5aeeda43a32bca23ad3", Supported = true, },
+
+                // SL 3 build of the SL4 release to support phone
+                new { Version = MicrosoftTestingFrameworkVersion.May2010, Hash = "de70e6249e6c13b60d8b556c6495b2d34a737d7c", Supported = true, },
             };
 
             var foundVersion = definedVersions.Where(w => w.Hash.Equals(incomingHash, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
@@ -99,7 +102,12 @@ namespace StatLight.Core.WebServer.XapInspection
             _logger.Debug("Incoming MSTest file's hash = {0}".FormatWith(incomingHash));
 
             if (foundVersion == null)
+            {
+                _logger.Warning(
+                    "Could not determine the Microsoft testing framework version with a SHA1 hash of '{0}'"
+                    .FormatWith(incomingHash));
                 return null;
+            }
 
             if (!foundVersion.Supported)
                 throw new StatLightException("The Microsoft Silverlight Testing Framework from {0} is not supported in StatLight (anymore). Please look to upgrade to the latest version.".FormatWith(foundVersion.Version));
