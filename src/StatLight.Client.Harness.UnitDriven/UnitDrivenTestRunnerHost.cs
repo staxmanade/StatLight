@@ -39,6 +39,7 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
         public UIElement StartRun()
         {
             Server.Debug("UnitDriven: EntryPointAssembly = {0}".FormatWith(_loadedXapData.EntryPointAssembly));
+			System.Diagnostics.Debugger.Break();
 
             // We're not using UnitDriven't TestEngine to execute the tests
             // it doesn't provide an easy way for us to filter specific tests
@@ -58,9 +59,9 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
         private void WireUpTestEngineMonitoring(TestContext testContext)
         {
-            List<MethodTester> allMethodTesters = GetMethodTestersToRun(testContext).ToList();
+			var allMethodTesters = GetMethodTestersToRun(testContext).ToArray();
 
-            _totalTestsExpectedToRun = allMethodTesters.Count;
+            _totalTestsExpectedToRun = allMethodTesters.Length;
 
             if(_totalTestsExpectedToRun == 0)
             {
@@ -76,16 +77,40 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
         private static IEnumerable<MethodTester> GetMethodTestersToRun(TestContext testContext)
         {
-            return testContext.Testers
-                .SelectMany(s => s.Methods.Select(methods => methods))
-                .Where(w => ClientTestRunConfiguration.ContainsMethod(w.Method));
+			return testContext.Items.OfType<TestGroup>().SelectMany(g => GetMethodTesters(g));
+		}
+
+		private static IEnumerable<MethodTester> GetMethodTesters(TestGroup group)
+		{
+			foreach (var item in group.Items)
+			{
+				TestGroup groupItem = item as TestGroup;
+				if (groupItem != null)
+				{
+					foreach (var subItem in GetMethodTesters(groupItem))
+						yield return subItem;
+					continue;
+				}
+
+				TypeTester typeItem = item as TypeTester;
+				if (typeItem != null)
+				{
+					foreach (var subItem in typeItem.Items)
+						yield return subItem;
+					continue;
+				}
+
+				throw new InvalidOperationException();
+			}
         }
 
         private void OnMethodTesterPropertyChanged(MethodTester mt, string propertyName)
         {
-            //TODO: how to we figure out when the test has started?
+			if (propertyName == "IsRunning" && mt.IsRunning)
+			{
+				SendTestBeginClientEvent(mt);
+			}
 
-            //TODO: Is the the best key to figure out if we're done with the test?
             if (propertyName == "IsRunning" && !mt.IsRunning)
             {
                 if (IsFinalResultStatus(mt))
@@ -94,13 +119,9 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
                     if (!ShouldReportedThisInstanceOfTheFinalResult(methodInfo))
                         return;
 
-                    // The Server requires both a begin and end test event
-                    // It doesn't look easy to report the start of a test thorugh UnitDriven (at least yet...)
-                    // So just send it now - an repor the final event right after that.
-                    SendTestBeginClientEvent(mt);
-
                     switch (mt.Status)
                     {
+						case TestResult.Indeterminate:
                         case TestResult.Fail:
                             SendTestFailureClientEvent(methodInfo, mt.Message);
                             Interlocked.Increment(ref _totalFailedCount);
@@ -120,8 +141,9 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
         private static bool IsFinalResultStatus(MethodTester methodTester)
         {
-            return methodTester.Status == TestResult.Fail ||
-                   methodTester.Status == TestResult.Success;
+			return methodTester.Status == TestResult.Fail ||
+				   methodTester.Status == TestResult.Success ||
+				   methodTester.Status == TestResult.Indeterminate;
         }
 
         private bool ShouldReportedThisInstanceOfTheFinalResult(MethodInfo methodInfo)
