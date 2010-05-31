@@ -201,11 +201,9 @@
     <Compile Include="WebServer\XapFileBuildChangedMonitor.cs" />
     <Compile Include="WebServer\XapFileBuildChangedArgs.cs" />
     <Compile Include="WebServer\XapHost\XapHostType.cs" />
-    <Compile Include="WebServer\XapHost\DefaultXapHostFileLoader.cs" />
     <Compile Include="WebServer\XapHost\DiskXapHostFileLoader.cs" />
     <Compile Include="WebServer\XapHost\IXapHostFileLoader.cs" />
     <Compile Include="WebServer\XapHost\MicrosoftTestingFrameworkVersion.cs" />
-    <Compile Include="WebServer\XapHost\StatLightClientXapNames.cs" />
     <Compile Include="WebServer\XapHost\XapHostFileLoaderFactory.cs" />
     <Compile Include="WebServer\XapInspection\IXapFile.cs" />
     <Compile Include="WebServer\XapInspection\XapFile.cs" />

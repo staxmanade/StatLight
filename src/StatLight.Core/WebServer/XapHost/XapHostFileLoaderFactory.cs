@@ -7,6 +7,8 @@ namespace StatLight.Core.WebServer.XapHost
 {
     public class XapHostFileLoaderFactory
     {
+        public static readonly string ClientXapNameFormat = "StatLight.Client.For.{0}.xap";
+
         private readonly ILogger _logger;
         private IDictionary<XapHostType, IXapHostFileLoader> XapHostFileLoaders { get; set; }
 
@@ -20,10 +22,10 @@ namespace StatLight.Core.WebServer.XapHost
             {
                 var enumItemCasted = (MicrosoftTestingFrameworkVersion)enumItem;
                 var e = (XapHostType)Enum.Parse(typeof(XapHostType), "MSTest" + enumItemCasted);
-                XapHostFileLoaders.Add(e, new DiskXapHostFileLoader(_logger, StatLightClientXapNames.ClientXapNameFormat.FormatWith(enumItemCasted)));
+                XapHostFileLoaders.Add(e, new DiskXapHostFileLoader(_logger, ClientXapNameFormat.FormatWith(enumItemCasted)));
             }
 
-            XapHostFileLoaders.Add(XapHostType.UnitDrivenDecember2009, new DiskXapHostFileLoader(_logger, StatLightClientXapNames.ClientXapNameFormat.FormatWith(XapHostType.UnitDrivenDecember2009)));
+            XapHostFileLoaders.Add(XapHostType.UnitDrivenDecember2009, new DiskXapHostFileLoader(_logger, ClientXapNameFormat.FormatWith(XapHostType.UnitDrivenDecember2009)));
         }
 
         public virtual byte[] LoadXapHostFor(XapHostType version)
