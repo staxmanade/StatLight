@@ -105,8 +105,9 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
         /// interface objects.</returns>
         public ICollection<ITestClass> GetTestClasses()
         {
-            return _assembly.GetTestClasses(type => type.HasAttribute(NUnitAttributes.TestFixture),
-                                            type => new TestClass(this, type));
+            return _assembly.GetTestClasses(
+                        type => type.HasAttribute(NUnitAttributes.TestFixture),
+                        type => new TestClass(this, type));
         }
     }
 }

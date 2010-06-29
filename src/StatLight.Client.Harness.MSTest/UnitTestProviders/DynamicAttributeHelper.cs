@@ -83,6 +83,9 @@ While trying to reflect the assembly [{0}]. Below are the LoaderExceptions disco
                 var tests = new List<ITestClass>();
                 foreach (Type type in types.Where(filter))
                 {
+                    if (type.IsAbstract)
+                        continue;
+
                     //Server.Debug("type={0}".FormatWith(type.FullName));
                     tests.Add(createType(type));
                 }

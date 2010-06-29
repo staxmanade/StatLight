@@ -118,16 +118,9 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven
 		/// interface objects.</returns>
 		public ICollection<ITestClass> GetTestClasses()
 		{
-			ICollection<Type> classes = _assembly
-				.GetTypes()
-				.Where(t => t.HasAttribute(ProviderAttributes.TestClass))
-				.ToList();
-			List<ITestClass> tests = new List<ITestClass>(classes.Count);
-			foreach (Type type in classes)
-			{
-				tests.Add(new TestClass(this, type));
-			}
-			return tests;
+            return _assembly.GetTestClasses(
+                type => type.HasAttribute(ProviderAttributes.TestClass),
+                type => new TestClass(this, type));
 		}
 	}
 }

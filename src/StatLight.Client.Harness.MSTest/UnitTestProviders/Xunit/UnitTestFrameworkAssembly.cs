@@ -107,13 +107,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit
         public ICollection<ITestClass> GetTestClasses()
         {
             var allTypes = _assembly.GetTypes();
-            var classes = new List<Type>();
-            foreach (var type in allTypes)
-                if (ContainsAMethodWithAFactAttribute(type))
-                {
-                    //Server.Debug("type = {0}".FormatWith(type.FullName));
-                    classes.Add(type);
-                }
+            var classes = allTypes.Where(ContainsAMethodWithAFactAttribute).ToList();
 
             List<ITestClass> tests = new List<ITestClass>(classes.Count);
             foreach (Type type in classes)
@@ -125,15 +119,14 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit
 
         private bool ContainsAMethodWithAFactAttribute(Type type)
         {
+            if (type.IsAbstract)
+                return false;
+
             if (type.IsPublic || type.IsNestedPublic)
             {
+
                 if (TestClass.GetTestMethods(type).Count > 0)
                 {
-                    //if(type.Name == "XunitNestedClassTests")
-                    //{
-                    //    var stackTrace = new StackTrace();
-                    //    Server.Debug("Found Type: {0}".FormatWith(string.Join(Environment.NewLine + "   ", stackTrace.GetFrames().Select(s => s.GetMethod().Name).ToArray())));
-                    //}
                     return true;
                 }
 
