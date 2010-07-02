@@ -854,6 +854,10 @@ Task package-release -depends clean-release {
 	$release_zip_path = "$release_dir\StatLight.v$($version.Major).$($version.Minor).zip"
 	
 	Get-Item $versionBuildPath | Zip-Files-From-Pipeline $release_zip_path
+	Write-Host -ForegroundColor Green "*************************************************"
+	Write-Host -ForegroundColor Green "Release build place in the following folder."
+	Write-Host -ForegroundColor Green "     $(get-item $release_dir)"
+	Write-Host -ForegroundColor Green "*************************************************"
 }
 
 
