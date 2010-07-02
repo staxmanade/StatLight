@@ -33,10 +33,8 @@ namespace StatLight.Client.Harness
         {
             try
             {
-                var aggregateCatalog = new AggregateCatalog();
-                aggregateCatalog.Catalogs.Add(new DeploymentCatalog());
-                CompositionHost.Initialize(aggregateCatalog);
-                CompositionInitializer.SatisfyImports(this);
+                var compositionContainer = new CompositionContainer(new DeploymentCatalog());
+                compositionContainer.SatisfyImportsOnce(this);
             }
             catch (ReflectionTypeLoadException rfex)
             {
