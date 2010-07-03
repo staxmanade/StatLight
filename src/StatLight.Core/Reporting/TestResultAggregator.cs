@@ -16,6 +16,7 @@ namespace StatLight.Core.Reporting
         IListener<TraceClientEvent>,
         IListener<DialogAssertionServerEvent>,
         IListener<BrowserHostCommunicationTimeoutServerEvent>,
+        IListener<FatalSilverlightExceptionServerEvent>,
         IListener<TestExecutionMethodBeginClientEvent>
     {
         private readonly ILogger _logger;
@@ -159,18 +160,14 @@ namespace StatLight.Core.Reporting
 
                 ReportIt(msg);
             }
-
         }
 
         public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
         {
             if (message == null) throw new ArgumentNullException("message");
-            var msg = new TestCaseResult(ResultType.Failed)
-            {
-                OtherInfo = message.Message,
-            };
+            string messageValue = message.Message;
 
-            ReportIt(msg);
+            ReportFailureMessage(messageValue);
         }
 
         public void Handle(TestExecutionMethodBeginClientEvent message)
@@ -246,5 +243,23 @@ namespace StatLight.Core.Reporting
             }
         }
 
+        public void Handle(FatalSilverlightExceptionServerEvent message)
+        {
+            if (message == null) throw new ArgumentNullException("message");
+
+            string messageValue = message.Message;
+
+            ReportFailureMessage(messageValue);
+        }
+
+        private void ReportFailureMessage(string messageValue)
+        {
+            var msg = new TestCaseResult(ResultType.Failed)
+                          {
+                              OtherInfo = messageValue,
+                          };
+
+            ReportIt(msg);
+        }
     }
 }

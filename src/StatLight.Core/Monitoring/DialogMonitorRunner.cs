@@ -60,11 +60,26 @@ namespace StatLight.Core.Monitoring
 
         private void ExecuteDialogSlapdown(IDialogMonitor dialogMonitor, DialogType dialogType)
         {
-            Action<string> a = msg => _eventAggregator.SendMessage(
-                new DialogAssertionServerEvent(dialogType)
-                    {
-                        Message = msg,
-                    });
+            Action<string> a = msg =>
+                                   {
+                                       if (msg.Contains("836D4425-DB59-48BB-BA7B-03AB20A57499"))
+                                       {
+                                           _eventAggregator
+                                               .SendMessage(new FatalSilverlightExceptionServerEvent(dialogType) { Message = msg, });
+
+                                           _eventAggregator
+                                               .SendMessage<TestRunCompletedServerEvent>();
+
+                                       }
+                                       else
+                                       {
+                                           _eventAggregator.SendMessage(
+                                               new DialogAssertionServerEvent(dialogType)
+                                                   {
+                                                       Message = msg,
+                                                   });
+                                       }
+                                   };
 
             dialogMonitor.ExecuteDialogSlapDown(a);
         }

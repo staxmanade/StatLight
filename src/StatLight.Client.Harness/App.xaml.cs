@@ -96,17 +96,7 @@ namespace StatLight.Client.Harness
 
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            try
-            {
-                LogException(e.ExceptionObject);
-            }
-            catch (Exception)
-            {
-            }
-            finally
-            {
-                e.Handled = true;
-            }
+            LogException(e.ExceptionObject);
         }
 
         #region most of the custom StatLight app code
@@ -149,25 +139,7 @@ namespace StatLight.Client.Harness
 
         private static void LogException(Exception ex)
         {
-            try
-            {
-                var msg = ex.ToString();
-#if DEBUG
-                MessageBox.Show(msg);
-#endif
-
-                var messageObject = new UnhandledExceptionClientEvent
-                {
-                    Exception = ex,
-                };
-                Server.PostMessage(messageObject);
-            }
-            catch (Exception)
-            {
-#if DEBUG
-                MessageBox.Show(ex.ToString());
-#endif
-            }
+            Server.LogException(ex);
         }
     }
 }

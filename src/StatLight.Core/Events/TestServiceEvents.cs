@@ -10,6 +10,18 @@
         MessageBox,
     }
 
+    public sealed class FatalSilverlightExceptionServerEvent
+    {
+        public FatalSilverlightExceptionServerEvent(DialogType dialogType)
+        {
+            DialogType = dialogType;
+        }
+
+        public DialogType DialogType { get; private set; }
+
+        public string Message { get; set; }
+    }
+
     public sealed class DialogAssertionServerEvent
     {
         public DialogAssertionServerEvent(DialogType dialogType)
@@ -32,7 +44,8 @@
 
     public interface ITestingReportEvents : IListener<TestCaseResult>,
         IListener<TraceClientEvent>,
-        IListener<BrowserHostCommunicationTimeoutServerEvent>
+        IListener<BrowserHostCommunicationTimeoutServerEvent>,
+        IListener<FatalSilverlightExceptionServerEvent>
     { }
 
 }

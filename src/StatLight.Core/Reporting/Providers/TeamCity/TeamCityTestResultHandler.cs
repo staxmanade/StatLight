@@ -118,5 +118,12 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
             }
 
         }
+
+        public void Handle(FatalSilverlightExceptionServerEvent message)
+        {
+            if (message == null) throw new ArgumentNullException("message");
+            string writeMessage = message.Message;
+            WriteServerEventFailure("FatalSilverlightExceptionServerEvent", writeMessage);
+        }
     }
 }

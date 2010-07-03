@@ -92,5 +92,11 @@ namespace StatLight.Core.Reporting.Providers.Console
                     break;
             }
         }
+
+        public void Handle(FatalSilverlightExceptionServerEvent message)
+        {
+            if (message == null) throw new ArgumentNullException("message");
+            WriteString(message.Message);
+        }
     }
 }

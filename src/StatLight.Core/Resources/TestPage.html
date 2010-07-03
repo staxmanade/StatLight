@@ -33,7 +33,7 @@
             }
 
             var errMsg = "Unhandled Error in Silverlight Application " + appSource + "\n";
-
+            errMsg += "Super Secret StatLight Code: 836D4425-DB59-48BB-BA7B-03AB20A57499\n"
             errMsg += "Code: " + iErrorCode + "    \n";
             errMsg += "Category: " + errorType + "       \n";
             errMsg += "Message: " + args.ErrorMessage + "     \n";
@@ -50,8 +50,9 @@
                 }
                 errMsg += "MethodName: " + args.methodName + "     \n";
             }
-
-            throw new Error(errMsg);
+            
+            alert(errMsg);
+            //throw new Error(errMsg);
         }
     </script>
 </head>

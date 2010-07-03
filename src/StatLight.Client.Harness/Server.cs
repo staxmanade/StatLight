@@ -9,36 +9,55 @@ namespace StatLight.Client.Harness
 {
     public class Server
     {
+        private static int _postMessageCount;
+
         public static void Trace(string message)
         {
             if (string.IsNullOrEmpty(message))
                 message = "{StatLight - Trace Message: trace string is NULL or empty}";
-            var traceClientEvent = new TraceClientEvent { Message = message };
+            var traceClientEvent = new TraceClientEvent
+            {
+                Message = message
+            };
+
             PostMessage(traceClientEvent);
         }
 
         public static void Debug(string message)
         {
 #if DEBUG
-            var traceClientEvent = new DebugClientEvent { Message = message };
+            var traceClientEvent = new DebugClientEvent
+            {
+                Message = message
+            };
             PostMessage(traceClientEvent);
 #endif
         }
 
-        public static void PostMessage(string message)
+        public static void LogException(Exception exception)
         {
-            PostMessageX(message);
+            var messageObject = new UnhandledExceptionClientEvent
+            {
+                Exception = exception,
+            };
+
+            PostMessage(messageObject);
         }
 
+        public static void SignalTestComplete(SignalTestCompleteClientEvent signalTestCompleteClientEvent)
+        {
+            signalTestCompleteClientEvent.TotalMessagesPostedCount = _postMessageCount + 1;
+            signalTestCompleteClientEvent.BrowserInstanceId = ClientTestRunConfiguration.InstanceNumber;
+            PostMessage(signalTestCompleteClientEvent);
+        }
 
         public static void PostMessage(ClientEvent message)
         {
-            string traceMessage = message.Serialize();
-            PostMessageX(traceMessage);
+            string messageString = message.Serialize();
+            PostMessage(messageString);
         }
 
-        private static int _postMessageCount;
-        private static void PostMessageX(string message)
+        public static void PostMessage(string message)
         {
             System.Threading.Interlocked.Increment(ref _postMessageCount);
 
@@ -49,19 +68,5 @@ namespace StatLight.Client.Harness
         {
             new HttpWebRequestHelper(uri, "POST", message).Execute();
         }
-
-        #region SignalTestComplate
-
-        /// <summary>
-        /// Send a message back to the server signaling that all the tests have completed.
-        /// </summary>
-        public static void SignalTestComplete(SignalTestCompleteClientEvent signalTestCompleteClientEvent)
-        {
-            signalTestCompleteClientEvent.TotalMessagesPostedCount = _postMessageCount+1;
-            signalTestCompleteClientEvent.BrowserInstanceId = ClientTestRunConfiguration.InstanceNumber;
-            PostMessage(signalTestCompleteClientEvent);
-        }
-
-        #endregion
     }
 }
