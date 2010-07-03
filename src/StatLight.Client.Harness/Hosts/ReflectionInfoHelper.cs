@@ -27,5 +27,27 @@ namespace StatLight.Client.Harness.Hosts
                         methodInfo.Name);
             return m;
         }
+
+
+        public static void HandleReflectionTypeLoadException(ReflectionTypeLoadException rfex)
+        {
+            string loaderExceptionMessages = "";
+            //string msg = "********************* " + helperMessage + "*********************";
+            foreach (var t in rfex.LoaderExceptions)
+            {
+                loaderExceptionMessages += "   -  ";
+                loaderExceptionMessages += t.Message;
+                loaderExceptionMessages += Environment.NewLine;
+            }
+
+            string msg = @"
+********************* ReflectionTypeLoadException *********************
+***** Begin Loader Exception Messages *****
+{0}
+***** End Loader Exception Messages *****
+".FormatWith(loaderExceptionMessages);
+
+            Server.Trace(msg);
+        }
     }
 }

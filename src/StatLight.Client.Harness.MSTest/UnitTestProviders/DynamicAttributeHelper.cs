@@ -47,25 +47,8 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
             }
             catch (ReflectionTypeLoadException rfex)
             {
-                string loaderExceptionMessages = "";
-                //string msg = "********************* " + helperMessage + "*********************";
-                foreach (var t in rfex.LoaderExceptions)
-                {
-                    loaderExceptionMessages += "   -  ";
-                    loaderExceptionMessages += t.Message;
-                    loaderExceptionMessages += Environment.NewLine;
-                }
-
-                string msg = @"
-********************* ReflectionTypeLoadException *********************
-While trying to reflect the assembly [{0}]. Below are the LoaderExceptions discovered.
-***** Begin Loader Exception Messages *****
-{1}
-***** End Loader Exception Messages *****
-".FormatWith(assembly.FullName, loaderExceptionMessages);
-
-                Server.Trace(msg);
-                return false;
+               ReflectionInfoHelper.HandleReflectionTypeLoadException(rfex);
+               return false;
             }
 
             return true;

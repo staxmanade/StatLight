@@ -8,7 +8,6 @@ using StatLight.Client.Harness.Hosts;
 using StatLight.Core.Configuration;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebServer;
-using StatLight.Client.Harness.Events;
 
 namespace StatLight.Client.Harness
 {
@@ -38,23 +37,7 @@ namespace StatLight.Client.Harness
             }
             catch (ReflectionTypeLoadException rfex)
             {
-                string loaderExceptionMessages = "";
-                //string msg = "********************* " + helperMessage + "*********************";
-                foreach (var t in rfex.LoaderExceptions)
-                {
-                    loaderExceptionMessages += "   -  ";
-                    loaderExceptionMessages += t.Message;
-                    loaderExceptionMessages += Environment.NewLine;
-                }
-
-                string msg = @"
-********************* ReflectionTypeLoadException *********************
-***** Begin Loader Exception Messages *****
-{0}
-***** End Loader Exception Messages *****
-".FormatWith(loaderExceptionMessages);
-
-                Server.Trace(msg);
+                ReflectionInfoHelper.HandleReflectionTypeLoadException(rfex);
             }
             catch (CompositionException compositionException)
             {

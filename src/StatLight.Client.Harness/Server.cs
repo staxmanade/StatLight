@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using StatLight.Client.Harness.Events;
 using StatLight.Client.Model.Messaging;
 using StatLight.Core.Serialization;
