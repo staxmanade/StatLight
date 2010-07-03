@@ -27,12 +27,6 @@ namespace StatLight.Console
         {
             PrintNameVersionAndCopyright();
 
-#if DEBUG
-            ILogger logger = new ConsoleLogger(LogChatterLevels.Full);
-#else
-			ILogger logger = new ConsoleLogger(LogChatterLevels.Error | LogChatterLevels.Warning | LogChatterLevels.Information);
-#endif
-
             ArgOptions options;
 
             using (var consoleIconSwapper = new ConsoleIconSwapper())
@@ -46,6 +40,21 @@ namespace StatLight.Console
                     {
                         ArgOptions.ShowHelpMessage(Console.Out, options);
                         return;
+                    }
+
+                    ILogger logger;
+
+                    if(options.IsRequestingDebug)
+                    {
+                        logger = new ConsoleLogger(LogChatterLevels.Full);
+                    }
+                    else
+                    {
+#if DEBUG
+                        logger = new ConsoleLogger(LogChatterLevels.Full);
+#else
+                        logger = new ConsoleLogger(LogChatterLevels.Error | LogChatterLevels.Warning | LogChatterLevels.Information);
+#endif
                     }
 
                     string xapPath = options.XapPath;

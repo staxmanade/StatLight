@@ -27,8 +27,6 @@ namespace StatLight.Console
 
         public bool ShowHelp { get; set; }
 
-        //public bool IsValid { get; private set; }
-
         public bool ShowTestingBrowserHost { get; private set; }
 
         public bool OutputForTeamCity { get; private set; }
@@ -38,6 +36,8 @@ namespace StatLight.Console
         public UnitTestProviderType UnitTestProviderType { get; private set; }
 
         public MicrosoftTestingFrameworkVersion? MicrosoftTestingFrameworkVersion { get; private set; }
+
+        public bool IsRequestingDebug { get; set; }
 
         public int NumberOfBrowserHosts { get; private set; }
 
@@ -52,7 +52,6 @@ namespace StatLight.Console
             _optionSet = GetOptions();
             NumberOfBrowserHosts = 1;
             _args = args;
-            //IsValid = true;
             List<string> extra;
 
             try
@@ -148,6 +147,7 @@ namespace StatLight.Console
                             throw new StatLightException("Could not parse parameter [{0}] for numberofbrowsers into an integer.".FormatWith(v));
                         }
                     })
+                .Add("debug", v=> IsRequestingDebug = true)
                 .Add<string>("teamcity", "Changes the console output to generate the teamcity message spec.", v => OutputForTeamCity = true)
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)
