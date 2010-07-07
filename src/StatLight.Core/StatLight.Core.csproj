@@ -146,6 +146,7 @@
     <Compile Include="Monitoring\DialogMonitorResult.cs" />
     <Compile Include="Monitoring\DialogMonitorRunner.cs" />
     <Compile Include="Monitoring\IDialogMonitor.cs" />
+    <Compile Include="Monitoring\IDialogMonitorRunner.cs" />
     <Compile Include="Reporting\DialogAssertionMatchMaker.cs" />
     <Compile Include="Reporting\Messages\LogMessageType.cs" />
     <Compile Include="Reporting\Messages\TestOutcome.cs" />

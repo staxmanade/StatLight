@@ -7,7 +7,7 @@ namespace StatLight.Core.Monitoring
     using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Timing;
 
-    internal class DialogMonitorRunner
+    internal class DialogMonitorRunner : IDialogMonitorRunner
     {
         private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;

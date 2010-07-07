@@ -1,4 +1,6 @@
-﻿namespace StatLight.Core.WebBrowser
+﻿using System.Diagnostics;
+
+namespace StatLight.Core.WebBrowser
 {
     using System;
     using System.Threading;
@@ -12,9 +14,9 @@
         private readonly Uri _pageToHost;
         private readonly bool _browserVisible;
         private Thread _browserThread;
-        private readonly DialogMonitorRunner _dialogMonitorRunner;
+        private readonly IDialogMonitorRunner _dialogMonitorRunner;
 
-        public BrowserFormHost(ILogger logger, Uri pageToHost, bool browserVisible, DialogMonitorRunner dialogMonitorRunner)
+        public BrowserFormHost(ILogger logger, Uri pageToHost, bool browserVisible, IDialogMonitorRunner dialogMonitorRunner)
         {
             _logger = logger;
             _pageToHost = pageToHost;
@@ -37,17 +39,16 @@
                                 Text = "StatLight - Browser Host"
                             };
 
-                using (_form)
+                var browser = new WebBrowser
                 {
-                    var browser = new WebBrowser
-                    {
-                        Url = _pageToHost,
-                        Dock = DockStyle.Fill
-                    };
+                    Url = _pageToHost,
+                    Dock = DockStyle.Fill
+                };
 
-                    _form.Controls.Add(browser);
-                    _form.ShowDialog();
-                }
+                _form.Controls.Add(browser);
+
+                Application.Run(_form);
+                
             });
             _browserThread.SetApartmentState(ApartmentState.STA);
             _browserThread.Start();
