@@ -116,6 +116,7 @@ namespace StatLight.Core.Runners
             return runner;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private IWebServer CreateWebServer(ILogger logger, StatLightConfiguration statLightConfiguration, WebServerLocation location, out StatLightService statLightService)
         {
             statLightService = new StatLightService(logger, _eventAggregator, statLightConfiguration.Client, statLightConfiguration.Server);
@@ -123,6 +124,7 @@ namespace StatLight.Core.Runners
             return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private void BuildAndReturnWebServiceAndBrowser(
             ILogger logger,
             bool showTestingBrowserHost,
