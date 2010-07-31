@@ -78,17 +78,6 @@ namespace StatLight.Core.Configuration
             }
         }
 
-        private Func<byte[]> CreateServerConfiguration(string xapPath)
-        {
-            return () =>
-            {
-                AssertXapToTestFileExists(xapPath);
-                _logger.Debug("Loading XapToTest {0}".FormatWith(xapPath));
-                return File.ReadAllBytes(xapPath);
-            };
-
-        }
-
         private ServerTestRunConfiguration CreateServerConfiguration(
             string xapPath,
             UnitTestProviderType unitTestProviderType,

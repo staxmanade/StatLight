@@ -18,6 +18,7 @@ namespace StatLight.Core.Configuration
         private string _tagFilters = string.Empty;
         private Collection<string> _methodsToTest;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "4#", Justification = "System.Uri is not DataContract serializable")]
         public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, string xapToTestUrl)
         {
             if (methodsToTest == null) throw new ArgumentNullException("methodsToTest");
@@ -34,6 +35,7 @@ namespace StatLight.Core.Configuration
             XapToTestUrl = xapToTestUrl;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "System.Uri is not DataContract serializable")]
         [DataMember]
         public string XapToTestUrl { get; set; }
 
