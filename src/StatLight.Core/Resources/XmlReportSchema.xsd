@@ -43,9 +43,9 @@
                 </xs:element>
             </xs:sequence>
             <xs:attribute name="xapFileName" type="xs:string" use="required" />
-            <xs:attribute name="total" type="xs:unsignedByte" use="required" />
-            <xs:attribute name="ignored" type="xs:unsignedByte" use="required" />
-            <xs:attribute name="failed" type="xs:unsignedByte" use="required" />
+            <xs:attribute name="total" type="xs:integer" use="required" />
+            <xs:attribute name="ignored" type="xs:integer" use="required" />
+            <xs:attribute name="failed" type="xs:integer" use="required" />
             <xs:attribute name="dateRun" type="xs:string" use="required" />
         </xs:complexType>
     </xs:element>
