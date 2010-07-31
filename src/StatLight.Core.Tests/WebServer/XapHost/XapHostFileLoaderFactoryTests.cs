@@ -10,7 +10,7 @@ namespace StatLight.Core.Tests.WebServer.XapHost
     {
         private XapHostFileLoaderFactory _xapHostFileLoaderFactory;
 
-        private const XapHostType DefaultXapHostType = XapHostType.MSTestApril2010;
+        private const XapHostType DefaultXapHostType = XapHostType.MSTestMay2010;
 
         protected override void Before_all_tests()
         {
