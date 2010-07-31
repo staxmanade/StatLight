@@ -684,7 +684,7 @@ Task test-specific-method-filter {
 }
 
 
-Task test-specific-mutiple-browser-runner {
+Task test-specific-multiple-browser-runner {
 	$scriptFile = GetTemporaryXmlFile;
 	
 	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight.LotsOfTests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.LotsOfTests.xap" "-r=$scriptFile" "-NumberOfBrowserHosts=5"
