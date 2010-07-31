@@ -44,7 +44,7 @@ namespace StatLight.Console
 
                     ILogger logger;
 
-                    if(options.IsRequestingDebug)
+                    if (options.IsRequestingDebug)
                     {
                         logger = new ConsoleLogger(LogChatterLevels.Full);
                     }
@@ -72,6 +72,12 @@ namespace StatLight.Console
                     var statLightRunnerFactory = new StatLightRunnerFactory();
                     var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
 
+                    bool isRemoteRun = string.IsNullOrEmpty(xapPath) 
+                        ? false 
+                        : xapPath.StartsWith("http", StringComparison.OrdinalIgnoreCase);
+
+                    RunnerType runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly, isRemoteRun);
+
                     StatLightConfiguration statLightConfiguration = statLightConfigurationFactory
                         .GetStatLightConfiguration(
                             unitTestProviderType,
@@ -79,11 +85,10 @@ namespace StatLight.Console
                             microsoftTestingFrameworkVersion,
                             methodsToTest,
                             tagFilters,
-                            numberOfBrowserHosts);
+                            numberOfBrowserHosts,
+                            isRemoteRun);
 
-                    var runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly);
-
-                    var runner = GetRunner(
+                    IRunner runner = GetRunner(
                             logger,
                             runnerType,
                             showTestingBrowserHost,
@@ -191,13 +196,16 @@ Try: (the following two steps that should allow StatLight to start a web server 
             }
         }
 
-        private static RunnerType DetermineRunnerType(bool continuousIntegrationMode,
-            bool useTeamCity,
-            bool startWebServerOnly)
+        private static RunnerType DetermineRunnerType(bool continuousIntegrationMode, bool useTeamCity, bool startWebServerOnly, bool isRemoteRun)
         {
             if (useTeamCity)
             {
                 return RunnerType.TeamCity;
+            }
+
+            if (isRemoteRun)
+            {
+                return RunnerType.RemoteRun;
             }
 
             if (startWebServerOnly)

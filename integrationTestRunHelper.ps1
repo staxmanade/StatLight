@@ -5,7 +5,7 @@
 #& 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.ProviderTests.NUnit.when_testing_the_runner_with_NUnit_tests
 #& 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.ProviderTests.NUnit.when_testing_the_runner_with_NUnit_tests_filtered_by_certain_methods
 
-.\src\build\bin\Debug\StatLight.exe "-x=.\src\StatLight.IntegrationTests.Silverlight.UnitDriven\Bin\Debug\StatLight.IntegrationTests.Silverlight.UnitDriven.xap" -b
+#.\src\build\bin\Debug\StatLight.exe "-x=.\src\StatLight.IntegrationTests.Silverlight.UnitDriven\Bin\Debug\StatLight.IntegrationTests.Silverlight.UnitDriven.xap" -b
 #& 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.ProviderTests.UnitDriven.when_testing_the_runner_with_UnitDriven_tests_filtered_by_certain_methods
 #& 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.ProviderTests.UnitDriven.when_testing_the_runner_with_UnitDriven_tests
 
@@ -16,3 +16,6 @@
 #& 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.ProviderTests.XUnit.when_testing_the_runner_with_Xunit_tests_filtered_by_certain_methods
 #& 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.ProviderTests.XUnit.when_testing_the_runner_with_xunit_tests
 #& 'C:\Program Files\NUnit 2.5.3\bin\net-2.0\nunit-console.exe' /noshadow .\src\StatLight.IntegrationTests\StatLight.IntegrationTests.nunit /run StatLight.IntegrationTests.when_something_tests_are_in_a_NestedCLassInheritance_structure
+
+& "src\build\bin\Debug\StatLight.exe" "-x=http://localhost:22811/ClientBin/StatLight.RemoteIntegration.xap" -o="MSTest" -v=April2010 -b
+

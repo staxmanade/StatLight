@@ -76,11 +76,6 @@ namespace StatLight.Console
                 .Add("x|XapPath", "Path to test xap file.", (v) =>
                 {
                     XapPath = v ?? string.Empty;
-
-                    if (!File.Exists(XapPath))
-                    {
-                        throw new FileNotFoundException("Could not find the file [{0}]".FormatWith(XapPath));
-                    }
                 }, Mono.Options.OptionValueType.Required)
                 .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, Mono.Options.OptionValueType.Optional)
                 .Add<string>("c|Continuous", "Runs a single test run, and then monitors the xap for build changes and re-runs the tests automatically.", v => ContinuousIntegrationMode = true)

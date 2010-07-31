@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.ObjectModel;
+using StatLight.Core.WebServer;
 
 namespace StatLight.Core.Configuration
 {
@@ -25,36 +26,46 @@ namespace StatLight.Core.Configuration
             _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
         }
 
-        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts)
+        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun)
         {
-            AssertXapToTestFileExists(xapPath);
-
-            XapReadItems xapReadItems = new XapReader(_logger).GetTestAssembly(xapPath);
-            if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
+            string xapUrl = null;
+            XapReadItems xapReadItems = null;
+            if (isRemoteRun)
             {
-                //TODO: Print message telling the user what the type is - and if they give it
-                // we don't have to "reflect" on the xap to determine the test provider type.
+                xapUrl = xapPath;
+            }
+            else
+            {
+                AssertXapToTestFileExists(xapPath);
 
-                if (unitTestProviderType == UnitTestProviderType.Undefined)
+                xapReadItems = new XapReader(_logger).GetTestAssembly(xapPath);
+                if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
                 {
-                    unitTestProviderType = xapReadItems.UnitTestProvider;
-                }
+                    //TODO: Print message telling the user what the type is - and if they give it
+                    // we don't have to "reflect" on the xap to determine the test provider type.
 
-                if (
-                    (xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest || unitTestProviderType == UnitTestProviderType.MSTest)
-                    && microsoftTestingFrameworkVersion == null)
-                {
-                    microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
+                    if (unitTestProviderType == UnitTestProviderType.Undefined)
+                    {
+                        unitTestProviderType = xapReadItems.UnitTestProvider;
+                    }
+
+                    if (
+                        (xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest || unitTestProviderType == UnitTestProviderType.MSTest)
+                        && microsoftTestingFrameworkVersion == null)
+                    {
+                        microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
+                    }
                 }
             }
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts);
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, xapUrl);
 
             var serverConfig = CreateServerConfiguration(
                 xapPath,
                 clientConfig.UnitTestProviderType,
                 microsoftTestingFrameworkVersion,
-                xapReadItems);
+                xapReadItems,
+                DefaultDialogSmackDownElapseMilliseconds);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
@@ -67,13 +78,15 @@ namespace StatLight.Core.Configuration
             }
         }
 
-        private ServerTestRunConfiguration CreateServerConfiguration(
-            string xapPath,
-            UnitTestProviderType unitTestProviderType,
-            MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion,
-            XapReadItems xapReadItems)
+        private Func<byte[]> CreateServerConfiguration(string xapPath)
         {
-            return CreateServerConfiguration(xapPath, unitTestProviderType, microsoftTestingFrameworkVersion, xapReadItems, DefaultDialogSmackDownElapseMilliseconds);
+            return () =>
+            {
+                AssertXapToTestFileExists(xapPath);
+                _logger.Debug("Loading XapToTest {0}".FormatWith(xapPath));
+                return File.ReadAllBytes(xapPath);
+            };
+
         }
 
         private ServerTestRunConfiguration CreateServerConfiguration(
@@ -86,20 +99,24 @@ namespace StatLight.Core.Configuration
         {
             XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
 
-            byte[] hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
-            hostXap = RewriteXapWithSpecialFiles(hostXap, xapReadItems);
+            Func<byte[]> xapToTestFactory = () => new byte[] { };
 
-            Func<byte[]> xapToTestFactory = () =>
+            byte[] hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
+
+            if (xapReadItems != null)
             {
-                AssertXapToTestFileExists(xapPath);
-                _logger.Debug("Loading XapToTest {0}".FormatWith(xapPath));
-                return File.ReadAllBytes(xapPath);
-            };
+                hostXap = RewriteXapWithSpecialFiles(hostXap, xapReadItems);
+
+                xapToTestFactory = () =>
+               {
+                   AssertXapToTestFileExists(xapPath);
+                   _logger.Debug("Loading XapToTest {0}".FormatWith(xapPath));
+                   return File.ReadAllBytes(xapPath);
+               };
+            }
 
             return new ServerTestRunConfiguration(hostXap, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, xapToTestFactory);
         }
-
-
         private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, XapReadItems xapReadItems)
         {
             if (xapReadItems != null)

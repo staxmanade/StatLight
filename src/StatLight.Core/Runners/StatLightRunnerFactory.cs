@@ -25,7 +25,7 @@ namespace StatLight.Core.Runners
 
         public StatLightRunnerFactory()
             : this(new EventAggregator())
-        {}
+        { }
 
         public StatLightRunnerFactory(IEventAggregator eventAggregator)
         {
@@ -116,9 +116,17 @@ namespace StatLight.Core.Runners
             return runner;
         }
 
+        private static void SetXapHostUrl(StatLightConfiguration statLightConfiguration, WebServerLocation location)
+        {
+            if (statLightConfiguration.Client.XapToTestUrl == null)
+                statLightConfiguration.Client.XapToTestUrl = (location.BaseUrl + StatLightServiceRestApi.GetXapToTest);
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private IWebServer CreateWebServer(ILogger logger, StatLightConfiguration statLightConfiguration, WebServerLocation location, out StatLightService statLightService)
         {
+            SetXapHostUrl(statLightConfiguration, location);
+
             statLightService = new StatLightService(logger, _eventAggregator, statLightConfiguration.Client, statLightConfiguration.Server);
 
             return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
@@ -178,7 +186,7 @@ namespace StatLight.Core.Runners
 
         private void SetupDebugClientEventListener(ILogger logger)
         {
-            ((EventAggregator) _eventAggregator).Logger = logger;
+            ((EventAggregator)_eventAggregator).Logger = logger;
             if (_debugEventListener == null)
             {
                 _debugEventListener = e => logger.Debug(e.Message);

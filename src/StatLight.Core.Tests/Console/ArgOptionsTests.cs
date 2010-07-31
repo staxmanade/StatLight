@@ -15,14 +15,7 @@ namespace StatLight.Core.Tests.Console
                 _actualFile = Path.GetTempFileName();
             }
 
-            string _fileNotFound = @"C:\Path\someTestX123456789.xap";
             private string _actualFile;
-
-            [Test]
-            public void Should_throw_FileNotFoundException_if_xap_cannot_be_found()
-            {
-                typeof(FileNotFoundException).ShouldBeThrownBy(() => GetArgOptions("-x", _fileNotFound));
-            }
 
             [Test]
             public void when_validating_the_default_properties_of_the_ArgOptions()
@@ -32,7 +25,6 @@ namespace StatLight.Core.Tests.Console
                 argOptions.ContinuousIntegrationMode.ShouldBeFalse();
                 argOptions.ShowHelp.ShouldBeFalse();
                 argOptions.TagFilters.ShouldEqual(null);
-                //argOptions.IsValid.ShouldBeTrue();
             }
 
             [Test]

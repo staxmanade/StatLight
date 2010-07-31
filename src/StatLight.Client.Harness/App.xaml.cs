@@ -51,15 +51,15 @@ namespace StatLight.Client.Harness
 
             Server.Debug("Application_Startup");
             GoGetTheTestRunConfiguration();
-            GoGetTheXapUnderTest();
         }
 
         private void GoGetTheTestRunConfiguration()
         {
             var client = new WebClient
-                             {
-                                 AllowReadStreamBuffering = true
-                             };
+            {
+                AllowReadStreamBuffering = true
+            };
+
             client.OpenReadCompleted += (sender, e) =>
             {
                 var clientTestRunConfiguration = e.Result.Deserialize<ClientTestRunConfiguration>();
@@ -67,8 +67,8 @@ namespace StatLight.Client.Harness
                 _testRunConfigurationDownloadComplete = true;
 
                 TestRunnerHost.ConfigureWithClientTestRunConfiguration(clientTestRunConfiguration);
-
-                DisplayTestHarness();
+                Server.Debug("XapToTestUrl: {0}".FormatWith(clientTestRunConfiguration.XapToTestUrl));
+                GoGetTheXapUnderTest(clientTestRunConfiguration.XapToTestUrl.ToUri());
             };
             client.OpenReadAsync(StatLightServiceRestApi.GetTestRunConfiguration.ToFullUri());
         }
@@ -83,7 +83,7 @@ namespace StatLight.Client.Harness
         }
 
         #region most of the custom StatLight app code
-        private void GoGetTheXapUnderTest()
+        private void GoGetTheXapUnderTest(Uri xapToTestUri)
         {
             Server.Debug("GoGetTheXapUnderTest");
             var client = new WebClient
@@ -91,7 +91,7 @@ namespace StatLight.Client.Harness
                  AllowReadStreamBuffering = true
              };
             client.OpenReadCompleted += OnXapToTestDownloaded;
-            client.OpenReadAsync(StatLightServiceRestApi.GetXapToTest.ToFullUri());
+            client.OpenReadAsync(xapToTestUri);
         }
 
         private void OnXapToTestDownloaded(object sender, OpenReadCompletedEventArgs e)

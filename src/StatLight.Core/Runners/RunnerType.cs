@@ -6,5 +6,6 @@
         OneTimeConsole,
         TeamCity,
         WebServerOnly,
+        RemoteRun,
     }
 }

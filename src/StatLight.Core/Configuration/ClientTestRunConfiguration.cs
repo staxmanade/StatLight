@@ -18,7 +18,7 @@ namespace StatLight.Core.Configuration
         private string _tagFilters = string.Empty;
         private Collection<string> _methodsToTest;
 
-        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts)
+        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, string xapToTestUrl)
         {
             if (methodsToTest == null) throw new ArgumentNullException("methodsToTest");
             if (unitTestProviderType == UnitTestProviderType.Undefined)
@@ -31,7 +31,11 @@ namespace StatLight.Core.Configuration
             _tagFilters = tagFilters ?? string.Empty;
             UnitTestProviderType = unitTestProviderType;
             NumberOfBrowserHosts = numberOfBrowserHosts;
+            XapToTestUrl = xapToTestUrl;
         }
+
+        [DataMember]
+        public string XapToTestUrl { get; set; }
 
         [DataMember]
         public int NumberOfBrowserHosts { get; set; }
