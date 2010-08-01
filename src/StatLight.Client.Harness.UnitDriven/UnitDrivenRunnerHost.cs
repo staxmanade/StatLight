@@ -17,7 +17,7 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
     [Export(typeof(ITestRunnerHost))]
     public class UnitDrivenRunnerHost : ITestRunnerHost
     {
-        private LoadedXapData _loadedXapData;
+        private ILoadedXapData _loadedXapData;
         private Dispatcher _dispatcher;
         private int _totalFailedCount;
         private int _totalTestsExpectedToRun;
@@ -29,7 +29,7 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
         {
         }
 
-        public void ConfigureWithLoadedXapData(LoadedXapData loadedXapData)
+        public void ConfigureWithLoadedXapData(ILoadedXapData loadedXapData)
         {
             _loadedXapData = loadedXapData;
         }

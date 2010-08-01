@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.RemoteIntegration", "StatLight.RemoteIntegration\StatLight.RemoteIntegration.csproj", "{348760C9-0276-4574-9BBD-EAE8F20E4AD3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19} = {3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.RemoteIntegration.Web", "StatLight.RemoteIntegration.Web\StatLight.RemoteIntegration.Web.csproj", "{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{348760C9-0276-4574-9BBD-EAE8F20E4AD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{348760C9-0276-4574-9BBD-EAE8F20E4AD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{348760C9-0276-4574-9BBD-EAE8F20E4AD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{348760C9-0276-4574-9BBD-EAE8F20E4AD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

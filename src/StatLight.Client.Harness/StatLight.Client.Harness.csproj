@@ -130,7 +130,9 @@
     <Compile Include="Messaging\HttpResponseCompleteEventArgs.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventHandler.cs" />
     <Compile Include="Messaging\HttpWebRequest.cs" />
+    <Compile Include="Messaging\IQuerystringReader.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="StatLightSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

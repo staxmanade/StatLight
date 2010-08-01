@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using StatLight.Client.Harness.Events;
 using StatLight.Client.Model.Messaging;
@@ -24,6 +25,7 @@ namespace StatLight.Client.Harness
             PostMessage(traceClientEvent);
         }
 
+        [Conditional("DEBUG")]
         public static void Debug(string message)
         {
 #if DEBUG

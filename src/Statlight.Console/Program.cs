@@ -76,7 +76,11 @@ namespace StatLight.Console
                         ? false 
                         : xapPath.StartsWith("http", StringComparison.OrdinalIgnoreCase);
 
+                    logger.Debug("isRemoteRun ({0})".FormatWith(isRemoteRun));
+
                     RunnerType runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly, isRemoteRun);
+
+                    logger.Debug("runnerType ({0})".FormatWith(runnerType));
 
                     StatLightConfiguration statLightConfiguration = statLightConfigurationFactory
                         .GetStatLightConfiguration(
@@ -94,6 +98,8 @@ namespace StatLight.Console
                             showTestingBrowserHost,
                             statLightConfiguration,
                             statLightRunnerFactory);
+
+                    logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
 
                     TestReport testReport = runner.Run();
 

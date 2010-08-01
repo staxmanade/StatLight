@@ -16,14 +16,14 @@ namespace StatLight.Client.Harness.Hosts.MSTest
     public class MSTestRunnerHost : ITestRunnerHost
     {
         private ClientTestRunConfiguration _clientTestRunConfiguration;
-        private LoadedXapData _loadedXapData;
+        private ILoadedXapData _loadedXapData;
 
         public void ConfigureWithClientTestRunConfiguration(ClientTestRunConfiguration clientTestRunConfiguration)
         {
             _clientTestRunConfiguration = clientTestRunConfiguration;
         }
 
-        public void ConfigureWithLoadedXapData(LoadedXapData loadedXapData)
+        public void ConfigureWithLoadedXapData(ILoadedXapData loadedXapData)
         {
             _loadedXapData = loadedXapData;
         }

@@ -6,7 +6,7 @@ namespace StatLight.Client.Harness.Hosts
     public interface ITestRunnerHost
     {
         void ConfigureWithClientTestRunConfiguration(ClientTestRunConfiguration clientTestRunConfiguration);
-        void ConfigureWithLoadedXapData(LoadedXapData loadedXapData);
+        void ConfigureWithLoadedXapData(ILoadedXapData loadedXapData);
         UIElement StartRun();
     }
 }
