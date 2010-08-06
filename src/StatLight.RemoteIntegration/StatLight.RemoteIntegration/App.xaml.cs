@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Windows;
 using StatLight.Client.Harness;
 
@@ -18,7 +19,7 @@ namespace StatLight.RemoteIntegration
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var statLightSystem = new StatLightSystem();
+            var statLightSystem = new StatLightSystem(this.GetType().Assembly);
             statLightSystem.OnReadySetupRootVisual(newRootVisual => RootVisual = newRootVisual);
         }
 

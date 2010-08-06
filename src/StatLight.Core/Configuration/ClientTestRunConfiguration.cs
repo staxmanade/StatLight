@@ -114,8 +114,17 @@ namespace StatLight.Core.Configuration
             {
                 if (!_instanceNumber.HasValue)
                 {
-                    string initParam = System.Windows.Application.Current.Host.InitParams["InstaneNumber"];
-                    _instanceNumber = int.Parse(initParam);
+                    const string instanceNumber = "InstaneNumber";
+
+                    if (System.Windows.Application.Current.Host.InitParams.ContainsKey(instanceNumber))
+                    {
+                        string initParam = System.Windows.Application.Current.Host.InitParams[instanceNumber];
+                        _instanceNumber = int.Parse(initParam);
+                    }
+                    else
+                    {
+                        _instanceNumber = 1;
+                    }
                 }
                 return _instanceNumber.Value;
             }

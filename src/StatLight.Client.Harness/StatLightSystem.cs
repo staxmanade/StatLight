@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Net;
 using System.Reflection;
 using System.Windows;
 using StatLight.Client.Harness.Hosts;
+using StatLight.Client.Model.Messaging;
 using StatLight.Core.Configuration;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebServer;
@@ -18,6 +20,40 @@ namespace StatLight.Client.Harness
         private ITestRunnerHost _testRunnerHost;
         private Action<UIElement> _onReady;
 
+        private readonly Uri _postbackUriBase;
+
+        private readonly bool _isRemotePostRun;
+        private readonly Assembly _assemblyToTest;
+
+        internal StatLightSystem()
+        {
+            var src = Application.Current.Host.Source;
+            var urlx = src.Scheme + "://" + src.Host + ":" + src.Port + "/";
+
+            _postbackUriBase = new Uri(urlx);
+            SetPostbackUri(_postbackUriBase);
+        }
+
+        public StatLightSystem(Assembly assemblyToTest)
+        {
+            _assemblyToTest = assemblyToTest;
+
+            IQueryStringReader queryStringReader = new QueryStringReader();
+            string postbackUrl = queryStringReader.GetValueOrDefault(StatLightServiceRestApi.StatLightResultPostbackUrl, default(string));
+            if (postbackUrl != default(string))
+            {
+                Console.WriteLine("postbackUrl={0}".FormatWith(postbackUrl));
+                _isRemotePostRun = true;
+                _postbackUriBase = new Uri(postbackUrl);
+                SetPostbackUri(_postbackUriBase);
+            }
+        }
+
+        private static void SetPostbackUri(Uri postbackUriBase)
+        {
+            StatLightServiceRestApi.PostbackUriBase = postbackUriBase;
+        }
+
         public void OnReadySetupRootVisual(Action<UIElement> onReady)
         {
             if (onReady == null)
@@ -25,9 +61,30 @@ namespace StatLight.Client.Harness
 
             _onReady = onReady;
 
-            _testRunnerHost = DiscoverITestRunnerHost();
+            if (_isRemotePostRun)
+            {
+                _remotelyHostedTestRunnerHost = LocateService<IRemotelyHostedTestRunnerHost>();
 
-            GoGetTheTestRunConfiguration();
+                if (_remotelyHostedTestRunnerHost != null)
+                {
+                    var assemblies = new List<Assembly>
+                    {
+                        Assembly.GetCallingAssembly()
+                    };
+
+                    var rootVisual = _remotelyHostedTestRunnerHost.StartRun(assemblies);
+                    _onReady(rootVisual);
+                }
+                else
+                {
+                    throw new StatLightException("Could not locate the StatLight IRemotelyHostedTestRunnerHost");
+                }
+            }
+            else
+            {
+                _testRunnerHost = LocateService<ITestRunnerHost>();
+                GoGetTheTestRunConfiguration();
+            }
         }
 
         public void GoGetTheTestRunConfiguration()
@@ -45,10 +102,20 @@ namespace StatLight.Client.Harness
 
                 _testRunnerHost.ConfigureWithClientTestRunConfiguration(clientTestRunConfiguration);
                 Server.Debug("XapToTestUrl: {0}".FormatWith(clientTestRunConfiguration.XapToTestUrl));
-                GoGetTheXapUnderTest(clientTestRunConfiguration.XapToTestUrl.ToUri());
+                if (_isRemotePostRun)
+                {
+
+                    ILoadedXapData loadedXapData = new CurrentXapData(_assemblyToTest);
+                    _testRunnerHost.ConfigureWithLoadedXapData(loadedXapData);
+                    _completedTestXapRequest = true;
+                    DisplayTestHarness();
+                }
+                else
+                {
+                    GoGetTheXapUnderTest(clientTestRunConfiguration.XapToTestUrl.ToUri());
+                }
             };
             client.OpenReadAsync(StatLightServiceRestApi.GetTestRunConfiguration.ToFullUri());
-
         }
 
         private void GoGetTheXapUnderTest(Uri xapToTestUri)
@@ -58,24 +125,22 @@ namespace StatLight.Client.Harness
             {
                 AllowReadStreamBuffering = true
             };
-            client.OpenReadCompleted += OnXapToTestDownloaded;
-            client.OpenReadAsync(xapToTestUri);
-        }
-
-        private void OnXapToTestDownloaded(object sender, OpenReadCompletedEventArgs e)
-        {
-            Server.Debug("OnXapToTestDownloaded");
-            if (e.Error == null)
+            client.OpenReadCompleted += (sender, e) =>
             {
-                var loadedXapData = new LoadedXapData(e.Result);
+                Server.Debug("OnXapToTestDownloaded");
+                if (e.Error == null)
+                {
+                    var loadedXapData = new LoadedXapData(e.Result);
 
-                _testRunnerHost.ConfigureWithLoadedXapData(loadedXapData);
+                    _testRunnerHost.ConfigureWithLoadedXapData(loadedXapData);
 
-                _completedTestXapRequest = true;
-                DisplayTestHarness();
-            }
-            else
-                Server.LogException(e.Error);
+                    _completedTestXapRequest = true;
+                    DisplayTestHarness();
+                }
+                else
+                    Server.LogException(e.Error);
+            };
+            client.OpenReadAsync(xapToTestUri);
         }
 
         private void DisplayTestHarness()
@@ -87,15 +152,12 @@ namespace StatLight.Client.Harness
             }
         }
 
-        private static ITestRunnerHost DiscoverITestRunnerHost()
+        private static T LocateService<T>() where T : class
         {
-            ITestRunnerHost testRunnerHost = null;
-
+            T service = null;
             try
             {
-                var compositionContainer = new CompositionContainer(new DeploymentCatalog());
-
-                testRunnerHost = compositionContainer.GetExportedValue<ITestRunnerHost>();
+                service = Container.GetExportedValue<T>();
             }
             catch (ReflectionTypeLoadException rfex)
             {
@@ -108,10 +170,40 @@ namespace StatLight.Client.Harness
                     Server.Trace(err.ToString());
             }
 
-            if (testRunnerHost == null)
-                Server.Trace("The ITestRunnerHost was not populated by MEF. WTF?");
+            if (service == null)
+                Server.Trace("Could not locate service {0}.".FormatWith(typeof(T).FullName));
 
-            return testRunnerHost;
+            return service;
+        }
+
+
+        private static CompositionContainer _container;
+        private IRemotelyHostedTestRunnerHost _remotelyHostedTestRunnerHost;
+
+        private static CompositionContainer Container
+        {
+            get
+            {
+                if (_container == null)
+                {
+
+                    try
+                    {
+                        _container = new CompositionContainer(new DeploymentCatalog());
+                    }
+                    catch (ReflectionTypeLoadException rfex)
+                    {
+                        ReflectionInfoHelper.HandleReflectionTypeLoadException(rfex);
+                    }
+                    catch (CompositionException compositionException)
+                    {
+                        Server.Trace(compositionException.ToString());
+                        foreach (var err in compositionException.Errors)
+                            Server.Trace(err.ToString());
+                    }
+                }
+                return _container;
+            }
         }
     }
 }

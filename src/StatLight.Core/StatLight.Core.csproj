@@ -193,6 +193,7 @@
     <Compile Include="WebBrowser\IBrowserFormHost.cs" />
     <Compile Include="WebServer\IWebServer.cs" />
     <Compile Include="Configuration\ServerTestRunConfiguration.cs" />
+    <Compile Include="WebServer\RemoteSiteOverriddenLocation.cs" />
     <Compile Include="WebServer\StatLightServiceRestApi.cs" />
     <Compile Include="WebServer\IStatLightService.cs" />
     <Compile Include="WebServer\StatLightService.cs" />

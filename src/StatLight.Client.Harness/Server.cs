@@ -74,6 +74,10 @@ namespace StatLight.Client.Harness
 
         private static void HttpPost(Uri uri, string message)
         {
+            // if the uri is null then there is no place to post (to support a "remotely hosted run" but not configured to run connnected to statlight
+            if (uri == null)
+                return;
+
             new HttpWebRequestHelper(uri, "POST", message).Execute();
         }
     }

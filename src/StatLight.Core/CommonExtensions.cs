@@ -56,7 +56,7 @@ namespace StatLight
         {
             if (items == null) throw new ArgumentNullException("items");
             var collection = new Collection<T>();
-            foreach(var item in items)
+            foreach (var item in items)
                 collection.Add(item);
             return collection;
         }
@@ -66,6 +66,11 @@ namespace StatLight
     {
         public static partial class Extensions
         {
+            public static string StreamToString(this Stream stream)
+            {
+                var reader = new StreamReader(stream);
+                return reader.ReadToEnd();
+            }
 
             public static T Deserialize<T>(this Stream stream)
             {

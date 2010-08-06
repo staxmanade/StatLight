@@ -53,7 +53,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ClientAccessPolicy.xml" />
     <Content Include="ClientBin\StatLight.RemoteIntegration.xap" />
+    <Content Include="CrossDomain.xml" />
     <Content Include="Service1.svc" />
     <Content Include="Silverlight.js" />
     <Content Include="StatLight.RemoteIntegrationTestPage.aspx" />
@@ -81,7 +83,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>28291</DevelopmentServerPort>
+          <DevelopmentServerPort>31821</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

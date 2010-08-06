@@ -61,6 +61,7 @@ namespace StatLight.Console
                     bool continuousIntegrationMode = options.ContinuousIntegrationMode;
                     bool showTestingBrowserHost = options.ShowTestingBrowserHost;
                     bool useTeamCity = options.OutputForTeamCity;
+                    bool useRemoteTestPage = options.UseRemoteTestPage;
                     bool startWebServerOnly = options.StartWebServerOnly;
                     Collection<string> methodsToTest = options.MethodsToTest;
                     string xmlReportOutputPath = options.XmlReportOutputPath;
@@ -72,13 +73,9 @@ namespace StatLight.Console
                     var statLightRunnerFactory = new StatLightRunnerFactory();
                     var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
 
-                    bool isRemoteRun = string.IsNullOrEmpty(xapPath) 
-                        ? false 
-                        : xapPath.StartsWith("http", StringComparison.OrdinalIgnoreCase);
+                    logger.Debug("isRemoteRun ({0})".FormatWith(useRemoteTestPage));
 
-                    logger.Debug("isRemoteRun ({0})".FormatWith(isRemoteRun));
-
-                    RunnerType runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly, isRemoteRun);
+                    RunnerType runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly, useRemoteTestPage);
 
                     logger.Debug("runnerType ({0})".FormatWith(runnerType));
 
@@ -90,7 +87,7 @@ namespace StatLight.Console
                             methodsToTest,
                             tagFilters,
                             numberOfBrowserHosts,
-                            isRemoteRun);
+                            useRemoteTestPage);
 
                     IRunner runner = GetRunner(
                             logger,
@@ -196,6 +193,9 @@ Try: (the following two steps that should allow StatLight to start a web server 
 
                 case RunnerType.WebServerOnly:
                     return statLightRunnerFactory.CreateWebServerOnlyRunner(logger, statLightConfiguration);
+
+                case RunnerType.RemoteRun:
+                    return statLightRunnerFactory.CreateRemotelyHostedRunner(logger, statLightConfiguration, showTestingBrowserHost);
 
                 default:
                     return statLightRunnerFactory.CreateOnetimeConsoleRunner(logger, statLightConfiguration, showTestingBrowserHost);

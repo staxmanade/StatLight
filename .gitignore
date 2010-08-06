@@ -10,3 +10,5 @@ TestResult.xml
 *.csproj.user
 src/build/*
 temp_build*.ps1
+ClientBin/
+bin/

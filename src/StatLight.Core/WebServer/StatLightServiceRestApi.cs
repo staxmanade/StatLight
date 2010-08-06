@@ -13,30 +13,16 @@ namespace StatLight.Core.WebServer
         public const string GetTestRunConfiguration = "GetTestRunConfiguration";
         public const string GetTestPageHostXap = "StatLight.Client.Harness.xap";
 
+        public const string StatLightResultPostbackUrl = "StatLightResultPostbackUrl";
+
 
 #if SILVERLIGHT
 
-        private static readonly Client.Model.Messaging.IQueryStringReader QueryStringReader = new Client.Model.Messaging.QueryStringReader();
-        private static Uri _postbackUriBase;
+        internal static Uri PostbackUriBase;
         public static Uri ToFullUri(this string value)
         {
-            if(_postbackUriBase == null)
-            {
-                string postbackUrl = QueryStringReader.GetValueOrDefault("StatLight_PostbackUrl", default(string));
-                if(postbackUrl == default(string))
-                {
-                    var src = System.Windows.Application.Current.Host.Source;
-                    var urlx = src.Scheme + "://" + src.Host + ":" + src.Port + "/";
-
-                    _postbackUriBase = new Uri(urlx);
-                }
-                else
-                {
-                    _postbackUriBase = new Uri(postbackUrl);
-                }
-            }
-
-            return new Uri(_postbackUriBase + value);
+            var fullUri = new Uri(PostbackUriBase + value);
+            return fullUri;
         }
 #endif
 

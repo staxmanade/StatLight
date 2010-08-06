@@ -41,6 +41,8 @@ namespace StatLight.Console
 
         public int NumberOfBrowserHosts { get; private set; }
 
+        public bool UseRemoteTestPage { get; set; }
+
         private ArgOptions()
             : this(new string[] { })
         {
@@ -73,7 +75,7 @@ namespace StatLight.Console
                                   select version).ToDictionary(key => key.ToString().ToLower(), value => value);
 
             return new Mono.Options.OptionSet()
-                .Add("x|XapPath", "Path to test xap file.", (v) =>
+                .Add("x|XapPath", "Path to test xap file.", v =>
                 {
                     XapPath = v ?? string.Empty;
                 }, Mono.Options.OptionValueType.Required)
@@ -104,19 +106,19 @@ namespace StatLight.Console
                         {
                             throw new StatLightException("Could not find an OverrideTestProvider defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, typeof(UnitTestProviderType).FormatEnumString()));
                         }
-                        this.UnitTestProviderType = result;
+                        UnitTestProviderType = result;
                     })
                 .Add("v|Version", "Specify a specific Microsoft.Silverlight.Testing build version. Pass in one of the following [{0}]".FormatWith(typeof(MicrosoftTestingFrameworkVersion).FormatEnumString()), v =>
                     {
                         v = v ?? string.Empty;
 
                         if (string.IsNullOrEmpty(v))
-                            this.MicrosoftTestingFrameworkVersion = null;
+                            MicrosoftTestingFrameworkVersion = null;
                         else
                         {
                             var loweredV = v.ToLower();
                             if (msTestVersions.ContainsKey(loweredV))
-                                this.MicrosoftTestingFrameworkVersion = msTestVersions[loweredV];
+                                MicrosoftTestingFrameworkVersion = msTestVersions[loweredV];
                             else
                                 throw new StatLightException("Could not find a version defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, typeof(MicrosoftTestingFrameworkVersion).FormatEnumString()));
                         }
@@ -125,10 +127,11 @@ namespace StatLight.Console
                     {
                         v = v ?? string.Empty;
                         if (Directory.Exists(Path.GetDirectoryName(v)))
-                            this.XmlReportOutputPath = v;
+                            XmlReportOutputPath = v;
                         else
                             throw new DirectoryNotFoundException("Could not find directory in [{0}]".FormatWith(v));
                     })
+                .Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v=> UseRemoteTestPage = true)
                 .Add("NumberOfBrowserHosts", "Default is 1. Allows you to specify the number of browser windows to spread work across.", v =>
                     {
                         int value;
@@ -225,7 +228,7 @@ namespace StatLight.Console
 
         public static string FormatEnumString(this Type enumType)
         {
-            if(!enumType.IsEnum)
+            if (!enumType.IsEnum)
                 throw new ArgumentException("Must be an enum Type={0}".FormatWith(enumType.FullName));
 
             return string.Join(" | ", Enum.GetNames(enumType));

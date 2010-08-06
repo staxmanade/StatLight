@@ -132,6 +132,7 @@
     <Compile Include="Messaging\HttpWebRequest.cs" />
     <Compile Include="Messaging\IQuerystringReader.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="StatLightException.cs" />
     <Compile Include="StatLightSystem.cs" />
   </ItemGroup>
   <ItemGroup>

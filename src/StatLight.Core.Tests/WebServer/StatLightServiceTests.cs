@@ -167,7 +167,7 @@ namespace StatLight.Core.Tests.WebServer
                 var crossDomainPolicy = StatLightService.GetCrossDomainPolicy();
 
                 crossDomainPolicy.ShouldNotBeNull();
-                crossDomainPolicy.ShouldContain("cross-domain-policy");
+                crossDomainPolicy.StreamToString().ShouldContain("cross-domain-policy");
             }
 
             [Test]

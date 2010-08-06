@@ -20,7 +20,7 @@ namespace StatLight.Core.WebServer
 
 		[OperationContract]
 		[WebGet(UriTemplate = "crossdomain.xml", BodyStyle = WebMessageBodyStyle.Bare)]
-		string GetCrossDomainPolicy();
+		Stream GetCrossDomainPolicy();
 
 		[OperationContract]
 		[WebInvoke(UriTemplate = StatLightServiceRestApi.PostMessage, Method = "POST", BodyStyle = WebMessageBodyStyle.Bare)]

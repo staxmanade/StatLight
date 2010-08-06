@@ -34,7 +34,7 @@ namespace StatLight.Core.WebServer
 
         // Browser InstanceId, Total Messages sent count
         private readonly Dictionary<int, int> _browserInstancesComplete = new Dictionary<int, int>();
-        private int _instanceId = 0;
+        private int _instanceId;
 
         public string TagFilters
         {
@@ -157,21 +157,22 @@ namespace StatLight.Core.WebServer
         }
 
 
-        // Not sure why but can't seem to get this to work... (would be nice to 
-        // get done - as it might speed up a StatLight run in general
+        //Not sure why but can't seem to get this to work... (would be nice to 
+        //get done - as it might speed up a StatLight (by not having to request this first before the CrossDomainPolicy)
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         //public Stream ClientAccessPolicy()
         //{
         //    WebOperationContext.Current.OutgoingResponse.ContentType = "text/xml";
         //    return Resources.ClientAccessPolocy.ToStream();
         //}
 
-        public string GetCrossDomainPolicy()
+        public Stream GetCrossDomainPolicy()
         {
             _logger.Debug("StatLightService.GetCrossDomainPolicy()");
 
             SetOutgoingResponceContentType("text/xml");
 
-            return Resources.CrossDomain;
+            return Resources.CrossDomain.ToStream();
         }
 
         public Stream GetHtmlTestPage()
