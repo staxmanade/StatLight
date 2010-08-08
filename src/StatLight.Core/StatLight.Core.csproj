@@ -222,7 +222,7 @@
     <None Include="..\CodeAnalysis.ruleset">
       <Link>CodeAnalysis.ruleset</Link>
     </None>
-    <None Include="Resources\ClientAccessPolocy.xml" />
+    <None Include="Resources\ClientAccessPolicy.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\StatLight.snk">

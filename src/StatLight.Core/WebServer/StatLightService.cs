@@ -163,7 +163,7 @@ namespace StatLight.Core.WebServer
         //public Stream ClientAccessPolicy()
         //{
         //    WebOperationContext.Current.OutgoingResponse.ContentType = "text/xml";
-        //    return Resources.ClientAccessPolocy.ToStream();
+        //    return Resources.ClientAccessPolicy.ToStream();
         //}
 
         public Stream GetCrossDomainPolicy()

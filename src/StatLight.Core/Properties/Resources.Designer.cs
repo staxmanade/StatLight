@@ -61,7 +61,7 @@ namespace StatLight.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; ?&gt;
         ///&lt;access-policy&gt;
         ///	&lt;cross-domain-access&gt;
         ///		&lt;policy&gt;
@@ -76,16 +76,17 @@ namespace StatLight.Core.Properties {
         ///&lt;/access-policy&gt;
         ///.
         /// </summary>
-        public static string ClientAccessPolocy {
+        public static string ClientAccessPolicy {
             get {
-                return ResourceManager.GetString("ClientAccessPolocy", resourceCulture);
+                return ResourceManager.GetString("ClientAccessPolicy", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
         ///&lt;cross-domain-policy&gt;
-        ///	&lt;allow-access-from domain=&quot;*&quot; /&gt;
+        ///  &lt;allow-http-request-headers-from domain=&quot;*&quot; /&gt;
+        ///  &lt;allow-access-from domain=&quot;*&quot; secure=&quot;false&quot; /&gt;
         ///&lt;/cross-domain-policy&gt;
         ///.
         /// </summary>
