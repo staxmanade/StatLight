@@ -12,3 +12,4 @@ src/build/*
 temp_build*.ps1
 ClientBin/
 bin/
+*.swp
