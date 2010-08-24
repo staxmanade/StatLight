@@ -72,12 +72,28 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 
         private UnitTestSettings ConfigureSettings()
         {
-            var settings = UnitTestSystem.CreateDefaultSettings();
-
 #if MSTestMarch2010
+            var settings = new UnitTestSettings();
+            settings.TestHarness = new UnitTestHarness();
+
+            DebugOutputProvider item = new DebugOutputProvider();
+            item.ShowAllFailures = true;
+            settings.LogProviders.Add(item);
+            try
+            {
+                VisualStudioLogProvider visualStudioLogProvider = new VisualStudioLogProvider();
+                settings.LogProviders.Add(visualStudioLogProvider);
+            }
+            catch
+            {
+            }
+
+
             settings.StartRunImmediately = true;
             settings.ShowTagExpressionEditor = false;
+            settings.TestService = null;
 #else
+            var settings = UnitTestSystem.CreateDefaultSettings();
 #endif
             // Below is the custom stuff...
             settings.TagExpression = _clientTestRunConfiguration.TagFilter;
@@ -89,5 +105,8 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             settings.TestHarness.TestHarnessCompleted += CurrentHarness_TestHarnessCompleted;
             return settings;
         }
+
+
+
     }
 }

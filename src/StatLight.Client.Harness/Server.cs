@@ -60,16 +60,22 @@ namespace StatLight.Client.Harness
             PostMessage(messageString);
         }
 
-        private static Uri _postMessageUri;
+        //private static Uri _postMessageUri;
+        //public static void PostMessage(string message)
+        //{
+        //    System.Threading.Interlocked.Increment(ref _postMessageCount);
+
+        //    if (_postMessageUri == null)
+        //        _postMessageUri = StatLightServiceRestApi.PostMessage.ToFullUri();
+        //    HttpPost(_postMessageUri, message);
+
+        //}
 
         public static void PostMessage(string message)
         {
             System.Threading.Interlocked.Increment(ref _postMessageCount);
 
-            if (_postMessageUri == null)
-                _postMessageUri = StatLightServiceRestApi.PostMessage.ToFullUri();
-
-            HttpPost(_postMessageUri, message);
+            HttpPost(StatLightServiceRestApi.PostMessage.ToFullUri(), message);
         }
 
         private static void HttpPost(Uri uri, string message)
