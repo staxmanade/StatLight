@@ -159,16 +159,19 @@ namespace StatLight.Core.Runners
 
             showTestingBrowserHost = GetShowTestingBrowserHost(serverTestRunConfiguration, showTestingBrowserHost);
 
-            browserFormHosts = GetBrowserFormHosts(logger, location.TestPageUrl, clientTestRunConfiguration, showTestingBrowserHost, dialogMonitorRunner);
+            browserFormHosts = GetBrowserFormHosts(logger, location.TestPageUrl, clientTestRunConfiguration, showTestingBrowserHost, dialogMonitorRunner, serverTestRunConfiguration.QueryString);
 
             StartupBrowserCommunicationTimeoutMonitor(new TimeSpan(0, 0, 5, 0));
         }
 
-        private static List<IBrowserFormHost> GetBrowserFormHosts(ILogger logger, Uri testPageUrl, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, DialogMonitorRunner dialogMonitorRunner)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "testPageUrlWithQueryString")]
+        private static List<IBrowserFormHost> GetBrowserFormHosts(ILogger logger, Uri testPageUrl, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, DialogMonitorRunner dialogMonitorRunner, string queryString)
         {
+            var testPageUrlWithQueryString = new Uri(testPageUrl + "?" + queryString);
+            logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);
             List<IBrowserFormHost> browserFormHosts = Enumerable
                 .Range(1, clientTestRunConfiguration.NumberOfBrowserHosts)
-                .Select(browserI => new BrowserFormHost(logger, testPageUrl, showTestingBrowserHost, dialogMonitorRunner))
+                .Select(browserI => new BrowserFormHost(logger, testPageUrlWithQueryString, showTestingBrowserHost, dialogMonitorRunner))
                 .Cast<IBrowserFormHost>()
                 .ToList();
             return browserFormHosts;
@@ -230,7 +233,7 @@ namespace StatLight.Core.Runners
                                                    HttpUtility.UrlEncode(location.BaseUrl.ToString()));
             var testPageUrlAndPostbackQuerystring = new Uri(location.TestPageUrl + querystring);
             logger.Debug("testPageUrlAndPostbackQuerystring={0}".FormatWith(testPageUrlAndPostbackQuerystring.ToString()));
-            browserFormHosts = GetBrowserFormHosts(logger, testPageUrlAndPostbackQuerystring, clientTestRunConfiguration, showTestingBrowserHost, dialogMonitorRunner);
+            browserFormHosts = GetBrowserFormHosts(logger, testPageUrlAndPostbackQuerystring, clientTestRunConfiguration, showTestingBrowserHost, dialogMonitorRunner, serverTestRunConfiguration.QueryString);
 
             StartupBrowserCommunicationTimeoutMonitor(new TimeSpan(0, 0, 5, 0));
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);

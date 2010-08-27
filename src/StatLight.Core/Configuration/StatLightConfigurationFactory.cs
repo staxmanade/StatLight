@@ -26,8 +26,11 @@ namespace StatLight.Core.Configuration
             _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
         }
 
-        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun)
+        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString)
         {
+            if (queryString == null)
+                throw new ArgumentNullException("queryString");
+
             string xapUrl = null;
             XapReadItems xapReadItems = null;
             if (isRemoteRun)
@@ -65,7 +68,8 @@ namespace StatLight.Core.Configuration
                 clientConfig.UnitTestProviderType,
                 microsoftTestingFrameworkVersion,
                 xapReadItems,
-                DefaultDialogSmackDownElapseMilliseconds);
+                DefaultDialogSmackDownElapseMilliseconds,
+                queryString);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
@@ -83,7 +87,8 @@ namespace StatLight.Core.Configuration
             UnitTestProviderType unitTestProviderType,
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion,
             XapReadItems xapReadItems,
-            long dialogSmackDownElapseMilliseconds
+            long dialogSmackDownElapseMilliseconds,
+            string queryString
             )
         {
             XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
@@ -104,7 +109,7 @@ namespace StatLight.Core.Configuration
                };
             }
 
-            return new ServerTestRunConfiguration(hostXap, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, xapToTestFactory);
+            return new ServerTestRunConfiguration(hostXap, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, xapToTestFactory, queryString);
         }
         private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, XapReadItems xapReadItems)
         {

@@ -43,6 +43,13 @@ namespace StatLight.Console
 
         public bool UseRemoteTestPage { get; set; }
 
+        private string _queryString;
+        public string QueryString
+        {
+            get { return _queryString ?? String.Empty; }
+            set { _queryString = value; }
+        }
+
         private ArgOptions()
             : this(new string[] { })
         {
@@ -131,7 +138,7 @@ namespace StatLight.Console
                         else
                             throw new DirectoryNotFoundException("Could not find directory in [{0}]".FormatWith(v));
                     })
-                .Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v=> UseRemoteTestPage = true)
+                .Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v => UseRemoteTestPage = true)
                 .Add("NumberOfBrowserHosts", "Default is 1. Allows you to specify the number of browser windows to spread work across.", v =>
                     {
                         int value;
@@ -145,7 +152,8 @@ namespace StatLight.Console
                             throw new StatLightException("Could not parse parameter [{0}] for numberofbrowsers into an integer.".FormatWith(v));
                         }
                     })
-                .Add("debug", v=> IsRequestingDebug = true)
+                .Add("QueryString", "Specify some QueryString that will be appended to the browser test page request. This can be helpful to setup a remote web service and pass in the url, or a port used. You can then access the querystring within silverlight HtmlPage.Document.QueryString[..]", v => QueryString = v ?? String.Empty)
+                .Add("debug", v => IsRequestingDebug = true)
                 .Add<string>("teamcity", "Changes the console output to generate the teamcity message spec.", v => OutputForTeamCity = true)
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)

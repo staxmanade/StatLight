@@ -69,6 +69,7 @@ namespace StatLight.Console
                     string tagFilters = options.TagFilters;
                     UnitTestProviderType unitTestProviderType = options.UnitTestProviderType;
                     int numberOfBrowserHosts = options.NumberOfBrowserHosts;
+                    string queryString = options.QueryString;
 
                     var statLightRunnerFactory = new StatLightRunnerFactory();
                     var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
@@ -87,7 +88,8 @@ namespace StatLight.Console
                             methodsToTest,
                             tagFilters,
                             numberOfBrowserHosts,
-                            useRemoteTestPage);
+                            useRemoteTestPage,
+                            queryString);
 
                     IRunner runner = GetRunner(
                             logger,

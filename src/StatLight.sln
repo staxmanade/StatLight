@@ -57,6 +57,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.RemoteIntegration
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.RemoteIntegration.Web", "StatLight.RemoteIntegration\StatLight.RemoteIntegration.Web\StatLight.RemoteIntegration.Web.csproj", "{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.ExternalWebTest", "StatLight.RemoteIntegration\StatLight.ExternalWebTest\StatLight.ExternalWebTest.csproj", "{8281421C-D572-4817-BBD2-796A8DB2B2E0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19} = {3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +230,14 @@ Global
 		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}.Release|x86.ActiveCfg = Release|Any CPU
 		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19}.Release|x86.Build.0 = Release|Any CPU
+		{8281421C-D572-4817-BBD2-796A8DB2B2E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8281421C-D572-4817-BBD2-796A8DB2B2E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8281421C-D572-4817-BBD2-796A8DB2B2E0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8281421C-D572-4817-BBD2-796A8DB2B2E0}.Debug|x86.Build.0 = Debug|Any CPU
+		{8281421C-D572-4817-BBD2-796A8DB2B2E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8281421C-D572-4817-BBD2-796A8DB2B2E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8281421C-D572-4817-BBD2-796A8DB2B2E0}.Release|x86.ActiveCfg = Release|Any CPU
+		{8281421C-D572-4817-BBD2-796A8DB2B2E0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -244,5 +257,6 @@ Global
 		{0FB6602A-EF21-4A26-8A65-E1C9A01F206E} = {CBFFC0A9-9D77-443F-84FB-831A1C368EA0}
 		{348760C9-0276-4574-9BBD-EAE8F20E4AD3} = {0FB6602A-EF21-4A26-8A65-E1C9A01F206E}
 		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19} = {0FB6602A-EF21-4A26-8A65-E1C9A01F206E}
+		{8281421C-D572-4817-BBD2-796A8DB2B2E0} = {0FB6602A-EF21-4A26-8A65-E1C9A01F206E}
 	EndGlobalSection
 EndGlobal

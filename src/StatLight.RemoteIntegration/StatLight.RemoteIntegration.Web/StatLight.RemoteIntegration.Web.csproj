@@ -13,7 +13,7 @@
     <RootNamespace>StatLight.RemoteIntegration.Web</RootNamespace>
     <AssemblyName>StatLight.RemoteIntegration.Web</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <SilverlightApplicationList>{348760C9-0276-4574-9BBD-EAE8F20E4AD3}|..\StatLight.RemoteIntegration\StatLight.RemoteIntegration.csproj|ClientBin|False</SilverlightApplicationList>
+    <SilverlightApplicationList>{348760C9-0276-4574-9BBD-EAE8F20E4AD3}|..\StatLight.RemoteIntegration\StatLight.RemoteIntegration.csproj|ClientBin|False,{8281421C-D572-4817-BBD2-796A8DB2B2E0}|..\StatLight.ExternalWebTest\StatLight.ExternalWebTest.csproj|ClientBin|False</SilverlightApplicationList>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,11 +53,14 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ClientAccessPolicy.xml" />
+    <Content Include="ClientAccessPolicy_RENAME.xml" />
+    <Content Include="ClientBin\StatLight.ExternalWebTest.xap" />
     <Content Include="ClientBin\StatLight.RemoteIntegration.xap" />
     <Content Include="CrossDomain.xml" />
     <Content Include="Service1.svc" />
     <Content Include="Silverlight.js" />
+    <Content Include="StatLight.ExternalWebTestTestPage.aspx" />
+    <Content Include="StatLight.ExternalWebTestTestPage.html" />
     <Content Include="StatLight.RemoteIntegrationTestPage.aspx" />
     <Content Include="StatLight.RemoteIntegrationTestPage.html" />
     <Content Include="Web.config" />

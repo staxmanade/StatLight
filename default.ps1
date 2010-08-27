@@ -683,6 +683,23 @@ Task test-specific-method-filter {
 	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1 -expectedFailedCount 1
 }
 
+Task test-remote-access-querystring {
+	$hostServieWebsitePath = (Get-Item .\src\StatLight.RemoteIntegration\StatLight.RemoteIntegration.Web);
+	
+	$cassiniPort = 8085
+	$cassiniDevProcessExe = (Get-Item ".\Tools\CassiniDev\CassiniDev4-console.exe")
+	$cassiniDevProcessArgs = "/path:$hostServieWebsitePath /pm:Specific /p:8085"
+	echo "$cassiniDevProcessExe $cassiniDevProcessArgs"
+	$cassiniProcess = [System.Diagnostics.Process]::Start($cassiniDevProcessExe, $cassiniDevProcessArgs)
+	
+	$scriptFile = GetTemporaryXmlFile;
+	
+	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.RemoteIntegration\StatLight.ExternalWebTest\Bin\$build_configuration\StatLight.ExternalWebTest.xap" "-r=$scriptFile" "-QueryString=RemoteCallbackServiceUrl=http://localhost:$cassiniPort/Service1.svc" 
+	
+	Stop-Process $cassiniProcess.Id -ErrorAction SilentlyContinue
+
+	Assert-statlight-xml-report-results -message "test-remote-access-test" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1
+}
 
 Task test-specific-multiple-browser-runner {
 	$scriptFile = GetTemporaryXmlFile;
@@ -869,7 +886,7 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 	Write-Documentation
 }
 
-Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter {
+Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner {
 }
 
 Task build-all -depends clean-build, initialize, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {
