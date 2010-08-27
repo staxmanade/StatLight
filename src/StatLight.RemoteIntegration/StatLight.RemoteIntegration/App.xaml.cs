@@ -19,8 +19,7 @@ namespace StatLight.RemoteIntegration
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var statLightSystem = new StatLightSystem(this.GetType().Assembly);
-            statLightSystem.OnReadySetupRootVisual(newRootVisual => RootVisual = newRootVisual);
+            new StatLightSystem(this.GetType().Assembly, newRootVisual => RootVisual = newRootVisual);
         }
 
         private void Application_Exit(object sender, EventArgs e)

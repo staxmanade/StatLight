@@ -19,8 +19,7 @@ namespace StatLight.Client.Harness
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var statLightSystem = new StatLightSystem();
-            statLightSystem.OnReadySetupRootVisual(newRootVisual => RootVisual = newRootVisual);
+            var statLightSystem = new StatLightSystem(newRootVisual => RootVisual = newRootVisual);
         }
 
         private void Application_Exit(object sender, EventArgs e)

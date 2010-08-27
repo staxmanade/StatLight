@@ -25,16 +25,18 @@ namespace StatLight.Client.Harness
         private readonly bool _isRemotePostRun;
         private readonly Assembly _assemblyToTest;
 
-        internal StatLightSystem()
+        internal StatLightSystem(Action<UIElement> onReady)
         {
             var src = Application.Current.Host.Source;
             var urlx = src.Scheme + "://" + src.Host + ":" + src.Port + "/";
 
             _postbackUriBase = new Uri(urlx);
             SetPostbackUri(_postbackUriBase);
+
+            OnReadySetupRootVisual(onReady);
         }
 
-        public StatLightSystem(Assembly assemblyToTest)
+        public StatLightSystem(Assembly assemblyToTest, Action<UIElement> onReady)
         {
             _assemblyToTest = assemblyToTest;
 
@@ -45,8 +47,12 @@ namespace StatLight.Client.Harness
                 Console.WriteLine("postbackUrl={0}".FormatWith(postbackUrl));
                 _isRemotePostRun = true;
                 _postbackUriBase = new Uri(postbackUrl);
-                SetPostbackUri(_postbackUriBase);
             }
+            _isRemotePostRun = true;
+            _postbackUriBase = null;
+            SetPostbackUri(_postbackUriBase);
+
+            OnReadySetupRootVisual(onReady);
         }
 
         private static void SetPostbackUri(Uri postbackUriBase)
@@ -54,7 +60,7 @@ namespace StatLight.Client.Harness
             StatLightServiceRestApi.PostbackUriBase = postbackUriBase;
         }
 
-        public void OnReadySetupRootVisual(Action<UIElement> onReady)
+        private void OnReadySetupRootVisual(Action<UIElement> onReady)
         {
             if (onReady == null)
                 throw new ArgumentNullException("onReady");
