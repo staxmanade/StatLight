@@ -97,6 +97,9 @@
     <Compile Include="..\StatLight.Core\CommonExtensions.cs">
       <Link>Core\CommonExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Core\Common\StatLightException.cs">
+      <Link>Core\Common\StatLightException.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Core\Configuration\ClientTestRunConfiguration.cs">
       <Link>Core\Configuration\ClientTestRunConfiguration.cs</Link>
     </Compile>
@@ -124,16 +127,21 @@
     <Compile Include="AssemblyInfo.This.cs" />
     <Compile Include="Events\ExceptionInfo.cs" />
     <Compile Include="Events\TestFailedEvent.cs" />
+    <Compile Include="Hosts\CurrentXapData.cs" />
+    <Compile Include="Hosts\ILoadedXapData.cs" />
     <Compile Include="Hosts\ITestRunnerHost.cs" />
+    <Compile Include="Hosts\LoadedXapDataBase.cs" />
     <Compile Include="Hosts\ReflectionInfoHelper.cs" />
-    <Compile Include="LoadedXapData.cs" />
+    <Compile Include="Hosts\LoadedXapData.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventArgs.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventHandler.cs" />
     <Compile Include="Messaging\HttpWebRequest.cs" />
     <Compile Include="Messaging\IQuerystringReader.cs" />
     <Compile Include="Messaging\Server.cs" />
-    <Compile Include="StatLightException.cs" />
-    <Compile Include="StatLightSystem.cs" />
+    <Compile Include="Hosts\RemoteRunStatLightSystem.cs" />
+    <Compile Include="Hosts\NormalStatLightSystem.cs" />
+    <Compile Include="Hosts\StatLightSystemBase.cs" />
+    <Compile Include="StatLightSystemFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

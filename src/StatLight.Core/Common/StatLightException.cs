@@ -2,7 +2,9 @@ using System;
 
 namespace StatLight.Core.Common
 {
+#if !SILVERLIGHT
     [Serializable]
+#endif
     public class StatLightException : Exception
     {
         public StatLightException()

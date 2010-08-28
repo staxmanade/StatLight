@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Reflection;
 using System.Windows;
-using StatLight.Client.Harness;
 
 namespace StatLight.RemoteIntegration
 {

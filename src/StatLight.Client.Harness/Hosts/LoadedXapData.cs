@@ -8,38 +8,8 @@ using System.Windows.Resources;
 using System.Xml.Linq;
 using StatLight.Client.Harness.Messaging;
 
-namespace StatLight.Client.Harness
+namespace StatLight.Client.Harness.Hosts
 {
-    public interface ILoadedXapData
-    {
-        IEnumerable<Assembly> TestAssemblies { get; }
-        Assembly EntryPointAssembly { get; }
-    }
-
-    public class CurrentXapData : LoadedXapDataBase, ILoadedXapData
-    {
-        private new readonly IEnumerable<Assembly> _testAssemblies;
-        public CurrentXapData(Assembly entryPointAssembly)
-        {
-            EntryPointAssembly = entryPointAssembly;
-            _testAssemblies = new List<Assembly>
-                                 {
-                                     entryPointAssembly,
-                                 };
-        }
-
-        public IEnumerable<Assembly> TestAssemblies
-        {
-            get
-            {
-                return _testAssemblies;
-                //return _testAssemblies.Select(s => s.Value);
-            }
-        }
-
-        public Assembly EntryPointAssembly { get; private set; }
-    }
-
     public class LoadedXapData : LoadedXapDataBase, ILoadedXapData
     {
         public IEnumerable<Assembly> TestAssemblies
@@ -120,22 +90,6 @@ namespace StatLight.Client.Harness
             }
             else
                 throw new InvalidOperationException("The AppManifest's document root was null.");
-        }
-    }
-
-    public class LoadedXapDataBase
-    {
-        protected readonly Dictionary<string, Assembly> _testAssemblies = new Dictionary<string, Assembly>();
-        protected static bool ShouldNotIgnoreAssembly(Assembly ass)
-        {
-            return !ass.FullName.StartsWith("Microsoft.Silverlight.Testing,");
-        }
-        protected void AddAssembly(Assembly ass)
-        {
-            if (!_testAssemblies.ContainsKey(ass.FullName))
-            {
-                _testAssemblies.Add(ass.FullName, ass);
-            }
         }
     }
 }
