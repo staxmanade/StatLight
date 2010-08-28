@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Resources;
 using System.Xml.Linq;
+using StatLight.Client.Harness.Messaging;
 
 namespace StatLight.Client.Harness
 {

@@ -6,6 +6,7 @@ using System.Net;
 using System.Reflection;
 using System.Windows;
 using StatLight.Client.Harness.Hosts;
+using StatLight.Client.Harness.Messaging;
 using StatLight.Client.Model.Messaging;
 using StatLight.Core.Configuration;
 using StatLight.Core.Serialization;

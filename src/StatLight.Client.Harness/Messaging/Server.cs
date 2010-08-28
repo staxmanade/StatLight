@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reflection;
 using StatLight.Client.Harness.Events;
 using StatLight.Client.Model.Messaging;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebServer;
 using StatLight.Core.Configuration;
 
-namespace StatLight.Client.Harness
+namespace StatLight.Client.Harness.Messaging
 {
     public class Server
     {

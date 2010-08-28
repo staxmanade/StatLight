@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using StatLight.Client.Harness.Hosts;
+using StatLight.Client.Harness.Messaging;
 
 namespace StatLight.Client.Harness
 {

@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.Silverlight.Testing.Harness;
 using StatLight.Client.Harness.Events;
 using StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation;
+using StatLight.Client.Harness.Messaging;
 
 namespace StatLight.Client.Harness.Hosts.MSTest
 {

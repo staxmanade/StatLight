@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using StatLight.Client.Harness.Events;
+using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Configuration;
 using UnitDriven;
 using UnitDriven.Commanding;
