@@ -109,7 +109,6 @@
     <Compile Include="Monitoring\BrowserCommunicationTimeoutMonitorTests.cs" />
     <Compile Include="WebBrowser\BrowserFormHostTests.cs" />
     <Compile Include="WebServer\StatLightServiceHostTests.cs" />
-    <Compile Include="WebServer\StatLightServiceMessagePostedTests.cs" />
     <Compile Include="WebServer\StatLightServiceTests.cs" />
     <Compile Include="SpecificationExtensions.cs" />
     <Compile Include="WebServer\WebServerLocationTests.cs" />
