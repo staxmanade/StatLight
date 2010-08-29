@@ -17,7 +17,7 @@ namespace StatLight.Core.Tests.Runners
 
         private ContinuousTestRunner CreateContinuousTestRunner()
         {
-            var runner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, _mockStatLightService.Object, _xapFileBuildChangedMonitor.Object);
+            var runner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, _mockStatLightService.Object, _xapFileBuildChangedMonitor.Object, "test");
             return runner;
         }
 
@@ -63,7 +63,7 @@ namespace StatLight.Core.Tests.Runners
 
             base.Before_all_tests();
 
-            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, _mockStatLightService.Object, _xapFileBuildChangedMonitor.Object);
+            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, _mockStatLightService.Object, _xapFileBuildChangedMonitor.Object, "test");
 
             // Signal that the first test has already finished.
             TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());

@@ -57,7 +57,7 @@ namespace StatLight.Core.Tests.Reporting
         [Test]
         public void Should_be_able_to_add_test_results()
         {
-            var result = new TestReport();
+            var result = new TestReport("test");
 
             result.AddResult(TestCaseResultFactory.CreatePassed());
             result.AddResult(TestCaseResultFactory.CreateFailed());
@@ -75,7 +75,7 @@ namespace StatLight.Core.Tests.Reporting
         {
             base.Before_all_tests();
 
-            _result = new TestReport();
+            _result = new TestReport("test");
 
             _result
                 .AddResult(TestCaseResultFactory.CreateIgnored())
@@ -121,7 +121,7 @@ namespace StatLight.Core.Tests.Reporting
         [Test]
         public void when_only_passing_tests_are_added_the_FinalResult_should_be_successful()
         {
-            var result = new TestReport();
+            var result = new TestReport("test");
 
             result
                 .AddResult(TestCaseResultFactory.CreatePassed())

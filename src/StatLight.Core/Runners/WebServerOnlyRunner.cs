@@ -15,20 +15,23 @@ namespace StatLight.Core.Runners
 		private readonly IWebServer webServer;
 		private readonly Thread continuousRunnerThread;
 		private readonly Uri testHtmlPageUrl;
-		private readonly ILogger logger;
+        private readonly string _xapPath;
+        private readonly ILogger logger;
 		private readonly TestResultAggregator _testResultAggregator;
 
 		internal WebServerOnlyRunner(
 			ILogger logger,
 			IEventAggregator eventAggregator,
 			IWebServer webServer,
-			Uri testHtmlPageUrl)
+			Uri testHtmlPageUrl,
+            string xapPath)
 		{
 			this.logger = logger;
 			this.webServer = webServer;
 			this.testHtmlPageUrl = testHtmlPageUrl;
+		    _xapPath = xapPath;
 
-			this._testResultAggregator = new TestResultAggregator(logger, eventAggregator);
+            this._testResultAggregator = new TestResultAggregator(logger, eventAggregator, _xapPath);
 		    eventAggregator.AddListener(_testResultAggregator);
 			this.continuousRunnerThread = new Thread(() =>
 			{
@@ -55,7 +58,7 @@ namespace StatLight.Core.Runners
 			continuousRunnerThread.Start();
 			continuousRunnerThread.Join();
 
-			return new TestReport();
+            return new TestReport(_xapPath);
 		}
 
 

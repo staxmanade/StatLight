@@ -75,7 +75,7 @@ namespace StatLight.Core.Runners
 
             var teamCityTestResultHandler = new TeamCityTestResultHandler(new ConsoleCommandWriter(), statLightConfiguration.Server.XapToTestPath);
             _eventAggregator.AddListener(teamCityTestResultHandler);
-            IRunner runner = new TeamCityRunner(new NullLogger(), _eventAggregator, webServer, browserFormHosts, teamCityTestResultHandler);
+            IRunner runner = new TeamCityRunner(new NullLogger(), _eventAggregator, webServer, browserFormHosts, teamCityTestResultHandler, statLightConfiguration.Server.XapToTestPath);
 
             return runner;
         }
@@ -98,7 +98,7 @@ namespace StatLight.Core.Runners
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
 
-            IRunner runner = new OnetimeRunner(logger, _eventAggregator, webServer, browserFormHosts);
+            IRunner runner = new OnetimeRunner(logger, _eventAggregator, webServer, browserFormHosts, statLightConfiguration.Server.XapToTestPath);
             return runner;
         }
 
@@ -113,7 +113,7 @@ namespace StatLight.Core.Runners
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
             SetupDebugClientEventListener(logger);
-            IRunner runner = new WebServerOnlyRunner(logger, _eventAggregator, webServer, location.TestPageUrl);
+            IRunner runner = new WebServerOnlyRunner(logger, _eventAggregator, webServer, location.TestPageUrl, statLightConfiguration.Server.XapToTestPath);
 
             return runner;
         }
@@ -238,7 +238,7 @@ namespace StatLight.Core.Runners
             StartupBrowserCommunicationTimeoutMonitor(new TimeSpan(0, 0, 5, 0));
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
 
-            IRunner runner = new OnetimeRunner(logger, _eventAggregator, webServer, browserFormHosts);
+            IRunner runner = new OnetimeRunner(logger, _eventAggregator, webServer, browserFormHosts, statLightConfiguration.Server.XapToTestPath);
             return runner;
         }
 

@@ -18,13 +18,13 @@ namespace StatLight.Core.Reporting.Providers.Xml
         private readonly TestReport _report;
         private readonly string _testXapFileName;
 
-        public XmlReport(TestReport report, string testXapFileName)
+        public XmlReport(TestReport report)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
 
             _report = report;
-            _testXapFileName = testXapFileName;
+            _testXapFileName =report.XapPath;
         }
 
         public void WriteXmlReport(string outputFilePath)

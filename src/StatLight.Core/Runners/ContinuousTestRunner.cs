@@ -21,18 +21,22 @@ namespace StatLight.Core.Runners
         private TestResultAggregator _testResultAggregator;
         private readonly IEventAggregator _eventAggregator;
         private DateTime _startOfRun;
+        private string _xapPath;
+
         internal ContinuousTestRunner(
             ILogger logger,
             IEventAggregator eventAggregator,
             IBrowserFormHost browserFormHost,
             IStatLightService statLightService,
-            IXapFileBuildChangedMonitor xapFileBuildChangedMonitor)
+            IXapFileBuildChangedMonitor xapFileBuildChangedMonitor,
+            string xapPath)
         {
             _logger = logger;
             _eventAggregator = eventAggregator;
             _browserFormHost = browserFormHost;
             _statLightService = statLightService;
             _xapFileBuildChangedMonitor = xapFileBuildChangedMonitor;
+            _xapPath = xapPath;
 
             _logger.Debug("ContinuousTestRunner.ctor()");
 
@@ -57,7 +61,7 @@ namespace StatLight.Core.Runners
 
         private void Start()
         {
-            _testResultAggregator = new TestResultAggregator(_logger, _eventAggregator);
+            _testResultAggregator = new TestResultAggregator(_logger, _eventAggregator, _xapPath);
             _eventAggregator.AddListener(_testResultAggregator);
 
             _logger.Information("{1}{1}Starting Test Run: {0}{1}{1}"

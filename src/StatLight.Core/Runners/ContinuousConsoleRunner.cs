@@ -12,7 +12,8 @@ namespace StatLight.Core.Runners
 
     internal class ContinuousConsoleRunner : IRunner, IDisposable
 	{
-		private readonly IWebServer _webServer;
+        private readonly string _xapPath;
+        private readonly IWebServer _webServer;
 		private readonly Thread _continuousRunnerThread;
 		private readonly XapFileBuildChangedMonitor _xapFileBuildChangedMonitor;
 
@@ -24,12 +25,13 @@ namespace StatLight.Core.Runners
 			IWebServer webServer,
 			IBrowserFormHost browserFormHost)
 		{
-			_webServer = webServer;
-			_xapFileBuildChangedMonitor = new XapFileBuildChangedMonitor(xapPath);
+		    _xapPath = xapPath;
+		    _webServer = webServer;
+            _xapFileBuildChangedMonitor = new XapFileBuildChangedMonitor(_xapPath);
 
             _continuousRunnerThread = new Thread(() =>
             {
-                using (var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, statLightService, _xapFileBuildChangedMonitor))
+                using (var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, statLightService, _xapFileBuildChangedMonitor, _xapPath))
                 {
                     string line;
                     while ( !(line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))
@@ -47,7 +49,7 @@ namespace StatLight.Core.Runners
 			_continuousRunnerThread.Start();
 			_continuousRunnerThread.Join();
 
-			return new TestReport();
+            return new TestReport(_xapPath);
 		}
 
 		protected virtual void Dispose(bool disposing)

@@ -21,17 +21,17 @@ namespace StatLight.Core.Reporting
     {
         private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;
-        private readonly TestReport _currentReport = new TestReport();
+        private readonly TestReport _currentReport;
         private readonly DialogAssertionMatchmaker _dialogAssertionMessageMatchmaker = new DialogAssertionMatchmaker();
         private readonly EventMatchMacker _eventMatchMacker;
         private readonly List<int> _beginEventsAlreadyFired = new List<int>();
 
-        public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator)
+        public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator, string xapPath)
         {
             //System.Diagnostics.Debugger.Break();
             _logger = logger;
             _eventAggregator = eventAggregator;
-
+            _currentReport = new TestReport(xapPath);
             _eventMatchMacker = new EventMatchMacker(_logger);
         }
 

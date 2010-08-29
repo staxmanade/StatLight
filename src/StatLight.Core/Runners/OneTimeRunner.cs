@@ -21,6 +21,7 @@ namespace StatLight.Core.Runners
         private readonly IEventAggregator _eventAggregator;
         private readonly IWebServer statLightServiceHost;
         private readonly List<IBrowserFormHost> browserFormHost;
+        private readonly string _xapPath;
         private readonly TestResultAggregator testResultAggregator;
         readonly AutoResetEvent _browserThreadWaitHandle = new AutoResetEvent(false);
 
@@ -29,14 +30,16 @@ namespace StatLight.Core.Runners
             ILogger logger,
             IEventAggregator eventAggregator,
             IWebServer statLightServiceHost,
-            List<IBrowserFormHost> browserFormHost)
+            List<IBrowserFormHost> browserFormHost,
+            string xapPath)
         {
             this.logger = logger;
             _eventAggregator = eventAggregator;
             this.statLightServiceHost = statLightServiceHost;
             this.browserFormHost = browserFormHost;
+            _xapPath = xapPath;
 
-            testResultAggregator = new TestResultAggregator(logger, eventAggregator);
+            testResultAggregator = new TestResultAggregator(logger, eventAggregator, _xapPath);
             eventAggregator.AddListener(testResultAggregator);
             eventAggregator.AddListener(this);
         }

@@ -16,7 +16,6 @@ namespace StatLight.Console
     using StatLight.Core.Runners;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.UnitTestProviders;
-    using System.Collections.Generic;
 
     class Program
     {
@@ -96,7 +95,7 @@ namespace StatLight.Console
 
                     if (!string.IsNullOrEmpty(xmlReportOutputPath))
                     {
-                        var xmlReport = new XmlReport(testReport, xapPath);
+                        var xmlReport = new XmlReport(testReport);
                         xmlReport.WriteXmlReport(xmlReportOutputPath);
 
                         "*********************************"

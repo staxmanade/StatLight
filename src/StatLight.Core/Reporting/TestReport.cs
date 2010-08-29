@@ -55,11 +55,18 @@ namespace StatLight.Core.Reporting
 
     public class TestReport
     {
+        private readonly string _xapPath;
         private readonly IList<TestCaseResult> _testCaseResults = new List<TestCaseResult>();
 
-        public TestReport()
+        public TestReport(string xapPath)
         {
+            _xapPath = xapPath;
             DateTimeRunCompleted = DateTime.Now;
+        }
+
+        public string XapPath
+        {
+            get { return _xapPath; }
         }
 
         public IEnumerable<TestCaseResult> TestResults { get { return _testCaseResults; } }

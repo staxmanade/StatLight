@@ -12,15 +12,16 @@ namespace StatLight.Core.Runners
 
     internal class TeamCityRunner : OnetimeRunner
 	{
-		TeamCityTestResultHandler teamCityCommandPublisher;
+        readonly TeamCityTestResultHandler teamCityCommandPublisher;
 
 		internal TeamCityRunner(
 			ILogger logger,
 			IEventAggregator eventAggregator,
 			IWebServer webServer,
 			List<IBrowserFormHost> browserFormHost,
-			TeamCityTestResultHandler teamCityCommandPublisher)
-			: base(logger, eventAggregator, webServer, browserFormHost)
+			TeamCityTestResultHandler teamCityCommandPublisher,
+            string xapPath)
+			: base(logger, eventAggregator, webServer, browserFormHost, xapPath)
 		{
 			this.teamCityCommandPublisher = teamCityCommandPublisher;
 		}

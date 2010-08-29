@@ -21,7 +21,7 @@ namespace StatLight.Core.Tests.Reporting
             {
                 base.Before_all_tests();
 
-                TestResultAggregator = new TestResultAggregator(TestLogger, TestEventAggregator);
+                TestResultAggregator = new TestResultAggregator(TestLogger, TestEventAggregator, "test");
             }
         }
 
