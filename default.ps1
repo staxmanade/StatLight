@@ -679,6 +679,14 @@ Task test-specific-method-filter {
 	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1 -expectedFailedCount 1
 }
 
+Task test-multiple-xaps {
+	$scriptFile = GetTemporaryXmlFile;
+	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight.LotsOfTests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.LotsOfTests.xap;.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\Debug\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-o=MSTest" "-r=$scriptFile"
+
+	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 6 -expectedFailedCount 2 -expectedIgnoredCount 1
+}
+
+
 Task test-remote-access-querystring {
 	$hostServieWebsitePath = (Get-Item .\src\StatLight.RemoteIntegration\StatLight.RemoteIntegration.Web);
 	
@@ -705,57 +713,28 @@ Task test-specific-multiple-browser-runner {
 	Assert-statlight-xml-report-results -message "test-specific-mutiple-browser-runner" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1000
 }
 
-
 function Assert-statlight-xml-report-results
 {
 	param ( $message,
-		$resultsXmlTextFilePath,
-		$expectedPassedCount = 0,
-		$expectedIgnoredCount = 0,
-		$expectedFailedCount = 0,
-		$expectedSystemGeneratedfailedCount = 0 )
+			$resultsXmlTextFilePath,
+			$expectedPassedCount = 0,
+			$expectedIgnoredCount = 0,
+			$expectedFailedCount = 0,
+			$expectedSystemGeneratedfailedCount = 0 )
 	Echo "Asserting xml report results for $message. File=$resultsXmlTextFilePath"
 	AssertXmlReportIsValid $scriptFile
 
-	[Reflection.Assembly]::LoadWithPartialName("System.Xml.Linq") | Out-Null
-	$file = get-item $scriptFile
-	$doc = [System.Xml.Linq.XDocument]::Load($file)
-
-	$passedCount = 0;
-	$ignoredCount = 0;
-	$failedCount = 0;
-	$systemGeneratedfailedCount = 0;
-	
-	foreach($test in $doc.Descendants('test'))
+	$testReportXml = [xml](Get-Content $scriptFile)
+	function assertResultTypeCount($resultTypeToLookFor, $count)
 	{
-		$resultTypeValue = $test.Attribute('resulttype').Value
-
-		if($resultTypeValue -eq 'Passed')
-		{
-			$passedCount = $passedCount + 1;
-		}
-		elseif($resultTypeValue -eq 'Ignored')
-		{
-			$ignoredCount = $ignoredCount + 1;
-		}
-		elseif($resultTypeValue -eq 'Failed')
-		{
-			$failedCount = $failedCount + 1;
-		}
-		elseif($resultTypeValue -eq 'SystemGeneratedFailure')
-		{
-			$systemGeneratedfailedCount = $systemGeneratedfailedCount + 1;
-		}
-		else
-		{
-			throw "Unknown ResultType [$resultTypeValue]"
-		}
+		$c = ($testReportXml.StatLightTestResults.Tests.Test | where-object { $_.ResultType -eq $resultTypeToLookFor } | Measure-Object).Count
+		$c.ShouldEqual($count)
 	}
 	
-	$passedCount.ShouldEqual($expectedPassedCount);
-	$ignoredCount.ShouldEqual($expectedIgnoredCount);
-	$failedCount.ShouldEqual($expectedFailedCount);
-	$systemGeneratedfailedCount.ShouldEqual($expectedSystemGeneratedfailedCount);	 
+	assertResultTypeCount 'Passed' $expectedPassedCount
+	assertResultTypeCount 'Ignored' $expectedIgnoredCount
+	assertResultTypeCount 'Failed' $expectedFailedCount
+	assertResultTypeCount 'SystemGeneratedFailure' $expectedSystemGeneratedfailedCount
 }
 
 Task test-all-mstest-version-acceptance-tests {
