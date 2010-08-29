@@ -46,20 +46,7 @@ namespace StatLight.Console
                         return;
                     }
 
-                    ILogger logger;
-
-                    if (options.IsRequestingDebug)
-                    {
-                        logger = new ConsoleLogger(LogChatterLevels.Full);
-                    }
-                    else
-                    {
-#if DEBUG
-                        logger = new ConsoleLogger(LogChatterLevels.Full);
-#else
-                        logger = new ConsoleLogger(LogChatterLevels.Error | LogChatterLevels.Warning | LogChatterLevels.Information);
-#endif
-                    }
+                    ILogger logger = GetLogger(options.IsRequestingDebug);
 
                     string xapPath = options.XapPath;
                     bool continuousIntegrationMode = options.ContinuousIntegrationMode;
@@ -160,6 +147,24 @@ Try: (the following two steps that should allow StatLight to start a web server 
                     HandleUnknownError(exception);
                 }
             }
+        }
+
+        private static ILogger GetLogger(bool isRequestingDebug)
+        {
+            ILogger logger;
+            if (isRequestingDebug)
+            {
+                logger = new ConsoleLogger(LogChatterLevels.Full);
+            }
+            else
+            {
+#if DEBUG
+                logger = new ConsoleLogger(LogChatterLevels.Full);
+#else
+                        logger = new ConsoleLogger(LogChatterLevels.Error | LogChatterLevels.Warning | LogChatterLevels.Information);
+#endif
+            }
+            return logger;
         }
 
         private static void HandleUnknownError(Exception exception)
