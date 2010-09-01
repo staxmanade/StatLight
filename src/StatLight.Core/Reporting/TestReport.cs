@@ -1,4 +1,6 @@
 ﻿
+using System.Collections;
+
 namespace StatLight.Core.Reporting
 {
     using System.Collections.Generic;
@@ -52,6 +54,37 @@ namespace StatLight.Core.Reporting
         SystemGeneratedFailure,
     }
 
+    public class TestReportCollection : IEnumerable<TestReport>
+    {
+        private readonly List<TestReport> _testReports = new List<TestReport>();
+        public RunCompletedState FinalResult
+        {
+            get
+            {
+                if (_testReports.Any(testReport => testReport.FinalResult == RunCompletedState.Failure))
+                {
+                    return RunCompletedState.Failure;
+                }
+
+                return RunCompletedState.Successful;
+            }
+        }
+
+        public IEnumerator<TestReport> GetEnumerator()
+        {
+            return _testReports.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Add(TestReport testReport)
+        {
+            _testReports.Add(testReport);
+        }
+    }
 
     public class TestReport
     {

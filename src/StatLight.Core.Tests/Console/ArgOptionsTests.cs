@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using StatLight.Console;
 
@@ -32,7 +33,7 @@ namespace StatLight.Core.Tests.Console
             {
                 var argOptions = GetArgOptions("-x", _actualFile);
 
-                argOptions.XapPath.ShouldEqual(_actualFile);
+                argOptions.XapPath.First().ShouldEqual(_actualFile);
             }
 
             [Test]

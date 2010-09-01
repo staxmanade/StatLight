@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.ObjectModel;
+using Mono.Options;
 
 namespace StatLight.Console
 {
@@ -13,11 +14,15 @@ namespace StatLight.Console
 
     public class ArgOptions
     {
-        private readonly Mono.Options.OptionSet _optionSet;
+        private readonly OptionSet _optionSet;
 
         private readonly string[] _args;
 
-        public string XapPath { get; private set; }
+        private readonly IList<string> _xapPath = new List<string>();
+        public IList<string> XapPath
+        {
+            get { return _xapPath; }
+        }
 
         public string XmlReportOutputPath { get; private set; }
 
@@ -67,7 +72,7 @@ namespace StatLight.Console
             {
                 extra = _optionSet.Parse(_args);
             }
-            catch (Mono.Options.OptionException e)
+            catch (OptionException e)
             {
                 System.Console.Write("Error parsing arguments: ");
                 System.Console.WriteLine(e.Message);
@@ -76,17 +81,14 @@ namespace StatLight.Console
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        private Mono.Options.OptionSet GetOptions()
+        private OptionSet GetOptions()
         {
             var msTestVersions = (from MicrosoftTestingFrameworkVersion version in Enum.GetValues(typeof(MicrosoftTestingFrameworkVersion))
                                   select version).ToDictionary(key => key.ToString().ToLower(), value => value);
 
-            return new Mono.Options.OptionSet()
-                .Add("x|XapPath", "Path to test xap file.", v =>
-                {
-                    XapPath = v ?? string.Empty;
-                }, Mono.Options.OptionValueType.Required)
-                .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, Mono.Options.OptionValueType.Optional)
+            return new OptionSet()
+                .Add("x|XapPath=", "Path to test xap file. (Can specify multiple -x={path1} -x={path2})", v => _xapPath.Add(v ?? string.Empty), OptionValueType.Required)
+                .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, OptionValueType.Optional)
                 .Add<string>("c|Continuous", "Runs a single test run, and then monitors the xap for build changes and re-runs the tests automatically.", v => ContinuousIntegrationMode = true)
                 .Add<string>("b|ShowTestingBrowserHost", "Show the browser that is running the tests - necessary to run UI specific tests (hidden by default)", v => ShowTestingBrowserHost = true)
                 .Add("MethodsToTest", "Semicolon seperated list of full method names to execute. EX: --methodsToTest=\"RootNamespace.ChildNamespace.ClassName.MethodUnderTest;RootNamespace.ChildNamespace.ClassName.Method2UnderTest;\"", v =>

@@ -1,6 +1,8 @@
 ﻿
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace StatLight.Console
 {
@@ -39,7 +41,11 @@ namespace StatLight.Console
                 try
                 {
                     options = new ArgOptions(args);
-                    if (options.ShowHelp)
+
+                    IEnumerable<string> xapPaths = options.XapPath;
+
+                    if (options.ShowHelp ||
+                        !xapPaths.Any())
                     {
                         ArgOptions.ShowHelpMessage(Console.Out, options);
                         return;
@@ -47,7 +53,7 @@ namespace StatLight.Console
 
                     ILogger logger = GetLogger(options.IsRequestingDebug);
 
-                    string xapPath = options.XapPath;
+
                     bool continuousIntegrationMode = options.ContinuousIntegrationMode;
                     bool showTestingBrowserHost = options.ShowTestingBrowserHost;
                     bool useTeamCity = options.OutputForTeamCity;
@@ -71,31 +77,39 @@ namespace StatLight.Console
 
                     logger.Debug("runnerType ({0})".FormatWith(runnerType));
 
-                    StatLightConfiguration statLightConfiguration = statLightConfigurationFactory
-                        .GetStatLightConfiguration(
-                            unitTestProviderType,
-                            xapPath,
-                            microsoftTestingFrameworkVersion,
-                            methodsToTest,
-                            tagFilters,
-                            numberOfBrowserHosts,
-                            useRemoteTestPage,
-                            queryString);
+                    var testReports = new TestReportCollection();
 
-                    IRunner runner = GetRunner(
-                            logger,
-                            runnerType,
-                            showTestingBrowserHost,
-                            statLightConfiguration,
-                            statLightRunnerFactory);
+                    foreach (var xapPath in xapPaths)
+                    {
 
-                    logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
+                        StatLightConfiguration statLightConfiguration = statLightConfigurationFactory
+                            .GetStatLightConfiguration(
+                                unitTestProviderType,
+                                xapPath,
+                                microsoftTestingFrameworkVersion,
+                                methodsToTest,
+                                tagFilters,
+                                numberOfBrowserHosts,
+                                useRemoteTestPage,
+                                queryString);
 
-                    TestReport testReport = runner.Run();
+                        IRunner runner = GetRunner(
+                                logger,
+                                runnerType,
+                                showTestingBrowserHost,
+                                statLightConfiguration,
+                                statLightRunnerFactory);
+
+                        logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
+
+                        TestReport testReport = runner.Run();
+                        testReports.Add(testReport);
+                        runner.Dispose();
+                    }
 
                     if (!string.IsNullOrEmpty(xmlReportOutputPath))
                     {
-                        var xmlReport = new XmlReport(testReport);
+                        var xmlReport = new XmlReport(testReports.First());
                         xmlReport.WriteXmlReport(xmlReportOutputPath);
 
                         "*********************************"
@@ -109,7 +123,7 @@ namespace StatLight.Console
                             .WrapConsoleMessageWithColor(ConsoleColor.White, true);
                     }
 
-                    if (testReport.FinalResult == RunCompletedState.Failure)
+                    if (testReports.FinalResult == RunCompletedState.Failure)
                         Environment.ExitCode = ExitFailed;
                     else
                         Environment.ExitCode = ExitSucceeded;
