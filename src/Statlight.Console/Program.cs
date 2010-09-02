@@ -1,23 +1,20 @@
-﻿
-
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-
-namespace StatLight.Console
+﻿namespace StatLight.Console
 {
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.ServiceModel;
     using StatLight.Console.Tools;
-    using StatLight.Core.Configuration;
     using StatLight.Core.Common;
+    using StatLight.Core.Configuration;
     using StatLight.Core.Reporting;
     using StatLight.Core.Reporting.Providers.Xml;
     using StatLight.Core.Runners;
-    using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.UnitTestProviders;
+    using StatLight.Core.WebServer.XapHost;
 
     class Program
     {
@@ -93,18 +90,17 @@ namespace StatLight.Console
                                 useRemoteTestPage,
                                 queryString);
 
-                        IRunner runner = GetRunner(
+                        using (IRunner runner = GetRunner(
                                 logger,
                                 runnerType,
                                 showTestingBrowserHost,
                                 statLightConfiguration,
-                                statLightRunnerFactory);
-
-                        logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
-
-                        TestReport testReport = runner.Run();
-                        testReports.Add(testReport);
-                        runner.Dispose();
+                                statLightRunnerFactory))
+                        {
+                            logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
+                            TestReport testReport = runner.Run();
+                            testReports.Add(testReport);
+                        }
                     }
 
                     if (!string.IsNullOrEmpty(xmlReportOutputPath))
