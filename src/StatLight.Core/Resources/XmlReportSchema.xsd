@@ -25,24 +25,24 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="tests">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element maxOccurs="unbounded" name="test">
-                                <xs:complexType>
-                                    <xs:sequence minOccurs="0">
-                                        <xs:element minOccurs="0" name="exceptionInfo" />
-                                        <xs:element minOccurs="0" name="otherInfo" type="xs:string" />
-                                    </xs:sequence>
-                                    <xs:attribute name="name" type="xs:string" use="required" />
-                                    <xs:attribute name="resulttype" type="xs:string" use="required" />
-                                    <xs:attribute name="timeToComplete" type="xs:time" use="required" />
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:sequence>
-                    </xs:complexType>
+                  <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="test">
+                            <xs:complexType>
+                                <xs:sequence minOccurs="0">
+                                    <xs:element minOccurs="0" name="exceptionInfo" />
+                                    <xs:element minOccurs="0" name="otherInfo" type="xs:string" />
+                                </xs:sequence>
+                                <xs:attribute name="name" type="xs:string" use="required" />
+                                <xs:attribute name="resulttype" type="xs:string" use="required" />
+                                <xs:attribute name="timeToComplete" type="xs:time" use="required" />
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="xapFileName" type="xs:string" use="required" />
+                  </xs:complexType>
                 </xs:element>
             </xs:sequence>
-            <xs:attribute name="xapFileName" type="xs:string" use="required" />
             <xs:attribute name="total" type="xs:integer" use="required" />
             <xs:attribute name="ignored" type="xs:integer" use="required" />
             <xs:attribute name="failed" type="xs:integer" use="required" />

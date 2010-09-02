@@ -57,6 +57,7 @@ namespace StatLight.Core.Reporting
     public class TestReportCollection : IEnumerable<TestReport>
     {
         private readonly List<TestReport> _testReports = new List<TestReport>();
+
         public RunCompletedState FinalResult
         {
             get
@@ -69,6 +70,13 @@ namespace StatLight.Core.Reporting
                 return RunCompletedState.Successful;
             }
         }
+
+        public int TotalResults { get { return _testReports.Sum(s => s.TotalResults); } }
+        public int TotalPassed { get { return _testReports.Sum(s => s.TotalPassed); } }
+        public int TotalIgnored { get { return _testReports.Sum(s => s.TotalIgnored); } }
+        public int TotalFailed { get { return _testReports.Sum(s => s.TotalFailed); } }
+
+        public DateTime DateTimeRunCompleted { get { return _testReports.Max(m => m.DateTimeRunCompleted); } }
 
         public IEnumerator<TestReport> GetEnumerator()
         {

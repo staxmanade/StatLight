@@ -109,7 +109,7 @@ namespace StatLight.Console
 
                     if (!string.IsNullOrEmpty(xmlReportOutputPath))
                     {
-                        var xmlReport = new XmlReport(testReports.First());
+                        var xmlReport = new XmlReport(testReports);
                         xmlReport.WriteXmlReport(xmlReportOutputPath);
 
                         "*********************************"

@@ -1,30 +1,26 @@
-﻿using System.Diagnostics;
-using System.Xml;
-using System.Xml.Schema;
-using StatLight.Client.Harness.Events;
-
-namespace StatLight.Core.Reporting.Providers.Xml
+﻿namespace StatLight.Core.Reporting.Providers.Xml
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Xml;
     using System.Xml.Linq;
+    using System.Xml.Schema;
+    using StatLight.Client.Harness.Events;
     using StatLight.Core.Properties;
 
     public class XmlReport
     {
-        private readonly TestReport _report;
-        private readonly string _testXapFileName;
+        private readonly TestReportCollection _report;
 
-        public XmlReport(TestReport report)
+        public XmlReport(TestReportCollection report)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
 
             _report = report;
-            _testXapFileName =report.XapPath;
         }
 
         public void WriteXmlReport(string outputFilePath)
@@ -38,20 +34,24 @@ namespace StatLight.Core.Reporting.Providers.Xml
 
         public string GetXmlReport()
         {
-            IEnumerable<XElement> testItems = (from x in _report.TestResults
-                                               select GetResult(x));
-
             var root =
                     new XElement("StatLightTestResults"
-                        , new XAttribute("xapFileName", _testXapFileName)
                         , new XAttribute("total", _report.TotalResults)
                         , new XAttribute("ignored", _report.TotalIgnored)
                         , new XAttribute("failed", _report.TotalFailed)
                         , new XAttribute("dateRun", _report.DateTimeRunCompleted.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture))
 
-                        , new XElement("tests", testItems)
+                        , GetTestsRuns(_report)
                     );
             return root.ToString();
+        }
+
+        private static List<XElement> GetTestsRuns(IEnumerable<TestReport> report)
+        {
+            return report.Select(item => 
+                    new XElement("tests", 
+                        new XAttribute("xapFileName", item.XapPath), 
+                        item.TestResults.Select(GetResult))).ToList();
         }
 
         private static XElement GetResult(TestCaseResult result)

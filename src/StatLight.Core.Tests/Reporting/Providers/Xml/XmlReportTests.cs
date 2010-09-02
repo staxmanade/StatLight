@@ -39,7 +39,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.Xml
                 .AddResult(getResult(ResultType.SystemGeneratedFailure, new ExceptionInfo(new Exception("fail"))))
                 ;
 
-            _xmlReport = new XmlReport(testReport);
+            _xmlReport = new XmlReport(testReport.ToTestReportCollection());
         }
 
         private static Exception GetException()
@@ -86,11 +86,18 @@ namespace StatLight.Core.Tests.Reporting.Providers.Xml
         [Test]
         public void Should_not_throw_any_exceptions_if_there_are_no_tests()
         {
-            XmlReport xmlReport = new XmlReport(new TestReport("Test.xap"));
+            XmlReport xmlReport = new XmlReport(new TestReport("Test.xap").ToTestReportCollection());
             xmlReport.GetXmlReport().ShouldNotBeEmpty();
         }
     }
 
+    static class helperExtensions
+    {
+        public static TestReportCollection ToTestReportCollection(this TestReport testReport)
+        {
+            return new TestReportCollection { testReport };
+        }
+    }
 }
 
 
