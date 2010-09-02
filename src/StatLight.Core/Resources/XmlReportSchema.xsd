@@ -24,7 +24,7 @@
     <xs:element name="StatLightTestResults">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="tests">
+                <xs:element name="tests" maxOccurs="unbounded" >
                   <xs:complexType>
                     <xs:sequence>
                         <xs:element maxOccurs="unbounded" name="test">

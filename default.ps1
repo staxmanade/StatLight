@@ -681,11 +681,11 @@ Task test-specific-method-filter {
 
 Task test-multiple-xaps {
 	$scriptFile = GetTemporaryXmlFile;
-	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\Debug\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\Debug\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-o=MSTest" "-r=$scriptFile" 
+	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-o=MSTest" "-r=$scriptFile" 
 #	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight.LotsOfTests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.LotsOfTests.xap" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\Debug\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-o=MSTest" "-r=$scriptFile" 
 	#"-NumberOfBrowserHosts=5"
 
-	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1005 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 10 -expectedFailedCount 6 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 2
 }
 
 Task test-remote-access-querystring {
@@ -728,8 +728,10 @@ function Assert-statlight-xml-report-results
 	$testReportXml = [xml](Get-Content $scriptFile)
 	function assertResultTypeCount($resultTypeToLookFor, $count)
 	{
-		$c = ($testReportXml.StatLightTestResults.Tests.Test | where-object { $_.ResultType -eq $resultTypeToLookFor } | Measure-Object).Count
-		$c.ShouldEqual($count)
+		$allTestNodes = $testReportXml.StatLightTestResults.Tests | %{ $_.Test }
+		$filteredTestNodes = ($allTestNodes | where-object { $_.ResultType -eq $resultTypeToLookFor })
+		$foundCount = ($filteredTestNodes| Measure-Object).Count
+		$foundCount.ShouldEqual($count)
 	}
 	
 	assertResultTypeCount 'Passed' $expectedPassedCount

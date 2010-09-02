@@ -56,8 +56,8 @@
 
         private static XElement GetResult(TestCaseResult result)
         {
-            Func<TestCaseResult, string> formatName =
-                resultX => "{0}.{1}.{2}".FormatWith(resultX.NamespaceName, resultX.ClassName, resultX.MethodName);
+            Func<TestCaseResult, string> formatName = 
+                resultX => resultX.FullMethodName();
 
             XElement otherInfoElement = null;
             if (!string.IsNullOrEmpty(result.OtherInfo))

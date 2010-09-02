@@ -1,28 +1,27 @@
 ﻿
-using System.Collections.Generic;
-using StatLight.Client.Harness.Events;
-using StatLight.Core.Events.Aggregation;
-using StatLight.Core.Reporting.Providers.Console;
 
 namespace StatLight.Core.Runners
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using StatLight.Core.Common;
+    using StatLight.Core.Events;
+    using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Reporting;
+    using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
-    using StatLight.Core.Events;
 
-    internal class OnetimeRunner : IRunner, IDisposable,
+    internal class OnetimeRunner : IRunner,
         IListener<TestRunCompletedServerEvent>
     {
-        private readonly ILogger logger;
+        private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IWebServer statLightServiceHost;
-        private readonly List<IBrowserFormHost> browserFormHost;
+        private readonly IWebServer _statLightServiceHost;
+        private readonly List<IBrowserFormHost> _browserFormHost;
         private readonly string _xapPath;
-        private readonly TestResultAggregator testResultAggregator;
+        private readonly TestResultAggregator _testResultAggregator;
         readonly AutoResetEvent _browserThreadWaitHandle = new AutoResetEvent(false);
 
 
@@ -33,32 +32,32 @@ namespace StatLight.Core.Runners
             List<IBrowserFormHost> browserFormHost,
             string xapPath)
         {
-            this.logger = logger;
+            _logger = logger;
             _eventAggregator = eventAggregator;
-            this.statLightServiceHost = statLightServiceHost;
-            this.browserFormHost = browserFormHost;
+            _statLightServiceHost = statLightServiceHost;
+            _browserFormHost = browserFormHost;
             _xapPath = xapPath;
 
-            testResultAggregator = new TestResultAggregator(logger, eventAggregator, _xapPath);
-            eventAggregator.AddListener(testResultAggregator);
+            _testResultAggregator = new TestResultAggregator(logger, eventAggregator, _xapPath);
+            eventAggregator.AddListener(_testResultAggregator);
             eventAggregator.AddListener(this);
         }
 
         public virtual TestReport Run()
         {
             DateTime startOfRun = DateTime.Now;
-            logger.Information("{1}{1}Starting Test Run: {0}{1}{1}"
+            _logger.Information("{1}{1}Starting Test Run: {0}{1}{1}"
                 .FormatWith(DateTime.Now, Environment.NewLine));
 
-            statLightServiceHost.Start();
-            foreach(var browser in browserFormHost)
+            _statLightServiceHost.Start();
+            foreach(var browser in _browserFormHost)
                 browser.Start();
             _browserThreadWaitHandle.WaitOne();
-            foreach (var browser in browserFormHost)
+            foreach (var browser in _browserFormHost)
                 browser.Stop();
-            statLightServiceHost.Stop();
+            _statLightServiceHost.Stop();
 
-            var testReport = testResultAggregator.CurrentReport;
+            var testReport = _testResultAggregator.CurrentReport;
             ConsoleTestCompleteMessage.WriteOutCompletionStatement(testReport, startOfRun);
             return testReport;
         }
@@ -67,11 +66,12 @@ namespace StatLight.Core.Runners
         {
             if (disposing)
             {
-                foreach (var browser in browserFormHost)
+                foreach (var browser in _browserFormHost)
                     browser.Dispose();
                 _eventAggregator.RemoveListener(this);
+                _eventAggregator.RemoveListener(_testResultAggregator);
                 _browserThreadWaitHandle.Close();
-                testResultAggregator.Dispose();
+                _testResultAggregator.Dispose();
             }
         }
 
