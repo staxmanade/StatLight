@@ -25,6 +25,10 @@ namespace StatLight.Console
 
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+                                                              {
+                                                                  Console.WriteLine(e.ExceptionObject);
+                                                              };
             PrintNameVersionAndCopyright();
 
             ArgOptions options;
@@ -75,6 +79,7 @@ namespace StatLight.Console
                     var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
 
                     logger.Debug("isRemoteRun ({0})".FormatWith(useRemoteTestPage));
+                    logger.Debug("QueryString ({0})".FormatWith(queryString));
 
                     RunnerType runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly, useRemoteTestPage);
 

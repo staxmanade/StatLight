@@ -177,8 +177,6 @@ function StatLightReferences {
 		"$silverlight_libraries_client_assemblies\System.Xml.Serialization.dll",
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.Silverlight.Testing.dll"
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"
-		"$silverlight_libraries_client_assemblies\System.ComponentModel.Composition.dll"
-		"$silverlight_libraries_client_assemblies\System.ComponentModel.Composition.Initialization.dll"
 		"$clientHarnessBuildOutputDir\StatLight.Client.Harness.dll"
 	)
 	$references;
@@ -202,8 +200,6 @@ function StatLightIntegrationTestsReferences {
 		"$silverlight_libraries_client_assemblies\System.Xml.Serialization.dll",
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.Silverlight.Testing.dll"
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"
-		"$silverlight_libraries_client_assemblies\System.ComponentModel.Composition.dll"
-		"$silverlight_libraries_client_assemblies\System.ComponentModel.Composition.Initialization.dll"
 		"$clientHarnessBuildOutputDir\StatLight.Client.Harness.dll"
 	)
 
@@ -429,11 +425,11 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	if($build_configuration -eq 'Debug')
 	{
-		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 6 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
 	else
 	{
-		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 6 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
 	
 	#added sleep to wait for file system to loose the lock on the file so we can delete it

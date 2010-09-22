@@ -57,6 +57,7 @@ namespace StatLight.Client.Harness.Hosts
                 else
                     Server.LogException(e.Error);
             };
+            Server.Debug("OpenReadAsync(" + xapToTestUri + ")");
             client.OpenReadAsync(xapToTestUri);
         }
 

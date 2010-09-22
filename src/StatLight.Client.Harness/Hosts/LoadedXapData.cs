@@ -24,72 +24,96 @@ namespace StatLight.Client.Harness.Hosts
 
         public LoadedXapData(Stream xapStream)
         {
-            if (xapStream == null)
-                throw new ArgumentNullException("xapStream");
-
-            var streamResourceInfo = Application.GetResourceStream(
-                new StreamResourceInfo(xapStream, null),
-                new Uri("AppManifest.xaml", UriKind.Relative));
-
-            if (streamResourceInfo == null)
-                throw new Exception("streamResourceInfo is null");
-
-            string appManifestString = new StreamReader(streamResourceInfo.Stream).ReadToEnd();
-            if (appManifestString == null)
-                throw new Exception("appManifestString is null");
-
-            XDocument document = XDocument.Parse(appManifestString);
-            XElement root = document.Root;
-            if (root != null)
+            try
             {
-                string entryPoint = root.Attribute("EntryPointAssembly").Value;
 
-                //TODO: There has to be a better way to get the Deployment.Parts out of the xml than this...
-                var partsElement = root.Elements()
-                    .Where(w => w.Name.LocalName.Equals("Deployment.Parts", StringComparison.OrdinalIgnoreCase))
-                    .SingleOrDefault();
+                if (xapStream == null)
+                    throw new ArgumentNullException("xapStream");
 
-                if (partsElement != null)
+                var streamResourceInfo = Application.GetResourceStream(
+                    new StreamResourceInfo(xapStream, null),
+                    new Uri("AppManifest.xaml", UriKind.Relative));
+
+                if (streamResourceInfo == null)
+                    throw new Exception("streamResourceInfo is null");
+
+                string appManifestString = new StreamReader(streamResourceInfo.Stream).ReadToEnd();
+                if (appManifestString == null)
+                    throw new Exception("appManifestString is null");
+
+                XDocument document = XDocument.Parse(appManifestString);
+                XElement root = document.Root;
+                if (root != null)
                 {
-                    var parts = partsElement.Elements()
-                        .Select(p => p.Attribute("Source").Value).ToList();
-                    Server.Debug("Parts Count = {0}".FormatWith(parts.Count));
-                    foreach (var part in parts)
+                    string entryPoint = root.Attribute("EntryPointAssembly").Value;
+
+                    //TODO: There has to be a better way to get the Deployment.Parts out of the xml than this...
+                    var partsElement = root.Elements()
+                        .Where(w => w.Name.LocalName.Equals("Deployment.Parts", StringComparison.OrdinalIgnoreCase))
+                        .SingleOrDefault();
+
+                    if (partsElement != null)
                     {
-                        var assemblyPart = new AssemblyPart { Source = part };
-
-                        StreamResourceInfo assemblyStream = Application.GetResourceStream(
-                            new StreamResourceInfo(xapStream, "application/binary"),
-                            new Uri(assemblyPart.Source, UriKind.Relative));
-
-                        if (assemblyStream == null)
-                            throw new Exception(string.Format("Assembly resource missing for [{0}]. (file not found in xap)", assemblyPart.Source));
-
-                        Assembly ass = assemblyPart.Load(assemblyStream.Stream);
-
-                        if (part == entryPoint + ".dll")
+                        var parts = partsElement.Elements()
+                            .Select(p => p.Attribute("Source").Value).ToList();
+                        Server.Debug("Parts Count = {0}".FormatWith(parts.Count));
+                        foreach (var part in parts)
                         {
-                            EntryPointAssembly = ass;
-                        }
+                            var assemblyPart = new AssemblyPart { Source = part };
 
-                        if (ass != null)
-                        {
-                            if (ShouldNotIgnoreAssembly(ass))
+                            StreamResourceInfo assemblyStream = Application.GetResourceStream(
+                                new StreamResourceInfo(xapStream, "application/binary"),
+                                new Uri(assemblyPart.Source, UriKind.Relative));
+
+                            if (assemblyStream == null)
+                                throw new Exception(string.Format("Assembly resource missing for [{0}]. (file not found in xap)", assemblyPart.Source));
+
+                            Assembly ass = assemblyPart.Load(assemblyStream.Stream);
+
+                            if (part == entryPoint + ".dll")
                             {
-                                Server.Debug(ass.FullName);
-                                AddAssembly(ass);
+                                EntryPointAssembly = ass;
+                            }
+
+                            if (ass != null)
+                            {
+                                Log("Begin - ShouldNotIgnoreAssembly - " + ass.FullName);
+                                if (ShouldNotIgnoreAssembly(ass))
+                                {
+                                    Log("Begin - AddAssembly - " + ass.FullName);
+                                    AddAssembly(ass);
+                                    Log("End - AddAssembly - " + ass.FullName);
+                                }
+                                else
+                                {
+                                    Log("Didn't Load assembly - " + ass.FullName);
+                                }
                             }
                         }
                     }
+                    else
+                        throw new InvalidOperationException("The application manifest does not contain a Deployment.Parts xml element.");
+
+                    if (_testAssemblies.Count == 0)
+                        throw new InvalidOperationException("Could not find the entry poing assembly [{0}].".FormatWith(entryPoint));
                 }
                 else
-                    throw new InvalidOperationException("The application manifest does not contain a Deployment.Parts xml element.");
-
-                if (_testAssemblies.Count == 0)
-                    throw new InvalidOperationException("Could not find the entry poing assembly [{0}].".FormatWith(entryPoint));
+                    throw new InvalidOperationException("The AppManifest's document root was null.");
             }
-            else
-                throw new InvalidOperationException("The AppManifest's document root was null.");
+            catch (Exception ex)
+            {
+                Server.Debug(ex.ToString());
+                throw;
+            }
+        }
+
+        private void Log(string message)
+        {
+#if DEBUG
+            Console.WriteLine(message);
+#else
+            Server.Debug(message);
+#endif
         }
     }
 }

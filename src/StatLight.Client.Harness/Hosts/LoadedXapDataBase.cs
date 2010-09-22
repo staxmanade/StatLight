@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using StatLight.Client.Harness.Messaging;
 
 namespace StatLight.Client.Harness.Hosts
 {
@@ -10,6 +11,7 @@ namespace StatLight.Client.Harness.Hosts
         {
             return !ass.FullName.StartsWith("Microsoft.Silverlight.Testing,");
         }
+
         protected void AddAssembly(Assembly ass)
         {
             if (!_testAssemblies.ContainsKey(ass.FullName))

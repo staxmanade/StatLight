@@ -12,6 +12,7 @@ namespace StatLight.IntegrationTests.Silverlight
     [TestClass]
     public class MSTestTests : SilverlightTest
     {
+
         #region Passing Tests
         [TestClass]
         public class MSTestNestedClassTests
@@ -113,6 +114,14 @@ namespace StatLight.IntegrationTests.Silverlight
         {
             MessageBox.Show("Should_fail_due_to_a_message_box_modal_dialog - message");
         }
+
+        [TestMethod]
+        public void Should_have_access_to_the_MSTest_TestContext()
+        {
+            Assert.IsNotNull(TestContext);
+        }
+
+        public TestContext TestContext { get; set; }
     }
 
     public class SomeEventClass

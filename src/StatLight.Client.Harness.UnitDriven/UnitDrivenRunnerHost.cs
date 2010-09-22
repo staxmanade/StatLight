@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -15,7 +14,6 @@ using UnitDriven.Commanding;
 namespace StatLight.Client.Harness.Hosts.UnitDriven
 {
 
-    [Export(typeof(ITestRunnerHost))]
     public class UnitDrivenRunnerHost : ITestRunnerHost
     {
         private ILoadedXapData _loadedXapData;

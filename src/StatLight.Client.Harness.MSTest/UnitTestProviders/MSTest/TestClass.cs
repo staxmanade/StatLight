@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
+using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Configuration;
 
 namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
@@ -133,7 +134,15 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
 				foreach (MethodInfo method in methods)
 				{
                     if (ClientTestRunConfiguration.ContainsMethod(method))
-						_tests.Add(new TestMethod(method));
+                    {
+                        Console.WriteLine("Begin - Adding method to test: " + method.FullName());
+                        Server.Debug("Adding method to test: " + method.FullName());
+                        // Using the MSTest frameworks's TestMethod here because
+                        // 1. There is no specific StatLight logic in the original ITestMethod implemenation done by StatLight
+                        // 2. The UnitTestContext class in the SL Testing Framework is protected and therefore I can't create that instance
+                        _tests.Add(new Microsoft.Silverlight.Testing.UnitTesting.Metadata.VisualStudio.TestMethod(method));
+                        Console.WriteLine("END - Adding method to test: " + method.FullName());
+                    }
 				}
 				_testsLoaded = true;
 			}
