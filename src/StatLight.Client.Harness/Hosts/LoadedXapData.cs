@@ -57,7 +57,7 @@ namespace StatLight.Client.Harness.Hosts
                         var parts = partsElement.Elements()
                             .Select(p => p.Attribute("Source").Value).ToList();
                         Server.Debug("Parts Count = {0}".FormatWith(parts.Count));
-                        foreach (var part in parts)
+                        foreach (string part in parts)
                         {
                             var assemblyPart = new AssemblyPart { Source = part };
 
@@ -77,17 +77,18 @@ namespace StatLight.Client.Harness.Hosts
 
                             if (ass != null)
                             {
-                                Log("Begin - ShouldNotIgnoreAssembly - " + ass.FullName);
                                 if (ShouldNotIgnoreAssembly(ass))
                                 {
-                                    Log("Begin - AddAssembly - " + ass.FullName);
                                     AddAssembly(ass);
-                                    Log("End - AddAssembly - " + ass.FullName);
                                 }
                                 else
                                 {
-                                    Log("Didn't Load assembly - " + ass.FullName);
+                                    Server.Debug("Ignoring load of assembly - " + ass.FullName);
                                 }
+                            }
+                            else
+                            {
+                                Server.Debug("After assemblyPart.Load() the resulting assembly was null - " + part);
                             }
                         }
                     }
@@ -107,13 +108,5 @@ namespace StatLight.Client.Harness.Hosts
             }
         }
 
-        private void Log(string message)
-        {
-#if DEBUG
-            Console.WriteLine(message);
-#else
-            Server.Debug(message);
-#endif
-        }
     }
 }
