@@ -217,6 +217,36 @@ namespace StatLight.Console
             //@out.WriteLine("--- webserveronly          - {0}".FormatWith(options.StartWebServerOnly));
         }
 
+        public void DumpValuesForDebug(ILogger logger)
+        {
+            var properties = this.GetType().GetProperties().OrderBy(o => o.Name);
+            const string stringFormat = "{0,-35}: {1}";
+
+            logger.Debug("****************** Input options as configured ******************");
+            foreach (var propertyInfo in properties)
+            {
+                var propertyValue = propertyInfo.GetValue(this, new object[0]);
+                if (propertyValue is IEnumerable<string>)
+                {
+                    logger.Debug(stringFormat.FormatWith(propertyInfo.Name, "IEnumerable<string>"));
+                    logger.Debug("{0,-35}  {{".FormatWith(""));
+                    int i = 0;
+                    foreach (var itemValue in (IEnumerable<string>)propertyValue)
+                    {
+                        if (i > 0)
+                            logger.Debug("{0,-35}    {1}".FormatWith("", itemValue));
+                        else
+                            logger.Debug("{0,-35}    '{1}'".FormatWith("", itemValue));
+                    }
+                    logger.Debug("{0,-35}  }}".FormatWith(""));
+                }
+                else
+                {
+                    logger.Debug(stringFormat.FormatWith(propertyInfo.Name, propertyValue));
+                }
+            }
+            logger.Debug("*****************************************************************");
+        }
     }
 
     static class HelperExtension

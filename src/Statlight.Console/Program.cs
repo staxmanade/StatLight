@@ -67,12 +67,11 @@
                     var statLightRunnerFactory = new StatLightRunnerFactory();
                     var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
 
-                    logger.Debug("isRemoteRun ({0})".FormatWith(useRemoteTestPage));
-                    logger.Debug("QueryString ({0})".FormatWith(queryString));
+                    options.DumpValuesForDebug(logger);
 
                     RunnerType runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly, useRemoteTestPage);
 
-                    logger.Debug("runnerType ({0})".FormatWith(runnerType));
+                    logger.Debug("RunnerType = {0}".FormatWith(runnerType));
 
                     var testReports = new TestReportCollection();
 
