@@ -47,8 +47,8 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
             }
             catch (ReflectionTypeLoadException rfex)
             {
-               ReflectionInfoHelper.HandleReflectionTypeLoadException(rfex);
-               return false;
+                ReflectionInfoHelper.HandleReflectionTypeLoadException(rfex);
+                return false;
             }
 
             return true;
