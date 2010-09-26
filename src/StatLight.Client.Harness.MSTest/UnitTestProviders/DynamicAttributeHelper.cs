@@ -15,8 +15,13 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
 
         public static object GetAttribute(this MemberInfo method, string attributeName)
         {
+            return GetAllAttributes(method, attributeName).FirstOrDefault();
+        }
+
+        public static object[] GetAllAttributes(this MemberInfo method, string attributeName)
+        {
             return method.GetCustomAttributes(true)
-                    .Where(w => w.ToString().Contains(attributeName)).FirstOrDefault();
+                    .Where(w => w.ToString().Contains(attributeName)).ToArray();
         }
 
         public static object GetObjectPropertyValue(this object attributeInstance, string propertyName)

@@ -132,18 +132,38 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
                 _tests = new List<ITestMethod>(methods.Count);
                 foreach (MethodInfo method in methods)
                 {
-                    if (method.HasAttribute(NUnitAttributes.TestCase))
-                    {
-                        Console.WriteLine("Attempted to add an NUNit test method with the TestCaseAttribute - not currently supported. [{0}]".FormatWith(method.FullName()));
-                        continue;
-                    }
-
                     if (ClientTestRunConfiguration.ContainsMethod(method))
-                        _tests.Add(new TestMethod(method));
+                        if (method.HasAttribute(NUnitAttributes.TestCase))
+                        {
+                            var dynamicMethods = GetDynamicTestMethodsForTestCases(method);
+                            foreach (var dynamicMethod in dynamicMethods)
+                            {
+                                _tests.Add(dynamicMethod);
+                            }
+                        }
+                        else
+                        {
+                            _tests.Add(new TestMethod(method));
+                        }
                 }
                 _testsLoaded = true;
             }
             return _tests;
+        }
+
+        private IEnumerable<ITestMethod> GetDynamicTestMethodsForTestCases(MethodInfo method)
+        {
+
+            var testMethods = new List<ITestMethod>();
+
+            foreach (var testCase in method.GetAllAttributes(NUnitAttributes.TestCase))
+            {
+                var values = testCase.GetObjectPropertyValue("Arguments") as object[];
+
+                testMethods.Add(new TestCaseMethod(method, values));
+            }
+
+            return testMethods;
         }
 
         public static ICollection<System.Reflection.MethodInfo> GetTestMethods(Type type)

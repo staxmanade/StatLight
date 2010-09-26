@@ -63,5 +63,26 @@ namespace StatLight.IntegrationTests.Silverlight
         {
             Assert.AreEqual("Hello", value);
         }
+
+        [Test]
+        [TestCase("Hello", 1, "World")]
+        public void Should_work_with_TestCase_with_three_parameter(string param1, int param2, string param3)
+        {
+            Assert.AreEqual("Hello", param1);
+            Assert.AreEqual(1, param2);
+            Assert.AreEqual("World", param3);
+        }
+
+        [Test]
+        [TestCase("Hello", 1, "World")]
+        [TestCase("Hello", 1, "World")]
+        [TestCase("Hello", 1, "World")]
+        [TestCase("Hello", 1, "World")]
+        public void Should_work_with_multiple_TestCases_with_three_parameter(string param1, int param2, string param3)
+        {
+            Assert.AreEqual("Hello", param1);
+            Assert.AreEqual(1, param2);
+            Assert.AreEqual("World", param3);
+        }
     }
 }
