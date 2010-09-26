@@ -56,5 +56,12 @@ namespace StatLight.IntegrationTests.Silverlight
 			Assert.IsNotNull(setupObject);
 		}
 
+
+        [Test]
+        [TestCase("Hello")]
+        public void Should_work_with_TestCase_with_one_parameter(string value)
+        {
+            Assert.AreEqual("Hello", value);
+        }
 	}
 }

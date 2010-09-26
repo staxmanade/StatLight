@@ -15,5 +15,6 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
         public const string TestFixture = "NUnit.Framework.TestFixtureAttribute";
         public const string TearDown = "NUnit.Framework.TearDownAttribute";
 
+        public const string TestCase = "NUnit.Framework.TestCaseAttribute";
     }
 }
