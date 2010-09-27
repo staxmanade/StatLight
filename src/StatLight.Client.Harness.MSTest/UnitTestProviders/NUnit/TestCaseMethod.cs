@@ -11,12 +11,12 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
         private readonly object _expectedResult;
         private readonly object[] _testCaseArguments;
 
-        public TestCaseMethod(MethodInfo methodInfo, string testName, object expectedResult, object[] testCaseArguments)
+        public TestCaseMethod(MethodInfo methodInfo, object testCaseAttribute)
             : base(methodInfo)
         {
-            _testName = testName;
-            _expectedResult = expectedResult;
-            _testCaseArguments = testCaseArguments;
+            _testCaseArguments = testCaseAttribute.GetObjectPropertyValue("Arguments") as object[];
+            _testName = testCaseAttribute.GetObjectPropertyValue("TestName") as string;
+            _expectedResult = testCaseAttribute.GetObjectPropertyValue("Result");
         }
 
         public override void Invoke(object instance)

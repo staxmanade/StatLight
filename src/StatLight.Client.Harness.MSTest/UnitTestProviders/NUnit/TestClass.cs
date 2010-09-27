@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Core.Configuration;
@@ -151,21 +152,12 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
             return _tests;
         }
 
-        private IEnumerable<ITestMethod> GetDynamicTestMethodsForTestCases(MethodInfo method)
+        private static IEnumerable<ITestMethod> GetDynamicTestMethodsForTestCases(MethodInfo method)
         {
-
-            var testMethods = new List<ITestMethod>();
-
-            foreach (var testCase in method.GetAllAttributes(NUnitAttributes.TestCase))
-            {
-                var values = testCase.GetObjectPropertyValue("Arguments") as object[];
-                var testName = testCase.GetObjectPropertyValue("TestName") as string;
-                var result = testCase.GetObjectPropertyValue("Result") as object;
-
-                testMethods.Add(new TestCaseMethod(method, testName, result, values));
-            }
-
-            return testMethods;
+            return method.GetAllAttributes(NUnitAttributes.TestCase)
+                .Select(testCase => new TestCaseMethod(method, testCase))
+                .Cast<ITestMethod>()
+                .ToList();
         }
 
         public static ICollection<System.Reflection.MethodInfo> GetTestMethods(Type type)
