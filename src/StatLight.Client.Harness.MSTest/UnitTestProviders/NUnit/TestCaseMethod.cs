@@ -1,27 +1,42 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 {
     public class TestCaseMethod : TestMethod
     {
+        private readonly string _testName;
+        private readonly object _expectedResult;
         private readonly object[] _testCaseArguments;
 
-        public TestCaseMethod(MethodInfo methodInfo, object[] testCaseArguments)
+        public TestCaseMethod(MethodInfo methodInfo, string testName, object expectedResult, object[] testCaseArguments)
             : base(methodInfo)
         {
+            _testName = testName;
+            _expectedResult = expectedResult;
             _testCaseArguments = testCaseArguments;
         }
 
         public override void Invoke(object instance)
         {
-            Method.Invoke(instance, _testCaseArguments);
+            var actualResult = Method.Invoke(instance, _testCaseArguments);
+            if (Method.ReturnType != typeof(void))
+            {
+                Assert.AreEqual(_expectedResult, actualResult);
+            }
+
+            Console.WriteLine("Method.ReturnType = " + Method.ReturnType);
         }
 
         public override string Name
         {
             get
             {
+                if (!string.IsNullOrEmpty(_testName))
+                    return _testName;
+
                 var sb = new StringBuilder();
                 sb.Append(base.Name);
                 sb.Append("(");

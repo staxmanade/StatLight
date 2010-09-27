@@ -63,27 +63,34 @@ namespace StatLight.Client.Harness.UnitTestProviders.NUnit
         }
 
         [TestMethod]
-        public void Should_find_correct_number_of_TestCase_methods()
-        {
-            testClass.GetTestMethods()
-                .Where(w => w is TestCaseMethod)
-                .Count()
-                .ShouldBeEqualTo(2);
-        }
-
-
-
-        [TestMethod]
         public void Should_create_distinct_method_names_for_TestCase_tests()
         {
-            ITestMethod[] testMethods = testClass.GetTestMethods()
-                .Where(w => w.Method.Name == "TestCaseTest").ToArray();
+            ITestMethod[] testMethods = GetTestMethodsForTest("TestCaseTest");
             testMethods.Length.ShouldBeEqualTo(2);
 
-            // funny the attributes come back out of order???
-            testMethods[0].Name.ShouldBeEqualTo("TestCaseTest(\"a\", 1, \"c\")");
-            testMethods[1].Name.ShouldBeEqualTo("TestCaseTest(\"a\", 1, \"b\")");
+            testMethods[0].Name.ShouldBeEqualTo("TestCaseTest(\"a\", 1, \"b\")");
+            testMethods[1].Name.ShouldBeEqualTo("TestCaseTest(\"a\", 1, \"c\")");
         }
+
+        [TestMethod]
+        public void Should_report_correct_TestName_for_specified_TestCase_test_names()
+        {
+            ITestMethod testMethods = GetTestMethodsForTest("TestCaseWithName").FirstOrDefault();
+            testMethods.ShouldNotBeNull();
+
+            // funny the attributes come back out of order???
+            testMethods.Name.ShouldBeEqualTo("SomeManuallyControlledTestName");
+        }
+        
+
+        private ITestMethod[] GetTestMethodsForTest(string testName)
+        {
+            return testClass.GetTestMethods()
+                .Where(w => w.Method.Name == testName)
+                .OrderBy(ob => ob.Name)
+                .ToArray();
+        }
+
     }
 
 
@@ -133,6 +140,13 @@ namespace StatLight.Client.Harness.UnitTestProviders.NUnit
             {
                 Assert.Fail("p3=[" + p3 + "] should either be 'b' or 'c' ");
             }
+        }
+
+        [Test]
+        [TestCase("a", TestName = "SomeManuallyControlledTestName")]
+        public void TestCaseWithName(string p1)
+        {
+            Assert.AreEqual("a", p1);
         }
     }
 }

@@ -159,8 +159,10 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
             foreach (var testCase in method.GetAllAttributes(NUnitAttributes.TestCase))
             {
                 var values = testCase.GetObjectPropertyValue("Arguments") as object[];
+                var testName = testCase.GetObjectPropertyValue("TestName") as string;
+                var result = testCase.GetObjectPropertyValue("Result") as object;
 
-                testMethods.Add(new TestCaseMethod(method, values));
+                testMethods.Add(new TestCaseMethod(method, testName, result, values));
             }
 
             return testMethods;

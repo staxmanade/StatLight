@@ -85,5 +85,11 @@ namespace StatLight.IntegrationTests.Silverlight
             Assert.AreEqual("World", param3.Substring(0, 5));
         }
 
+        [Test]
+        [TestCase(42, Result = 42)]
+        public int TestCaseWithReturn(int p1)
+        {
+            return p1;
+        }
     }
 }
