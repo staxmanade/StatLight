@@ -33,7 +33,7 @@ namespace StatLight.IntegrationTests.ProviderTests.NUnit
 		[Test]
 		public void Should_have_correct_TotalPassed_count()
 		{
-			TestReport.TotalPassed.ShouldEqual(4, "Passed count wrong");
+			TestReport.TotalPassed.ShouldEqual(10, "Passed count wrong");
 		}
 
 		[Test]

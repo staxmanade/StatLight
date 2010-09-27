@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
@@ -60,6 +61,29 @@ namespace StatLight.Client.Harness.UnitTestProviders.NUnit
         {
             testClass.TestCleanupMethod.Name.ShouldBeEqualTo("TearDown");
         }
+
+        [TestMethod]
+        public void Should_find_correct_number_of_TestCase_methods()
+        {
+            testClass.GetTestMethods()
+                .Where(w => w is TestCaseMethod)
+                .Count()
+                .ShouldBeEqualTo(2);
+        }
+
+
+
+        [TestMethod]
+        public void Should_create_distinct_method_names_for_TestCase_tests()
+        {
+            ITestMethod[] testMethods = testClass.GetTestMethods()
+                .Where(w => w.Method.Name == "TestCaseTest").ToArray();
+            testMethods.Length.ShouldBeEqualTo(2);
+
+            // funny the attributes come back out of order???
+            testMethods[0].Name.ShouldBeEqualTo("TestCaseTest(\"a\", 1, \"c\")");
+            testMethods[1].Name.ShouldBeEqualTo("TestCaseTest(\"a\", 1, \"b\")");
+        }
     }
 
 
@@ -95,6 +119,20 @@ namespace StatLight.Client.Harness.UnitTestProviders.NUnit
         {
             Console.WriteLine("Test1...");
             Assert.AreEqual(1, 1);
+        }
+
+        [Test]
+        [TestCase("a", 1, "b")]
+        [TestCase("a", 1, "c")]
+        public void TestCaseTest(string p1, int p2, string p3)
+        {
+            Assert.AreEqual("a", p1);
+            Assert.AreEqual(1, p2);
+
+            if (!(p3 == "b" || p3 == "c"))
+            {
+                Assert.Fail("p3=[" + p3 + "] should either be 'b' or 'c' ");
+            }
         }
     }
 }

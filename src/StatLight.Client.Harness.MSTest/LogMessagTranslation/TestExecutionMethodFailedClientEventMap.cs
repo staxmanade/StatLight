@@ -48,7 +48,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
                                        Finished = scenarioResult.Finished,
                                        Started = scenarioResult.Started,
                                    };
-            clientEventX.AssignTestExecutionMethodInfo(testMethod.Method);
+            clientEventX.AssignTestExecutionMethodInfo(testMethod);
 
             return clientEventX;
         }

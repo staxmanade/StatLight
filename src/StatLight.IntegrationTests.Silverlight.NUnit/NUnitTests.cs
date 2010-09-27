@@ -75,14 +75,15 @@ namespace StatLight.IntegrationTests.Silverlight
 
         [Test]
         [TestCase("Hello", 1, "World")]
-        [TestCase("Hello", 1, "World")]
-        [TestCase("Hello", 1, "World")]
-        [TestCase("Hello", 1, "World")]
+        [TestCase("Hello", 1, "World1")]
+        [TestCase("Hello", 1, "World2")]
+        [TestCase("Hello", 1, "World3")]
         public void Should_work_with_multiple_TestCases_with_three_parameter(string param1, int param2, string param3)
         {
             Assert.AreEqual("Hello", param1);
             Assert.AreEqual(1, param2);
-            Assert.AreEqual("World", param3);
+            Assert.AreEqual("World", param3.Substring(0, 5));
         }
+
     }
 }

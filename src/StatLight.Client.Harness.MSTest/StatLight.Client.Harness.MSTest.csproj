@@ -76,6 +76,7 @@
     <Compile Include="LogMessagTranslation\ILogMessageToClientEventTranslation.cs" />
     <Compile Include="LogMessagTranslation\InitializationOfUnitTestHarnessClientEventMap.cs" />
     <Compile Include="LogMessagTranslation\LogMessageTranslator.cs" />
+    <Compile Include="LogMessagTranslation\ReflectionInfoHelper.cs" />
     <Compile Include="LogMessagTranslation\TestExecutionClassBeginClientEventMap.cs" />
     <Compile Include="LogMessagTranslation\TestExecutionClassCompletedClientEventMap.cs" />
     <Compile Include="LogMessagTranslation\TestExecutionDoNotReportMessageMap.cs" />

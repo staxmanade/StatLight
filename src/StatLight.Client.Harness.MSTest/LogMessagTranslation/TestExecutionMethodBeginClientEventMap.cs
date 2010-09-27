@@ -33,7 +33,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
                                    {
                                        Started = DateTime.Now,
                                    };
-            clientEventX.AssignTestExecutionMethodInfo(testMethod.Method);
+            clientEventX.AssignTestExecutionMethodInfo(testMethod);
             return clientEventX;
         }
     }

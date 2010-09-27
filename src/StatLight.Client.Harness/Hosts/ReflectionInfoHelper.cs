@@ -12,14 +12,6 @@ namespace StatLight.Client.Harness.Hosts
             return type.FullName.Substring(type.Namespace.Length + 1);
         }
 
-        public static void AssignTestExecutionMethodInfo(this TestExecutionMethod testExecutionMethod, MethodInfo methodInfo)
-        {
-            testExecutionMethod.NamespaceName = methodInfo.ReflectedType.Namespace;
-            testExecutionMethod.ClassName = methodInfo.ReflectedType.ReadClassName();
-            testExecutionMethod.MethodName = methodInfo.Name;
-        }
-
-
         public static string FullName(this MemberInfo methodInfo)
         {
             string m = "{0}.{1}.{2}".FormatWith(
