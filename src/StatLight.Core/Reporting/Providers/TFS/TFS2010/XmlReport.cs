@@ -1,5 +1,7 @@
 ﻿
 
+using System.Text;
+
 namespace StatLight.Core.Reporting.Providers.TFS.TFS2010
 {
     using System;
@@ -36,7 +38,7 @@ namespace StatLight.Core.Reporting.Providers.TFS.TFS2010
                     new XElement("InnerTest",
                         new XElement("TestName", s.FullMethodName()),
                         new XElement("TestResult", GetTestResult(s.ResultType)),
-                        new XElement("ErrorMessage", s.ExceptionInfo == null ? "" : s.ExceptionInfo.ToString())
+                        new XElement("ErrorMessage", GetErrorMessage(s))
                         ));
 
             var firstReport = _report.First();
@@ -53,6 +55,8 @@ namespace StatLight.Core.Reporting.Providers.TFS.TFS2010
             {
                 case ResultType.Passed:
                     return TestResultType.Passed;
+                case ResultType.Ignored:
+                    return TestResultType.NotExecuted;
                 default:
                     return TestResultType.Failed;
             }
@@ -65,6 +69,23 @@ namespace StatLight.Core.Reporting.Providers.TFS.TFS2010
                 return TestResultType.Failed;
             }
             return TestResultType.Passed;
+        }
+
+        private static string GetErrorMessage(TestCaseResult result)
+        {
+            var sb = new StringBuilder();
+            if (result.ExceptionInfo != null)
+                sb.Append(result.ExceptionInfo.FullMessage);
+
+            if (!string.IsNullOrEmpty(result.OtherInfo))
+            {
+                sb.Append(Environment.NewLine);
+                sb.Append(result.OtherInfo);
+            }
+
+            var rtn = sb.ToString();
+
+            return string.IsNullOrEmpty(rtn) ? null : rtn;
         }
     }
 }
