@@ -153,8 +153,6 @@
     <Compile Include="Reporting\Messages\TestOutcome.cs" />
     <Compile Include="Reporting\Providers\Console\ConsoleTestCompleteMessage.cs" />
     <Compile Include="Reporting\Providers\Console\ConsoleResultHandler.cs" />
-    <Compile Include="Reporting\Providers\TFS\TFS2010\SummaryResult.cs" />
-    <Compile Include="Reporting\Providers\TFS\TFS2010\SummaryResultInnerTest.cs" />
     <Compile Include="Reporting\Providers\TFS\TFS2010\TestResultType.cs" />
     <Compile Include="Reporting\Providers\TFS\TFS2010\XmlReport.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlReport.cs" />
