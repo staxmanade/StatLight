@@ -153,6 +153,10 @@
     <Compile Include="Reporting\Messages\TestOutcome.cs" />
     <Compile Include="Reporting\Providers\Console\ConsoleTestCompleteMessage.cs" />
     <Compile Include="Reporting\Providers\Console\ConsoleResultHandler.cs" />
+    <Compile Include="Reporting\Providers\TFS\TFS2010\SummaryResult.cs" />
+    <Compile Include="Reporting\Providers\TFS\TFS2010\SummaryResultInnerTest.cs" />
+    <Compile Include="Reporting\Providers\TFS\TFS2010\TestResultType.cs" />
+    <Compile Include="Reporting\Providers\TFS\TFS2010\XmlReport.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlReport.cs" />
     <Compile Include="Runners\ContinuousConsoleRunner.cs" />
     <Compile Include="Runners\ContinuousTestRunner.cs" />
@@ -233,6 +237,9 @@
     <None Include="..\CodeAnalysis.ruleset">
       <Link>CodeAnalysis.ruleset</Link>
     </None>
+    <None Include="Reporting\Providers\TFS\TFS2010\SummaryResults.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resources\ClientAccessPolicy.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -268,7 +275,9 @@
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Reporting\Providers\TFS\HowIGeneratedTheSummaryResults.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

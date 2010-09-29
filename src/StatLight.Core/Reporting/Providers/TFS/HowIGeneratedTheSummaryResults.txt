@@ -1,0 +1,11 @@
+﻿
+You can use microsoft test framework Generic Test to execute staatlight and report the special test specific stuff.
+
+More details on MSDN here http://msdn.microsoft.com/en-us/library/ms243174(VS.100).aspx
+1. Find the SummaryResult.xsd in my case was in
+	C:\Program Files\Microsoft Visual Studio 10.0\Xml\Schemas\SummaryResult.xsd
+2. run the xsd command with the following parameters
+	xsd.exe [schema file path] /classes
+
+	xsd was foudn on my machine in
+	C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\xsd.exe

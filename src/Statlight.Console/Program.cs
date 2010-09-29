@@ -55,6 +55,7 @@ namespace StatLight.Console
                     bool continuousIntegrationMode = options.ContinuousIntegrationMode;
                     bool showTestingBrowserHost = options.ShowTestingBrowserHost;
                     bool useTeamCity = options.OutputForTeamCity;
+                    bool tfsGenericReport = options.TFSGenericReport;
                     bool useRemoteTestPage = options.UseRemoteTestPage;
                     bool startWebServerOnly = options.StartWebServerOnly;
                     Collection<string> methodsToTest = options.MethodsToTest;
@@ -109,8 +110,16 @@ namespace StatLight.Console
 
                     if (!string.IsNullOrEmpty(xmlReportOutputPath))
                     {
-                        var xmlReport = new XmlReport(testReports);
-                        xmlReport.WriteXmlReport(xmlReportOutputPath);
+                        if (tfsGenericReport)
+                        {
+                            var xmlReport = new Core.Reporting.Providers.TFS.TFS2010.XmlReport(testReports);
+                            xmlReport.WriteXmlReport(xmlReportOutputPath);
+                        }
+                        else
+                        {
+                            var xmlReport = new XmlReport(testReports);
+                            xmlReport.WriteXmlReport(xmlReportOutputPath);
+                        }
 
                         "*********************************"
                             .WrapConsoleMessageWithColor(ConsoleColor.White, true);
