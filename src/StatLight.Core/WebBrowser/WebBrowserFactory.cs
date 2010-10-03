@@ -20,6 +20,8 @@ namespace StatLight.Core.WebBrowser
                     return new SelfHostedWebBrowser(_logger, pageToHost, browserVisible);
                 case WebBrowserType.FireFox:
                     return new FirefoxWebBrowser(_logger, pageToHost);
+                case WebBrowserType.Chrome:
+                    return new ChromeWebBrowser(_logger, pageToHost);
             }
 
             throw new NotImplementedException();

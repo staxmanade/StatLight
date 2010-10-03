@@ -419,7 +419,7 @@ function GetTemporaryXmlFile()
 function execStatLight()
 {
 	# Run the integration tests with the FireFox browser.
-	#& "$build_dir\StatLight.exe" "--WebBrowserType:FireFox" $args
+	#& "$build_dir\StatLight.exe" "--WebBrowserType:Chrome" $args
 	
 	& "$build_dir\StatLight.exe" $args
 }

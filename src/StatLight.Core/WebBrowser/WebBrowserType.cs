@@ -4,5 +4,6 @@
     {
         SelfHostedWebBrowser,
         FireFox,
+        Chrome,
     }
 }
