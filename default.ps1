@@ -416,12 +416,21 @@ function GetTemporaryXmlFile()
 	$scriptFile
 }
 
+function execStatLight()
+{
+	# Run the integration tests with the FireFox browser.
+	#& "$build_dir\StatLight.exe" "--WebBrowserType:FireFox" $args
+	
+	& "$build_dir\StatLight.exe" $args
+}
+
+
 function Execute-MSTest-Version-Acceptance-Tests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
 	
 	$scriptFile = GetTemporaryXmlFile;
 	
-	& "$build_dir\StatLight.exe" "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
+	execStatLight "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
 	
 	if($build_configuration -eq 'Debug')
 	{
@@ -661,27 +670,27 @@ Task test-tests-in-other-assembly {
 	
 	$scriptFile = GetTemporaryXmlFile;
 	
-	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" "-t=OtherAssemblyTests" "-r=$scriptFile"
+	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" "-t=OtherAssemblyTests" "-r=$scriptFile"
 	
 	Assert-statlight-xml-report-results -message "test-tests-in-other-assembly" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 2 -expectedFailedCount 1 -expectedIgnoredCount 1
 }
 
 Task test-client-harness-tests {
-	exec { & "$build_dir\StatLight.exe" "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" -o=MSTest } 'test-client-harness-tests Failed'
+	exec { execStatLight "-x=.\src\StatLight.Client.Tests\Bin\$build_configuration\StatLight.Client.Tests.xap" -o=MSTest } 'test-client-harness-tests Failed'
 }
 
 
 Task test-specific-method-filter {
 	$scriptFile = GetTemporaryXmlFile;
 	
-	& "$build_dir\StatLight.exe" "-x=src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" '--MethodsToTest="StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_passing_test;StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_Failing_test;"' "-o=MSTest" "-r=$scriptFile"
+	execStatLight "-x=src\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xap" '--MethodsToTest="StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_passing_test;StatLight.IntegrationTests.Silverlight.TeamCityTests.this_should_be_a_Failing_test;"' "-o=MSTest" "-r=$scriptFile"
 
 	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1 -expectedFailedCount 1
 }
 
 Task test-multiple-xaps {
 	$scriptFile = GetTemporaryXmlFile;
-	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-o=MSTest" "-r=$scriptFile" 
+	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-o=MSTest" "-r=$scriptFile" 
 	
 	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 10 -expectedFailedCount 6 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 2
 }
@@ -697,7 +706,7 @@ Task test-remote-access-querystring {
 	
 	$scriptFile = GetTemporaryXmlFile;
 	
-	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.RemoteIntegration\StatLight.ExternalWebTest\Bin\$build_configuration\StatLight.ExternalWebTest.xap" "-r=$scriptFile" "-QueryString=RemoteCallbackServiceUrl=http://localhost:$cassiniPort/Service1.svc" 
+	execStatLight "-x=.\src\StatLight.RemoteIntegration\StatLight.ExternalWebTest\Bin\$build_configuration\StatLight.ExternalWebTest.xap" "-r=$scriptFile" "-QueryString=RemoteCallbackServiceUrl=http://localhost:$cassiniPort/Service1.svc" 
 	
 	Stop-Process $cassiniProcess.Id -ErrorAction SilentlyContinue
 
@@ -707,7 +716,7 @@ Task test-remote-access-querystring {
 Task test-specific-multiple-browser-runner {
 	$scriptFile = GetTemporaryXmlFile;
 	
-	& "$build_dir\StatLight.exe" "-x=.\src\StatLight.IntegrationTests.Silverlight.LotsOfTests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.LotsOfTests.xap" "-r=$scriptFile" "-NumberOfBrowserHosts=5"
+	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.LotsOfTests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.LotsOfTests.xap" "-r=$scriptFile" "-NumberOfBrowserHosts=5"
 	
 	Assert-statlight-xml-report-results -message "test-specific-mutiple-browser-runner" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1000
 }
