@@ -47,11 +47,6 @@ namespace StatLight.Core.WebBrowser
         /// </summary>
         protected Process Process { get; set; }
 
-        /// <summary>
-        /// Backing field for the process ID of the browser.
-        /// </summary>
-        private int? _pid;
-
         private readonly ILogger _logger;
         private readonly Uri _uri;
 

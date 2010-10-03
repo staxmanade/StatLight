@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.ObjectModel;
 using Mono.Options;
+using StatLight.Core.WebBrowser;
 
 namespace StatLight.Console
 {
@@ -30,7 +31,7 @@ namespace StatLight.Console
 
         public bool ContinuousIntegrationMode { get; private set; }
 
-        public bool ShowHelp { get; set; }
+        public bool ShowHelp { get; private set; }
 
         public bool ShowTestingBrowserHost { get; private set; }
 
@@ -41,18 +42,18 @@ namespace StatLight.Console
         public UnitTestProviderType UnitTestProviderType { get; private set; }
 
         public MicrosoftTestingFrameworkVersion? MicrosoftTestingFrameworkVersion { get; private set; }
-
-        public bool IsRequestingDebug { get; set; }
+        public WebBrowserType WebBrowserType { get; private set; }
+        public bool IsRequestingDebug { get; private set; }
 
         public int NumberOfBrowserHosts { get; private set; }
 
-        public bool UseRemoteTestPage { get; set; }
+        public bool UseRemoteTestPage { get; private set; }
 
         private string _queryString;
         public string QueryString
         {
             get { return _queryString ?? String.Empty; }
-            set { _queryString = value; }
+            private set { _queryString = value; }
         }
 
         private ArgOptions()
@@ -141,6 +142,10 @@ namespace StatLight.Console
                             throw new DirectoryNotFoundException("Could not find directory in [{0}]".FormatWith(v));
                     })
                 .Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v => UseRemoteTestPage = true)
+                .Add("WebBrowserType", "If you have other browser installed, you can have StatLight use any of the following web browsers [{0}]".FormatWith(typeof(WebBrowserType).FormatEnumString()), v =>
+                    {
+                        WebBrowserType = ParseEnum<WebBrowserType>(v);
+                    })
                 .Add("NumberOfBrowserHosts", "Default is 1. Allows you to specify the number of browser windows to spread work across.", v =>
                     {
                         int value;
@@ -160,6 +165,18 @@ namespace StatLight.Console
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)
                 ;
+        }
+
+        private static T ParseEnum<T>(string value)
+        {
+            try
+            {
+                return (T)Enum.Parse(typeof(T), value, true);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new StatLightException("Could not find an WebBrowserType defined as [{0}]. Please specify one of the following [{1}].".FormatWith(value, typeof(T).FormatEnumString()));
+            }
         }
 
         public static void ShowHelpMessage(TextWriter @out)

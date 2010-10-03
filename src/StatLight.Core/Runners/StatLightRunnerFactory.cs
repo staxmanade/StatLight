@@ -166,8 +166,7 @@ namespace StatLight.Core.Runners
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "testPageUrlWithQueryString")]
         private static List<IWebBrowser> GetBrowserFormHosts(ILogger logger, Uri testPageUrl, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, string queryString)
         {
-            var webBrowserType = WebBrowserType.SelfHostedWebBrowser;
-            //var webBrowserType = WebBrowserType.FireFox;
+            var webBrowserType = clientTestRunConfiguration.WebBrowserType;
             var webBrowserFactory = new WebBrowserFactory(logger);
             var testPageUrlWithQueryString = new Uri(testPageUrl + "?" + queryString);
             logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);

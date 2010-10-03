@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.ObjectModel;
+using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 
 namespace StatLight.Core.Configuration
@@ -26,7 +27,7 @@ namespace StatLight.Core.Configuration
             _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
         }
 
-        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString)
+        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType)
         {
             if (queryString == null)
                 throw new ArgumentNullException("queryString");
@@ -61,7 +62,7 @@ namespace StatLight.Core.Configuration
                 }
             }
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, xapUrl);
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, xapUrl, webBrowserType);
 
             var serverConfig = CreateServerConfiguration(
                 xapPath,

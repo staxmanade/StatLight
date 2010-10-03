@@ -1,4 +1,6 @@
-﻿namespace StatLight.Console
+﻿using StatLight.Core.WebBrowser;
+
+namespace StatLight.Console
 {
     using System;
     using System.Collections.Generic;
@@ -63,7 +65,7 @@
                     UnitTestProviderType unitTestProviderType = options.UnitTestProviderType;
                     int numberOfBrowserHosts = options.NumberOfBrowserHosts;
                     string queryString = options.QueryString;
-
+                    WebBrowserType webBrowserType = options.WebBrowserType;
                     var statLightRunnerFactory = new StatLightRunnerFactory();
                     var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
 
@@ -87,7 +89,8 @@
                                 tagFilters,
                                 numberOfBrowserHosts,
                                 useRemoteTestPage,
-                                queryString);
+                                queryString,
+                                webBrowserType);
 
                         using (IRunner runner = GetRunner(
                                 logger,

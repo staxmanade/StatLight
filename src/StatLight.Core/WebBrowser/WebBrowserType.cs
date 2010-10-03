@@ -1,6 +1,6 @@
 ﻿namespace StatLight.Core.WebBrowser
 {
-    internal enum WebBrowserType
+    public enum WebBrowserType
     {
         SelfHostedWebBrowser,
         FireFox,

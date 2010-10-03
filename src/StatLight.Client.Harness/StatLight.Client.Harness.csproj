@@ -110,6 +110,9 @@
     <Compile Include="..\StatLight.Core\UnitTestProviders\UnitTestProviderTypes.cs">
       <Link>Core\UnitTestProviders\UnitTestProviderTypes.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Core\WebBrowser\WebBrowserType.cs">
+      <Link>Core\WebBrowser\WebBrowserType.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Core\WebServer\StatLightServiceRestApi.cs">
       <Link>Core\WebServer\StatLightServiceRestApi.cs</Link>
     </Compile>
