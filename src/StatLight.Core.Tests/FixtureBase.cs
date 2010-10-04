@@ -8,9 +8,7 @@ using StatLight.Core.Common;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events.Aggregation;
 using StatLight.Core.UnitTestProviders;
-using StatLight.Core.WebServer;
 using StatLight.Core.WebServer.XapHost;
-using System.Collections.Generic;
 
 namespace StatLight.Core.Tests
 {
@@ -110,7 +108,7 @@ namespace StatLight.Core.Tests
         protected ClientTestRunConfiguration CreateTestDefaultClinetTestRunConfiguraiton()
         {
             return new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new Collection<string>(),
-                                                                         string.Empty, 1, "", StatLight.Core.WebBrowser.WebBrowserType.SelfHostedWebBrowser);
+                                                                         string.Empty, 1, "", StatLight.Core.WebBrowser.WebBrowserType.SelfHosted);
         }
     }
 

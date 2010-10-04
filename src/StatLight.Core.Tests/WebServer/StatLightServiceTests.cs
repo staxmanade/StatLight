@@ -205,7 +205,7 @@ namespace StatLight.Core.Tests.WebServer
             {
                 base.Before_all_tests();
 
-                var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new Collection<string>(), _tagFilter, 1, "", StatLight.Core.WebBrowser.WebBrowserType.SelfHostedWebBrowser);
+                var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new Collection<string>(), _tagFilter, 1, "", StatLight.Core.WebBrowser.WebBrowserType.SelfHosted);
 
                 _statLightService = new StatLightService(new NullLogger(), config, MockServerTestRunConfiguration, new Mock<IPostHandler>().Object);
             }

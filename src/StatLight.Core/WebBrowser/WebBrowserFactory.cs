@@ -16,7 +16,7 @@ namespace StatLight.Core.WebBrowser
         {
             switch (browserType)
             {
-                case WebBrowserType.SelfHostedWebBrowser:
+                case WebBrowserType.SelfHosted:
                     return new SelfHostedWebBrowser(_logger, pageToHost, browserVisible);
                 case WebBrowserType.FireFox:
                     return new FirefoxWebBrowser(_logger, pageToHost);
