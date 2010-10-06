@@ -108,6 +108,7 @@
     <Compile Include="Runners\StatLightFactoryTests.cs" />
     <Compile Include="Monitoring\BrowserCommunicationTimeoutMonitorTests.cs" />
     <Compile Include="WebBrowser\BrowserFormHostTests.cs" />
+    <Compile Include="WebServer\Host\TestServiceEngineTests.cs" />
     <Compile Include="WebServer\StatLightServiceHostTests.cs" />
     <Compile Include="WebServer\StatLightServiceTests.cs" />
     <Compile Include="SpecificationExtensions.cs" />

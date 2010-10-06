@@ -164,6 +164,7 @@
     <Compile Include="Runners\RunnerType.cs" />
     <Compile Include="Runners\WebServerOnlyRunner.cs" />
     <Compile Include="Runners\IRunner.cs" />
+    <Compile Include="WebServer\Host\TestServiceEngine.cs" />
     <Compile Include="WebServer\IXapFileBuildChangedMonitor.cs" />
     <Compile Include="Reporting\Messages\MobilOtherMessageType.cs" />
     <Compile Include="Reporting\Providers\TeamCity\ConsoleMessageWriter.cs" />
