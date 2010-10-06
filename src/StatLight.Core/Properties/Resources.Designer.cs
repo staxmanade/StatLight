@@ -85,7 +85,7 @@ namespace StatLight.Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
         ///&lt;cross-domain-policy&gt;
-        ///  &lt;allow-http-request-headers-from domain=&quot;*&quot; /&gt;
+        ///  &lt;allow-http-request-headers-from domain=&quot;*&quot; headers=&quot;SOAPAction&quot;/&gt;
         ///  &lt;allow-access-from domain=&quot;*&quot; secure=&quot;false&quot; /&gt;
         ///&lt;/cross-domain-policy&gt;
         ///.
