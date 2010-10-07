@@ -2,9 +2,13 @@ using System;
 using System.Net;
 using NUnit.Framework;
 using StatLight.Core.Common;
+using StatLight.Core.Configuration;
 using StatLight.Core.Properties;
+using StatLight.Core.Serialization;
+using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebServer;
 using StatLight.Core.WebServer.Host;
+using System.Collections.Generic;
 
 namespace StatLight.Core.Tests.WebServer.Host
 {
@@ -17,6 +21,7 @@ namespace StatLight.Core.Tests.WebServer.Host
         private WebClient _webClient;
         private Func<byte[]> _xapToTestFactory;
         private byte[] _hostXap;
+        private string _serializedConfiguration;
 
         protected override void Before_all_tests()
         {
@@ -27,7 +32,10 @@ namespace StatLight.Core.Tests.WebServer.Host
             var consoleLogger = new ConsoleLogger(LogChatterLevels.Full);
             _xapToTestFactory = () => new byte[] { 0, 1, 2, 3, 4 };
             _hostXap = new byte[] { 5, 4, 2, 1, 4 };
-            var responseFactory = new ResponseFactory(_xapToTestFactory, _hostXap);
+            _serializedConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test").Serialize();
+            var responseFactory = new ResponseFactory(_xapToTestFactory, _hostXap, _serializedConfiguration);
+
+
             _testServiceEngine = new TestServiceEngine(consoleLogger, machineName, port, TimeSpan.FromSeconds(30), responseFactory);
             _webClient = new WebClient();
 
@@ -77,6 +85,13 @@ namespace StatLight.Core.Tests.WebServer.Host
         {
             _webClient.DownloadData(GetUrl(StatLightServiceRestApi.GetTestPageHostXap))
                 .ShouldEqual(_hostXap);
+        }
+
+        [Test]
+        public void Should_serve_the_GetTestRunConfiguration_file()
+        {
+            _webClient.DownloadString(GetUrl(StatLightServiceRestApi.GetTestRunConfiguration))
+                .ShouldEqual(_serializedConfiguration);
         }
 
         private string GetString(string path)
