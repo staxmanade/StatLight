@@ -2,7 +2,7 @@
 {
 	public class ResponseFile
 	{
-		public string File;
+		public byte[] File;
 		public string ContentType;
 	}
 }

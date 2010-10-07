@@ -20,10 +20,10 @@ namespace StatLight.Core.WebServer.Host
         public ResponseFile Get(string localPath)
         {
             if (IsKnown(localPath, StatLightServiceRestApi.CrossDomain))
-                return new ResponseFile { File = Resources.CrossDomain, ContentType = "text/xml" };
+                return new ResponseFile { File = Resources.CrossDomain.ToByteArray(), ContentType = "text/xml" };
 
             if (IsKnown(localPath, StatLightServiceRestApi.ClientAccessPolicy))
-                return new ResponseFile { File = Resources.ClientAccessPolicy, ContentType = "text/xml" };
+                return new ResponseFile { File = Resources.ClientAccessPolicy.ToByteArray(), ContentType = "text/xml" };
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetHtmlTestPage))
             {
@@ -31,8 +31,8 @@ namespace StatLight.Core.WebServer.Host
                 return GetTestHtmlPage(_htmlPageInstanceId);
             }
 
-            //if (IsKnown(localPath, StatLightServiceRestApi.GetXapToTest))
-            //    return new ResponseFile { File = _xapToTestFactory().ToString(), ContentType = "text/xml" };
+            if (IsKnown(localPath, StatLightServiceRestApi.GetXapToTest))
+                return new ResponseFile { File = _xapToTestFactory(), ContentType = "application/x-silverlight-app" };
 
             throw new NotImplementedException();
         }
@@ -48,6 +48,9 @@ namespace StatLight.Core.WebServer.Host
             if (IsKnown(localPath, StatLightServiceRestApi.GetHtmlTestPage))
                 return true;
 
+            if (IsKnown(localPath, StatLightServiceRestApi.GetXapToTest))
+                return true;
+
 
             return false;
         }
@@ -57,7 +60,7 @@ namespace StatLight.Core.WebServer.Host
         {
             var page = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", instanceId.ToString());
 
-            return new ResponseFile { File = page, ContentType = "text/html" };
+            return new ResponseFile { File = page.ToByteArray(), ContentType = "text/html" };
         }
 
         private static bool IsKnown(string filea, string fileb)

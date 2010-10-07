@@ -63,10 +63,9 @@ namespace StatLight.Core.Tests.WebServer.Host
         }
 
         [Test]
-        [Ignore]
         public void Should_serve_the_GetXapToTest_file()
         {
-            _webClient.DownloadData(GetUrl("GetXapToTest"))
+            _webClient.DownloadData(GetUrl("GetXapToTest.xap"))
                 .ShouldEqual(_xapToTestFactory());
         }
 
