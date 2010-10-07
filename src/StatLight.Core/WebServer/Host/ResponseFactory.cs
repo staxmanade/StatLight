@@ -3,56 +3,66 @@ using StatLight.Core.Properties;
 
 namespace StatLight.Core.WebServer.Host
 {
-	public class ResponseFactory
-	{
-		public string ClientAccessPolicy { get { return Resources.ClientAccessPolicy; } }
-		public string CrossDomain { get { return Resources.CrossDomain; } }
+    public class ResponseFactory
+    {
+        private readonly Func<byte[]> _xapToTestFactory;
 
-		private static int _htmlPageInstanceId = 0;
+        public ResponseFactory(Func<byte[]> xapToTestFactory)
+        {
+            _xapToTestFactory = xapToTestFactory;
+        }
 
-		public ResponseFile Get(string file)
-		{
-			if (file.Equals(StatLightServiceRestApi.CrossDomain, StringComparison.OrdinalIgnoreCase))
-				return new ResponseFile {File = Resources.CrossDomain, ContentType = "text/xml"};
+        public string ClientAccessPolicy { get { return Resources.ClientAccessPolicy; } }
+        public string CrossDomain { get { return Resources.CrossDomain; } }
 
-			if (file.Equals(StatLightServiceRestApi.ClientAccessPolicy, StringComparison.OrdinalIgnoreCase))
-				return new ResponseFile { File = Resources.ClientAccessPolicy, ContentType = "text/xml" };
+        private static int _htmlPageInstanceId = 0;
 
-			if (file.Equals(StatLightServiceRestApi.GetHtmlTestPage, StringComparison.OrdinalIgnoreCase))
-			{
-				_htmlPageInstanceId++;
-				return GetTestHtmlPage(_htmlPageInstanceId);
-			}
+        public ResponseFile Get(string localPath)
+        {
+            if (IsKnown(localPath, StatLightServiceRestApi.CrossDomain))
+                return new ResponseFile { File = Resources.CrossDomain, ContentType = "text/xml" };
 
-			throw new NotImplementedException();
-		}
+            if (IsKnown(localPath, StatLightServiceRestApi.ClientAccessPolicy))
+                return new ResponseFile { File = Resources.ClientAccessPolicy, ContentType = "text/xml" };
 
-		public bool IsKnownFile(string localPath)
-		{
-			if (IsKnown(localPath, StatLightServiceRestApi.CrossDomain))
-				return true;
+            if (IsKnown(localPath, StatLightServiceRestApi.GetHtmlTestPage))
+            {
+                _htmlPageInstanceId++;
+                return GetTestHtmlPage(_htmlPageInstanceId);
+            }
 
-			if (IsKnown(localPath, StatLightServiceRestApi.ClientAccessPolicy))
-				return true;
+            //if (IsKnown(localPath, StatLightServiceRestApi.GetXapToTest))
+            //    return new ResponseFile { File = _xapToTestFactory().ToString(), ContentType = "text/xml" };
 
-			if (IsKnown(localPath, StatLightServiceRestApi.GetHtmlTestPage))
-				return true;
+            throw new NotImplementedException();
+        }
+
+        public bool IsKnownFile(string localPath)
+        {
+            if (IsKnown(localPath, StatLightServiceRestApi.CrossDomain))
+                return true;
+
+            if (IsKnown(localPath, StatLightServiceRestApi.ClientAccessPolicy))
+                return true;
+
+            if (IsKnown(localPath, StatLightServiceRestApi.GetHtmlTestPage))
+                return true;
 
 
-			return false;
-		}
+            return false;
+        }
 
 
-		public static ResponseFile GetTestHtmlPage(int instanceId)
-		{
-			var page = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", instanceId.ToString());
+        public static ResponseFile GetTestHtmlPage(int instanceId)
+        {
+            var page = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", instanceId.ToString());
 
-			return new ResponseFile {File = page, ContentType = "text/html"};
-		}
+            return new ResponseFile { File = page, ContentType = "text/html" };
+        }
 
-		private static bool IsKnown(string filea, string fileb)
-		{
-			return string.Equals(filea, fileb, StringComparison.OrdinalIgnoreCase);
-		}
-	}
+        private static bool IsKnown(string filea, string fileb)
+        {
+            return string.Equals(filea, fileb, StringComparison.OrdinalIgnoreCase);
+        }
+    }
 }

@@ -255,7 +255,7 @@ namespace StatLight.Core.WebServer.Host
 				}
 				else if (rootDirectory != null)
 				{
-					ServeFile(rootDirectory, request, response);
+					  ServeFile(rootDirectory, request, response);
 				}
 				else
 				{
