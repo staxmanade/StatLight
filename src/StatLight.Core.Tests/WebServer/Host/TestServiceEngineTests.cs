@@ -1,18 +1,75 @@
 using System;
+using System.Net;
 using NUnit.Framework;
+using StatLight.Core.Common;
+using StatLight.Core.Properties;
 using StatLight.Core.WebServer.Host;
 
 namespace StatLight.Core.Tests.WebServer.Host
 {
-    public class TestServiceEngineTests
-    {
-        //[Test]
-        //public void Should_be_able_to_start_and_stop_service()
-        //{
-        //    var testServiceEngine = new TestServiceEngine("localhost", 8888, TimeSpan.FromSeconds(30));
-        //    testServiceEngine.Start();
-        //    testServiceEngine.Stop();
-        //    //testServiceEngine
-        //}
-    }
+	[TestFixture]
+	public class TestServiceEngineTests : FixtureBase
+	{
+		private TestServiceEngine _testServiceEngine;
+
+		private string _baseUrl;
+		private WebClient _webClient;
+
+		protected override void Before_all_tests()
+		{
+			base.Before_all_tests();
+
+			const string machineName = "localhost";
+			const int port = 38881;
+			var consoleLogger = new ConsoleLogger(LogChatterLevels.Full);
+			var responseFactory = new ResponseFactory();
+			_testServiceEngine = new TestServiceEngine(consoleLogger, machineName, port, TimeSpan.FromSeconds(30), responseFactory);
+			_webClient = new WebClient();
+
+			_baseUrl = "http://{0}:{1}/".FormatWith(machineName, port);
+
+			_testServiceEngine.Start();
+		}
+
+		protected override void After_all_tests()
+		{
+			base.After_all_tests();
+
+			_testServiceEngine.Stop();
+		}
+
+		[Test]
+		public void Should_server_the_ClientAccessPolicy_file()
+		{
+			GetString("ClientAccessPolicy.xml")
+				.ShouldEqual(Resources.ClientAccessPolicy);
+		}
+
+		[Test]
+		public void Should_server_the_CrossDomain_file()
+		{
+			GetString("CrossDomain.xml")
+				.ShouldEqual(Resources.CrossDomain);
+		}
+
+
+		[Test]
+		public void Should_server_the_GetHtmlTestPage_file()
+		{
+			var expectedFile = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", 1.ToString());
+			GetString("GetHtmlTestPage")
+				.ShouldEqual(expectedFile);
+		}
+
+		private string GetString(string path)
+		{
+			var url = GetUrl(path);
+			return _webClient.DownloadString(url);
+		}
+
+		private string GetUrl(string path)
+		{
+			return _baseUrl + path;
+		}
+	}
 }

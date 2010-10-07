@@ -1,5 +1,6 @@
 ﻿
 using System.Diagnostics;
+using StatLight.Core.WebServer.Host;
 
 namespace StatLight.Core.WebServer
 {
@@ -178,12 +179,11 @@ namespace StatLight.Core.WebServer
         public Stream GetHtmlTestPage()
         {
             _logger.Debug("StatLightService.GetHtmlTestPage()");
-            SetOutgoingResponceContentType("text/html");
+			var page = ResponseFactory.GetTestHtmlPage(_instanceId);
+			SetOutgoingResponceContentType(page.ContentType);
 
-            var page = Resources.TestPage;
-            page = page.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", _instanceId.ToString());
             _instanceId++;
-            return page.ToStream();
+            return page.File.ToStream();
         }
 
         private static void SetOutgoingResponceContentType(string contentType)
