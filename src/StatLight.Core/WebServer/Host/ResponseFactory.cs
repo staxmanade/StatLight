@@ -6,10 +6,12 @@ namespace StatLight.Core.WebServer.Host
     public class ResponseFactory
     {
         private readonly Func<byte[]> _xapToTestFactory;
+        private readonly byte[] _hostXap;
 
-        public ResponseFactory(Func<byte[]> xapToTestFactory)
+        public ResponseFactory(Func<byte[]> xapToTestFactory, byte[] hostXap)
         {
             _xapToTestFactory = xapToTestFactory;
+            _hostXap = hostXap;
         }
 
         public string ClientAccessPolicy { get { return Resources.ClientAccessPolicy; } }
@@ -34,6 +36,9 @@ namespace StatLight.Core.WebServer.Host
             if (IsKnown(localPath, StatLightServiceRestApi.GetXapToTest))
                 return new ResponseFile { File = _xapToTestFactory(), ContentType = "application/x-silverlight-app" };
 
+            if (IsKnown(localPath, StatLightServiceRestApi.GetTestPageHostXap))
+                return new ResponseFile { File = _hostXap, ContentType = "application/x-silverlight-app" };
+
             throw new NotImplementedException();
         }
 
@@ -49,6 +54,9 @@ namespace StatLight.Core.WebServer.Host
                 return true;
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetXapToTest))
+                return true;
+
+            if (IsKnown(localPath, StatLightServiceRestApi.GetTestPageHostXap))
                 return true;
 
 
