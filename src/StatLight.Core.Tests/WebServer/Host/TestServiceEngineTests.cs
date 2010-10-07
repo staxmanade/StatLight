@@ -1,5 +1,8 @@
 using System;
+using System.IO;
 using System.Net;
+using System.Threading;
+using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
@@ -22,6 +25,7 @@ namespace StatLight.Core.Tests.WebServer.Host
         private Func<byte[]> _xapToTestFactory;
         private byte[] _hostXap;
         private string _serializedConfiguration;
+        private Mock<PostHandler> _mockPostHandler;
 
         protected override void Before_all_tests()
         {
@@ -35,8 +39,9 @@ namespace StatLight.Core.Tests.WebServer.Host
             _serializedConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test").Serialize();
             var responseFactory = new ResponseFactory(_xapToTestFactory, _hostXap, _serializedConfiguration);
 
-
-            _testServiceEngine = new TestServiceEngine(consoleLogger, machineName, port, TimeSpan.FromSeconds(30), responseFactory);
+            _mockPostHandler = new Mock<PostHandler>();
+            _testServiceEngine = new TestServiceEngine(consoleLogger, machineName, port, TimeSpan.FromSeconds(30),
+                                                       responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 
             _baseUrl = "http://{0}:{1}/".FormatWith(machineName, port);
@@ -92,6 +97,18 @@ namespace StatLight.Core.Tests.WebServer.Host
         {
             _webClient.DownloadString(GetUrl(StatLightServiceRestApi.GetTestRunConfiguration))
                 .ShouldEqual(_serializedConfiguration);
+        }
+
+        [Test]
+        public void Should_accept_postedMessages()
+        {
+            string messageWritten = "Hello World!";
+            byte[] data = messageWritten.ToByteArray();
+            Stream openWrite = _webClient.OpenWrite(GetUrl(StatLightServiceRestApi.PostMessage));
+            openWrite.Write(data, 0, data.Length);
+            openWrite.Close();
+            Thread.Sleep(1000);
+            _mockPostHandler.Verify(v=>v.Handle(messageWritten));
         }
 
         private string GetString(string path)

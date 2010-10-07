@@ -79,9 +79,10 @@ namespace StatLight.Core.WebServer.Host
         /// <summary>
         /// Initializes a new instance of the test service.
         /// </summary>
-        public TestServiceEngine(ILogger logger, string machineName, int port, TimeSpan shutdownDelay, ResponseFactory responseFactory)
+        public TestServiceEngine(ILogger logger, string machineName, int port, TimeSpan shutdownDelay, ResponseFactory responseFactory, PostHandler postHandler)
         {
             _logger = logger;
+            _postHandler = postHandler;
             ServerName = machineName;
             Port = port;
             ShutdownDelay = shutdownDelay;
@@ -226,7 +227,6 @@ namespace StatLight.Core.WebServer.Host
         {
             string text = (o != null && o.Length == 0) ? value : string.Format(CultureInfo.InvariantCulture, value, o);
             _logger.Debug(text);
-            //Debug.WriteLine(text);
         }
 
         /// <summary>
@@ -249,14 +249,6 @@ namespace StatLight.Core.WebServer.Host
                     SetContentType(response, responseFile.ContentType);
                     ServeString(response, responseFile.File);
                 }
-                else if ((request.Url.Segments.Length > 1) && (request.Url.Segments[1] == ExternalInterface))
-                {
-                    ServeFunction(request, response);
-                }
-                else if (rootDirectory != null)
-                {
-                    ServeFile(rootDirectory, request, response);
-                }
                 else
                 {
                     SetHttpStatus(response, HttpStatusCode.NotFound);
@@ -277,7 +269,7 @@ namespace StatLight.Core.WebServer.Host
         /// <param name="response">The response object.</param>
         /// <param name="rootDirectory">The root directory for the service.</param>
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "rootDirectory", Justification = "This parameter may be needed in the future.")]
-        private static void ProcessPostRequest(HttpListenerRequest request, HttpListenerResponse response)
+        private void ProcessPostRequest(HttpListenerRequest request, HttpListenerResponse response)
         {
             string results;
             using (Stream input = request.InputStream)
@@ -287,21 +279,11 @@ namespace StatLight.Core.WebServer.Host
                     results = reader.ReadToEnd();
                 }
             }
-            if ((request.Url.Segments.Length > 1) && (request.Url.Segments[1] == ExternalInterface))
+            if ((request.Url.Segments.Length > 1) && (request.Url.Segments[1] == StatLightServiceRestApi.PostMessage))
             {
                 ServeFunction(request, response, results);
             }
         }
-
-        ///// <summary>
-        ///// Process a test run result and then begin the shutdown process.
-        ///// </summary>
-        ///// <param name="result">The test run result.</param>
-        //internal void ProcessResult(TestRunResult result)
-        //{
-        //    Result = result;
-        //    BeginShutdownProcess();
-        //}
 
         /// <summary>
         /// Store the results from the request.
@@ -429,7 +411,7 @@ files, folders, and other information.
         /// </summary>
         /// <param name="request">The request object.</param>
         /// <param name="response">The response object.</param>
-        private static void ServeFunction(HttpListenerRequest request, HttpListenerResponse response)
+        private void ServeFunction(HttpListenerRequest request, HttpListenerResponse response)
         {
             ServeFunction(request, response, null);
         }
@@ -440,23 +422,15 @@ files, folders, and other information.
         /// <param name="request">The request object.</param>
         /// <param name="response">The response object.</param>
         /// <param name="postData">The raw HTTP POST data as a string.</param>
-        private static void ServeFunction(HttpListenerRequest request, HttpListenerResponse response, string postData)
+        private void ServeFunction(HttpListenerRequest request, HttpListenerResponse response, string postData)
         {
-            Debug.WriteLine(request.Url.ToString());
-            string path = request.Url.AbsolutePath.Replace(ExternalInterface, string.Empty);
-            if ((path.Length > 0) && (path[0] == '/'))
-            {
-                path = path.Substring(1);
-            }
-            if (path[path.Length - 1] == '/')
-            {
-                path = path.Substring(0, path.Length - 1);
-            }
-            List<string> data = path.Split(new char[] { '/' }).ToList<string>();
+            _logger.Debug(request.Url.ToString());
+
             SetContentType(response, ContentTypeXml);
             using (StreamWriter sw = new StreamWriter(response.OutputStream))
             {
-                throw new NotImplementedException();
+                _postHandler.Handle(postData);
+                //throw new NotImplementedException();
                 //sw.Write(Functions.ProcessFunction(data, response, postData));
             }
         }
@@ -669,6 +643,7 @@ files, folders, and other information.
 
         private readonly ILogger _logger;
         private Task _serverListener;
+        private readonly PostHandler _postHandler;
 
         public void Start()
         {

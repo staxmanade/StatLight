@@ -83,4 +83,12 @@ namespace StatLight.Core.WebServer.Host
             return string.Equals(filea, fileb, StringComparison.OrdinalIgnoreCase);
         }
     }
+
+    public class PostHandler
+    {
+        public virtual void Handle(string postData)
+        {
+            
+        }
+    }
 }
