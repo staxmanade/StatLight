@@ -5,12 +5,10 @@ namespace StatLight.Core.WebServer
 
     public static class StatLightServiceRestApi
     {
-		public const string CrossDomain = "CrossDomain.xml";
-		public const string ClientAccessPolicy = "clientaccesspolicy.xml";
-		public const string GetXapToTest = "GetXapToTest.xap";
+        public const string CrossDomain = "CrossDomain.xml";
+        public const string ClientAccessPolicy = "clientaccesspolicy.xml";
+        public const string GetXapToTest = "GetXapToTest.xap";
         public const string PostMessage = "PostMessage";
-        public const string SignalTestComplete = "SignalTestComplete?TotalMessagesPostedCount={totalMessagesPostedCount}";
-        public const string LogNonTestException = "LogNonTestException";
         public const string GetHtmlTestPage = "GetHtmlTestPage";
         public const string GetTestRunConfiguration = "GetTestRunConfiguration";
         public const string GetTestPageHostXap = "StatLight.Client.Harness.xap";
