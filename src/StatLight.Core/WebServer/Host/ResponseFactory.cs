@@ -16,18 +16,15 @@ namespace StatLight.Core.WebServer.Host
             _serializedConfiguration = serializedConfiguration;
         }
 
-        public string ClientAccessPolicy { get { return Resources.ClientAccessPolicy; } }
-        public string CrossDomain { get { return Resources.CrossDomain; } }
-
         private static int _htmlPageInstanceId = 0;
 
         public ResponseFile Get(string localPath)
         {
             if (IsKnown(localPath, StatLightServiceRestApi.CrossDomain))
-                return new ResponseFile { File = Resources.CrossDomain.ToByteArray(), ContentType = "text/xml" };
+                return new ResponseFile { FileData = Resources.CrossDomain.ToByteArray(), ContentType = "text/xml" };
 
             if (IsKnown(localPath, StatLightServiceRestApi.ClientAccessPolicy))
-                return new ResponseFile { File = Resources.ClientAccessPolicy.ToByteArray(), ContentType = "text/xml" };
+                return new ResponseFile { FileData = Resources.ClientAccessPolicy.ToByteArray(), ContentType = "text/xml" };
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetHtmlTestPage))
             {
@@ -36,17 +33,18 @@ namespace StatLight.Core.WebServer.Host
             }
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetXapToTest))
-                return new ResponseFile { File = _xapToTestFactory(), ContentType = "application/x-silverlight-app" };
+                return new ResponseFile { FileData = _xapToTestFactory(), ContentType = "application/x-silverlight-app" };
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetTestPageHostXap))
-                return new ResponseFile { File = _hostXap, ContentType = "application/x-silverlight-app" };
+                return new ResponseFile { FileData = _hostXap, ContentType = "application/x-silverlight-app" };
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetTestRunConfiguration))
-                return new ResponseFile { File = _serializedConfiguration.ToByteArray(), ContentType = "text/xml" };
+                return new ResponseFile { FileData = _serializedConfiguration.ToByteArray(), ContentType = "text/xml" };
 
             throw new NotImplementedException();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public bool IsKnownFile(string localPath)
         {
             if (IsKnown(localPath, StatLightServiceRestApi.CrossDomain))
@@ -75,7 +73,7 @@ namespace StatLight.Core.WebServer.Host
         {
             var page = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", instanceId.ToString());
 
-            return new ResponseFile { File = page.ToByteArray(), ContentType = "text/html" };
+            return new ResponseFile { FileData = page.ToByteArray(), ContentType = "text/html" };
         }
 
         private static bool IsKnown(string filea, string fileb)

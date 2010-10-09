@@ -2,7 +2,8 @@
 {
 	public class ResponseFile
 	{
-		public byte[] File;
-		public string ContentType;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
+        public byte[] FileData { get; set; }
+        public string ContentType { get; set; }
 	}
 }

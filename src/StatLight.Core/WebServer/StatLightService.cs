@@ -183,7 +183,7 @@ namespace StatLight.Core.WebServer
 			SetOutgoingResponceContentType(page.ContentType);
 
             _instanceId++;
-            return page.File.ToStream();
+            return page.FileData.ToStream();
         }
 
         private static void SetOutgoingResponceContentType(string contentType)

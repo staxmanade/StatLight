@@ -40,8 +40,7 @@ namespace StatLight.Core.Tests.WebServer.Host
             var responseFactory = new ResponseFactory(_xapToTestFactory, _hostXap, _serializedConfiguration);
 
             _mockPostHandler = new Mock<PostHandler>();
-            _testServiceEngine = new TestServiceEngine(consoleLogger, machineName, port, TimeSpan.FromSeconds(30),
-                                                       responseFactory, _mockPostHandler.Object);
+            _testServiceEngine = new TestServiceEngine(consoleLogger, machineName, port, responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 
             _baseUrl = "http://{0}:{1}/".FormatWith(machineName, port);

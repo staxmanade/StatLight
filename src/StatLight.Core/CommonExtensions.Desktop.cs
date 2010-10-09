@@ -45,16 +45,16 @@ namespace StatLight
             return stringBuilder.ToString();
         }
 
-        public static byte[] ToByteArray(this string str)
+        public static byte[] ToByteArray(this string value)
         {
             var encoding = new UTF8Encoding();
-            return encoding.GetBytes(str);
+            return encoding.GetBytes(value);
         }
 
-        public static string ToStringFromByteArray(this byte[] bytes)
+        public static string ToStringFromByteArray(this byte[] value)
         {
             var enc = new UTF8Encoding();
-            return enc.GetString(bytes);
+            return enc.GetString(value);
         }
 
     }
