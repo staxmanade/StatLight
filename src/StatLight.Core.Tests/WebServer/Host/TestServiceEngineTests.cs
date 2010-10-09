@@ -25,7 +25,7 @@ namespace StatLight.Core.Tests.WebServer.Host
         private Func<byte[]> _xapToTestFactory;
         private byte[] _hostXap;
         private string _serializedConfiguration;
-        private Mock<PostHandler> _mockPostHandler;
+        private Mock<IHandlePost> _mockPostHandler;
 
         protected override void Before_all_tests()
         {
@@ -39,13 +39,19 @@ namespace StatLight.Core.Tests.WebServer.Host
             _serializedConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test").Serialize();
             var responseFactory = new ResponseFactory(_xapToTestFactory, _hostXap, _serializedConfiguration);
 
-            _mockPostHandler = new Mock<PostHandler>();
+            _mockPostHandler = new Mock<IHandlePost>();
             _testServiceEngine = new TestServiceEngine(consoleLogger, machineName, port, responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 
             _baseUrl = "http://{0}:{1}/".FormatWith(machineName, port);
 
             _testServiceEngine.Start();
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            ResponseFactory.Reset();
         }
 
         protected override void After_all_tests()
@@ -72,7 +78,7 @@ namespace StatLight.Core.Tests.WebServer.Host
         [Test]
         public void Should_server_the_GetHtmlTestPage_file()
         {
-            var expectedFile = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", 1.ToString());
+            var expectedFile = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", 0.ToString());
             GetString(StatLightServiceRestApi.GetHtmlTestPage)
                 .ShouldEqual(expectedFile);
         }
