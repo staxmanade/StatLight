@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using Moq;
 using NUnit.Framework;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Common;
@@ -108,8 +109,9 @@ namespace StatLight.Core.Tests.WebServer
                 var serverConfig = MockServerTestRunConfiguration;
 
                 _hostXap = serverConfig.HostXap;
-
-                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, base.CreateTestDefaultClinetTestRunConfiguraiton(), serverConfig);
+                var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test");
+                var postHandler = new PostHandler(base.TestLogger, base.TestEventAggregator, clientConfig);
+                _statLightService = new StatLightService(new NullLogger(), base.CreateTestDefaultClinetTestRunConfiguraiton(), serverConfig, postHandler);
             }
 
             protected void SignalTestComplete(IStatLightService statLightService, int postCount)
@@ -205,7 +207,7 @@ namespace StatLight.Core.Tests.WebServer
 
                 var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new Collection<string>(), _tagFilter, 1, "");
 
-                _statLightService = new StatLightService(new NullLogger(), TestEventAggregator, config, MockServerTestRunConfiguration);
+                _statLightService = new StatLightService(new NullLogger(), config, MockServerTestRunConfiguration, new Mock<IPostHandler>().Object);
             }
 
             [Test]

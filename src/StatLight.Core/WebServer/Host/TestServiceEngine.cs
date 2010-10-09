@@ -19,9 +19,9 @@ namespace StatLight.Core.WebServer.Host
 
         private readonly ILogger _logger;
         private Task _serverListener;
-        private readonly IHandlePost _postHandler;
+        private readonly IPostHandler _postHandler;
 
-        public TestServiceEngine(ILogger logger, string machineName, int port, ResponseFactory responseFactory, IHandlePost postHandler)
+        public TestServiceEngine(ILogger logger, string machineName, int port, ResponseFactory responseFactory, IPostHandler postHandler)
         {
             _logger = logger;
             _postHandler = postHandler;

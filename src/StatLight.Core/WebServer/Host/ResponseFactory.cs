@@ -103,7 +103,7 @@ namespace StatLight.Core.WebServer.Host
         }
     }
 
-    public class PostHandler : IHandlePost
+    public class PostHandler : IPostHandler
     {
         private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;
@@ -112,6 +112,10 @@ namespace StatLight.Core.WebServer.Host
 
         public PostHandler(ILogger logger, IEventAggregator eventAggregator, ClientTestRunConfiguration clientTestRunConfiguration)
         {
+            if (logger == null) throw new ArgumentNullException("logger");
+            if (eventAggregator == null) throw new ArgumentNullException("eventAggregator");
+            if (clientTestRunConfiguration == null) throw new ArgumentNullException("clientTestRunConfiguration");
+
             _logger = logger;
             _eventAggregator = eventAggregator;
             _clientTestRunConfiguration = clientTestRunConfiguration;
@@ -205,7 +209,7 @@ namespace StatLight.Core.WebServer.Host
         private readonly Dictionary<int, int> _browserInstancesComplete = new Dictionary<int, int>();
 
 
-        internal void ResetTestRunStatistics()
+        public void ResetTestRunStatistics()
         {
             ResponseFactory.Reset();
             _browserInstancesComplete.Clear();
@@ -240,9 +244,11 @@ namespace StatLight.Core.WebServer.Host
         }
     }
 
-    public interface IHandlePost
+    public interface IPostHandler
     {
         void Handle(Stream messageStream);
+        void ResetTestRunStatistics();
+        void TryWaitingForMessagesToCompletePosting();
     }
 
 

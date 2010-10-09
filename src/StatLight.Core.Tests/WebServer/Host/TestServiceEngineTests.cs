@@ -26,7 +26,7 @@ namespace StatLight.Core.Tests.WebServer.Host
         private Func<byte[]> _xapToTestFactory;
         private byte[] _hostXap;
         private string _serializedConfiguration;
-        private Mock<IHandlePost> _mockPostHandler;
+        private Mock<IPostHandler> _mockPostHandler;
 
         protected override void Before_all_tests()
         {
@@ -41,7 +41,7 @@ namespace StatLight.Core.Tests.WebServer.Host
             _serializedConfiguration = clientConfig.Serialize();
             var responseFactory = new ResponseFactory(_xapToTestFactory, _hostXap, clientConfig);
 
-            _mockPostHandler = new Mock<IHandlePost>();
+            _mockPostHandler = new Mock<IPostHandler>();
             _testServiceEngine = new TestServiceEngine(consoleLogger, machineName, port, responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 

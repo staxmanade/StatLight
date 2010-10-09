@@ -123,13 +123,14 @@ namespace StatLight.Core.Runners
         {
             SetXapHostUrl(statLightConfiguration, location);
 
-            var statLightService = new StatLightService(logger, _eventAggregator, statLightConfiguration.Client, statLightConfiguration.Server);
+            var postHandler = new PostHandler(logger, _eventAggregator, statLightConfiguration.Client);
+
+            var statLightService = new StatLightService(logger, statLightConfiguration.Client, statLightConfiguration.Server, postHandler);
             return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
 
             //string machineName = "localhost";
             //int port = location.BaseUrl.Port;
             //ResponseFactory responseFactory = new ResponseFactory(statLightConfiguration.Server.XapToTextFactory, statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
-            //IHandlePost postHandler = new PostHandler(logger, _eventAggregator, statLightConfiguration.Client);
             //return new TestServiceEngine(logger, machineName, port, responseFactory, postHandler);
 
         }

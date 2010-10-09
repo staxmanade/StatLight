@@ -9,7 +9,6 @@ namespace StatLight.Core.WebServer
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
     using StatLight.Core.Events;
-    using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Properties;
     using StatLight.Core.WebServer.Host;
 
@@ -20,7 +19,7 @@ namespace StatLight.Core.WebServer
         private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
         private readonly ServerTestRunConfiguration _serverTestRunConfiguration;
 
-        private readonly PostHandler _postHandler;
+        private readonly IPostHandler _postHandler;
 
         public string TagFilters
         {
@@ -31,13 +30,15 @@ namespace StatLight.Core.WebServer
             }
         }
 
-        public StatLightService(ILogger logger, IEventAggregator eventAggregator, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
+        public StatLightService(ILogger logger, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration, IPostHandler postHandler)
         {
-            _postHandler = new PostHandler(logger, eventAggregator, clientTestRunConfiguration);
+            if (postHandler == null)
+                throw new ArgumentNullException("postHandler");
 
             _logger = logger;
             _clientTestRunConfiguration = clientTestRunConfiguration;
             _serverTestRunConfiguration = serverTestRunConfiguration;
+            _postHandler = postHandler;
 
             _postHandler.ResetTestRunStatistics();
         }
