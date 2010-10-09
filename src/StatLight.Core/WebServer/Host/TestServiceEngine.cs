@@ -91,6 +91,7 @@ namespace StatLight.Core.WebServer.Host
             //using (var sw = new StreamWriter(response.OutputStream))
             {
                 _postHandler.Handle(request.InputStream);
+                _postHandler.TryWaitingForMessagesToCompletePosting();
                 //sw.Write(Functions.ProcessFunction(data, response, postData));
             }
         }

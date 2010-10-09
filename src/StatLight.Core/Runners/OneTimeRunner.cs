@@ -18,7 +18,7 @@ namespace StatLight.Core.Runners
     {
         private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IWebServer _statLightServiceHost;
+        private readonly IWebServer _webServer;
         private readonly List<IBrowserFormHost> _browserFormHost;
         private readonly string _xapPath;
         private readonly TestResultAggregator _testResultAggregator;
@@ -28,13 +28,13 @@ namespace StatLight.Core.Runners
         internal OnetimeRunner(
             ILogger logger,
             IEventAggregator eventAggregator,
-            IWebServer statLightServiceHost,
+            IWebServer webServer,
             List<IBrowserFormHost> browserFormHost,
             string xapPath)
         {
             _logger = logger;
             _eventAggregator = eventAggregator;
-            _statLightServiceHost = statLightServiceHost;
+            _webServer = webServer;
             _browserFormHost = browserFormHost;
             _xapPath = xapPath;
 
@@ -49,13 +49,13 @@ namespace StatLight.Core.Runners
             _logger.Information("{1}{1}Starting Test Run: {0}{1}{1}"
                 .FormatWith(DateTime.Now, Environment.NewLine));
 
-            _statLightServiceHost.Start();
+            _webServer.Start();
             foreach(var browser in _browserFormHost)
                 browser.Start();
             _browserThreadWaitHandle.WaitOne();
             foreach (var browser in _browserFormHost)
                 browser.Stop();
-            _statLightServiceHost.Stop();
+            _webServer.Stop();
 
             var testReport = _testResultAggregator.CurrentReport;
             ConsoleTestCompleteMessage.WriteOutCompletionStatement(testReport, startOfRun);
