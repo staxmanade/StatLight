@@ -33,10 +33,10 @@ namespace StatLight.Core.Tests.WebServer
             var consoleLogger = new ConsoleLogger(LogChatterLevels.Full);
             _xapToTestFactory = () => new byte[] { 0, 1, 2, 3, 4 };
             var hostXap = new byte[] { 5, 4, 2, 1, 4 };
-            var responseFactory = new ResponseFactory(_xapToTestFactory, hostXap, clientTestRunConfiguration.Serialize());
+            var responseFactory = new ResponseFactory(_xapToTestFactory, hostXap, clientTestRunConfiguration);
 
 
-            PostHandler postHandler = new PostHandler(logger, eventAggregator, clientTestRunConfiguration, serverTestRunConfiguration);
+            PostHandler postHandler = new PostHandler(logger, eventAggregator, clientTestRunConfiguration);
             _port = 34245;
             _testServiceEngine = new TestServiceEngine(consoleLogger, "lodalhost", _port, responseFactory, postHandler);
             _webClient = new WebClient();

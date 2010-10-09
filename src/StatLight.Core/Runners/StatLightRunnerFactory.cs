@@ -1,5 +1,6 @@
 ﻿
 using System.Web;
+using StatLight.Core.WebServer.Host;
 
 namespace StatLight.Core.Runners
 {
@@ -123,8 +124,14 @@ namespace StatLight.Core.Runners
             SetXapHostUrl(statLightConfiguration, location);
 
             var statLightService = new StatLightService(logger, _eventAggregator, statLightConfiguration.Client, statLightConfiguration.Server);
-
             return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
+
+            //string machineName = "localhost";
+            //int port = location.BaseUrl.Port;
+            //ResponseFactory responseFactory = new ResponseFactory(statLightConfiguration.Server.XapToTextFactory, statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
+            //IHandlePost postHandler = new PostHandler(logger, _eventAggregator, statLightConfiguration.Client);
+            //return new TestServiceEngine(logger, machineName, port, responseFactory, postHandler);
+
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Web;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
@@ -21,11 +23,11 @@ namespace StatLight.Core.WebServer.Host
         private readonly byte[] _hostXap;
         private readonly string _serializedConfiguration;
 
-        public ResponseFactory(Func<byte[]> xapToTestFactory, byte[] hostXap, string serializedConfiguration)
+        public ResponseFactory(Func<byte[]> xapToTestFactory, byte[] hostXap, ClientTestRunConfiguration clientTestRunConfiguration)
         {
             _xapToTestFactory = xapToTestFactory;
             _hostXap = hostXap;
-            _serializedConfiguration = serializedConfiguration;
+            _serializedConfiguration = clientTestRunConfiguration.Serialize();
         }
 
         private static int _htmlPageInstanceId = 0;
@@ -108,13 +110,8 @@ namespace StatLight.Core.WebServer.Host
         private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
         private readonly IDictionary<Type, MethodInfo> _publishMethods;
 
-        public PostHandler(ILogger logger, IEventAggregator eventAggregator, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
+        public PostHandler(ILogger logger, IEventAggregator eventAggregator, ClientTestRunConfiguration clientTestRunConfiguration)
         {
-            if (clientTestRunConfiguration == null)
-                throw new ArgumentNullException("clientTestRunConfiguration");
-            if (serverTestRunConfiguration == null)
-                throw new ArgumentNullException("serverTestRunConfiguration");
-
             _logger = logger;
             _eventAggregator = eventAggregator;
             _clientTestRunConfiguration = clientTestRunConfiguration;
@@ -140,12 +137,13 @@ namespace StatLight.Core.WebServer.Host
             _eventAggregator.SendMessage(result);
         }
 
-        public virtual void Handle(string xmlMessage)
+        public virtual void Handle(Stream messageStream)
         {
-
             Interlocked.Increment(ref _currentMessagesPostedCount);
 
             _eventAggregator.SendMessage<MessageReceivedFromClientServerEvent>();
+
+            var xmlMessage = GetPostedMessage(messageStream);
 
             //_logger.Debug(xmlMessage);
 
@@ -229,11 +227,22 @@ namespace StatLight.Core.WebServer.Host
                 ResetTestRunStatistics();
             }
         }
+
+        private static string GetPostedMessage(Stream stream)
+        {
+            string message;
+            using (var reader = new StreamReader(stream))
+            {
+                var rawString = reader.ReadToEnd();
+                message = HttpUtility.UrlDecode(rawString);
+            }
+            return message;
+        }
     }
 
     public interface IHandlePost
     {
-        void Handle(string xmlMessage);
+        void Handle(Stream messageStream);
     }
 
 

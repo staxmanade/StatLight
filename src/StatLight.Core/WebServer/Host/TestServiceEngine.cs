@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using StatLight.Core.Common;
 
 namespace StatLight.Core.WebServer.Host
@@ -76,26 +77,21 @@ namespace StatLight.Core.WebServer.Host
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "rootDirectory", Justification = "This parameter may be needed in the future.")]
         private void ProcessPostRequest(HttpListenerRequest request, HttpListenerResponse response)
         {
-            string results;
-
-            using (var reader = new StreamReader(request.InputStream))
-            {
-                results = reader.ReadToEnd();
-            }
-
             if ((request.Url.Segments.Length > 1) && (request.Url.Segments[1] == StatLightServiceRestApi.PostMessage))
             {
-                ServeFunction(request, response, results);
+                ServeFunction(request, response);
             }
         }
-        private void ServeFunction(HttpListenerRequest request, HttpListenerResponse response, string postData)
+
+
+        private void ServeFunction(HttpListenerRequest request, HttpListenerResponse response)
         {
             _logger.Debug(request.Url.ToString());
 
             SetContentType(response, ContentTypeXml);
-            using (var sw = new StreamWriter(response.OutputStream))
+            //using (var sw = new StreamWriter(response.OutputStream))
             {
-                _postHandler.Handle(postData);
+                _postHandler.Handle(request.InputStream);
                 //sw.Write(Functions.ProcessFunction(data, response, postData));
             }
         }

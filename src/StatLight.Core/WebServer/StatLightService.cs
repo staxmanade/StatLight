@@ -33,9 +33,7 @@ namespace StatLight.Core.WebServer
 
         public StatLightService(ILogger logger, IEventAggregator eventAggregator, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
         {
-            _postHandler = new PostHandler(logger, eventAggregator, clientTestRunConfiguration,
-                                           serverTestRunConfiguration);
-
+            _postHandler = new PostHandler(logger, eventAggregator, clientTestRunConfiguration);
 
             _logger = logger;
             _clientTestRunConfiguration = clientTestRunConfiguration;
@@ -49,8 +47,7 @@ namespace StatLight.Core.WebServer
         {
             try
             {
-                var xmlMessage = GetPostedMessage(stream);
-                _postHandler.Handle(xmlMessage);
+                _postHandler.Handle(stream);
             }
             catch (Exception ex)
             {
@@ -110,16 +107,6 @@ namespace StatLight.Core.WebServer
             return _serverTestRunConfiguration.HostXap.ToStream();
         }
 
-        private static string GetPostedMessage(Stream stream)
-        {
-            string message;
-            using (var reader = new StreamReader(stream))
-            {
-                var rawString = reader.ReadToEnd();
-                message = HttpUtility.UrlDecode(rawString);
-            }
-            return message;
-        }
 
         public ClientTestRunConfiguration GetTestRunConfiguration()
         {
