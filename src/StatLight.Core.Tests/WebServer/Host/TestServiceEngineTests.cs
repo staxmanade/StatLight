@@ -101,13 +101,17 @@ namespace StatLight.Core.Tests.WebServer.Host
         [Test]
         public void Should_accept_postedMessages()
         {
-            string messageWritten = "Hello World!";
+            const string messageWritten = "Hello World!";
+            PostMessage(messageWritten);
+            _mockPostHandler.Verify(v=>v.Handle(messageWritten));
+        }
+
+        private void PostMessage(string messageWritten)
+        {
             byte[] data = messageWritten.ToByteArray();
             Stream openWrite = _webClient.OpenWrite(GetUrl(StatLightServiceRestApi.PostMessage));
             openWrite.Write(data, 0, data.Length);
             openWrite.Close();
-            Thread.Sleep(1000);
-            _mockPostHandler.Verify(v=>v.Handle(messageWritten));
         }
 
         private string GetString(string path)
