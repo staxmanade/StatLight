@@ -1,4 +1,5 @@
 ﻿
+using StatLight.Core.Configuration;
 using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.Runners
@@ -21,7 +22,7 @@ namespace StatLight.Core.Runners
 			ILogger logger,
 			IEventAggregator eventAggregator,
 			string xapPath,
-			IStatLightService statLightService,
+            ClientTestRunConfiguration clientTestRunConfiguration,
 			IWebServer webServer,
 			IBrowserFormHost browserFormHost)
 		{
@@ -31,7 +32,7 @@ namespace StatLight.Core.Runners
 
             _continuousRunnerThread = new Thread(() =>
             {
-                using (var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, statLightService, _xapFileBuildChangedMonitor, _xapPath))
+                using (var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, clientTestRunConfiguration, _xapFileBuildChangedMonitor, _xapPath))
                 {
                     string line;
                     while ( !(line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))

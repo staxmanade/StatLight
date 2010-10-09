@@ -1,4 +1,5 @@
 ﻿
+using StatLight.Core.Configuration;
 using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.Runners
@@ -15,7 +16,7 @@ namespace StatLight.Core.Runners
     internal class ContinuousTestRunner : IDisposable
     {
         private readonly IBrowserFormHost _browserFormHost;
-        private readonly IStatLightService _statLightService;
+        private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
         private readonly IXapFileBuildChangedMonitor _xapFileBuildChangedMonitor;
         private readonly ILogger _logger;
         private TestResultAggregator _testResultAggregator;
@@ -23,18 +24,19 @@ namespace StatLight.Core.Runners
         private DateTime _startOfRun;
         private string _xapPath;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ContinuousTestRunner"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ctor")]
         internal ContinuousTestRunner(
             ILogger logger,
             IEventAggregator eventAggregator,
             IBrowserFormHost browserFormHost,
-            IStatLightService statLightService,
+            ClientTestRunConfiguration clientTestRunConfiguration,
             IXapFileBuildChangedMonitor xapFileBuildChangedMonitor,
             string xapPath)
         {
             _logger = logger;
             _eventAggregator = eventAggregator;
             _browserFormHost = browserFormHost;
-            _statLightService = statLightService;
+            _clientTestRunConfiguration = clientTestRunConfiguration;
             _xapFileBuildChangedMonitor = xapFileBuildChangedMonitor;
             _xapPath = xapPath;
 
@@ -86,7 +88,7 @@ namespace StatLight.Core.Runners
         public void ForceFilteredTest(string newTagFilter)
         {
             _logger.Debug("ContinuousTestRunner.ForceTest(tempTagFilter=[{0}])".FormatWith(newTagFilter));
-            _statLightService.TagFilters = newTagFilter;
+            _clientTestRunConfiguration.TagFilter = newTagFilter;
             Start();
         }
 

@@ -38,7 +38,6 @@ namespace StatLight.Core.Runners
         {
             if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
-            StatLightService statLightService;
             IWebServer webServer;
             List<IBrowserFormHost> browserFormHosts;
 
@@ -46,13 +45,12 @@ namespace StatLight.Core.Runners
                 logger,
                 showTestingBrowserHost,
                 statLightConfiguration,
-                out statLightService,
                 out webServer,
                 out browserFormHosts);
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
 
-            IRunner runner = new ContinuousConsoleRunner(logger, _eventAggregator, statLightConfiguration.Server.XapToTestPath, statLightService, webServer, browserFormHosts.First());
+            IRunner runner = new ContinuousConsoleRunner(logger, _eventAggregator, statLightConfiguration.Server.XapToTestPath, statLightConfiguration.Client, webServer, browserFormHosts.First());
             return runner;
         }
 
@@ -61,7 +59,6 @@ namespace StatLight.Core.Runners
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             ILogger logger = new NullLogger();
 
-            StatLightService statLightService;
             IWebServer webServer;
             List<IBrowserFormHost> browserFormHosts;
 
@@ -69,7 +66,6 @@ namespace StatLight.Core.Runners
                 logger,
                 false,
                 statLightConfiguration,
-                out statLightService,
                 out webServer,
                 out browserFormHosts);
 
@@ -84,7 +80,6 @@ namespace StatLight.Core.Runners
         {
             if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
-            StatLightService statLightService;
             IWebServer webServer;
             List<IBrowserFormHost> browserFormHosts;
 
@@ -92,7 +87,6 @@ namespace StatLight.Core.Runners
                 logger,
                 showTestingBrowserHost,
                 statLightConfiguration,
-                out statLightService,
                 out webServer,
                 out browserFormHosts);
 
@@ -108,8 +102,7 @@ namespace StatLight.Core.Runners
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             var location = new WebServerLocation();
 
-            StatLightService statLightService;
-            var webServer = CreateWebServer(logger, statLightConfiguration, location, out statLightService);
+            var webServer = CreateWebServer(logger, statLightConfiguration, location);
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
             SetupDebugClientEventListener(logger);
@@ -125,11 +118,11 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        private IWebServer CreateWebServer(ILogger logger, StatLightConfiguration statLightConfiguration, WebServerLocation location, out StatLightService statLightService)
+        private IWebServer CreateWebServer(ILogger logger, StatLightConfiguration statLightConfiguration, WebServerLocation location)
         {
             SetXapHostUrl(statLightConfiguration, location);
 
-            statLightService = new StatLightService(logger, _eventAggregator, statLightConfiguration.Client, statLightConfiguration.Server);
+            var statLightService = new StatLightService(logger, _eventAggregator, statLightConfiguration.Client, statLightConfiguration.Server);
 
             return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
         }
@@ -139,7 +132,6 @@ namespace StatLight.Core.Runners
             ILogger logger,
             bool showTestingBrowserHost,
             StatLightConfiguration statLightConfiguration,
-            out StatLightService statLightService,
             out IWebServer webServer,
             out List<IBrowserFormHost> browserFormHosts)
         {
@@ -155,7 +147,7 @@ namespace StatLight.Core.Runners
 			};
             var dialogMonitorRunner = new DialogMonitorRunner(logger, _eventAggregator, debugAssertMonitorTimer, dialogMonitors);
             SetupDebugClientEventListener(logger);
-            webServer = CreateWebServer(logger, statLightConfiguration, location, out statLightService);
+            webServer = CreateWebServer(logger, statLightConfiguration, location);
 
             showTestingBrowserHost = GetShowTestingBrowserHost(serverTestRunConfiguration, showTestingBrowserHost);
 
@@ -207,7 +199,6 @@ namespace StatLight.Core.Runners
         {
             if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
-            StatLightService statLightService;
             IWebServer webServer;
             List<IBrowserFormHost> browserFormHosts;
 
@@ -225,7 +216,7 @@ namespace StatLight.Core.Runners
 			};
             var dialogMonitorRunner = new DialogMonitorRunner(logger, _eventAggregator, debugAssertMonitorTimer, dialogMonitors);
             SetupDebugClientEventListener(logger);
-            webServer = CreateWebServer(logger, statLightConfiguration, location, out statLightService);
+            webServer = CreateWebServer(logger, statLightConfiguration, location);
 
             showTestingBrowserHost = GetShowTestingBrowserHost(serverTestRunConfiguration, showTestingBrowserHost);
 

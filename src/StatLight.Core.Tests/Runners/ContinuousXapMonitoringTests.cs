@@ -1,10 +1,13 @@
 ﻿using Moq;
 using NUnit.Framework;
+using StatLight.Core.Configuration;
 using StatLight.Core.Reporting;
 using StatLight.Core.Runners;
+using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 using StatLight.Core.Events;
+using System.Collections.Generic;
 
 namespace StatLight.Core.Tests.Runners
 {
@@ -17,7 +20,8 @@ namespace StatLight.Core.Tests.Runners
 
         private ContinuousTestRunner CreateContinuousTestRunner()
         {
-            var runner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, _mockStatLightService.Object, _xapFileBuildChangedMonitor.Object, "test");
+            var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test");
+            var runner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
             return runner;
         }
 
@@ -50,20 +54,20 @@ namespace StatLight.Core.Tests.Runners
     [TestFixture]
     public class when_a_ContinuousTestRunner_has_already_gone_through_the_first_testing_cylce : FixtureBase
     {
-        Mock<IStatLightService> _mockStatLightService;
         Mock<IBrowserFormHost> _browserFormHost;
         Mock<IXapFileBuildChangedMonitor> _xapFileBuildChangedMonitor;
         ContinuousTestRunner _continuousTestRunner;
+        private ClientTestRunConfiguration _clientTestRunConfiguration;
 
         protected override void Before_all_tests()
         {
-            _mockStatLightService = new Mock<IStatLightService>();
             _browserFormHost = new Mock<IBrowserFormHost>();
             _xapFileBuildChangedMonitor = new Mock<IXapFileBuildChangedMonitor>();
 
             base.Before_all_tests();
 
-            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, _mockStatLightService.Object, _xapFileBuildChangedMonitor.Object, "test");
+            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test");
+            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, _clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
 
             // Signal that the first test has already finished.
             TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
@@ -101,7 +105,7 @@ namespace StatLight.Core.Tests.Runners
         {
             const string startTag = "HELLO";
             var newTag = string.Empty;
-            _mockStatLightService.SetupProperty(s => s.TagFilters, startTag);
+            _clientTestRunConfiguration.TagFilter = startTag;
 
             ForceFilteredTestWithTag(newTag);
         }
@@ -111,7 +115,7 @@ namespace StatLight.Core.Tests.Runners
         {
             const string startTag = "HELLO";
             const string newTag = "TheTempTagFilter";
-            _mockStatLightService.SetupProperty(s => s.TagFilters, startTag);
+            _clientTestRunConfiguration.TagFilter = startTag;
 
             ForceFilteredTestWithTag(newTag);
         }
@@ -121,12 +125,10 @@ namespace StatLight.Core.Tests.Runners
             _continuousTestRunner.ForceFilteredTest(newTag);
 
             _continuousTestRunner.IsCurrentlyRunningTest.ShouldBeTrue();
-            _mockStatLightService.Object.TagFilters.ShouldEqual(newTag);
 
             TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
 
             _continuousTestRunner.IsCurrentlyRunningTest.ShouldBeFalse();
-            _mockStatLightService.Object.TagFilters.ShouldEqual(newTag);
         }
 
         private static XapFileBuildChangedEventArgs GetTestXapFileBuildChangedArgs()

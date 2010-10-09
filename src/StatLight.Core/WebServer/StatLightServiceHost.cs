@@ -4,10 +4,8 @@ namespace StatLight.Core.WebServer
 {
 	using System;
 	using System.ServiceModel;
-    using StatLight.Core.Configuration;
-    using StatLight.Core.Common;
-    using StatLight.Core.Events.Aggregation;
-    using System.ServiceModel.Web;
+	using StatLight.Core.Common;
+	using System.ServiceModel.Web;
 
 	public class StatLightServiceHost : IDisposable, IWebServer
 	{
@@ -16,9 +14,6 @@ namespace StatLight.Core.WebServer
 		private readonly IStatLightService _serviceInstance;
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "xap")]
-		public StatLightServiceHost(ILogger logger, IEventAggregator eventAggregator, Uri baseAddress, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
-            : this(logger, new StatLightService(logger, eventAggregator, clientTestRunConfiguration, serverTestRunConfiguration), baseAddress)
-		{ }
 
 		public StatLightServiceHost(ILogger logger, StatLightService statLightService, Uri baseAddress)
 		{
