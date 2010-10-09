@@ -165,6 +165,8 @@
     <Compile Include="Runners\RunnerType.cs" />
     <Compile Include="Runners\WebServerOnlyRunner.cs" />
     <Compile Include="Runners\IRunner.cs" />
+    <Compile Include="WebServer\Host\IPostHandler.cs" />
+    <Compile Include="WebServer\Host\PostHandler.cs" />
     <Compile Include="WebServer\Host\ResponseFactory.cs" />
     <Compile Include="WebServer\Host\ResponseFile.cs" />
     <Compile Include="WebServer\Host\TestServiceEngine.cs" />

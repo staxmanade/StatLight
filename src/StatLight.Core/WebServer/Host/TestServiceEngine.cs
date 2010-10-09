@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using StatLight.Core.Common;
 
 namespace StatLight.Core.WebServer.Host
