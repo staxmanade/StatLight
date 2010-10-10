@@ -1,19 +1,16 @@
 ﻿using System.Security.Principal;
 using Moq;
-using StatLight.Core.WebServer.CustomHost;
 using StatLight.Core.WebServer.WcfHost;
+using System;
+using NUnit.Framework;
+using StatLight.Core.Common;
+using StatLight.Core.WebServer;
+using System.ServiceModel;
 
-namespace StatLight.Core.Tests.WebServer
+namespace StatLight.Core.Tests.WebServer.WcfHost
 {
     namespace StatLightServiceHostTests
     {
-        using System;
-        using NUnit.Framework;
-        using StatLight.Core.Common;
-        using StatLight.Core.WebServer;
-        using StatLight.Core.Tests.WebServer.XapMonitorTests;
-        using System.ServiceModel;
-
         public class when_using_an_instance_of_the_StatLightService_for_use_in_the_service_host : using_a_random_temp_file_for_testing
         {
             StatLightService _statLightService;

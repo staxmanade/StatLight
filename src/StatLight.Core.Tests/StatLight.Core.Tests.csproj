@@ -110,14 +110,14 @@
     <Compile Include="Runners\StatLightFactoryTests.cs" />
     <Compile Include="Monitoring\BrowserCommunicationTimeoutMonitorTests.cs" />
     <Compile Include="WebBrowser\SelfHostedWebBrowserTests.cs" />
-    <Compile Include="WebServer\Host\TestServiceEngineTests.cs" />
-    <Compile Include="WebServer\StatLightServiceHostTests.cs" />
-    <Compile Include="WebServer\StatLightServiceTests.cs" />
+    <Compile Include="WebServer\CustomHost\TestServiceEngineTests.cs" />
+    <Compile Include="WebServer\WcfHost\StatLightServiceHostTests.cs" />
+    <Compile Include="WebServer\WcfHost\StatLightServiceTests.cs" />
     <Compile Include="SpecificationExtensions.cs" />
     <Compile Include="WebServer\WebServerLocationTests.cs" />
     <Compile Include="WebServer\XapHost\XapHostFileLoaderFactoryTests.cs" />
     <Compile Include="WebServer\XapReader\XapReaderTests.cs" />
-    <Compile Include="WebServer\XapWatcherTests.cs" />
+    <Compile Include="Monitoring\XapFileMonitoring\XapWatcherTests.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

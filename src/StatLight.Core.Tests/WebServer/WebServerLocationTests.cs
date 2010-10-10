@@ -1,13 +1,13 @@
 ﻿
+using NUnit.Framework;
+using StatLight.Core.WebServer;
+using System;
+
 namespace StatLight.Core.Tests.WebServer
 {
 	namespace WebServerLocationTests
 	{
-		using NUnit.Framework;
-		using StatLight.Core.WebServer;
-		using System;
-
-		[TestFixture]
+	    [TestFixture]
 		public class WebServerLocationTests : FixtureBase
 		{
 			WebServerLocation webServerLocation;

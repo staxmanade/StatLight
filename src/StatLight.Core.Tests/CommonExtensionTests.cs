@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using System.IO;
+using StatLight.Core.Serialization;
+using System.Runtime.Serialization;
 
 namespace StatLight.Core.Tests
 {
 	namespace CommonExtensionTests
 	{
-		using Core.Serialization;
-		using System.Runtime.Serialization;
-
-		[TestFixture]
+	    [TestFixture]
 		public class when_working_with_streams
 		{
 			[Test]

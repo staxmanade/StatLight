@@ -1,18 +1,17 @@
 ﻿
 
+using System;
+using System.Linq;
+using NUnit.Framework;
+using StatLight.Client.Harness.Events;
+using StatLight.Core.Events;
+using StatLight.Core.Reporting;
+using System.Collections.Generic;
+
 namespace StatLight.Core.Tests.Reporting
 {
     namespace TestResultAggregatorTests
     {
-        using System;
-        using System.Linq;
-        using NUnit.Framework;
-        using StatLight.Client.Harness.Events;
-        using StatLight.Core.Events;
-        using StatLight.Core.Reporting;
-        using StatLight.Core.Tests.Reporting.Providers;
-        using System.Collections.Generic;
-
         public abstract class for_a_TestResultAggregator_that_should_handle_a_ClientEvent : FixtureBase
         {
             public TestResultAggregator TestResultAggregator { get; private set; }

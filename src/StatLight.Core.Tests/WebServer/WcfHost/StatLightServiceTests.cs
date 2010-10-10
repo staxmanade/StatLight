@@ -13,10 +13,9 @@ using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 using StatLight.Core.Configuration;
 using StatLight.Core.Reporting;
-using StatLight.Core.WebServer.CustomHost;
 using StatLight.Core.WebServer.WcfHost;
 
-namespace StatLight.Core.Tests.WebServer
+namespace StatLight.Core.Tests.WebServer.WcfHost
 {
     namespace StatLightServiceTests
     {

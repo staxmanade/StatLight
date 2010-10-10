@@ -12,7 +12,7 @@ using StatLight.Core.WebServer;
 using System.Collections.Generic;
 using StatLight.Core.WebServer.CustomHost;
 
-namespace StatLight.Core.Tests.WebServer.Host
+namespace StatLight.Core.Tests.WebServer.CustomHost
 {
     [TestFixture]
     public class TestServiceEngineTests : FixtureBase

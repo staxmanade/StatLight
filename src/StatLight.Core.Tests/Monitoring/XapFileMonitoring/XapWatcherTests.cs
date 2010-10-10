@@ -1,9 +1,8 @@
 ﻿using System.IO;
 using NUnit.Framework;
 using StatLight.Core.Monitoring.XapFileMonitoring;
-using StatLight.Core.WebServer;
 
-namespace StatLight.Core.Tests.WebServer
+namespace StatLight.Core.Tests.Monitoring.XapFileMonitoring
 {
 	namespace XapMonitorTests
 	{
