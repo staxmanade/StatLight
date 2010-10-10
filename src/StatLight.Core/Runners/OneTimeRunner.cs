@@ -1,5 +1,7 @@
 ﻿
 
+using StatLight.Core.Monitoring;
+
 namespace StatLight.Core.Runners
 {
     using System;
@@ -21,6 +23,7 @@ namespace StatLight.Core.Runners
         private readonly IWebServer _webServer;
         private readonly List<IWebBrowser> _browserFormHost;
         private readonly string _xapPath;
+        private readonly IDialogMonitorRunner _dialogMonitorRunner;
         private readonly TestResultAggregator _testResultAggregator;
         readonly AutoResetEvent _browserThreadWaitHandle = new AutoResetEvent(false);
 
@@ -30,13 +33,15 @@ namespace StatLight.Core.Runners
             IEventAggregator eventAggregator,
             IWebServer webServer,
             List<IWebBrowser> browserFormHost,
-            string xapPath)
+            string xapPath,
+            IDialogMonitorRunner dialogMonitorRunner)
         {
             _logger = logger;
             _eventAggregator = eventAggregator;
             _webServer = webServer;
             _browserFormHost = browserFormHost;
             _xapPath = xapPath;
+            _dialogMonitorRunner = dialogMonitorRunner;
 
             _testResultAggregator = new TestResultAggregator(logger, eventAggregator, _xapPath);
             eventAggregator.AddListener(_testResultAggregator);
@@ -52,7 +57,11 @@ namespace StatLight.Core.Runners
             _webServer.Start();
             foreach(var browser in _browserFormHost)
                 browser.Start();
+            _dialogMonitorRunner.Start();
+
             _browserThreadWaitHandle.WaitOne();
+
+            _dialogMonitorRunner.Stop();
             foreach (var browser in _browserFormHost)
                 browser.Stop();
             _webServer.Stop();

@@ -2,9 +2,10 @@
 using System;
 namespace StatLight.Core.WebBrowser
 {
-	public interface IWebBrowser : IDisposable
-	{
-		void Start();
-		void Stop();
-	}
+    public interface IWebBrowser : IDisposable
+    {
+        void Start();
+        void Stop();
+        int? ProcessId { get; }
+    }
 }

@@ -13,7 +13,7 @@ namespace StatLight.Core.Monitoring
         private readonly IEventAggregator _eventAggregator;
         private readonly ITimer _dialogPingingTimer;
         private readonly IList<IDialogMonitor> _dialogMonitors;
-        private readonly Dictionary<Type, bool> _isMonitorCurrentlyRunning = new Dictionary<Type, bool>();
+        private readonly Dictionary<int, bool> _isMonitorCurrentlyRunning = new Dictionary<int, bool>();
 
         public DialogMonitorRunner(ILogger logger, IEventAggregator eventAggregator, ITimer dialogPingingTimer, IList<IDialogMonitor> dialogMonitors)
         {
@@ -28,7 +28,7 @@ namespace StatLight.Core.Monitoring
             foreach (var monitor in _dialogMonitors)
             {
                 //_logger.Debug("adding dialogMonitor[{0}]".FormatWith(_isMonitorCurrentlyRunning.GetType()));
-                _isMonitorCurrentlyRunning.Add(monitor.GetType(), false);
+                _isMonitorCurrentlyRunning.Add(monitor.GetHashCode(), false);
             }
 
             _dialogPingingTimer.Elapsed += DialogPingingTimerElapsed;
@@ -41,14 +41,15 @@ namespace StatLight.Core.Monitoring
             {
                 //_logger.Debug("DialogMonitorRunner.Elapsed Start = {0}".FormatWith(dialogMonitor.ToString()));
 
+                int dialogId = dialogMonitor.GetHashCode();
 
-                if (!_isMonitorCurrentlyRunning[dialogMonitor.GetType()])
+                if (!_isMonitorCurrentlyRunning[dialogId])
                 {
                     //_logger.Debug("DialogMonitorRunner.Elapsed - running = {0}".FormatWith(dialogMonitor.ToString()));
 
-                    _isMonitorCurrentlyRunning[dialogMonitor.GetType()] = true;
+                    _isMonitorCurrentlyRunning[dialogId] = true;
                     ExecuteDialogSlapdown(dialogMonitor, dialogMonitor.DialogType);
-                    _isMonitorCurrentlyRunning[dialogMonitor.GetType()] = false;
+                    _isMonitorCurrentlyRunning[dialogId] = false;
                 }
                 else
                 {

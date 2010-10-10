@@ -14,14 +14,12 @@ namespace StatLight.Core.WebBrowser
         private readonly Uri _pageToHost;
         private readonly bool _browserVisible;
         private Thread _browserThread;
-        private readonly IDialogMonitorRunner _dialogMonitorRunner;
 
-        public SelfHostedWebBrowser(ILogger logger, Uri pageToHost, bool browserVisible, IDialogMonitorRunner dialogMonitorRunner)
+        public SelfHostedWebBrowser(ILogger logger, Uri pageToHost, bool browserVisible)
         {
             _logger = logger;
             _pageToHost = pageToHost;
             _browserVisible = browserVisible;
-            _dialogMonitorRunner = dialogMonitorRunner;
         }
 
         private Form _form;
@@ -39,7 +37,7 @@ namespace StatLight.Core.WebBrowser
                                 Text = "StatLight - Browser Host"
                             };
 
-                var browser = new System.Windows.Forms.WebBrowser
+                var browser = new WebBrowser
                 {
                     Url = _pageToHost,
                     Dock = DockStyle.Fill
@@ -53,7 +51,6 @@ namespace StatLight.Core.WebBrowser
             _browserThread.SetApartmentState(ApartmentState.STA);
             _browserThread.Start();
 
-            _dialogMonitorRunner.Start();
         }
 
         private static FormWindowState GetBrowserVisibilityState(bool browserVisible)
@@ -69,9 +66,13 @@ namespace StatLight.Core.WebBrowser
         public void Stop()
         {
             _logger.Debug("webBrowser.Stop()");
-            _dialogMonitorRunner.Stop();
             _form.Close();
             _browserThread = null;
+        }
+
+        public int? ProcessId
+        {
+            get { return Process.GetCurrentProcess().Id; }
         }
 
         protected virtual void Dispose(bool disposing)

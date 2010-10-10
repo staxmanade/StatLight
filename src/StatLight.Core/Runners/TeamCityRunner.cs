@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using StatLight.Core.Events.Aggregation;
+using StatLight.Core.Monitoring;
 
 namespace StatLight.Core.Runners
 {
@@ -20,8 +21,9 @@ namespace StatLight.Core.Runners
 			IWebServer webServer,
 			List<IWebBrowser> browserFormHost,
 			TeamCityTestResultHandler teamCityCommandPublisher,
-            string xapPath)
-			: base(logger, eventAggregator, webServer, browserFormHost, xapPath)
+            string xapPath, 
+            IDialogMonitorRunner dialogMonitorRunner)
+			: base(logger, eventAggregator, webServer, browserFormHost, xapPath, dialogMonitorRunner)
 		{
 			this.teamCityCommandPublisher = teamCityCommandPublisher;
 		}

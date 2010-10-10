@@ -1,6 +1,7 @@
 ﻿
 using System.Threading;
 using StatLight.Core.Events;
+using StatLight.Core.WebBrowser;
 
 namespace StatLight.Core.Monitoring
 {
@@ -12,17 +13,24 @@ namespace StatLight.Core.Monitoring
     internal class MessageBoxMonitor : IDialogMonitor
     {
         private readonly ILogger _logger;
+        private readonly IWebBrowser _webBrowserToMonitor;
 
-        public MessageBoxMonitor(ILogger logger)
+        public MessageBoxMonitor(ILogger logger, IWebBrowser webBrowserToMonitor)
         {
             _logger = logger;
+            _webBrowserToMonitor = webBrowserToMonitor;
         }
 
         public DialogMonitorResult ExecuteDialogSlapDown(Action<string> ifSlappedAction)
         {
             var noActionTaken = DialogMonitorResult.NoSlapdownAction();
 
-            var processId = Process.GetCurrentProcess().Id;
+            if (!_webBrowserToMonitor.ProcessId.HasValue)
+            {
+                _logger.Debug("MessageBoxMonitor - do not have processId");
+                return noActionTaken;
+            }
+            int processId = _webBrowserToMonitor.ProcessId.Value;
             var processIdCond = new PropertyCondition(AutomationElement.ProcessIdProperty, processId);
             var appWindow = AutomationElement.RootElement.FindFirst(TreeScope.Children, processIdCond);
             if (appWindow == null)

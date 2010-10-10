@@ -171,6 +171,9 @@
     <Compile Include="WebServer\Host\ResponseFile.cs" />
     <Compile Include="WebServer\Host\TestServiceEngine.cs" />
     <Compile Include="WebBrowser\FirefoxWebBrowser.cs" />
+    <Compile Include="WebBrowser\OutOfProcessWebBrowserBase.cs" />
+    <Compile Include="WebBrowser\WebBrowserFactory.cs" />
+    <Compile Include="WebBrowser\WebBrowserType.cs" />
     <Compile Include="WebServer\IXapFileBuildChangedMonitor.cs" />
     <Compile Include="Reporting\Messages\MobilOtherMessageType.cs" />
     <Compile Include="Reporting\Providers\TeamCity\ConsoleMessageWriter.cs" />

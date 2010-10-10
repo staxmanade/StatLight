@@ -1,38 +1,41 @@
 using System;
+using System.IO;
 using StatLight.Core.Common;
-using StatLight.Core.Monitoring;
 
 namespace StatLight.Core.WebBrowser
 {
-    internal class FirefoxWebBrowser
+    internal class FirefoxWebBrowser : OutOfProcessWebBrowserBase
     {
-        
-    }
-
-    internal enum WebBrowserType
-    {
-        SelfHostedWebBrowser
-    }
-
-    internal class WebBrowserFactory
-    {
-        private readonly ILogger _logger;
-
-        public WebBrowserFactory(ILogger logger)
+        public FirefoxWebBrowser(ILogger logger, Uri uri)
+            : base(logger, uri)
         {
-            _logger = logger;
         }
 
-        public IWebBrowser Create(WebBrowserType browserType, Uri pageToHost, bool browserVisible, IDialogMonitorRunner dialogMonitorRunner)
+        protected override string ExePath
         {
-            switch(browserType)
+            get
             {
-                case WebBrowserType.SelfHostedWebBrowser:
-                    return new SelfHostedWebBrowser(_logger, pageToHost, browserVisible, dialogMonitorRunner);
-            }
+                // These build tasks should be fun in 32-bit.
+                string pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
 
-            throw new NotImplementedException();
+                if (!Directory.Exists(pf))
+                {
+                    throw new InvalidOperationException("Could not locate the application directory.");
+                }
+
+                string firefox =
+                    Path.Combine(
+                    Path.Combine(
+                    pf,
+                    "Mozilla Firefox"),
+                    "firefox.exe");
+
+                if (!File.Exists(firefox))
+                {
+                    throw new FileNotFoundException("The Firefox web browser application could not be located on this system.", firefox);
+                }
+                return firefox;
+            }
         }
     }
-
 }
