@@ -32,7 +32,6 @@ namespace StatLight.Core.Tests.WebServer.Host
         {
             base.Before_all_tests();
 
-            const string machineName = "localhost";
             const int port = 38881;
             var consoleLogger = new ConsoleLogger(LogChatterLevels.Full);
             _xapToTestFactory = () => new byte[] { 0, 1, 2, 3, 4 };
@@ -42,10 +41,10 @@ namespace StatLight.Core.Tests.WebServer.Host
             var responseFactory = new ResponseFactory(_xapToTestFactory, _hostXap, clientConfig);
 
             _mockPostHandler = new Mock<IPostHandler>();
-            _testServiceEngine = new TestServiceEngine(consoleLogger, machineName, port, responseFactory, _mockPostHandler.Object);
+            _testServiceEngine = new TestServiceEngine(consoleLogger, port, responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 
-            _baseUrl = "http://{0}:{1}/".FormatWith(machineName, port);
+            _baseUrl = "http://{0}:{1}/".FormatWith("localhost", port);
 
             _testServiceEngine.Start();
         }

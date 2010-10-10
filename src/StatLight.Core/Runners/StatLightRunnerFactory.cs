@@ -127,10 +127,9 @@ namespace StatLight.Core.Runners
 			//var statLightService = new StatLightService(logger, statLightConfiguration.Client, statLightConfiguration.Server, postHandler);
 			//return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
 
-			const string machineName = "localhost";
 			int port = location.BaseUrl.Port;
 			var responseFactory = new ResponseFactory(statLightConfiguration.Server.XapToTextFactory, statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
-			return new TestServiceEngine(logger, machineName, port, responseFactory, postHandler);
+			return new TestServiceEngine(logger, port, responseFactory, postHandler);
 
 		}
 
