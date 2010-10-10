@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Threading;
-using System.Web;
 using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;
@@ -12,8 +10,8 @@ using StatLight.Core.Serialization;
 using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
-using StatLight.Core.WebServer.Host;
 using System.Collections.Generic;
+using StatLight.Core.WebServer.CustomHost;
 
 namespace StatLight.Core.Tests.WebServer.Host
 {

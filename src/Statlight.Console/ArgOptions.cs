@@ -173,7 +173,7 @@ namespace StatLight.Console
             {
                 return (T)Enum.Parse(typeof(T), value, true);
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
                 throw new StatLightException("Could not find an WebBrowserType defined as [{0}]. Please specify one of the following [{1}].".FormatWith(value, typeof(T).FormatEnumString()));
             }

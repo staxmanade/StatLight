@@ -6,7 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using StatLight.Core.Common;
 
-namespace StatLight.Core.WebServer.Host
+namespace StatLight.Core.WebServer.CustomHost
 {
     public class TestServiceEngine : IWebServer, IDisposable
     {

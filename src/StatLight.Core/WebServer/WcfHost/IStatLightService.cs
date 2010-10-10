@@ -1,12 +1,11 @@
 ﻿
 using StatLight.Core.Configuration;
+using System.IO;
+using System.ServiceModel;
+using System.ServiceModel.Web;
 
-namespace StatLight.Core.WebServer
+namespace StatLight.Core.WebServer.WcfHost
 {
-    using System.IO;
-	using System.ServiceModel;
-	using System.ServiceModel.Web;
-
     [ServiceContract]
 	public interface IStatLightService
 	{

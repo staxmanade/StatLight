@@ -12,7 +12,7 @@ using StatLight.Core.Events;
 using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Serialization;
 
-namespace StatLight.Core.WebServer.Host
+namespace StatLight.Core.WebServer.CustomHost
 {
     public class PostHandler : IPostHandler
     {

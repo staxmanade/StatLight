@@ -5,7 +5,7 @@ using StatLight.Core.Configuration;
 using StatLight.Core.Properties;
 using StatLight.Core.Serialization;
 
-namespace StatLight.Core.WebServer.Host
+namespace StatLight.Core.WebServer.CustomHost
 {
     public class ResponseFactory
     {

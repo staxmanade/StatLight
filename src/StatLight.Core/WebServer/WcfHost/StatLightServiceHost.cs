@@ -1,13 +1,13 @@
 ﻿
 
-namespace StatLight.Core.WebServer
-{
-	using System;
-	using System.ServiceModel;
-	using StatLight.Core.Common;
-	using System.ServiceModel.Web;
+using System;
+using System.ServiceModel;
+using StatLight.Core.Common;
+using System.ServiceModel.Web;
 
-	public class StatLightServiceHost : IDisposable, IWebServer
+namespace StatLight.Core.WebServer.WcfHost
+{
+    public class StatLightServiceHost : IDisposable, IWebServer
 	{
 		private readonly ILogger _logger;
 		private readonly ServiceHost _serviceHost;

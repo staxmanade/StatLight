@@ -1,6 +1,7 @@
 ﻿using System.Security.Principal;
 using Moq;
-using StatLight.Core.WebServer.Host;
+using StatLight.Core.WebServer.CustomHost;
+using StatLight.Core.WebServer.WcfHost;
 
 namespace StatLight.Core.Tests.WebServer
 {

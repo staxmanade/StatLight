@@ -1,17 +1,15 @@
 ﻿
-namespace StatLight.Core.WebServer
-{
-    using System;
-    using System.IO;
-    using System.ServiceModel;
-    using System.ServiceModel.Web;
-    using System.Web;
-    using StatLight.Core.Common;
-    using StatLight.Core.Configuration;
-    using StatLight.Core.Events;
-    using StatLight.Core.Properties;
-    using StatLight.Core.WebServer.Host;
+using StatLight.Core.WebServer.CustomHost;
+using System;
+using System.IO;
+using System.ServiceModel;
+using System.ServiceModel.Web;
+using StatLight.Core.Common;
+using StatLight.Core.Configuration;
+using StatLight.Core.Properties;
 
+namespace StatLight.Core.WebServer.WcfHost
+{
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class StatLightService : IStatLightService
     {

@@ -1,10 +1,10 @@
 ﻿
-namespace StatLight.Core.WebServer
-{
-	using System;
-	using System.IO;
+using System;
+using System.IO;
 
-	public class XapFileBuildChangedMonitor : IXapFileBuildChangedMonitor, IDisposable
+namespace StatLight.Core.Monitoring.XapFileMonitoring
+{
+    public class XapFileBuildChangedMonitor : IXapFileBuildChangedMonitor, IDisposable
 	{
 		public event EventHandler<XapFileBuildChangedEventArgs> FileChanged = delegate {};
 

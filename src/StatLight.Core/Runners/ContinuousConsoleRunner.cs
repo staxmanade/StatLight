@@ -1,6 +1,7 @@
 ﻿
 using StatLight.Core.Configuration;
 using StatLight.Core.Events.Aggregation;
+using StatLight.Core.Monitoring.XapFileMonitoring;
 
 namespace StatLight.Core.Runners
 {

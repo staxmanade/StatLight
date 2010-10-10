@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.WebServer.CustomHost;
+
 namespace StatLight.Core.Runners
 {
     using System;
@@ -15,7 +17,6 @@ namespace StatLight.Core.Runners
     using StatLight.Core.Timing;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
-    using StatLight.Core.WebServer.Host;
     using StatLight.Core.WebServer.XapHost;
 
     public class StatLightRunnerFactory
