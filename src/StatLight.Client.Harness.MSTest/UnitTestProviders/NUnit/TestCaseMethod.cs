@@ -26,8 +26,6 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
             {
                 Assert.AreEqual(_expectedResult, actualResult);
             }
-
-            Console.WriteLine("Method.ReturnType = " + Method.ReturnType);
         }
 
         public override string Name

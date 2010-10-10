@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Net;
 using Moq;
 using NUnit.Framework;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Common;
 using StatLight.Core.Events;
-using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Serialization;
 using StatLight.Core.Tests.Mocks;
 using StatLight.Core.UnitTestProviders;
@@ -21,70 +18,6 @@ using StatLight.Core.WebServer.Host;
 
 namespace StatLight.Core.Tests.WebServer
 {
-    internal class TestServiceWrapper : IStatLightService
-    {
-
-        private TestServiceEngine _testServiceEngine;
-
-        private WebClient _webClient;
-        private readonly Func<byte[]> _xapToTestFactory;
-        private int _port;
-
-        public TestServiceWrapper(ILogger logger, IEventAggregator eventAggregator, ClientTestRunConfiguration clientTestRunConfiguration, ServerTestRunConfiguration serverTestRunConfiguration)
-        {
-            var consoleLogger = new ConsoleLogger(LogChatterLevels.Full);
-            _xapToTestFactory = () => new byte[] { 0, 1, 2, 3, 4 };
-            var hostXap = new byte[] { 5, 4, 2, 1, 4 };
-            var responseFactory = new ResponseFactory(_xapToTestFactory, hostXap, clientTestRunConfiguration);
-
-
-            PostHandler postHandler = new PostHandler(logger, eventAggregator, clientTestRunConfiguration);
-            _port = 34245;
-            _testServiceEngine = new TestServiceEngine(consoleLogger, "lodalhost", _port, responseFactory, postHandler);
-            _webClient = new WebClient();
-
-        }
-
-        public string TagFilters
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
-
-        public Stream GetCrossDomainPolicy()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PostMessage(Stream stream)
-        {
-            byte[] data = stream.StreamToString().ToByteArray();
-            var url = "http://{0}:{1}/2".FormatWith("lodalhost", _port, StatLightServiceRestApi.PostMessage);
-            Stream openWrite = _webClient.OpenWrite(url);
-            openWrite.Write(data, 0, data.Length);
-            openWrite.Close();
-        }
-
-        public Stream GetTestXap()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Stream GetHtmlTestPage()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Stream GetTestPageHostXap()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ClientTestRunConfiguration GetTestRunConfiguration()
-        {
-            throw new NotImplementedException();
-        }
-    }
     namespace StatLightServiceTests
     {
 
