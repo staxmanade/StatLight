@@ -20,7 +20,7 @@ namespace StatLight.Core.Tests.Runners
 
         private ContinuousTestRunner CreateContinuousTestRunner()
         {
-            var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test");
+            var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
             var runner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
             return runner;
         }
@@ -66,7 +66,7 @@ namespace StatLight.Core.Tests.Runners
 
             base.Before_all_tests();
 
-            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test");
+            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
             _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, _clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
 
             // Signal that the first test has already finished.

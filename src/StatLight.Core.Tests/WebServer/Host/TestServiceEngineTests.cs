@@ -10,6 +10,7 @@ using StatLight.Core.Configuration;
 using StatLight.Core.Properties;
 using StatLight.Core.Serialization;
 using StatLight.Core.UnitTestProviders;
+using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 using StatLight.Core.WebServer.Host;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace StatLight.Core.Tests.WebServer.Host
             var consoleLogger = new ConsoleLogger(LogChatterLevels.Full);
             _xapToTestFactory = () => new byte[] { 0, 1, 2, 3, 4 };
             _hostXap = new byte[] { 5, 4, 2, 1, 4 };
-            var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test");
+            var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
             _serializedConfiguration = clientConfig.Serialize();
             var responseFactory = new ResponseFactory(_xapToTestFactory, _hostXap, clientConfig);
 

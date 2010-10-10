@@ -13,6 +13,7 @@ using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Serialization;
 using StatLight.Core.Tests.Mocks;
 using StatLight.Core.UnitTestProviders;
+using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 using StatLight.Core.Configuration;
 using StatLight.Core.Reporting;
@@ -109,7 +110,7 @@ namespace StatLight.Core.Tests.WebServer
                 var serverConfig = MockServerTestRunConfiguration;
 
                 _hostXap = serverConfig.HostXap;
-                var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test");
+                var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
                 var postHandler = new PostHandler(base.TestLogger, base.TestEventAggregator, clientConfig);
                 _statLightService = new StatLightService(new NullLogger(), base.CreateTestDefaultClinetTestRunConfiguraiton(), serverConfig, postHandler);
             }
