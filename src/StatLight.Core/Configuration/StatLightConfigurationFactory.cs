@@ -11,7 +11,6 @@ namespace StatLight.Core.Configuration
     using System.Linq;
     using Ionic.Zip;
     using StatLight.Core.Common;
-    using StatLight.Core.UnitTestProviders;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.WebServer.XapInspection;
 

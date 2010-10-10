@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.ObjectModel;
 using Mono.Options;
+using StatLight.Core.Configuration;
 using StatLight.Core.WebBrowser;
 
 namespace StatLight.Console
@@ -10,7 +11,6 @@ namespace StatLight.Console
     using System.Linq;
     using System.Collections.Generic;
     using StatLight.Core.Common;
-    using StatLight.Core.UnitTestProviders;
     using StatLight.Core.WebServer.XapHost;
 
     public class ArgOptions

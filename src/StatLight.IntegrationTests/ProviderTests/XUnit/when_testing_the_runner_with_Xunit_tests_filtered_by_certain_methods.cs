@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using StatLight.Core.Configuration;
-using StatLight.Core.UnitTestProviders;
 
 namespace StatLight.IntegrationTests.ProviderTests.XUnit
 {

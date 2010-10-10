@@ -1,7 +1,7 @@
 using System;
+using StatLight.Core.Common.Abstractions.Timing;
 using StatLight.Core.Events;
 using StatLight.Core.Events.Aggregation;
-using StatLight.Core.Timing;
 
 namespace StatLight.Core.Monitoring
 {

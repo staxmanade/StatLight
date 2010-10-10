@@ -1,9 +1,9 @@
 ﻿
-namespace StatLight.Core.Timing
-{
-	using System;
+using System;
 
-	public class TimerWrapper : ITimer, IDisposable
+namespace StatLight.Core.Common.Abstractions.Timing
+{
+    public class TimerWrapper : ITimer, IDisposable
 	{
 		private System.Timers.Timer _baseTimer;
 

@@ -12,7 +12,7 @@ using StatLight.Core.Events;
 using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Serialization;
 
-namespace StatLight.Core.WebServer.CustomHost
+namespace StatLight.Core.WebServer
 {
     public class PostHandler : IPostHandler
     {
@@ -45,6 +45,7 @@ namespace StatLight.Core.WebServer.CustomHost
 
 
         // Note: do not delete this method - it's used through reflection...
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         private void PublishIt<T>(string xmlMessage)
             where T : ClientEvent
         {

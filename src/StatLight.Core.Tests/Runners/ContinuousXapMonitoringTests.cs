@@ -4,7 +4,6 @@ using StatLight.Core.Configuration;
 using StatLight.Core.Monitoring.XapFileMonitoring;
 using StatLight.Core.Reporting;
 using StatLight.Core.Runners;
-using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 using StatLight.Core.Events;

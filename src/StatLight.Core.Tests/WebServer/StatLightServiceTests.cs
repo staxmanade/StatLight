@@ -9,7 +9,6 @@ using StatLight.Core.Common;
 using StatLight.Core.Events;
 using StatLight.Core.Serialization;
 using StatLight.Core.Tests.Mocks;
-using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 using StatLight.Core.Configuration;

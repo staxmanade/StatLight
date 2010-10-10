@@ -1,28 +1,28 @@
 ﻿
 namespace StatLight.Core.Reporting.Providers.TeamCity
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Text;
-	using StatLight.Client.Harness.Events;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using StatLight.Client.Harness.Events;
     using StatLight.Core.Common;
 
-	internal static class CommandFormatter
-	{
-		internal static void FormatException(ExceptionInfo exceptionInfo, StringBuilder builder)
-		{
-			if (exceptionInfo == null)
-			{
-				return;
-			}
+    internal static class CommandFormatter
+    {
+        internal static void FormatException(ExceptionInfo exceptionInfo, StringBuilder builder)
+        {
+            if (exceptionInfo == null)
+            {
+                return;
+            }
 
-			if (builder.Length > 0)
-			{
-				builder.AppendLine("--------------------------------");
-			}
+            if (builder.Length > 0)
+            {
+                builder.AppendLine("--------------------------------");
+            }
 
-			builder.AppendFormat("{0}: {1}", FormatValue(exceptionInfo.GetType().ToString()), FormatValue(exceptionInfo.Message));
-			builder.AppendLine();
+            builder.AppendFormat("{0}: {1}", FormatValue(exceptionInfo.GetType().ToString()), FormatValue(exceptionInfo.Message));
+            builder.AppendLine();
 
             //if (!String.IsNullOrEmpty(exceptionInfo.Source))
             //{
@@ -30,54 +30,55 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
             //    builder.AppendLine();
             //}
 
-			if (!String.IsNullOrEmpty(exceptionInfo.StackTrace))
-			{
-				builder.AppendFormat(" Stack: {0}", FormatValue(exceptionInfo.StackTrace));
-				builder.AppendLine();
-			}
+            if (!String.IsNullOrEmpty(exceptionInfo.StackTrace))
+            {
+                builder.AppendFormat(" Stack: {0}", FormatValue(exceptionInfo.StackTrace));
+                builder.AppendLine();
+            }
 
-			if (exceptionInfo.InnerException != null)
-			{
-				FormatException(exceptionInfo.InnerException, builder);
-			}
-		}
+            if (exceptionInfo.InnerException != null)
+            {
+                FormatException(exceptionInfo.InnerException, builder);
+            }
+        }
 
-		internal static string FormatValue(string value)
-		{
-			var builder = new StringBuilder(value);
-			FormatValue(builder);
+        internal static string FormatValue(string value)
+        {
+            var builder = new StringBuilder(value);
+            FormatValue(builder);
 
-			return builder.ToString();
-		}
+            return builder.ToString();
+        }
 
-		internal static object[] FormatValues(object[] values)
-		{
-			var result = new List<object>();
+        internal static object[] FormatValues(object[] values)
+        {
+            var result = new List<object>();
 
-			var builder = new StringBuilder();
+            var builder = new StringBuilder();
 
-			foreach (object value in values)
-			{
-				builder.Length = 0;
-				builder.Append(value);
-				FormatValue(builder);
+            foreach (object value in values)
+            {
+                builder.Length = 0;
+                builder.Append(value);
+                FormatValue(builder);
 
-				result.Add(builder.ToString());
-			}
+                result.Add(builder.ToString());
+            }
 
-			return result.ToArray();
-		}
+            return result.ToArray();
+        }
 
-		internal static void FormatValue(StringBuilder builder)
-		{
-			Ensure.ArgumentIsNotNull(builder, "builder");
+        internal static void FormatValue(StringBuilder builder)
+        {
+            if (builder == null)
+                throw new ArgumentNullException("builder");
 
-			builder.Replace("|", "||");
-			builder.Replace("'", "|'");
-			builder.Replace("\n", "|n");
-			builder.Replace("\r", "|r");
-			builder.Replace("]", "|]");
-		}
-	}
+            builder.Replace("|", "||");
+            builder.Replace("'", "|'");
+            builder.Replace("\n", "|n");
+            builder.Replace("\r", "|r");
+            builder.Replace("]", "|]");
+        }
+    }
 
 }

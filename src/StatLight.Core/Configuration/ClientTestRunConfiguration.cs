@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using StatLight.Core.UnitTestProviders;
 using System.Collections.Generic;
 using System.Reflection;
 using StatLight.Core.WebBrowser;

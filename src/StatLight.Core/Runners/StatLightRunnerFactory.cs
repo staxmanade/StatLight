@@ -1,4 +1,5 @@
 ﻿
+using StatLight.Core.Common.Abstractions.Timing;
 using StatLight.Core.WebServer.CustomHost;
 
 namespace StatLight.Core.Runners
@@ -14,7 +15,6 @@ namespace StatLight.Core.Runners
     using StatLight.Core.Monitoring;
     using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.Reporting.Providers.TeamCity;
-    using StatLight.Core.Timing;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
     using StatLight.Core.WebServer.XapHost;

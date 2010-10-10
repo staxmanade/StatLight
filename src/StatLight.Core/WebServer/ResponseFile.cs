@@ -1,4 +1,4 @@
-﻿namespace StatLight.Core.WebServer.CustomHost
+﻿namespace StatLight.Core.WebServer
 {
     public class ResponseFile
     {

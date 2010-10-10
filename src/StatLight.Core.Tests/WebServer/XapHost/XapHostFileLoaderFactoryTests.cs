@@ -1,6 +1,6 @@
 using NUnit.Framework;
+using StatLight.Core.Configuration;
 using StatLight.Core.WebServer.XapHost;
-using StatLight.Core.UnitTestProviders;
 using System;
 
 namespace StatLight.Core.Tests.WebServer.XapHost

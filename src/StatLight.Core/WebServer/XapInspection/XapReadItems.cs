@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using StatLight.Core.Common;
-using StatLight.Core.UnitTestProviders;
+using StatLight.Core.Configuration;
 using StatLight.Core.WebServer.XapHost;
 
 namespace StatLight.Core.WebServer.XapInspection

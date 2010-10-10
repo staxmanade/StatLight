@@ -1,9 +1,9 @@
 ﻿
-namespace StatLight.Core.Timing
-{
-	using System;
+using System;
 
-	public interface ITimer
+namespace StatLight.Core.Common.Abstractions.Timing
+{
+    public interface ITimer
 	{
 		bool Enabled { get; set; }
 		void Start();

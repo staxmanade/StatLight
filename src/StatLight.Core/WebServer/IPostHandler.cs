@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace StatLight.Core.WebServer.CustomHost
+namespace StatLight.Core.WebServer
 {
     public interface IPostHandler
     {

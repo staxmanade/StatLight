@@ -1,4 +1,4 @@
-﻿namespace StatLight.Core.UnitTestProviders
+﻿namespace StatLight.Core.Configuration
 {
 	public enum UnitTestProviderType
 	{

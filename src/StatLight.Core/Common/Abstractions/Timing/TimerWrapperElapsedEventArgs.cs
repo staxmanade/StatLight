@@ -1,8 +1,8 @@
-﻿namespace StatLight.Core.Timing
-{
-	using System;
+﻿using System;
 
-	public class TimerWrapperElapsedEventArgs : EventArgs
+namespace StatLight.Core.Common.Abstractions.Timing
+{
+    public class TimerWrapperElapsedEventArgs : EventArgs
 	{
 		public TimerWrapperElapsedEventArgs(DateTime signalTime)
 		{

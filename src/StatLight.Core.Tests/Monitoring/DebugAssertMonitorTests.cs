@@ -7,7 +7,6 @@ namespace StatLight.Core.Tests.WebBrowser
 	using System.Windows.Forms;
 	using Moq;
 	using NUnit.Framework;
-	using StatLight.Core.Timing;
 	using StatLight.Core.WebServer;
 	using StatLight.Core.Events;
 

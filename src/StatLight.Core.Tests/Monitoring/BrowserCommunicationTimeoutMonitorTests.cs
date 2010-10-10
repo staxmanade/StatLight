@@ -1,9 +1,9 @@
 ﻿using System;
 using Moq;
 using NUnit.Framework;
+using StatLight.Core.Common.Abstractions.Timing;
 using StatLight.Core.Events;
 using StatLight.Core.Monitoring;
-using StatLight.Core.Timing;
 
 namespace StatLight.Core.Tests.Monitoring
 {

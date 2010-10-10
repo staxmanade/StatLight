@@ -15,7 +15,6 @@ namespace StatLight.Console
     using StatLight.Core.Reporting;
     using StatLight.Core.Reporting.Providers.Xml;
     using StatLight.Core.Runners;
-    using StatLight.Core.UnitTestProviders;
     using StatLight.Core.WebServer.XapHost;
 
     class Program

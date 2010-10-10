@@ -95,6 +95,9 @@
     <Compile Include="..\StatLight.Core\Configuration\ClientTestRunConfiguration.cs">
       <Link>Core\Configuration\ClientTestRunConfiguration.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Core\Configuration\UnitTestProviderTypes.cs">
+      <Link>Core\Common\UnitTestProviderTypes.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Core\Reporting\Messages\LogMessageType.cs">
       <Link>Core\Reporting\Messages\LogMessageType.cs</Link>
     </Compile>
@@ -106,9 +109,6 @@
     </Compile>
     <Compile Include="..\StatLight.Core\Reporting\Messages\TestOutcome.cs">
       <Link>Core\Reporting\Messages\TestOutcome.cs</Link>
-    </Compile>
-    <Compile Include="..\StatLight.Core\UnitTestProviders\UnitTestProviderTypes.cs">
-      <Link>Core\UnitTestProviders\UnitTestProviderTypes.cs</Link>
     </Compile>
     <Compile Include="..\StatLight.Core\WebBrowser\WebBrowserType.cs">
       <Link>Core\WebBrowser\WebBrowserType.cs</Link>

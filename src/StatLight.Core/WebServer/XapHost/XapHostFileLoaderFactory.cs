@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using StatLight.Core.Common;
 using System;
-using StatLight.Core.UnitTestProviders;
+using StatLight.Core.Configuration;
 
 namespace StatLight.Core.WebServer.XapHost
 {

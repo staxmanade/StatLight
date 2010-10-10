@@ -165,10 +165,10 @@
     <Compile Include="Runners\RunnerType.cs" />
     <Compile Include="Runners\WebServerOnlyRunner.cs" />
     <Compile Include="Runners\IRunner.cs" />
-    <Compile Include="WebServer\CustomHost\IPostHandler.cs" />
-    <Compile Include="WebServer\CustomHost\PostHandler.cs" />
-    <Compile Include="WebServer\CustomHost\ResponseFactory.cs" />
-    <Compile Include="WebServer\CustomHost\ResponseFile.cs" />
+    <Compile Include="WebServer\IPostHandler.cs" />
+    <Compile Include="WebServer\PostHandler.cs" />
+    <Compile Include="WebServer\ResponseFactory.cs" />
+    <Compile Include="WebServer\ResponseFile.cs" />
     <Compile Include="WebServer\CustomHost\TestServiceEngine.cs" />
     <Compile Include="WebBrowser\ChromeWebBrowser.cs" />
     <Compile Include="WebBrowser\FirefoxWebBrowser.cs" />
@@ -195,10 +195,10 @@
     <Compile Include="Reporting\RunCompletedState.cs" />
     <Compile Include="Runners\TeamCityRunner.cs" />
     <Compile Include="Runners\StatLightRunnerFactory.cs" />
-    <Compile Include="Timing\ITimer.cs" />
-    <Compile Include="Timing\TimerWrapperElapsedEventArgs.cs" />
-    <Compile Include="Timing\TimingWrapper.cs" />
-    <Compile Include="UnitTestProviders\UnitTestProviderTypes.cs" />
+    <Compile Include="Common\Abstractions\Timing\ITimer.cs" />
+    <Compile Include="Common\Abstractions\Timing\TimerWrapperElapsedEventArgs.cs" />
+    <Compile Include="Common\Abstractions\Timing\TimingWrapper.cs" />
+    <Compile Include="Configuration\UnitTestProviderTypes.cs" />
     <Compile Include="WebBrowser\SelfHostedWebBrowser.cs" />
     <Compile Include="Reporting\Messages\MobilScenarioResult.cs" />
     <Compile Include="WebBrowser\IWebBrowser.cs" />
@@ -268,6 +268,7 @@
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

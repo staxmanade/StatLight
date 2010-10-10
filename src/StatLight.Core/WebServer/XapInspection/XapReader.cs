@@ -1,4 +1,6 @@
 
+using StatLight.Core.Configuration;
+
 namespace StatLight.Core.WebServer.XapInspection
 {
     using System;
@@ -10,7 +12,6 @@ namespace StatLight.Core.WebServer.XapInspection
     using System.Xml.Linq;
     using Ionic.Zip;
     using StatLight.Core.Common;
-    using StatLight.Core.UnitTestProviders;
     using StatLight.Core.WebServer.XapHost;
 
     public class XapReader

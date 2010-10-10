@@ -1,3 +1,5 @@
+using StatLight.Core.Common.Abstractions.Timing;
+
 namespace StatLight.Core.Monitoring
 {
     using System;
@@ -5,7 +7,6 @@ namespace StatLight.Core.Monitoring
     using StatLight.Core.Common;
     using StatLight.Core.Events;
     using StatLight.Core.Events.Aggregation;
-    using StatLight.Core.Timing;
 
     internal class DialogMonitorRunner : IDialogMonitorRunner
     {

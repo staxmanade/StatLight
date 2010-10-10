@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Ionic.Zip;
 using StatLight.Core.Common;
+using StatLight.Core.Configuration;
 using StatLight.IntegrationTests.ProviderTests;
 
 namespace StatLight.IntegrationTests
@@ -11,7 +12,6 @@ namespace StatLight.IntegrationTests
 		using NUnit.Framework;
 		using StatLight.Core.Tests;
 		using StatLight.Core.WebServer.XapInspection;
-		using StatLight.Core.UnitTestProviders;
 		using System.Collections.Generic;
 
 		[TestFixture]

@@ -8,7 +8,6 @@ using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit;
 using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Configuration;
-using StatLight.Core.UnitTestProviders;
 
 namespace StatLight.Client.Harness.Hosts.MSTest
 {

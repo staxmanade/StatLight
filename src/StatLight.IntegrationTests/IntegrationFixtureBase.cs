@@ -7,7 +7,6 @@ namespace StatLight.IntegrationTests
     using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Reporting;
     using StatLight.Core.Runners;
-    using StatLight.Core.UnitTestProviders;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.IntegrationTests.ProviderTests;
 

@@ -7,7 +7,6 @@ using StatLight.Core.Common;
 using StatLight.Core.Configuration;
 using StatLight.Core.Properties;
 using StatLight.Core.Serialization;
-using StatLight.Core.UnitTestProviders;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 using System.Collections.Generic;

@@ -3,7 +3,6 @@ using System.Linq;
 using NUnit.Framework;
 using StatLight.Core.Configuration;
 using StatLight.Core.Tests;
-using StatLight.Core.UnitTestProviders;
 
 namespace StatLight.IntegrationTests.ProviderTests.XUnit
 {
