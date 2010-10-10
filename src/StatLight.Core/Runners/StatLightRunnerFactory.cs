@@ -39,7 +39,7 @@ namespace StatLight.Core.Runners
             if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             IWebServer webServer;
-            List<IWebBrowser> browserFormHosts;
+            List<IWebBrowser> webBrowsers;
             IDialogMonitorRunner dialogMonitorRunner;
 
             BuildAndReturnWebServiceAndBrowser(
@@ -47,12 +47,12 @@ namespace StatLight.Core.Runners
                 showTestingBrowserHost,
                 statLightConfiguration,
                 out webServer,
-                out browserFormHosts,
+                out webBrowsers,
                 out dialogMonitorRunner);
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
 
-            IRunner runner = new ContinuousConsoleRunner(logger, _eventAggregator, statLightConfiguration.Server.XapToTestPath, statLightConfiguration.Client, webServer, browserFormHosts.First());
+            IRunner runner = new ContinuousConsoleRunner(logger, _eventAggregator, statLightConfiguration.Server.XapToTestPath, statLightConfiguration.Client, webServer, webBrowsers.First());
             return runner;
         }
 
@@ -61,7 +61,7 @@ namespace StatLight.Core.Runners
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             ILogger logger = new NullLogger();
             IWebServer webServer;
-            List<IWebBrowser> browserFormHosts;
+            List<IWebBrowser> webBrowsers;
             IDialogMonitorRunner dialogMonitorRunner;
 
             BuildAndReturnWebServiceAndBrowser(
@@ -69,12 +69,12 @@ namespace StatLight.Core.Runners
                 false,
                 statLightConfiguration,
                 out webServer,
-                out browserFormHosts,
+                out webBrowsers,
                 out dialogMonitorRunner);
 
             var teamCityTestResultHandler = new TeamCityTestResultHandler(new ConsoleCommandWriter(), statLightConfiguration.Server.XapToTestPath);
             _eventAggregator.AddListener(teamCityTestResultHandler);
-            IRunner runner = new TeamCityRunner(new NullLogger(), _eventAggregator, webServer, browserFormHosts, teamCityTestResultHandler, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
+            IRunner runner = new TeamCityRunner(new NullLogger(), _eventAggregator, webServer, webBrowsers, teamCityTestResultHandler, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
 
             return runner;
         }
@@ -84,7 +84,7 @@ namespace StatLight.Core.Runners
             if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             IWebServer webServer;
-            List<IWebBrowser> browserFormHosts;
+            List<IWebBrowser> webBrowsers;
             IDialogMonitorRunner dialogMonitorRunner;
 
             BuildAndReturnWebServiceAndBrowser(
@@ -92,11 +92,11 @@ namespace StatLight.Core.Runners
                 showTestingBrowserHost,
                 statLightConfiguration,
                 out webServer,
-                out browserFormHosts,
+                out webBrowsers,
                 out dialogMonitorRunner);
 
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
-            IRunner runner = new OnetimeRunner(logger, _eventAggregator, webServer, browserFormHosts, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
+            IRunner runner = new OnetimeRunner(logger, _eventAggregator, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
             return runner;
         }
 
@@ -142,7 +142,7 @@ namespace StatLight.Core.Runners
             bool showTestingBrowserHost,
             StatLightConfiguration statLightConfiguration,
             out IWebServer webServer,
-            out List<IWebBrowser> browserFormHosts,
+            out List<IWebBrowser> webBrowsers,
             out IDialogMonitorRunner dialogMonitorRunner)
         {
             ClientTestRunConfiguration clientTestRunConfiguration = statLightConfiguration.Client;
@@ -155,26 +155,26 @@ namespace StatLight.Core.Runners
 
             showTestingBrowserHost = GetShowTestingBrowserHost(serverTestRunConfiguration, showTestingBrowserHost);
 
-            browserFormHosts = GetBrowserFormHosts(logger, location.TestPageUrl, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString);
+            webBrowsers = GetWebBrowsers(logger, location.TestPageUrl, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString);
 
-            dialogMonitorRunner = SetupDialogMonitorRunner(logger, browserFormHosts, debugAssertMonitorTimer);
+            dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
 
             StartupBrowserCommunicationTimeoutMonitor(new TimeSpan(0, 0, 5, 0));
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "testPageUrlWithQueryString")]
-        private static List<IWebBrowser> GetBrowserFormHosts(ILogger logger, Uri testPageUrl, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, string queryString)
+        private static List<IWebBrowser> GetWebBrowsers(ILogger logger, Uri testPageUrl, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, string queryString)
         {
             var webBrowserType = clientTestRunConfiguration.WebBrowserType;
             var webBrowserFactory = new WebBrowserFactory(logger);
             var testPageUrlWithQueryString = new Uri(testPageUrl + "?" + queryString);
             logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);
-            List<IWebBrowser> browserFormHosts = Enumerable
+            List<IWebBrowser> webBrowsers = Enumerable
                 .Range(1, clientTestRunConfiguration.NumberOfBrowserHosts)
                 .Select(browserI => webBrowserFactory.Create(webBrowserType, testPageUrlWithQueryString, showTestingBrowserHost))
                 .Cast<IWebBrowser>()
                 .ToList();
-            return browserFormHosts;
+            return webBrowsers;
         }
 
         private void StartupBrowserCommunicationTimeoutMonitor(TimeSpan maxTimeAllowedBeforeCommErrorSent)
@@ -224,27 +224,27 @@ namespace StatLight.Core.Runners
                                                    HttpUtility.UrlEncode(location.BaseUrl.ToString()));
             var testPageUrlAndPostbackQuerystring = new Uri(location.TestPageUrl + querystring);
             logger.Debug("testPageUrlAndPostbackQuerystring={0}".FormatWith(testPageUrlAndPostbackQuerystring.ToString()));
-            var browserFormHosts = GetBrowserFormHosts(logger, testPageUrlAndPostbackQuerystring, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString);
+            var webBrowsers = GetWebBrowsers(logger, testPageUrlAndPostbackQuerystring, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString);
 
-            var dialogMonitorRunner = SetupDialogMonitorRunner(logger, browserFormHosts, debugAssertMonitorTimer);
+            var dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
 
             StartupBrowserCommunicationTimeoutMonitor(new TimeSpan(0, 0, 5, 0));
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
 
-            IRunner runner = new OnetimeRunner(logger, _eventAggregator, webServer, browserFormHosts, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
+            IRunner runner = new OnetimeRunner(logger, _eventAggregator, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
             return runner;
         }
 
-        private IDialogMonitorRunner SetupDialogMonitorRunner(ILogger logger, List<IWebBrowser> browserFormHosts, TimerWrapper debugAssertMonitorTimer)
+        private IDialogMonitorRunner SetupDialogMonitorRunner(ILogger logger, List<IWebBrowser> webBrowsers, TimerWrapper debugAssertMonitorTimer)
         {
             var dialogMonitors = new List<IDialogMonitor>
                                      {
                                          new DebugAssertMonitor(logger),
                                      };
 
-            foreach (var browserFormHost in browserFormHosts)
+            foreach (var webBrowser in webBrowsers)
             {
-                var monitor = new MessageBoxMonitor(logger, browserFormHost);
+                var monitor = new MessageBoxMonitor(logger, webBrowser);
                 dialogMonitors.Add(monitor);
             }
 

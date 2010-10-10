@@ -21,7 +21,7 @@ namespace StatLight.Core.Runners
         private readonly ILogger _logger;
         private readonly IEventAggregator _eventAggregator;
         private readonly IWebServer _webServer;
-        private readonly List<IWebBrowser> _browserFormHost;
+        private readonly List<IWebBrowser> _webBrowsers;
         private readonly string _xapPath;
         private readonly IDialogMonitorRunner _dialogMonitorRunner;
         private readonly TestResultAggregator _testResultAggregator;
@@ -32,14 +32,14 @@ namespace StatLight.Core.Runners
             ILogger logger,
             IEventAggregator eventAggregator,
             IWebServer webServer,
-            List<IWebBrowser> browserFormHost,
+            List<IWebBrowser> webBrowsers,
             string xapPath,
             IDialogMonitorRunner dialogMonitorRunner)
         {
             _logger = logger;
             _eventAggregator = eventAggregator;
             _webServer = webServer;
-            _browserFormHost = browserFormHost;
+            _webBrowsers = webBrowsers;
             _xapPath = xapPath;
             _dialogMonitorRunner = dialogMonitorRunner;
 
@@ -55,14 +55,14 @@ namespace StatLight.Core.Runners
                 .FormatWith(DateTime.Now, Environment.NewLine));
 
             _webServer.Start();
-            foreach(var browser in _browserFormHost)
+            foreach(var browser in _webBrowsers)
                 browser.Start();
             _dialogMonitorRunner.Start();
 
             _browserThreadWaitHandle.WaitOne();
 
             _dialogMonitorRunner.Stop();
-            foreach (var browser in _browserFormHost)
+            foreach (var browser in _webBrowsers)
                 browser.Stop();
             _webServer.Stop();
 
@@ -75,7 +75,7 @@ namespace StatLight.Core.Runners
         {
             if (disposing)
             {
-                foreach (var browser in _browserFormHost)
+                foreach (var browser in _webBrowsers)
                     browser.Dispose();
                 _eventAggregator.RemoveListener(this);
                 _eventAggregator.RemoveListener(_testResultAggregator);

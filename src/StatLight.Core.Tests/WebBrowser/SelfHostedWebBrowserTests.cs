@@ -4,14 +4,14 @@ using NUnit.Framework;
 
 namespace StatLight.Core.Tests.WebBrowser
 {
-    public class BrowserFormHostTests : FixtureBase
+    public class SelfHostedWebBrowserTests : FixtureBase
     {
         [Test]
         [Explicit]
-        public void Should_be_able_to_create_start_and_stop_the_BrowserFormHost()
+        public void Should_be_able_to_create_start_and_stop_the_SelfHostedWebBrowser()
         {
-            var browserFormHost = new Core.WebBrowser.SelfHostedWebBrowser(TestLogger, new Uri("http://localsomewhere"), true);
-            browserFormHost.Start();
+            var webBrowser = new Core.WebBrowser.SelfHostedWebBrowser(TestLogger, new Uri("http://localsomewhere"), true);
+            webBrowser.Start();
 
             const int count = 2;
             for (int i = 0; i < count; i++)
@@ -19,7 +19,7 @@ namespace StatLight.Core.Tests.WebBrowser
                 Thread.Sleep(1000);
             }
 
-            browserFormHost.Stop();
+            webBrowser.Stop();
         }
     }
 }

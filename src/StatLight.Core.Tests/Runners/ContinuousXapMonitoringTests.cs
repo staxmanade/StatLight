@@ -15,13 +15,13 @@ namespace StatLight.Core.Tests.Runners
     public class when_ContinuousTestRunner_has_not_gon_through_its_first_test_cycle : FixtureBase
     {
         readonly Mock<IStatLightService> _mockStatLightService = new Mock<IStatLightService>();
-        readonly Mock<IWebBrowser> _browserFormHost = new Mock<IWebBrowser>();
+        readonly Mock<IWebBrowser> _mockWebBrowser = new Mock<IWebBrowser>();
         readonly Mock<IXapFileBuildChangedMonitor> _xapFileBuildChangedMonitor = new Mock<IXapFileBuildChangedMonitor>();
 
         private ContinuousTestRunner CreateContinuousTestRunner()
         {
             var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
-            var runner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
+            var runner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _mockWebBrowser.Object, clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
             return runner;
         }
 
@@ -29,7 +29,7 @@ namespace StatLight.Core.Tests.Runners
         public void when_creating_the_ContinuousTestRunner_it_should_start_the_test_immediately_and_should_signal_that_a_test_run_is_in_progress()
         {
             var wasStartCalled = false;
-            _browserFormHost
+            _mockWebBrowser
                 .Setup(x => x.Start())
                 .Callback(() => wasStartCalled = true);
 
@@ -47,27 +47,27 @@ namespace StatLight.Core.Tests.Runners
             TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
 
             runner.IsCurrentlyRunningTest.ShouldBeFalse();
-            _browserFormHost.Verify(x => x.Stop());
+            _mockWebBrowser.Verify(x => x.Stop());
         }
     }
 
     [TestFixture]
     public class when_a_ContinuousTestRunner_has_already_gone_through_the_first_testing_cylce : FixtureBase
     {
-        Mock<IWebBrowser> _browserFormHost;
+        Mock<IWebBrowser> _mockWebBrowser;
         Mock<IXapFileBuildChangedMonitor> _xapFileBuildChangedMonitor;
         ContinuousTestRunner _continuousTestRunner;
         private ClientTestRunConfiguration _clientTestRunConfiguration;
 
         protected override void Before_all_tests()
         {
-            _browserFormHost = new Mock<IWebBrowser>();
+            _mockWebBrowser = new Mock<IWebBrowser>();
             _xapFileBuildChangedMonitor = new Mock<IXapFileBuildChangedMonitor>();
 
             base.Before_all_tests();
 
             _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
-            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _browserFormHost.Object, _clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
+            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _mockWebBrowser.Object, _clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
 
             // Signal that the first test has already finished.
             TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
@@ -81,7 +81,7 @@ namespace StatLight.Core.Tests.Runners
             System.Threading.Thread.Sleep(10);
 
             _continuousTestRunner.IsCurrentlyRunningTest.ShouldBeTrue();
-            _browserFormHost.Verify(x => x.Start());
+            _mockWebBrowser.Verify(x => x.Start());
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace StatLight.Core.Tests.Runners
             // There's one Start from setup, and one from the first Changed event
             // let's make sure that the second Changed event doesn't fire a start again
             // because we are currently running a test
-            _browserFormHost.Setup(s => s.Start()).AtMost(2);
+            _mockWebBrowser.Setup(s => s.Start()).AtMost(2);
 
             _xapFileBuildChangedMonitor.Raise(x => x.FileChanged += null, GetTestXapFileBuildChangedArgs());
 
