@@ -15,7 +15,7 @@ namespace StatLight.Core.Tests.Runners
     public class when_ContinuousTestRunner_has_not_gon_through_its_first_test_cycle : FixtureBase
     {
         readonly Mock<IStatLightService> _mockStatLightService = new Mock<IStatLightService>();
-        readonly Mock<IBrowserFormHost> _browserFormHost = new Mock<IBrowserFormHost>();
+        readonly Mock<IWebBrowser> _browserFormHost = new Mock<IWebBrowser>();
         readonly Mock<IXapFileBuildChangedMonitor> _xapFileBuildChangedMonitor = new Mock<IXapFileBuildChangedMonitor>();
 
         private ContinuousTestRunner CreateContinuousTestRunner()
@@ -54,14 +54,14 @@ namespace StatLight.Core.Tests.Runners
     [TestFixture]
     public class when_a_ContinuousTestRunner_has_already_gone_through_the_first_testing_cylce : FixtureBase
     {
-        Mock<IBrowserFormHost> _browserFormHost;
+        Mock<IWebBrowser> _browserFormHost;
         Mock<IXapFileBuildChangedMonitor> _xapFileBuildChangedMonitor;
         ContinuousTestRunner _continuousTestRunner;
         private ClientTestRunConfiguration _clientTestRunConfiguration;
 
         protected override void Before_all_tests()
         {
-            _browserFormHost = new Mock<IBrowserFormHost>();
+            _browserFormHost = new Mock<IWebBrowser>();
             _xapFileBuildChangedMonitor = new Mock<IXapFileBuildChangedMonitor>();
 
             base.Before_all_tests();

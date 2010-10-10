@@ -18,7 +18,7 @@ namespace StatLight.Core.Runners
 			ILogger logger,
 			IEventAggregator eventAggregator,
 			IWebServer webServer,
-			List<IBrowserFormHost> browserFormHost,
+			List<IWebBrowser> browserFormHost,
 			TeamCityTestResultHandler teamCityCommandPublisher,
             string xapPath)
 			: base(logger, eventAggregator, webServer, browserFormHost, xapPath)

@@ -13,7 +13,7 @@ namespace StatLight.Core.Tests.WebBrowser
         [Explicit]
         public void Should_be_able_to_create_start_and_stop_the_BrowserFormHost()
         {
-            var browserFormHost = new BrowserFormHost(TestLogger, new Uri("http://localsomewhere"), true, new Mock<IDialogMonitorRunner>().Object);
+            var browserFormHost = new Core.WebBrowser.SelfHostedWebBrowser(TestLogger, new Uri("http://localsomewhere"), true, new Mock<IDialogMonitorRunner>().Object);
             browserFormHost.Start();
 
             const int count = 2;

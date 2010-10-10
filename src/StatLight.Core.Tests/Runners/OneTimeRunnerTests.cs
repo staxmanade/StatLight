@@ -17,7 +17,7 @@ namespace StatLight.Core.Tests.Runners
 	//{
 	//    Mock<IWebServer> mockWebServer = new Mock<IWebServer>();
 	//    Mock<IStatLightService> mockStatLightService = new Mock<IStatLightService>();
-	//    Mock<IBrowserFormHost> mockBrowserFormHost = new Mock<IBrowserFormHost>();
+	//    Mock<IWebBrowser> mockBrowserFormHost = new Mock<IWebBrowser>();
 	//    Mock<ITestResultHandler> mockTestResultHandler = new Mock<ITestResultHandler>();
 
 	//    OneTimeRunner runner;

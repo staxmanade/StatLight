@@ -8,7 +8,7 @@ namespace StatLight.Core.WebBrowser
     using StatLight.Core.Common;
     using StatLight.Core.Monitoring;
 
-    internal class BrowserFormHost : IBrowserFormHost, IDisposable
+    internal class SelfHostedWebBrowser : IWebBrowser, IDisposable
     {
         private readonly ILogger _logger;
         private readonly Uri _pageToHost;
@@ -16,7 +16,7 @@ namespace StatLight.Core.WebBrowser
         private Thread _browserThread;
         private readonly IDialogMonitorRunner _dialogMonitorRunner;
 
-        public BrowserFormHost(ILogger logger, Uri pageToHost, bool browserVisible, IDialogMonitorRunner dialogMonitorRunner)
+        public SelfHostedWebBrowser(ILogger logger, Uri pageToHost, bool browserVisible, IDialogMonitorRunner dialogMonitorRunner)
         {
             _logger = logger;
             _pageToHost = pageToHost;
@@ -39,7 +39,7 @@ namespace StatLight.Core.WebBrowser
                                 Text = "StatLight - Browser Host"
                             };
 
-                var browser = new WebBrowser
+                var browser = new System.Windows.Forms.WebBrowser
                 {
                     Url = _pageToHost,
                     Dock = DockStyle.Fill
@@ -61,14 +61,14 @@ namespace StatLight.Core.WebBrowser
             return browserVisible ? FormWindowState.Normal : FormWindowState.Minimized;
         }
 
-        ~BrowserFormHost()
+        ~SelfHostedWebBrowser()
         {
-            _logger.Debug("Disposing BrowserFormHost");
+            _logger.Debug("Disposing webBrowser");
         }
 
         public void Stop()
         {
-            _logger.Debug("BrowserFormHost.Stop()");
+            _logger.Debug("webBrowser.Stop()");
             _dialogMonitorRunner.Stop();
             _form.Close();
             _browserThread = null;

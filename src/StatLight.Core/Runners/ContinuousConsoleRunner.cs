@@ -24,7 +24,7 @@ namespace StatLight.Core.Runners
 			string xapPath,
             ClientTestRunConfiguration clientTestRunConfiguration,
 			IWebServer webServer,
-			IBrowserFormHost browserFormHost)
+			IWebBrowser webBrowser)
 		{
 		    _xapPath = xapPath;
 		    _webServer = webServer;
@@ -32,7 +32,7 @@ namespace StatLight.Core.Runners
 
             _continuousRunnerThread = new Thread(() =>
             {
-                using (var runner = new ContinuousTestRunner(logger, eventAggregator, browserFormHost, clientTestRunConfiguration, _xapFileBuildChangedMonitor, _xapPath))
+                using (var runner = new ContinuousTestRunner(logger, eventAggregator, webBrowser, clientTestRunConfiguration, _xapFileBuildChangedMonitor, _xapPath))
                 {
                     string line;
                     while ( !(line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))

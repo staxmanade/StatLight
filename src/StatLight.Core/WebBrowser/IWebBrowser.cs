@@ -2,7 +2,7 @@
 using System;
 namespace StatLight.Core.WebBrowser
 {
-	public interface IBrowserFormHost : IDisposable
+	public interface IWebBrowser : IDisposable
 	{
 		void Start();
 		void Stop();
