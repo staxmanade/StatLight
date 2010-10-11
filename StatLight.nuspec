@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>StatLight</id>
+    <version>TODO - Build Script fills this in</version>
+    <authors>
+      <author>Jason Jarrett</author>
+    </authors>
+    <description>StatLight: Tool for executing Silverlight test xap packages locally during development and in a continuous integration environment.</description>
+    <language>en-US</language>
+	<licenseUrl>http://statlight.codeplex.com/license</licenseUrl>
+    <created>TODO - Build Script fills this in</created>
+    <modified>TODO - Build Script fills this in</modified>
+  </metadata>
+</package>

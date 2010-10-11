@@ -795,6 +795,7 @@ Task package-zip-project-sources-snapshot {
 	mv $sourceZipFile $release_dir\$sourceZipFile -Force | Out-Null
 }
 
+#Task package-release-temp {
 Task package-release -depends clean-release {
 	$versionBuildPath = "$release_dir\$(get-formatted-assembly-version $core_assembly_path)"
 
@@ -830,7 +831,7 @@ Task package-release -depends clean-release {
 		Get-ChildItem ".\StatLight.EULA.txt"
 	)
 
-	New-Item -Path $versionBuildPath -ItemType directory | Out-Null
+	New-Item -Path $versionBuildPath -Force -ItemType directory | Out-Null
 
 	#Move-Item (Get-ChildItem $release_dir\$statLightSourcesFilePrefix*) "$versionBuildPath\$($_.Name)"
 	$filesToCopyFromBuild | foreach{ Copy-Item $_ "$versionBuildPath\$($_.Name)"  }
@@ -860,6 +861,20 @@ Task package-release -depends clean-release {
 	Write-Host -ForegroundColor Green "Release build place in the following folder."
 	Write-Host -ForegroundColor Green "     $(get-item $release_dir)"
 	Write-Host -ForegroundColor Green "*************************************************"
+	
+	<#
+	Write-Host "Creating NuPack package"
+	mkdir "Release\NuPack\tools" -Force
+	cp "$versionBuildPath\*" "Release\NuPack\tools"
+	cp "StatLight.nuspec" "Release\NuPack\"
+	$nuSpecFile = get-item "Release\NuPack\StatLight.nuspec"
+	$nuPackDate = [System.String]::Format("{0:s}", (get-date))
+	$nuSpec = [xml] (cat $nuSpecFile)
+	$nuSpec.Package.Metadata.version = "$version"
+	$nuSpec.Package.Metadata.created = $nuPackDate
+	$nuSpec.Package.Metadata.modified = $nuPackDate
+	$nuSpec.Save($nuSpecFile);
+	#>
 }
 
 
