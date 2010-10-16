@@ -77,6 +77,15 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\StatLight.Client.Harness\Messaging\HttpResponseCompleteEventArgs.cs">
+      <Link>Helper\HttpResponseCompleteEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\StatLight.Client.Harness\Messaging\HttpResponseCompleteEventHandler.cs">
+      <Link>Helper\HttpResponseCompleteEventHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\StatLight.Client.Harness\Messaging\HttpWebRequest.cs">
+      <Link>Helper\HttpWebRequest.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>

@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.Windows;
 using System.Windows.Browser;
 using Microsoft.Silverlight.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StatLight.Client.Model.Messaging;
 using StatLight.ExternalWebTest.ServiceReference1;
 
-namespace StatLight.RemoteIntegration
+namespace StatLight.ExternalWebTest
 {
     [TestClass]
     public class Tests : SilverlightTest
@@ -43,6 +45,47 @@ namespace StatLight.RemoteIntegration
             EnqueueCallback(service1Client.DoWorkAsync);
         }
 
+        [TestMethod]
+        [Asynchronous]
+        public void Should_try_to_GET_back_to_home_base_for_a_resource_that_does_not_exist()
+        {
+            var address = new Uri(Application.Current.Host.Source, "/SomeRandomRequest?a=1&b=2");
+            var webClient = new WebClient();
+            webClient.DownloadStringCompleted += (sender, e) =>
+                                                     {
+                                                         AssertErrorIs404(e.Error);
+                                                         EnqueueTestComplete();
+                                                     };
+            EnqueueCallback(() => webClient.DownloadStringAsync(address));
+        }
+
+        private static void AssertErrorIs404(Exception error)
+        {
+            Assert.IsNotNull(error);
+            Assert.IsTrue(error.Message.Contains("The remote server returned an error: NotFound"),
+                          "could not find expected message [The remote server returned an error: NotFound] contained in [" +
+                          error.Message + "]");
+
+        }
+
+
+        [TestMethod]
+        [Asynchronous]
+        public void Should_try_to_POST_back_to_home_base_for_a_resource_that_does_not_exist()
+        {
+            var address = new Uri(Application.Current.Host.Source, "/SomeRandomRequest");
+
+            var httpWebRequestHelper = new HttpWebRequestHelper(address, "POST", "data=asdf&ffff=aaaa");
+            httpWebRequestHelper.ResponseComplete += e =>
+                                                         {
+                                                             AssertErrorIs404(e.Error);
+                                                             EnqueueTestComplete();
+                                                         };
+
+            httpWebRequestHelper.Execute();
+        }
+
+
         public static Uri GetSiteBaseUri()
         {
             const string keyName = "RemoteCallbackServiceUrl";
@@ -63,5 +106,6 @@ namespace StatLight.RemoteIntegration
 
             throw new NotSupportedException("Could figure out how to generate a url to call back to home base...");
         }
+
     }
 }

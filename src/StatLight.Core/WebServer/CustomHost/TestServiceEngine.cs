@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using StatLight.Core.Common;
 
@@ -24,7 +25,7 @@ namespace StatLight.Core.WebServer.CustomHost
         public int Port { get; private set; }
         private HttpListener Server { get; set; }
 
-        public TestServiceEngine(ILogger logger,int port, ResponseFactory responseFactory, IPostHandler postHandler)
+        public TestServiceEngine(ILogger logger, int port, ResponseFactory responseFactory, IPostHandler postHandler)
         {
             _logger = logger;
             _postHandler = postHandler;
@@ -54,15 +55,30 @@ namespace StatLight.Core.WebServer.CustomHost
                 }
                 else
                 {
-                    SetHttpStatus(response, HttpStatusCode.NotFound);
+                    HandleUnknownRequest(request, response);
                 }
             }
-            catch (HttpListenerException)
+            catch(Exception exception)
             {
+                _logger.Debug(exception.ToString());
             }
-            catch
-            {
-            }
+        }
+
+        private void HandleUnknownRequest(HttpListenerRequest request, HttpListenerResponse response)
+        {
+            SetHttpStatus(response, HttpStatusCode.NotFound);
+
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine("*****************************************");
+            sb.AppendLine("An unknown request was made to the StatLight's web server. You may want to check your test project for what generated the following request.");
+            sb.AppendLine("********** Request Information **********");
+            sb.AppendLine("{0, 10} : {1}".FormatWith("Url", request.Url));
+            sb.AppendLine("{0, 10} : {1}".FormatWith("HttpMethod", request.HttpMethod));
+            sb.AppendLine("{0, 10} : {1}".FormatWith("PostData", PostHandler.GetPostedMessage(request.InputStream)));
+            sb.AppendLine("*****************************************");
+            sb.AppendLine();
+            _logger.Warning(sb.ToString());
         }
 
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "rootDirectory", Justification = "This parameter may be needed in the future.")]
@@ -71,6 +87,10 @@ namespace StatLight.Core.WebServer.CustomHost
             if ((request.Url.Segments.Length > 1) && (request.Url.Segments[1] == StatLightServiceRestApi.PostMessage))
             {
                 ServeFunction(request, response);
+            }
+            else
+            {
+                HandleUnknownRequest(request, response);
             }
         }
 
@@ -87,7 +107,11 @@ namespace StatLight.Core.WebServer.CustomHost
         private void ServeFunction(HttpListenerRequest request, HttpListenerResponse response)
         {
             SetContentType(response, ContentTypeXml);
-            _postHandler.Handle(request.InputStream);
+            string unknownPostData;
+            if (!_postHandler.TryHandle(request.InputStream, out unknownPostData))
+            {
+                HandleUnknownRequest(request, response);
+            }
             _postHandler.TryWaitingForMessagesToCompletePosting();
         }
 

@@ -46,7 +46,12 @@ namespace StatLight.Core.WebServer.WcfHost
         {
             try
             {
-                _postHandler.Handle(stream);
+                string unknownPostData;
+                if (!_postHandler.TryHandle(stream, out unknownPostData))
+                {
+                    _logger.Error("Unknown message posted...");
+                    _logger.Error(unknownPostData);
+                }
             }
             catch (Exception ex)
             {

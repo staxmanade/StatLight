@@ -54,11 +54,13 @@ namespace StatLight.Core.WebServer
             _eventAggregator.SendMessage(result);
         }
 
-        public virtual void Handle(Stream messageStream)
+        public virtual bool TryHandle(Stream messageStream, out string unknownPostData)
         {
             Interlocked.Increment(ref _currentMessagesPostedCount);
 
             _eventAggregator.SendMessage<MessageReceivedFromClientServerEvent>();
+
+            unknownPostData = null;
 
             var xmlMessage = GetPostedMessage(messageStream);
 
@@ -85,36 +87,25 @@ namespace StatLight.Core.WebServer
                     _logger.Debug("Awaiting a total of {0} messages - currently have {1}".FormatWith(_totalMessagesPostedCount, _currentMessagesPostedCount));
                 }
 
-
+                return true;
             }
-            else
+
+
+            
+            if (xmlMessage.StartsWith("<", StringComparison.OrdinalIgnoreCase) && xmlMessage.IndexOf(' ') != -1)
             {
-                Action<string> unknownMsg = msg =>
-                                                {
-                                                    _logger.Error("Unknown message posted...");
-                                                    _logger.Error(xmlMessage);
-                                                };
-                if (xmlMessage.StartsWith("<", StringComparison.OrdinalIgnoreCase) && xmlMessage.IndexOf(' ') != -1)
+                string eventName = xmlMessage.Substring(1, xmlMessage.IndexOf(' ')).Trim();
+                if (_publishMethods.Any(w => w.Key.Name == eventName))
                 {
-                    string eventName = xmlMessage.Substring(1, xmlMessage.IndexOf(' ')).Trim();
-                    if (_publishMethods.Any(w => w.Key.Name == eventName))
-                    {
-                        KeyValuePair<Type, MethodInfo> eventType = _publishMethods.Where(w => w.Key.Name == eventName).SingleOrDefault();
-                        eventType.Value.Invoke(this, new[] { xmlMessage });
-                    }
-                    else
-                    {
-                        unknownMsg(xmlMessage);
-                    }
-                }
-                else
-                {
-                    unknownMsg(xmlMessage);
+                    KeyValuePair<Type, MethodInfo> eventType = _publishMethods.Where(w => w.Key.Name == eventName).SingleOrDefault();
+                    eventType.Value.Invoke(this, new[] { xmlMessage });
+                    return true;
                 }
             }
+            _logger.Debug("Should see this ***********************");
+            unknownPostData = xmlMessage;
+            return false;
         }
-
-
 
         private int _currentMessagesPostedCount;
         private int? _totalMessagesPostedCount;
@@ -145,7 +136,7 @@ namespace StatLight.Core.WebServer
             }
         }
 
-        private static string GetPostedMessage(Stream stream)
+        public static string GetPostedMessage(Stream stream)
         {
             string message;
             using (var reader = new StreamReader(stream))

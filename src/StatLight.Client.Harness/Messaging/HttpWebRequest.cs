@@ -1,9 +1,7 @@
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Windows.Browser;
-using StatLight.Client.Harness;
 
 namespace StatLight.Client.Model.Messaging
 {
@@ -55,11 +53,12 @@ namespace StatLight.Client.Model.Messaging
 
         private static void BeginResponse(IAsyncResult ar)
         {
+            var helper = ar.AsyncState as HttpWebRequestHelper;
+            if (helper == null)
+                return;
+
             try
             {
-                var helper = ar.AsyncState as HttpWebRequestHelper;
-                if (helper == null)
-                    return;
 
                 var response = helper.Request.EndGetResponse(ar) as HttpWebResponse;
                 if (response == null)
@@ -74,10 +73,9 @@ namespace StatLight.Client.Model.Messaging
                     helper.OnResponseComplete(new HttpResponseCompleteEventArgs(reader.ReadToEnd()));
                 }
             }
-#pragma warning disable 168
             catch (Exception ex)
-#pragma warning restore 168
             {
+                helper.OnResponseComplete(new HttpResponseCompleteEventArgs(ex));
                 //TODO: Research why these errors potentially happen - and how to fix
                 //Server.Trace(ex.ToString());
             }

@@ -710,7 +710,7 @@ Task test-remote-access-querystring {
 	
 	Stop-Process $cassiniProcess.Id -ErrorAction SilentlyContinue
 
-	Assert-statlight-xml-report-results -message "test-remote-access-test" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1
+	Assert-statlight-xml-report-results -message "test-remote-access-test" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 3
 }
 
 Task test-specific-multiple-browser-runner {
