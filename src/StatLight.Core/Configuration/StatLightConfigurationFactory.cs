@@ -26,7 +26,7 @@ namespace StatLight.Core.Configuration
             _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
         }
 
-        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart)
+        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost)
         {
             if (queryString == null)
                 throw new ArgumentNullException("queryString");
@@ -70,7 +70,8 @@ namespace StatLight.Core.Configuration
                 xapReadItems,
                 DefaultDialogSmackDownElapseMilliseconds,
                 queryString,
-                forceBrowserStart);
+                forceBrowserStart, 
+                showTestingBrowserHost);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
@@ -89,7 +90,9 @@ namespace StatLight.Core.Configuration
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion,
             XapReadItems xapReadItems,
             long dialogSmackDownElapseMilliseconds,
-            string queryString, bool forceBrowserStart)
+            string queryString,
+            bool forceBrowserStart,
+            bool showTestingBrowserHost)
         {
             XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
 
@@ -109,7 +112,7 @@ namespace StatLight.Core.Configuration
                };
             }
 
-            return new ServerTestRunConfiguration(hostXap, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, xapToTestFactory, queryString, forceBrowserStart);
+            return new ServerTestRunConfiguration(hostXap, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, xapToTestFactory, queryString, forceBrowserStart, showTestingBrowserHost);
         }
         private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, XapReadItems xapReadItems)
         {

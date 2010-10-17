@@ -91,7 +91,8 @@ namespace StatLight.Console
                                 useRemoteTestPage,
                                 queryString,
                                 webBrowserType,
-                                forceBrowserStart);
+                                forceBrowserStart,
+                                showTestingBrowserHost);
 
                         using (IRunner runner = GetRunner(
                                 logger,
@@ -213,16 +214,16 @@ Try: (the following two steps that should allow StatLight to start a web server 
                     return statLightRunnerFactory.CreateTeamCityRunner(statLightConfiguration);
 
                 case RunnerType.ContinuousTest:
-                    return statLightRunnerFactory.CreateContinuousTestRunner(logger, statLightConfiguration, showTestingBrowserHost);
+                    return statLightRunnerFactory.CreateContinuousTestRunner(logger, statLightConfiguration);
 
                 case RunnerType.WebServerOnly:
                     return statLightRunnerFactory.CreateWebServerOnlyRunner(logger, statLightConfiguration);
 
                 case RunnerType.RemoteRun:
-                    return statLightRunnerFactory.CreateRemotelyHostedRunner(logger, statLightConfiguration, showTestingBrowserHost);
+                    return statLightRunnerFactory.CreateRemotelyHostedRunner(logger, statLightConfiguration);
 
                 default:
-                    return statLightRunnerFactory.CreateOnetimeConsoleRunner(logger, statLightConfiguration, showTestingBrowserHost);
+                    return statLightRunnerFactory.CreateOnetimeConsoleRunner(logger, statLightConfiguration);
             }
         }
 

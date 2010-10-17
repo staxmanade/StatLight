@@ -72,11 +72,12 @@ namespace StatLight.IntegrationTests
                 1,
                 false,
                 "", StatLight.Core.WebBrowser.WebBrowserType.SelfHosted,
-                forceBrowserStart:true);
+                forceBrowserStart:true,
+                showTestingBrowserHost:false);
 
-            bool showTestingBrowserHost = statLightConfiguration.Server.XapHostType == XapHostType.MSTestApril2010;
+            //bool showTestingBrowserHost = statLightConfiguration.Server.XapHostType == XapHostType.MSTestApril2010;
             _testLogger.Debug("Setting up xaphost {0}".FormatWith(statLightConfiguration.Server.XapHostType));
-            Runner = _statLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, statLightConfiguration, showTestingBrowserHost);
+            Runner = _statLightRunnerFactory.CreateOnetimeConsoleRunner(_testLogger, statLightConfiguration);
 
             TestReport = Runner.Run();
         }

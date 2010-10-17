@@ -35,7 +35,7 @@ namespace StatLight.Core.Runners
             _eventAggregator = eventAggregator;
         }
 
-        public IRunner CreateContinuousTestRunner(ILogger logger, StatLightConfiguration statLightConfiguration, bool showTestingBrowserHost)
+        public IRunner CreateContinuousTestRunner(ILogger logger, StatLightConfiguration statLightConfiguration)
         {
             if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
@@ -45,7 +45,7 @@ namespace StatLight.Core.Runners
 
             BuildAndReturnWebServiceAndBrowser(
                 logger,
-                showTestingBrowserHost,
+                statLightConfiguration.Server.ShowTestingBrowserHost,
                 statLightConfiguration,
                 out webServer,
                 out webBrowsers,
@@ -80,7 +80,7 @@ namespace StatLight.Core.Runners
             return runner;
         }
 
-        public IRunner CreateOnetimeConsoleRunner(ILogger logger, StatLightConfiguration statLightConfiguration, bool showTestingBrowserHost)
+        public IRunner CreateOnetimeConsoleRunner(ILogger logger, StatLightConfiguration statLightConfiguration)
         {
             if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
@@ -90,7 +90,7 @@ namespace StatLight.Core.Runners
 
             BuildAndReturnWebServiceAndBrowser(
                 logger,
-                showTestingBrowserHost,
+                statLightConfiguration.Server.ShowTestingBrowserHost,
                 statLightConfiguration,
                 out webServer,
                 out webBrowsers,
@@ -204,7 +204,7 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public IRunner CreateRemotelyHostedRunner(ILogger logger, StatLightConfiguration statLightConfiguration, bool showTestingBrowserHost)
+        public IRunner CreateRemotelyHostedRunner(ILogger logger, StatLightConfiguration statLightConfiguration)
         {
             if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
@@ -219,7 +219,7 @@ namespace StatLight.Core.Runners
             SetupDebugClientEventListener(logger);
             var webServer = CreateWebServer(logger, statLightConfiguration, location);
 
-            showTestingBrowserHost = GetShowTestingBrowserHost(serverTestRunConfiguration, showTestingBrowserHost);
+            var showTestingBrowserHost = GetShowTestingBrowserHost(serverTestRunConfiguration, serverTestRunConfiguration.ShowTestingBrowserHost);
 
             var querystring = "?{0}={1}".FormatWith(StatLightServiceRestApi.StatLightResultPostbackUrl,
                                                    HttpUtility.UrlEncode(location.BaseUrl.ToString()));
