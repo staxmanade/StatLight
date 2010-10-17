@@ -22,26 +22,13 @@ namespace StatLight.Core.WebBrowser
         {
             get
             {
-                // These build tasks should be fun in 32-bit.
-                string pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
-                if (!Directory.Exists(pf))
+                if (!IsFirefoxInstalled())
                 {
-                    throw new InvalidOperationException("Could not locate the application directory.");
+                    throw new FileNotFoundException("The Firefox web browser application could not be located on this system.", FireFoxPath);
                 }
 
-                string firefox =
-                    Path.Combine(
-                    Path.Combine(
-                    pf,
-                    "Mozilla Firefox"),
-                    "firefox.exe");
-
-                if (!File.Exists(firefox))
-                {
-                    throw new FileNotFoundException("The Firefox web browser application could not be located on this system.", firefox);
-                }
-                return firefox;
+                return FireFoxPath;
             }
         }
 
@@ -106,6 +93,37 @@ namespace StatLight.Core.WebBrowser
         internal static IEnumerable<Process> GetFirefoxProcesses()
         {
             return Process.GetProcessesByName("firefox");
+        }
+
+        public static bool IsFirefoxInstalled()
+        {
+            if (File.Exists(FireFoxPath))
+                return true;
+
+            return false;
+        }
+
+        public static string FireFoxPath
+        {
+            get
+            {
+                // These build tasks should be fun in 32-bit.
+                string pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+
+                if (!Directory.Exists(pf))
+                {
+                    throw new InvalidOperationException("Could not locate the application directory.");
+                }
+
+                string firefox =
+                    Path.Combine(
+                    Path.Combine(
+                    pf,
+                    "Mozilla Firefox"),
+                    "firefox.exe");
+
+                return firefox;
+            }
         }
     }
 }

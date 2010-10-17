@@ -12,16 +12,25 @@ namespace StatLight.Core.Tests.WebBrowser
     {
         readonly Uri _blankUri = new Uri("about:blank");
 
+        private bool _isFirefoxInstalled = false;
+
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
-            FirefoxWebBrowser.KillFirefox();
+
+            if (FirefoxWebBrowser.IsFirefoxInstalled())
+            {
+                _isFirefoxInstalled = true;
+
+                ExecuteIfFirefoxInstalled(FirefoxWebBrowser.KillFirefox, false);
+            }
         }
 
         protected override void After_all_tests()
         {
             base.After_all_tests();
-            FirefoxWebBrowser.KillFirefox();
+
+            ExecuteIfFirefoxInstalled(FirefoxWebBrowser.KillFirefox, false);
         }
 
         private FirefoxWebBrowser GetFirefox(bool forceBrowserStart, bool isStartingMultipleInstances)
@@ -30,83 +39,103 @@ namespace StatLight.Core.Tests.WebBrowser
         }
 
         [Test]
-        [Explicit]
         public void Should_be_able_to_start_and_stop_a_firefox_process()
         {
-            var browser = GetFirefox(false, false);
-            browser.Start();
-            Thread.Sleep(3000);
-            AssertFirefoxIsRunning();
-
+            ExecuteIfFirefoxInstalled(() =>
+            {
+                var browser = GetFirefox(false, false);
+                browser.Start();
+                Thread.Sleep(3000);
+                AssertFirefoxIsRunning();
+            }, true);
         }
 
         [Test]
-        [Explicit]
         public void Should_fail_when_not_explicitly_allowed_to_kill_firefox()
         {
-            var browser = GetFirefox(false, false);
-            browser.Start();
-            Thread.Sleep(3000);
+            ExecuteIfFirefoxInstalled(() =>
+            {
+                var browser = GetFirefox(false, false);
+                browser.Start();
+                Thread.Sleep(3000);
 
-            // if firefox is already started - we should not start a new instance (unless we choose to force kill it)
-            typeof(StatLightException).ShouldBeThrownBy(browser.Start);
-            AssertFirefoxIsRunning();
+                // if firefox is already started - we should not start a new instance (unless we choose to force kill it)
+                typeof(StatLightException).ShouldBeThrownBy(browser.Start);
+                AssertFirefoxIsRunning();
+            }, true);
         }
 
 
         [Test]
-        [Explicit]
         public void Should_kill_and_start_a_new_instance_of_firefox_if_user_chooses_ForceBrowserStart()
         {
-            var browser = GetFirefox(true, false);
-            browser.Start();
-            Thread.Sleep(3000);
+            ExecuteIfFirefoxInstalled(() =>
+            {
+                var browser = GetFirefox(true, false);
+                browser.Start();
+                Thread.Sleep(3000);
 
-            // if firefox is already started - we should not start a new instance (unless we choose to force kill it)
-            browser.Start();
-            Thread.Sleep(5000);
-            AssertFirefoxIsRunning();
+                // if firefox is already started - we should not start a new instance (unless we choose to force kill it)
+                browser.Start();
+                Thread.Sleep(5000);
+                AssertFirefoxIsRunning();
+            }, true);
         }
 
 
         [Test]
-        [Explicit]
         public void Should_be_able_to_start_multiple_instances_of_a_browser_when_force_is_off()
         {
-            var b1 = GetFirefox(false, true);
-            var b2 = GetFirefox(false, true);
+            ExecuteIfFirefoxInstalled(() =>
+            {
+                var b1 = GetFirefox(false, true);
+                var b2 = GetFirefox(false, true);
 
-            b1.Start();
-            b2.Start();
+                b1.Start();
+                b2.Start();
 
-            Thread.Sleep(3000);
-            AssertFirefoxIsRunning();
+                Thread.Sleep(3000);
+                AssertFirefoxIsRunning();
 
-            b1.Stop();
-            b2.Stop();
+                b1.Stop();
+                b2.Stop();
+            }, true);
         }
 
 
         [Test]
-        [Explicit]
         public void Should_be_able_to_start_multiple_instances_of_a_browser_when_force_is_on()
         {
-            var b1 = GetFirefox(true, true);
-            var b2 = GetFirefox(true, true);
+            ExecuteIfFirefoxInstalled(() =>
+            {
+                var b1 = GetFirefox(true, true);
+                var b2 = GetFirefox(true, true);
 
-            b1.Start();
-            b2.Start();
+                b1.Start();
+                b2.Start();
 
-            Thread.Sleep(3000);
-            AssertFirefoxIsRunning();
+                Thread.Sleep(3000);
+                AssertFirefoxIsRunning();
 
-            b1.Stop();
-            b2.Stop();
+                b1.Stop();
+                b2.Stop();
+            }, true);
         }
 
         private void AssertFirefoxIsRunning()
         {
             FirefoxWebBrowser.GetFirefoxProcesses().Any().ShouldBeTrue("Number of firefox processes");
+        }
+
+        private void ExecuteIfFirefoxInstalled(Action action, bool shouldAssertIgnore)
+        {
+            if (_isFirefoxInstalled)
+                action();
+            else
+            {
+                if(shouldAssertIgnore)
+                    Assert.Ignore("Firefox does not appeard to be installed (in the following path {0})".FormatWith(FirefoxWebBrowser.FireFoxPath));
+            }
         }
 
     }
