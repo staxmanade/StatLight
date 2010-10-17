@@ -56,6 +56,8 @@ namespace StatLight.Console
             private set { _queryString = value; }
         }
 
+        public bool ForceBrowserStart { get; private set; }
+
         private ArgOptions()
             : this(new string[] { })
         {
@@ -146,6 +148,7 @@ namespace StatLight.Console
                     {
                         WebBrowserType = ParseEnum<WebBrowserType>(v);
                     })
+                .Add("ForceBrowserStart", "You may need use this option to give permission for StatLight to forcefully close external web browser processes before starting a test run.", v=>ForceBrowserStart = true)
                 .Add("NumberOfBrowserHosts", "Default is 1. Allows you to specify the number of browser windows to spread work across.", v =>
                     {
                         int value;

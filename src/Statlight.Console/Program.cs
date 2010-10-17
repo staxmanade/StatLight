@@ -65,6 +65,8 @@ namespace StatLight.Console
                     int numberOfBrowserHosts = options.NumberOfBrowserHosts;
                     string queryString = options.QueryString;
                     WebBrowserType webBrowserType = options.WebBrowserType;
+                    bool forceBrowserStart = options.ForceBrowserStart;
+
                     var statLightRunnerFactory = new StatLightRunnerFactory();
                     var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
 
@@ -78,7 +80,6 @@ namespace StatLight.Console
 
                     foreach (var xapPath in xapPaths)
                     {
-
                         StatLightConfiguration statLightConfiguration = statLightConfigurationFactory
                             .GetStatLightConfiguration(
                                 unitTestProviderType,
@@ -89,7 +90,8 @@ namespace StatLight.Console
                                 numberOfBrowserHosts,
                                 useRemoteTestPage,
                                 queryString,
-                                webBrowserType);
+                                webBrowserType,
+                                forceBrowserStart);
 
                         using (IRunner runner = GetRunner(
                                 logger,

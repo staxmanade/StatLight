@@ -47,7 +47,7 @@ namespace StatLight.Core.WebBrowser
         /// </summary>
         protected Process Process { get; set; }
 
-        private readonly ILogger _logger;
+        protected readonly ILogger _logger;
         private readonly Uri _uri;
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace StatLight.Core.WebBrowser
         /// <summary>
         /// Starts the web browser pointing to a particular address.
         /// </summary>
-        public void Start()
+        public virtual void Start()
         {
             // Start the browser process
             if (Process == null && !string.IsNullOrEmpty(Executable))
@@ -115,7 +115,7 @@ namespace StatLight.Core.WebBrowser
         /// Closes the process.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Need to keep requests going.")]
-        private void Close()
+        protected virtual void Close()
         {
             try
             {
