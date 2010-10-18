@@ -18,7 +18,7 @@ namespace StatLight.Core.WebBrowser
         /// Initializes a new instance of the OutOfProcessWebBrowser type with a
         /// provided path to the web browser.
         /// </summary>
-        public OutOfProcessWebBrowserBase(ILogger logger, Uri uri)
+        protected OutOfProcessWebBrowserBase(ILogger logger, Uri uri)
         {
             _logger = logger;
             _uri = uri;
@@ -166,13 +166,13 @@ namespace StatLight.Core.WebBrowser
             }
             finally
             {
-                Console.WriteLine("Browser closed.");
+                _logger.Debug("Browser closed.");
             }
         }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
-            Close();
+            Stop();
         }
 
         public void Stop()

@@ -20,16 +20,7 @@ namespace StatLight.Core.WebBrowser
 
         protected override string ExePath
         {
-            get
-            {
-
-                if (!IsFirefoxInstalled())
-                {
-                    throw new FileNotFoundException("The Firefox web browser application could not be located on this system.", FireFoxPath);
-                }
-
-                return FireFoxPath;
-            }
+            get { return FireFoxPath; }
         }
 
         protected override string GetCommandLineArguments(Uri uri)
