@@ -59,8 +59,6 @@ namespace StatLight.Core.WebServer.WcfHost
                 _logger.Error(ex.ToString());
                 throw;
             }
-
-            _postHandler.TryWaitingForMessagesToCompletePosting();
         }
 
         public Stream GetTestXap()

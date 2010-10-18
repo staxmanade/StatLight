@@ -112,7 +112,6 @@ namespace StatLight.Core.WebServer.CustomHost
             {
                 HandleUnknownRequest(request, response);
             }
-            _postHandler.TryWaitingForMessagesToCompletePosting();
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Need to keep the thread processing regardless.")]

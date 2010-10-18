@@ -87,6 +87,7 @@ namespace StatLight.Core.WebServer
                     _logger.Debug("Awaiting a total of {0} messages - currently have {1}".FormatWith(_totalMessagesPostedCount, _currentMessagesPostedCount));
                 }
 
+                TryWaitingForMessagesToCompletePosting();
                 return true;
             }
 
@@ -99,6 +100,7 @@ namespace StatLight.Core.WebServer
                 {
                     KeyValuePair<Type, MethodInfo> eventType = _publishMethods.Where(w => w.Key.Name == eventName).SingleOrDefault();
                     eventType.Value.Invoke(this, new[] { xmlMessage });
+                    TryWaitingForMessagesToCompletePosting();
                     return true;
                 }
             }
@@ -125,7 +127,7 @@ namespace StatLight.Core.WebServer
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "TestRunCompletedServerEvent")]
-        public void TryWaitingForMessagesToCompletePosting()
+        private void TryWaitingForMessagesToCompletePosting()
         {
             if (_totalMessagesPostedCount.HasValue && _currentMessagesPostedCount >= _totalMessagesPostedCount)
             {
