@@ -579,6 +579,7 @@ Task clean-build {
 	#-ErrorAction SilentlyContinue --- because of the *.vshost which is locked and we can't delete.
 	Remove-If-Exists $build_dir\*
 	Remove-If-Exists $release_dir
+	Remove-If-Exists temp*
 	
 	mkdir $build_dir -Force
 }
