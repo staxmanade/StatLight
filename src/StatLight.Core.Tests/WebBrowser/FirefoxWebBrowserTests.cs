@@ -8,29 +8,47 @@ using StatLight.Core.WebBrowser;
 namespace StatLight.Core.Tests.WebBrowser
 {
     [TestFixture]
+    [Explicit]
     public class FirefoxWebBrowserTests : FixtureBase
     {
         readonly Uri _blankUri = new Uri("about:blank");
 
-        private bool _isFirefoxInstalled = false;
+        private bool _isFirefoxInstalled;
+        private FirefoxWebBrowser _browser;
 
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
 
-            if (FirefoxWebBrowser.IsFirefoxInstalled())
+            _browser = GetFirefox(true, false);
+
+            if (_browser.IsBrowserInstalled)
             {
                 _isFirefoxInstalled = true;
 
-                ExecuteIfFirefoxInstalled(FirefoxWebBrowser.KillFirefox, false);
+                ExecuteIfFirefoxInstalled(_browser.KillAnyRunningBrowserInstances, false);
             }
+            _browser.GetAnyRunningBrowserProcesses().Any().ShouldBeFalse("firefox appears to already be running...?? why?");
         }
 
         protected override void After_all_tests()
         {
             base.After_all_tests();
 
-            ExecuteIfFirefoxInstalled(FirefoxWebBrowser.KillFirefox, false);
+            Action z = () =>
+                           {
+                               foreach (var process in _browser.GetAnyRunningBrowserProcesses())
+                               {
+                                   try
+                                   {
+                                       process.Kill();
+                                   }
+                                   catch (Exception ex)
+                                   {
+                                   }
+                               }
+                           };
+            ExecuteIfFirefoxInstalled(_browser.KillAnyRunningBrowserInstances, false);
         }
 
         private FirefoxWebBrowser GetFirefox(bool forceBrowserStart, bool isStartingMultipleInstances)
@@ -45,7 +63,7 @@ namespace StatLight.Core.Tests.WebBrowser
             {
                 var browser = GetFirefox(false, false);
                 browser.Start();
-                Thread.Sleep(3000);
+                WaitForAMoment();
                 AssertFirefoxIsRunning();
             }, true);
         }
@@ -53,11 +71,13 @@ namespace StatLight.Core.Tests.WebBrowser
         [Test]
         public void Should_fail_when_not_explicitly_allowed_to_kill_firefox()
         {
+            ExecuteIfFirefoxInstalled(_browser.KillAnyRunningBrowserInstances, false);
+
             ExecuteIfFirefoxInstalled(() =>
             {
                 var browser = GetFirefox(false, false);
                 browser.Start();
-                Thread.Sleep(3000);
+                WaitForAMoment();
 
                 // if firefox is already started - we should not start a new instance (unless we choose to force kill it)
                 typeof(StatLightException).ShouldBeThrownBy(browser.Start);
@@ -72,12 +92,14 @@ namespace StatLight.Core.Tests.WebBrowser
             ExecuteIfFirefoxInstalled(() =>
             {
                 var browser = GetFirefox(true, false);
+                WaitForAMoment();
                 browser.Start();
-                Thread.Sleep(3000);
+                WaitForAMoment();
+                WaitForAMoment();
 
                 // if firefox is already started - we should not start a new instance (unless we choose to force kill it)
                 browser.Start();
-                Thread.Sleep(5000);
+                WaitForAMoment();
                 AssertFirefoxIsRunning();
             }, true);
         }
@@ -94,7 +116,7 @@ namespace StatLight.Core.Tests.WebBrowser
                 b1.Start();
                 b2.Start();
 
-                Thread.Sleep(3000);
+                WaitForAMoment();
                 AssertFirefoxIsRunning();
 
                 b1.Stop();
@@ -114,7 +136,7 @@ namespace StatLight.Core.Tests.WebBrowser
                 b1.Start();
                 b2.Start();
 
-                Thread.Sleep(3000);
+                WaitForAMoment();
                 AssertFirefoxIsRunning();
 
                 b1.Stop();
@@ -124,7 +146,7 @@ namespace StatLight.Core.Tests.WebBrowser
 
         private void AssertFirefoxIsRunning()
         {
-            FirefoxWebBrowser.GetFirefoxProcesses().Any().ShouldBeTrue("Number of firefox processes");
+            _browser.GetAnyRunningBrowserProcesses().Any().ShouldBeTrue("Number of firefox processes");
         }
 
         private void ExecuteIfFirefoxInstalled(Action action, bool shouldAssertIgnore)
@@ -138,5 +160,9 @@ namespace StatLight.Core.Tests.WebBrowser
             }
         }
 
+        private static void WaitForAMoment()
+        {
+            Thread.Sleep(3000);
+        }
     }
 }

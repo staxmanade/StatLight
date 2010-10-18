@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using StatLight.Core.Common;
 
@@ -6,12 +8,22 @@ namespace StatLight.Core.WebBrowser
 {
     internal class ChromeWebBrowser : OutOfProcessWebBrowserBase
     {
-        public ChromeWebBrowser(ILogger logger, Uri uri)
-            : base(logger, uri)
+        public ChromeWebBrowser(ILogger logger, Uri uri, bool forceBrowserStart, bool isStartingMultipleInstances)
+            : base(logger, uri, forceBrowserStart, isStartingMultipleInstances)
         {
         }
 
+        protected override string ProcessName
+        {
+            get { return "chrome"; }
+        }
+
         protected override string ExePath
+        {
+            get { return ChromePath; }
+        }
+
+        public static string ChromePath
         {
             get
             {
@@ -36,10 +48,7 @@ namespace StatLight.Core.WebBrowser
                     "Application"),
                     "chrome.exe");
 
-                if (!File.Exists(chrome))
-                {
-                    throw new FileNotFoundException("The Chrome web browser application could not be located on this system.", chrome);
-                }
+
                 return chrome;
             }
         }

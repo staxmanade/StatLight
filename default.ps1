@@ -714,10 +714,21 @@ Task test-remote-access-querystring {
 }
 
 Task test-specific-multiple-browser-runner {
+
+	#$browsers = @( 'SelfHosted', 'Firefox', 'chrome' )
+	$browsers = @( 'SelfHosted' )
+	
+	foreach( $browser in $browsers )
+	{
+		MultipleBrowserRunner $browser
+	}
+}
+
+function MultipleBrowserRunner($browser)
+{
+	echo "Executing StatLight tests for WebBrowser type $browser"
 	$scriptFile = GetTemporaryXmlFile;
-	
-	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.LotsOfTests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.LotsOfTests.xap" "-r=$scriptFile" "-NumberOfBrowserHosts=5"
-	
+	execStatLight "--WebBrowserType:$browser" "-x=.\src\StatLight.IntegrationTests.Silverlight.LotsOfTests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.LotsOfTests.xap" "-r=$scriptFile" "-NumberOfBrowserHosts=5"
 	Assert-statlight-xml-report-results -message "test-specific-mutiple-browser-runner" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1000
 }
 
