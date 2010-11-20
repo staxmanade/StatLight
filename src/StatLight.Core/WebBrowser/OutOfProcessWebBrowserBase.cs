@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using StatLight.Core.Common;
 
@@ -18,13 +20,21 @@ namespace StatLight.Core.WebBrowser
         /// Initializes a new instance of the OutOfProcessWebBrowser type with a
         /// provided path to the web browser.
         /// </summary>
-        public OutOfProcessWebBrowserBase(ILogger logger, Uri uri)
+        protected OutOfProcessWebBrowserBase(ILogger logger, Uri uri, bool forceBrowserStart, bool isStartingMultipleInstances)
         {
             _logger = logger;
             _uri = uri;
+            _forceBrowserStart = forceBrowserStart;
+            _isStartingMultipleInstances = isStartingMultipleInstances;
         }
 
+        protected abstract string ProcessName { get; }
         protected abstract string ExePath { get; }
+
+        protected bool IsAnyBrowserProcessAlreadyRunning
+        {
+            get { return GetAnyExistingBrowserProcesses().Any(); }
+        }
 
         /// <summary>
         /// Gets or sets the location of the web browser process.
@@ -49,6 +59,8 @@ namespace StatLight.Core.WebBrowser
 
         protected readonly ILogger _logger;
         private readonly Uri _uri;
+        private readonly bool _forceBrowserStart;
+        private readonly bool _isStartingMultipleInstances;
 
         /// <summary>
         /// Gets a value indicating whether the browser process is currently
@@ -101,6 +113,19 @@ namespace StatLight.Core.WebBrowser
         /// </summary>
         public virtual void Start()
         {
+            if (IsAnyBrowserProcessAlreadyRunning)
+            {
+                if (!_isStartingMultipleInstances)
+                {
+                    if (_forceBrowserStart)
+                    {
+                        KillAnyRunningBrowserInstances();
+                    }
+                    else
+                        throw new StatLightException("An instance of the browser process is currently open. You can choose the --ForceBrowserStart option to kill existing instances before StatLight runs.");
+                }
+            }
+
             // Start the browser process
             if (Process == null && !string.IsNullOrEmpty(Executable))
             {
@@ -109,6 +134,30 @@ namespace StatLight.Core.WebBrowser
                     GetCommandLineArguments(_uri));
                 Process = Process.Start(psi);
             }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        internal void KillAnyRunningBrowserInstances()
+        {
+            foreach (var process in GetAnyRunningBrowserProcesses())
+            {
+                try
+                {
+                    process.Kill();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Debug(ex.ToString());
+                }
+            }
+
+            Process = null;
+            Thread.Sleep(1000);
+        }
+
+        internal IEnumerable<Process> GetAnyRunningBrowserProcesses()
+        {
+            return Process.GetProcessesByName(ProcessName);
         }
 
         /// <summary>
@@ -166,18 +215,45 @@ namespace StatLight.Core.WebBrowser
             }
             finally
             {
-                Console.WriteLine("Browser closed.");
+                _logger.Debug("Browser closed.");
             }
         }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
-            Close();
+            Stop();
         }
 
         public void Stop()
         {
             Close();
+        }
+
+        protected static string X86ProgramFilesFolder()
+        {
+            string pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+
+            if (!Directory.Exists(pf))
+            {
+                throw new InvalidOperationException("Could not locate the application directory.");
+            }
+            return pf;
+        }
+
+        protected IEnumerable<Process> GetAnyExistingBrowserProcesses()
+        {
+            return Process.GetProcessesByName(ProcessName);
+        }
+
+        public bool IsBrowserInstalled
+        {
+            get
+            {
+                if (File.Exists(ExePath))
+                    return true;
+
+                return false;
+            }
         }
     }
 }

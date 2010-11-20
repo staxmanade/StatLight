@@ -21,7 +21,7 @@ namespace StatLight.Core.WebBrowser
                 case WebBrowserType.Firefox:
                     return new FirefoxWebBrowser(_logger, pageToHost, forceBrowserStart, isStartingMultipleInstances);
                 case WebBrowserType.Chrome:
-                    return new ChromeWebBrowser(_logger, pageToHost);
+                    return new ChromeWebBrowser(_logger, pageToHost, forceBrowserStart, isStartingMultipleInstances);
             }
 
             throw new NotImplementedException();
