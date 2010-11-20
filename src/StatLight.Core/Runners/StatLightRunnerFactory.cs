@@ -105,7 +105,7 @@ namespace StatLight.Core.Runners
         {
             if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
-            var location = new WebServerLocation();
+            var location = new WebServerLocation(logger);
 
             var webServer = CreateWebServer(logger, statLightConfiguration, location);
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
@@ -149,7 +149,7 @@ namespace StatLight.Core.Runners
             ClientTestRunConfiguration clientTestRunConfiguration = statLightConfiguration.Client;
             ServerTestRunConfiguration serverTestRunConfiguration = statLightConfiguration.Server;
 
-            var location = new WebServerLocation();
+            var location = new WebServerLocation(logger);
             var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
             SetupDebugClientEventListener(logger);
             webServer = CreateWebServer(logger, statLightConfiguration, location);
@@ -214,7 +214,7 @@ namespace StatLight.Core.Runners
 
             var urlToTestPage = statLightConfiguration.Client.XapToTestUrl.ToUri();
 
-            var location = new RemoteSiteOverriddenLocation(urlToTestPage);
+            var location = new RemoteSiteOverriddenLocation(logger, urlToTestPage);
             var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
             SetupDebugClientEventListener(logger);
             var webServer = CreateWebServer(logger, statLightConfiguration, location);

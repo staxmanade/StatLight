@@ -1,4 +1,5 @@
 ﻿using System;
+using StatLight.Core.Common;
 
 namespace StatLight.Core.WebServer
 {
@@ -6,7 +7,8 @@ namespace StatLight.Core.WebServer
     {
         private readonly Uri _remotePath;
 
-        public RemoteSiteOverriddenLocation(Uri remotePath)
+        public RemoteSiteOverriddenLocation(ILogger logger, Uri remotePath)
+            : base(logger)
         {
             _remotePath = remotePath;
         }

@@ -1,9 +1,18 @@
 ﻿using System;
+using System.Net;
+using StatLight.Core.Common;
 
 namespace StatLight.Core.WebServer
 {
     public class WebServerLocation
     {
+        private readonly ILogger _logger;
+
+        public WebServerLocation(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         public virtual Uri TestPageUrl
         {
             get
@@ -21,12 +30,12 @@ namespace StatLight.Core.WebServer
             }
         }
 
-        private static string GetBaseUrl()
+        private string GetBaseUrl()
         {
             return ("http://localhost:" + GetUnusedPort() + "/");
         }
 
-        private static int GetUnusedPort()
+        private int GetUnusedPort()
         {
             int port = 8887;
 
@@ -36,23 +45,26 @@ namespace StatLight.Core.WebServer
             return port;
         }
 
-        private static bool TryPortNumber(int port)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        private bool TryPortNumber(int port)
         {
+            var url = "http://localhost:{0}/".FormatWith(port);
+
+            var server = new HttpListener();
             try
             {
-                using (var client = new System.Net.Sockets.TcpClient(new System.Net.IPEndPoint(System.Net.IPAddress.Any, port)))
-                {
-                    return true;
-                }
+                server.Prefixes.Add(url);
+                server.Start();
+                return true;
             }
-            catch (System.Net.Sockets.SocketException error)
+            catch (Exception ex)
             {
-                if (error.SocketErrorCode == System.Net.Sockets.SocketError.AddressAlreadyInUse ||
-                    error.SocketErrorCode == System.Net.Sockets.SocketError.AccessDenied)
-                    return false;
-
-                /* unexpected error that we DON'T have handling for here */
-                throw;
+                _logger.Debug(ex.ToString());
+                return false;
+            }
+            finally
+            {
+                server.Close();
             }
         }
     }

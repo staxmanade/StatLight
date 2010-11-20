@@ -15,7 +15,7 @@ namespace StatLight.Core.Tests.WebServer
 			protected override void Before_all_tests()
 			{
 				base.Before_all_tests();
-				webServerLocation = new WebServerLocation();
+                webServerLocation = new WebServerLocation(TestLogger);
 			}
 
 			[Test]
@@ -34,7 +34,7 @@ namespace StatLight.Core.Tests.WebServer
 				}
 				catch (Exception) { }
 
-				var otherLocation = new WebServerLocation();
+				var otherLocation = new WebServerLocation(TestLogger);
 
 
 				otherLocation.BaseUrl.Port.ShouldNotEqual(8887);

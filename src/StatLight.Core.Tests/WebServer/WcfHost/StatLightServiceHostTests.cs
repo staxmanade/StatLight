@@ -45,7 +45,7 @@ namespace StatLight.Core.Tests.WebServer.WcfHost
             {
                 base.Before_all_tests();
 
-                Uri baseUri = (new WebServerLocation()).BaseUrl;
+                Uri baseUri = (new WebServerLocation(TestLogger)).BaseUrl;
 
                 _statLightServiceHost = new StatLightServiceHost(TestLogger, StatLightServiceInstance, baseUri);
             }
