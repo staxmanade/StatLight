@@ -14,6 +14,7 @@ using StatLight.Core.WebServer;
 using StatLight.Core.Configuration;
 using StatLight.Core.Reporting;
 using StatLight.Core.WebServer.WcfHost;
+using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.Tests.WebServer.WcfHost
 {

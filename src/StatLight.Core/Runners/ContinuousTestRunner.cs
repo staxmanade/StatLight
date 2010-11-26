@@ -14,7 +14,8 @@ namespace StatLight.Core.Runners
     using StatLight.Core.Events;
     using StatLight.Core.Reporting.Providers.Console;
 
-    internal class ContinuousTestRunner : IDisposable
+    internal class ContinuousTestRunner : IDisposable,
+        IListener<TestRunCompletedServerEvent>
     {
         private readonly IWebBrowser _webBrowser;
         private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
@@ -41,6 +42,8 @@ namespace StatLight.Core.Runners
             _xapFileBuildChangedMonitor = xapFileBuildChangedMonitor;
             _xapPath = xapPath;
 
+            _eventAggregator.AddListener(this);
+
             _logger.Debug("ContinuousTestRunner.ctor()");
 
             _xapFileBuildChangedMonitor.FileChanged += (sender, e) =>
@@ -53,9 +56,6 @@ namespace StatLight.Core.Runners
                     Start();
                 }
             };
-
-            eventAggregator
-                .AddListener<TestRunCompletedServerEvent>(e => Stop());
 
             Start();
         }
@@ -97,6 +97,7 @@ namespace StatLight.Core.Runners
         {
             if (disposing)
             {
+                _eventAggregator.AddListener(this);
                 if (_testResultAggregator != null)
                     _testResultAggregator.Dispose();
             }
@@ -106,6 +107,11 @@ namespace StatLight.Core.Runners
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public void Handle(TestRunCompletedServerEvent message)
+        {
+            Stop();
         }
     }
 }

@@ -14,18 +14,6 @@ namespace StatLight.Core.Events.Aggregation
 
     public interface IEventSubscriptionManager
     {
-        // Explicit registration
-        IEventSubscriptionManager AddListener<T>(Action<T> listener);
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        IEventSubscriptionManager AddListener<T>(Action listener);
-
-        IEventSubscriptionManager AddListener(Action<object> listener, Predicate<object> filter);
-        IEventSubscriptionManager AddListener(Action listener, Predicate<object> filter);
-
-        // Listeners that apply a filter before handling
-        IEventSubscriptionManager AddListener<T>(Action<T> listener, Predicate<T> filter);
-        IEventSubscriptionManager AddListener<T>(Action listener, Predicate<T> filter);
-
         IEventSubscriptionManager AddListener(object listener);
 
         IEventSubscriptionManager RemoveListener(object listener);
@@ -46,7 +34,6 @@ namespace StatLight.Core.Events.Aggregation
 
     public class EventAggregator : IEventAggregator
     {
-        private readonly List<FilteredListener<object>> _filteredListeners = new List<FilteredListener<object>>();
         private readonly SynchronizationContext _context;
         public ILogger Logger { get; set; }
         private readonly List<object> _listeners = new List<object>();
@@ -69,7 +56,6 @@ namespace StatLight.Core.Events.Aggregation
             //if (Logger != null)
             //    Logger.Debug(typeof(T).Name);
             SendAction(() => CallOnEach<IListener<T>>(all(), x => x.Handle(message)));
-            SendAction(() => SendToAllFilteredListeners(message));
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
@@ -91,46 +77,8 @@ namespace StatLight.Core.Events.Aggregation
 
 
 
-        public IEventSubscriptionManager AddListener<T>(Action<T> listener)
-        {
-            var delegateListener = new DelegateListener<T>(listener);
-            AddListener(delegateListener);
-            return this;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public IEventSubscriptionManager AddListener<T>(Action listener)
-        {
-            var delegateListener = new DelegateListener<T>(msg => listener());
-            AddListener(delegateListener);
-            return this;
-        }
 
         #region FilteredListener
-
-        private void SendToAllFilteredListeners(object message)
-        {
-            foreach (FilteredListener<object> listener in allFiltered())
-            {
-                listener.Handle(message);
-            }
-        }
-
-        public IEventSubscriptionManager AddListener(Action<object> listener, Predicate<object> filter)
-        {
-            lock (_locker)
-            {
-                var filteredListener = new FilteredListener<object>(listener, filter);
-                if (_filteredListeners.Contains(filteredListener))
-                    return this;
-                _filteredListeners.Add(filteredListener);
-            }
-            return this;
-        }
-        public IEventSubscriptionManager AddListener(Action listener, Predicate<object> filter)
-        {
-            return AddListener(listener, filter);
-        }
 
         //TODO:
         //public IEventAggregator RemoveFilteredListener(object listener)
@@ -152,17 +100,6 @@ namespace StatLight.Core.Events.Aggregation
             return this;
         }
 
-        public IEventSubscriptionManager AddListener<T>(Action<T> listener, Predicate<T> filter)
-        {
-            AddListener(new FilteredListener<T>(listener, filter));
-            return this;
-        }
-
-        public IEventSubscriptionManager AddListener<T>(Action listener, Predicate<T> filter)
-        {
-            AddListener(new FilteredListener<T>(msg => listener(), filter));
-            return this;
-        }
 
         #endregion
 
@@ -171,14 +108,6 @@ namespace StatLight.Core.Events.Aggregation
             lock (_locker)
             {
                 return _listeners.ToArray();
-            }
-        }
-
-        private IEnumerable<FilteredListener<object>> allFiltered()
-        {
-            lock (_locker)
-            {
-                return _filteredListeners.ToArray();
             }
         }
 
@@ -237,47 +166,5 @@ namespace StatLight.Core.Events.Aggregation
                 CallOn(o, action);
             }
         }
-
-
-        private class DelegateListener<T> : IListener<T>
-        {
-            private readonly Action<T> _listener;
-
-            public DelegateListener(Action<T> listener)
-            {
-                _listener = listener;
-            }
-
-            public void Handle(T message)
-            {
-                _listener(message);
-            }
-        }
-
-
-        private class FilteredListener<T>
-            : IListener<T>
-        {
-            private readonly Predicate<T> _filter;
-            private readonly Action<T> _listener;
-
-            public FilteredListener(Action<T> listener, Predicate<T> filter)
-            {
-                _listener = listener;
-                _filter = filter;
-            }
-
-            public void Handle(T message)
-            {
-                if (_filter(message))
-                    _listener(message);
-            }
-
-            public override int GetHashCode()
-            {
-                return _listener.GetHashCode();
-            }
-        }
-
     }
 }

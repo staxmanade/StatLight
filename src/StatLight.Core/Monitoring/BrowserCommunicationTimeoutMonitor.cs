@@ -5,7 +5,10 @@ using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.Monitoring
 {
-    public class BrowserCommunicationTimeoutMonitor
+    public class BrowserCommunicationTimeoutMonitor : 
+        IListener<TestRunCompletedServerEvent>,
+        IListener<DialogAssertionServerEvent>,
+        IListener<MessageReceivedFromClientServerEvent>
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly ITimer _maxTimeoutTimer;
@@ -24,15 +27,6 @@ namespace StatLight.Core.Monitoring
             _maxTimeoutTimer.Elapsed += maxTimeoutTimer_Elapsed;
             _lastTimeAnyEventArrived = DateTime.Now;
 
-
-            _eventAggregator
-                .AddListener<TestRunCompletedServerEvent>(e => _maxTimeoutTimer.Stop());
-
-            _eventAggregator
-                .AddListener<DialogAssertionServerEvent>(ResetTimer);
-
-            _eventAggregator
-                .AddListener<MessageReceivedFromClientServerEvent>(ResetTimer);
 
             _maxTimeoutTimer.Start();
         }
@@ -59,6 +53,21 @@ namespace StatLight.Core.Monitoring
                         .SendMessage<TestRunCompletedServerEvent>();
                 }
             }
+        }
+
+        public void Handle(TestRunCompletedServerEvent message)
+        {
+            _maxTimeoutTimer.Stop();
+        }
+
+        public void Handle(DialogAssertionServerEvent message)
+        {
+            ResetTimer();
+        }
+
+        public void Handle(MessageReceivedFromClientServerEvent message)
+        {
+            ResetTimer();
         }
 
         private void ResetTimer()

@@ -6,6 +6,7 @@ using StatLight.Client.Harness.Events;
 using StatLight.Core.Configuration;
 using StatLight.Core.Tests;
 using StatLight.Core.Reporting;
+using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
 {
@@ -34,6 +35,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
             PathToIntegrationTestXap = TestXapFileLocations.MSTest;
             _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration();
+
             EventAggregator
                 .AddListener<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e)
                 //                .AddListener<TestExecutionClassBeginClientEvent>(e => _testExecutionClassBeginClientEvent.Add(e))

@@ -1,12 +1,11 @@
-﻿
-
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
 using StatLight.Core.Reporting;
 using System.Collections.Generic;
+using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.Tests.Reporting
 {

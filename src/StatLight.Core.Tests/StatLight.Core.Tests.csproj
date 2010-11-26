@@ -93,6 +93,7 @@
     <Compile Include="Common\LoggerBaseTests.cs" />
     <Compile Include="Console\ArgOptionsTests.cs" />
     <Compile Include="Console\ConsoleMainTests.cs" />
+    <Compile Include="Events\Aggregation\EventAggregatorExtensions.cs" />
     <Compile Include="Events\Aggregation\EventAggregatorTests.cs" />
     <Compile Include="Events\ExceptionInfoTests.cs" />
     <Compile Include="Reporting\DialogAssertionMessageMatchMakerTests.cs" />
