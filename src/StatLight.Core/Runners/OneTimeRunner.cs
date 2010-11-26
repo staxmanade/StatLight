@@ -43,9 +43,9 @@ namespace StatLight.Core.Runners
             _xapPath = xapPath;
             _dialogMonitorRunner = dialogMonitorRunner;
 
-            _testResultAggregator = new TestResultAggregator(logger, eventAggregator, _xapPath);
-            eventAggregator.AddListener(_testResultAggregator);
-            eventAggregator.AddListener(this);
+            _testResultAggregator = new TestResultAggregator(logger, _eventAggregator, _xapPath);
+            _eventAggregator.AddListener(_testResultAggregator);
+            _eventAggregator.AddListener(this);
         }
 
         public virtual TestReport Run()

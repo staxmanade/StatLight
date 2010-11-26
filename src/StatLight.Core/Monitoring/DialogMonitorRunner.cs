@@ -11,18 +11,18 @@ namespace StatLight.Core.Monitoring
     internal class DialogMonitorRunner : IDialogMonitorRunner
     {
         private readonly ILogger _logger;
-        private readonly IEventAggregator _eventAggregator;
+        private readonly IEventPublisher _eventPublisher;
         private readonly ITimer _dialogPingingTimer;
         private readonly IList<IDialogMonitor> _dialogMonitors;
         private readonly Dictionary<int, bool> _isMonitorCurrentlyRunning = new Dictionary<int, bool>();
 
-        public DialogMonitorRunner(ILogger logger, IEventAggregator eventAggregator, ITimer dialogPingingTimer, IList<IDialogMonitor> dialogMonitors)
+        public DialogMonitorRunner(ILogger logger, IEventPublisher eventPublisher, ITimer dialogPingingTimer, IList<IDialogMonitor> dialogMonitors)
         {
             if (dialogMonitors == null)
                 throw new ArgumentNullException("dialogMonitors");
 
             _logger = logger;
-            _eventAggregator = eventAggregator;
+            _eventPublisher = eventPublisher;
             _dialogPingingTimer = dialogPingingTimer;
             _dialogMonitors = dialogMonitors;
 
@@ -66,16 +66,16 @@ namespace StatLight.Core.Monitoring
                                    {
                                        if (msg.Contains("836D4425-DB59-48BB-BA7B-03AB20A57499"))
                                        {
-                                           _eventAggregator
+                                           _eventPublisher
                                                .SendMessage(new FatalSilverlightExceptionServerEvent(dialogType) { Message = msg, });
 
-                                           _eventAggregator
+                                           _eventPublisher
                                                .SendMessage<TestRunCompletedServerEvent>();
 
                                        }
                                        else
                                        {
-                                           _eventAggregator.SendMessage(
+                                           _eventPublisher.SendMessage(
                                                new DialogAssertionServerEvent(dialogType)
                                                    {
                                                        Message = msg,

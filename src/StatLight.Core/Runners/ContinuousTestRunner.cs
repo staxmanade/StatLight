@@ -20,8 +20,8 @@ namespace StatLight.Core.Runners
         private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
         private readonly IXapFileBuildChangedMonitor _xapFileBuildChangedMonitor;
         private readonly ILogger _logger;
-        private TestResultAggregator _testResultAggregator;
         private readonly IEventAggregator _eventAggregator;
+        private TestResultAggregator _testResultAggregator;
         private DateTime _startOfRun;
         private string _xapPath;
 

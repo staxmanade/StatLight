@@ -21,8 +21,8 @@ namespace StatLight.Core.Runners
 
 		internal ContinuousConsoleRunner(
 			ILogger logger,
-			IEventAggregator eventAggregator,
-			string xapPath,
+            IEventAggregator eventAggregator,
+            string xapPath,
             ClientTestRunConfiguration clientTestRunConfiguration,
 			IWebServer webServer,
 			IWebBrowser webBrowser)

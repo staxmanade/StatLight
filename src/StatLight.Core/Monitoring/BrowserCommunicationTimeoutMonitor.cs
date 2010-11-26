@@ -13,7 +13,8 @@ namespace StatLight.Core.Monitoring
         private DateTime _lastTimeAnyEventArrived;
         private bool _hasPublishedEvent;
 
-        public BrowserCommunicationTimeoutMonitor(IEventAggregator eventAggregator, ITimer maxTimeoutTimer, TimeSpan maxTimeAllowedBeforeCommunicationErrorSent)
+        public BrowserCommunicationTimeoutMonitor(IEventAggregator eventAggregator,
+            ITimer maxTimeoutTimer, TimeSpan maxTimeAllowedBeforeCommunicationErrorSent)
         {
             if (maxTimeoutTimer == null) throw new ArgumentNullException("maxTimeoutTimer");
             _eventAggregator = eventAggregator;

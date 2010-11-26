@@ -20,17 +20,17 @@ namespace StatLight.Core.Reporting
         IListener<TestExecutionMethodBeginClientEvent>
     {
         private readonly ILogger _logger;
-        private readonly IEventAggregator _eventAggregator;
+        private readonly IEventPublisher _eventPublisher;
         private readonly TestReport _currentReport;
         private readonly DialogAssertionMatchmaker _dialogAssertionMessageMatchmaker = new DialogAssertionMatchmaker();
         private readonly EventMatchMacker _eventMatchMacker;
         private readonly List<int> _beginEventsAlreadyFired = new List<int>();
 
-        public TestResultAggregator(ILogger logger, IEventAggregator eventAggregator, string xapPath)
+        public TestResultAggregator(ILogger logger, IEventPublisher eventPublisher, string xapPath)
         {
             //System.Diagnostics.Debugger.Break();
             _logger = logger;
-            _eventAggregator = eventAggregator;
+            _eventPublisher = eventPublisher;
             _currentReport = new TestReport(xapPath);
             _eventMatchMacker = new EventMatchMacker(_logger);
         }
@@ -192,7 +192,7 @@ namespace StatLight.Core.Reporting
         private void ReportIt(TestCaseResult result)
         {
             _currentReport.AddResult(result);
-            _eventAggregator.SendMessage(result);
+            _eventPublisher.SendMessage(result);
         }
 
         private class EventMatchMacker

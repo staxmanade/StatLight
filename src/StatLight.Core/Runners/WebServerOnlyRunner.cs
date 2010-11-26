@@ -17,8 +17,8 @@ namespace StatLight.Core.Runners
         private readonly Uri _testHtmlPageUrl;
         private readonly string _xapPath;
         private readonly ILogger _logger;
-        private readonly TestResultAggregator _testResultAggregator;
         private readonly IEventAggregator _eventAggregator;
+        private readonly TestResultAggregator _testResultAggregator;
 
         internal WebServerOnlyRunner(
             ILogger logger,

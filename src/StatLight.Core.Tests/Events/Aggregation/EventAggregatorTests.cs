@@ -3,6 +3,7 @@ using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.Tests.Events.Aggregation
 {
+
     namespace EventAggregatorTests
     {
         [TestFixture]

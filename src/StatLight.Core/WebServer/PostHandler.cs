@@ -17,18 +17,18 @@ namespace StatLight.Core.WebServer
     public class PostHandler : IPostHandler
     {
         private readonly ILogger _logger;
-        private readonly IEventAggregator _eventAggregator;
+        private readonly IEventPublisher _eventPublisher;
         private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
         private readonly IDictionary<Type, MethodInfo> _publishMethods;
 
-        public PostHandler(ILogger logger, IEventAggregator eventAggregator, ClientTestRunConfiguration clientTestRunConfiguration)
+        public PostHandler(ILogger logger, IEventPublisher eventPublisher, ClientTestRunConfiguration clientTestRunConfiguration)
         {
             if (logger == null) throw new ArgumentNullException("logger");
-            if (eventAggregator == null) throw new ArgumentNullException("eventAggregator");
+            if (eventPublisher == null) throw new ArgumentNullException("eventPublisher");
             if (clientTestRunConfiguration == null) throw new ArgumentNullException("clientTestRunConfiguration");
 
             _logger = logger;
-            _eventAggregator = eventAggregator;
+            _eventPublisher = eventPublisher;
             _clientTestRunConfiguration = clientTestRunConfiguration;
 
 
@@ -51,14 +51,14 @@ namespace StatLight.Core.WebServer
         {
             var result = xmlMessage.Deserialize<T>();
             //DebugLogClientEvent(result);
-            _eventAggregator.SendMessage(result);
+            _eventPublisher.SendMessage(result);
         }
 
         public virtual bool TryHandle(Stream messageStream, out string unknownPostData)
         {
             Interlocked.Increment(ref _currentMessagesPostedCount);
 
-            _eventAggregator.SendMessage<MessageReceivedFromClientServerEvent>();
+            _eventPublisher.SendMessage<MessageReceivedFromClientServerEvent>();
 
             unknownPostData = null;
 
@@ -70,7 +70,7 @@ namespace StatLight.Core.WebServer
             {
 
                 var result = xmlMessage.Deserialize<SignalTestCompleteClientEvent>();
-                _eventAggregator.SendMessage(result);
+                _eventPublisher.SendMessage(result);
                 var totalMessagsPostedCount = result.TotalMessagesPostedCount;
 
                 _logger.Debug("");
@@ -132,7 +132,7 @@ namespace StatLight.Core.WebServer
             if (_totalMessagesPostedCount.HasValue && _currentMessagesPostedCount >= _totalMessagesPostedCount)
             {
                 _logger.Debug("publishing TestRunCompletedServerEvent");
-                _eventAggregator.SendMessage(new TestRunCompletedServerEvent());
+                _eventPublisher.SendMessage(new TestRunCompletedServerEvent());
 
                 ResetTestRunStatistics();
             }

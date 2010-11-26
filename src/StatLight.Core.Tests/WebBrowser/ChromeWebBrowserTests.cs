@@ -43,7 +43,9 @@ namespace StatLight.Core.Tests.WebBrowser
                     {
                         process.Kill();
                     }
+#pragma warning disable 168
                     catch (Exception ex)
+#pragma warning restore 168
                     {
                     }
                 }

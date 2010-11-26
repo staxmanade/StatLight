@@ -26,9 +26,7 @@ namespace StatLight.Core.Runners
         private ConsoleResultHandler _consoleResultHandler;
         private Action<DebugClientEvent> _debugEventListener;
 
-        public StatLightRunnerFactory()
-            : this(new EventAggregator())
-        { }
+        public StatLightRunnerFactory() : this(new EventAggregator()) { }
 
         public StatLightRunnerFactory(IEventAggregator eventAggregator)
         {
