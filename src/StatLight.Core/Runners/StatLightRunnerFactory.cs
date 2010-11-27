@@ -72,7 +72,6 @@ namespace StatLight.Core.Runners
                 out dialogMonitorRunner);
 
             var teamCityTestResultHandler = new TeamCityTestResultHandler(new ConsoleCommandWriter(), statLightConfiguration.Server.XapToTestPath);
-            _eventAggregator.AddListener(teamCityTestResultHandler);
             IRunner runner = new TeamCityRunner(new NullLogger(), _eventAggregator, webServer, webBrowsers, teamCityTestResultHandler, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
 
             return runner;

@@ -14,37 +14,34 @@ namespace StatLight.Core.Runners
     internal class TeamCityRunner : OnetimeRunner
     {
         private readonly IEventSubscriptionManager _eventSubscriptionManager;
-        readonly TeamCityTestResultHandler _teamCityCommandPublisher;
+        readonly TeamCityTestResultHandler _teamCityTestResultHandler;
 
         internal TeamCityRunner(
             ILogger logger,
             IEventAggregator eventAggregator,
             IWebServer webServer,
             List<IWebBrowser> webBrowsers,
-            TeamCityTestResultHandler teamCityCommandPublisher,
+            TeamCityTestResultHandler teamCityTestResultHandler,
             string xapPath,
             IDialogMonitorRunner dialogMonitorRunner)
             : base(logger, eventAggregator, webServer, webBrowsers, xapPath, dialogMonitorRunner)
         {
             _eventSubscriptionManager = eventAggregator;
-            _teamCityCommandPublisher = teamCityCommandPublisher;
+            _teamCityTestResultHandler = teamCityTestResultHandler;
         }
 
         public override TestReport Run()
         {
-            _teamCityCommandPublisher.PublishStart();
+            _eventSubscriptionManager.AddListener(_teamCityTestResultHandler);
+
+            _teamCityTestResultHandler.PublishStart();
 
             var testReport = base.Run();
 
-            _teamCityCommandPublisher.PublishStop();
+            _teamCityTestResultHandler.PublishStop();
 
+            _eventSubscriptionManager.RemoveListener(_teamCityTestResultHandler);
             return testReport;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _eventSubscriptionManager.RemoveListener(_teamCityCommandPublisher);
-            base.Dispose(disposing);
         }
     }
 }

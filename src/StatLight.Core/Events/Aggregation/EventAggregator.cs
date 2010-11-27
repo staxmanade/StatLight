@@ -22,7 +22,6 @@ namespace StatLight.Core.Events.Aggregation
     public interface IEventPublisher
     {
         void SendMessage<T>(T message);
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         void SendMessage<T>() where T : new();
     }
 
@@ -57,7 +56,6 @@ namespace StatLight.Core.Events.Aggregation
             SendAction(() => CallOnEach<IListener<T>>(all(), x => x.Handle(message)));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public void SendMessage<T>() where T : new()
         {
             SendMessage(new T());
@@ -67,7 +65,7 @@ namespace StatLight.Core.Events.Aggregation
         {
             lock (_locker)
             {
-                if (_listeners.Contains(listener))
+                if (HasListener(listener))
                     return this;
                 _listeners.Add(listener);
             }
