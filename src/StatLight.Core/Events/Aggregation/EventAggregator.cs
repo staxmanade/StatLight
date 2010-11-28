@@ -25,12 +25,7 @@ namespace StatLight.Core.Events.Aggregation
         void SendMessage<T>() where T : new();
     }
 
-    public interface IEventAggregator : IEventPublisher, IEventSubscriptionManager
-    {
-
-    }
-
-    public class EventAggregator : IEventAggregator
+    public class EventAggregator : IEventPublisher, IEventSubscriptionManager
     {
         private readonly SynchronizationContext _context;
         public ILogger Logger { get; set; }

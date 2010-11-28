@@ -1,15 +1,14 @@
 ﻿
-using System.Collections.Generic;
-using StatLight.Core.Events.Aggregation;
-using StatLight.Core.Monitoring;
-
 namespace StatLight.Core.Runners
 {
+    using System.Collections.Generic;
     using StatLight.Core.Common;
+    using StatLight.Core.Events.Aggregation;
+    using StatLight.Core.Monitoring;
+    using StatLight.Core.Reporting;
     using StatLight.Core.Reporting.Providers.TeamCity;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
-    using StatLight.Core.Reporting;
 
     internal class TeamCityRunner : OnetimeRunner
     {
@@ -18,15 +17,16 @@ namespace StatLight.Core.Runners
 
         internal TeamCityRunner(
             ILogger logger,
-            IEventAggregator eventAggregator,
+            IEventSubscriptionManager eventSubscriptionManager, 
+            IEventPublisher eventPublisher,
             IWebServer webServer,
             List<IWebBrowser> webBrowsers,
             TeamCityTestResultHandler teamCityTestResultHandler,
             string xapPath,
             IDialogMonitorRunner dialogMonitorRunner)
-            : base(logger, eventAggregator, webServer, webBrowsers, xapPath, dialogMonitorRunner)
+            : base(logger, eventSubscriptionManager, eventPublisher, webServer, webBrowsers, xapPath, dialogMonitorRunner)
         {
-            _eventSubscriptionManager = eventAggregator;
+            _eventSubscriptionManager = eventSubscriptionManager;
             _teamCityTestResultHandler = teamCityTestResultHandler;
         }
 

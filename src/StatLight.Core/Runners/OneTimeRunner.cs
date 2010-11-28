@@ -19,7 +19,7 @@ namespace StatLight.Core.Runners
         IListener<TestRunCompletedServerEvent>
     {
         private readonly ILogger _logger;
-        private readonly IEventAggregator _eventAggregator;
+        private readonly IEventSubscriptionManager _eventSubscriptionManager;
         private readonly IWebServer _webServer;
         private readonly List<IWebBrowser> _webBrowsers;
         private readonly string _xapPath;
@@ -27,25 +27,25 @@ namespace StatLight.Core.Runners
         private readonly TestResultAggregator _testResultAggregator;
         readonly AutoResetEvent _browserThreadWaitHandle = new AutoResetEvent(false);
 
-
         internal OnetimeRunner(
             ILogger logger,
-            IEventAggregator eventAggregator,
+            IEventSubscriptionManager eventSubscriptionManager,
+            IEventPublisher eventPublisher,
             IWebServer webServer,
             List<IWebBrowser> webBrowsers,
             string xapPath,
             IDialogMonitorRunner dialogMonitorRunner)
         {
             _logger = logger;
-            _eventAggregator = eventAggregator;
+            _eventSubscriptionManager = eventSubscriptionManager;
             _webServer = webServer;
             _webBrowsers = webBrowsers;
             _xapPath = xapPath;
             _dialogMonitorRunner = dialogMonitorRunner;
 
-            _testResultAggregator = new TestResultAggregator(logger, _eventAggregator, _xapPath);
-            _eventAggregator.AddListener(_testResultAggregator);
-            _eventAggregator.AddListener(this);
+            _testResultAggregator = new TestResultAggregator(logger, eventPublisher, _xapPath);
+            _eventSubscriptionManager.AddListener(_testResultAggregator);
+            _eventSubscriptionManager.AddListener(this);
         }
 
         public virtual TestReport Run()
@@ -77,8 +77,8 @@ namespace StatLight.Core.Runners
             {
                 foreach (var browser in _webBrowsers)
                     browser.Dispose();
-                _eventAggregator.RemoveListener(this);
-                _eventAggregator.RemoveListener(_testResultAggregator);
+                _eventSubscriptionManager.RemoveListener(this);
+                _eventSubscriptionManager.RemoveListener(_testResultAggregator);
                 _browserThreadWaitHandle.Close();
                 _testResultAggregator.Dispose();
             }

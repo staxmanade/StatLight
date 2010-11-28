@@ -31,7 +31,7 @@ namespace StatLight.Core.Tests.WebBrowser
 
 	////        mockDialogPingingTimer.SetupProperty(s => s.Enabled, timerEnabled);
 
-	////        debugAssertMonitor = new DialogMonitorRunner(TestLogger, base.TestEventAggregator, mockDialogPingingTimer.Object);
+	////        debugAssertMonitor = new DialogMonitorRunner(TestLogger, base.TestEventSubscriptionManager, mockDialogPingingTimer.Object);
 	////    }
 
 	////    [Test]
@@ -45,7 +45,7 @@ namespace StatLight.Core.Tests.WebBrowser
 	////    public void when_the_DialogPingingTimer_fires_it_should_kick_off_a_slapdown()
 	////    {
 	////        bool slapDownStarted = false;
-	////        base.TestEventAggregator
+	////        base.TestEventSubscriptionManager
 	////            .GetEvent<DialogAssertionServerEvent>()
 	////            .Subscribe((result) => { slapDownStarted = true; });
 
@@ -66,7 +66,7 @@ namespace StatLight.Core.Tests.WebBrowser
 	////    public void when_dialog_timer_fired_and_no_dialog_found_the_slapDown_event_should_not_be_raised()
 	////    {
 	////        bool slapDownStarted = false;
-	////        base.TestEventAggregator
+	////        base.TestEventSubscriptionManager
 	////            .GetEvent<DialogAssertionServerEvent>()
 	////            .Subscribe((resutl) => { slapDownStarted = true; });
 

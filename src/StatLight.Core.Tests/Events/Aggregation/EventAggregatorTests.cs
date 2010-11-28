@@ -9,7 +9,8 @@ namespace StatLight.Core.Tests.Events.Aggregation
         [TestFixture]
         public class when_giving_the_event_aggregator_a_class_that_listens_to_multiple_events : FixtureBase
         {
-            private IEventAggregator _eventAggregator;
+            protected IEventSubscriptionManager _eventSubscriptionManager;
+            protected IEventPublisher _eventPublisher;
 
             private static bool _intListenerHandledMessage;
             private static bool _stringListenerHandledMessage;
@@ -18,16 +19,18 @@ namespace StatLight.Core.Tests.Events.Aggregation
             {
                 base.Before_all_tests();
 
-                _eventAggregator = new EventAggregator();
-                _eventAggregator.AddListener(new MultiListener());
+                var ea = new EventAggregator();
+                _eventSubscriptionManager = ea;
+                _eventPublisher = ea;
+                _eventSubscriptionManager.AddListener(new MultiListener());
             }
 
             protected override void Because()
             {
                 base.Because();
 
-                _eventAggregator.SendMessage(1);
-                _eventAggregator.SendMessage("hello");
+                _eventPublisher.SendMessage(1);
+                _eventPublisher.SendMessage("hello");
             }
 
             [Test]

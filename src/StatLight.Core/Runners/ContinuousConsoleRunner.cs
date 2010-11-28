@@ -21,7 +21,8 @@ namespace StatLight.Core.Runners
 
         internal ContinuousConsoleRunner(
             ILogger logger,
-            IEventAggregator eventAggregator,
+            IEventSubscriptionManager eventSubscriptionManager,
+            IEventPublisher eventPublisher ,
             string xapPath,
             ClientTestRunConfiguration clientTestRunConfiguration,
             IWebServer webServer,
@@ -33,7 +34,7 @@ namespace StatLight.Core.Runners
 
             _continuousRunnerThread = new Thread(() =>
             {
-                using (var runner = new ContinuousTestRunner(logger, eventAggregator, webBrowser, clientTestRunConfiguration, _xapFileBuildChangedMonitor, _xapPath))
+                using (var runner = new ContinuousTestRunner(logger, eventSubscriptionManager, eventPublisher, webBrowser, clientTestRunConfiguration, _xapFileBuildChangedMonitor, _xapPath))
                 {
                     string line;
                     while (!(line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))

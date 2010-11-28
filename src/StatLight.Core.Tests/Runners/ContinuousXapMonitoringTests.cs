@@ -22,7 +22,7 @@ namespace StatLight.Core.Tests.Runners
         private ContinuousTestRunner CreateContinuousTestRunner()
         {
             var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
-            var runner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _mockWebBrowser.Object, clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
+            var runner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
             return runner;
         }
 
@@ -45,7 +45,7 @@ namespace StatLight.Core.Tests.Runners
         {
             var runner = CreateContinuousTestRunner();
 
-            TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
+            TestEventPublisher.SendMessage(new TestRunCompletedServerEvent());
 
             runner.IsCurrentlyRunningTest.ShouldBeFalse();
             _mockWebBrowser.Verify(x => x.Stop());
@@ -68,10 +68,10 @@ namespace StatLight.Core.Tests.Runners
             base.Before_all_tests();
 
             _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
-            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventAggregator, _mockWebBrowser.Object, _clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
+            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, _clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
 
             // Signal that the first test has already finished.
-            TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
+            TestEventPublisher.SendMessage(new TestRunCompletedServerEvent());
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace StatLight.Core.Tests.Runners
 
             _continuousTestRunner.IsCurrentlyRunningTest.ShouldBeTrue();
 
-            TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
+            TestEventPublisher.SendMessage(new TestRunCompletedServerEvent());
 
             _continuousTestRunner.IsCurrentlyRunningTest.ShouldBeFalse();
         }

@@ -19,12 +19,17 @@ namespace StatLight.Core.Tests
         }
 
         public ILogger TestLogger { get; set; }
-        public IEventAggregator TestEventAggregator { get; set; }
+
+        private EventAggregator _eventSubscriptionManager;
+
+        public IEventSubscriptionManager TestEventSubscriptionManager { get { return _eventSubscriptionManager; } }
+
+        protected IEventPublisher TestEventPublisher { get { return _eventSubscriptionManager; } }
 
         [TestFixtureSetUp]
         public void SetupContext()
         {
-            TestEventAggregator = new EventAggregator(new SynchronizationContext());
+            _eventSubscriptionManager = new EventAggregator();
 
             Before_all_tests();
             Because();

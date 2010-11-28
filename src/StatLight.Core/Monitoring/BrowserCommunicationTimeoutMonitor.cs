@@ -10,17 +10,17 @@ namespace StatLight.Core.Monitoring
         IListener<DialogAssertionServerEvent>,
         IListener<MessageReceivedFromClientServerEvent>
     {
-        private readonly IEventAggregator _eventAggregator;
+        private readonly IEventPublisher _eventPublisher;
         private readonly ITimer _maxTimeoutTimer;
         private readonly TimeSpan _maxTimeAllowedBeforeCommunicationErrorSent;
         private DateTime _lastTimeAnyEventArrived;
         private bool _hasPublishedEvent;
 
-        public BrowserCommunicationTimeoutMonitor(IEventAggregator eventAggregator,
+        public BrowserCommunicationTimeoutMonitor(IEventPublisher eventPublisher,
             ITimer maxTimeoutTimer, TimeSpan maxTimeAllowedBeforeCommunicationErrorSent)
         {
             if (maxTimeoutTimer == null) throw new ArgumentNullException("maxTimeoutTimer");
-            _eventAggregator = eventAggregator;
+            _eventPublisher = eventPublisher;
             _maxTimeoutTimer = maxTimeoutTimer;
             _maxTimeAllowedBeforeCommunicationErrorSent = maxTimeAllowedBeforeCommunicationErrorSent;
 
@@ -41,7 +41,7 @@ namespace StatLight.Core.Monitoring
                 {
                     _hasPublishedEvent = true;
 
-                    _eventAggregator
+                    _eventPublisher
                         .SendMessage(
                             new BrowserHostCommunicationTimeoutServerEvent
                                 {
@@ -49,7 +49,7 @@ namespace StatLight.Core.Monitoring
                                 }
                         );
 
-                    _eventAggregator
+                    _eventPublisher
                         .SendMessage<TestRunCompletedServerEvent>();
                 }
             }

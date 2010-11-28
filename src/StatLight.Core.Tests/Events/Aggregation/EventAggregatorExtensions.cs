@@ -4,7 +4,7 @@ namespace StatLight.Core.Events.Aggregation
 {
     public static class EventAggregatorExtensions
     {
-        public static IEventAggregator AddListener<T>(this IEventAggregator eventAggregator, Action<T> listener)
+        public static IEventSubscriptionManager AddListener<T>(this IEventSubscriptionManager eventAggregator, Action<T> listener)
         {
             var delegateListener = new DelegateListener<T>(listener);
             eventAggregator.AddListener(delegateListener);
@@ -12,14 +12,14 @@ namespace StatLight.Core.Events.Aggregation
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public static IEventAggregator AddListener<T>(this IEventAggregator eventAggregator, Action listener)
+        public static IEventSubscriptionManager AddListener<T>(this IEventSubscriptionManager eventAggregator, Action listener)
         {
             var delegateListener = new DelegateListener<T>(msg => listener());
             eventAggregator.AddListener(delegateListener);
             return eventAggregator;
         }
 
-        public static IEventAggregator AddListener(this IEventAggregator eventAggregator, Action listener, Predicate<object> filter)
+        public static IEventSubscriptionManager AddListener(this IEventSubscriptionManager eventAggregator, Action listener, Predicate<object> filter)
         {
             return eventAggregator.AddListener(listener, filter);
         }

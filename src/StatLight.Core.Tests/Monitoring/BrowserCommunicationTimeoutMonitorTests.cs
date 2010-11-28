@@ -22,7 +22,7 @@ namespace StatLight.Core.Tests.Monitoring
 
                 MockTimer = new Mock<ITimer>();
 
-                Monitor = new BrowserCommunicationTimeoutMonitor(TestEventAggregator, MockTimer.Object,
+                Monitor = new BrowserCommunicationTimeoutMonitor(TestEventPublisher, MockTimer.Object,
                                                                   new TimeSpan(0, 0, 0, 1, 0));
             }
 
@@ -35,7 +35,7 @@ namespace StatLight.Core.Tests.Monitoring
 
             public void SetupEventToSeeIfPublished()
             {
-                TestEventAggregator
+                TestEventSubscriptionManager
                     .AddListener<BrowserHostCommunicationTimeoutServerEvent>(e => EventPublished = true);
             }
         }
@@ -48,7 +48,7 @@ namespace StatLight.Core.Tests.Monitoring
             {
                 base.Before_all_tests();
                 SetupEventToSeeIfPublished();
-                TestEventAggregator.SendMessage(new TestRunCompletedServerEvent());
+                TestEventPublisher.SendMessage(new TestRunCompletedServerEvent());
             }
 
 
@@ -67,7 +67,7 @@ namespace StatLight.Core.Tests.Monitoring
             protected override void Before_all_tests()
             {
                 base.Before_all_tests();
-                //TestEventAggregator.SendMessage(new TestResultEvent());
+                //TestEventPublisher.SendMessage(new TestResultEvent());
                 SetupEventToSeeIfPublished();
             }
 
@@ -115,7 +115,7 @@ namespace StatLight.Core.Tests.Monitoring
             {
                 base.Before_all_tests();
 
-                TestEventAggregator
+                TestEventSubscriptionManager
                     .AddListener<BrowserHostCommunicationTimeoutServerEvent>(o => _publishedEventsCount++);
             }
 

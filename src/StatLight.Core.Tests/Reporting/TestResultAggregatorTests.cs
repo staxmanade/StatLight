@@ -19,7 +19,7 @@ namespace StatLight.Core.Tests.Reporting
             {
                 base.Before_all_tests();
 
-                TestResultAggregator = new TestResultAggregator(TestLogger, TestEventAggregator, "test");
+                TestResultAggregator = new TestResultAggregator(TestLogger, base.TestEventPublisher, "test");
             }
         }
 
@@ -250,7 +250,7 @@ namespace StatLight.Core.Tests.Reporting
             {
                 base.Before_all_tests();
 
-                TestEventAggregator
+                TestEventSubscriptionManager
                     .AddListener<TestCaseResult>(e =>
                     {
                         if (e.ResultType == ResultType.SystemGeneratedFailure)

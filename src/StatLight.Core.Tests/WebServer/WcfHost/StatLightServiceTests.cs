@@ -44,7 +44,7 @@ namespace StatLight.Core.Tests.WebServer.WcfHost
 
                 _hostXap = serverConfig.HostXap;
                 var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
-                var postHandler = new PostHandler(base.TestLogger, base.TestEventAggregator, clientConfig);
+                var postHandler = new PostHandler(base.TestLogger, base.TestEventPublisher, clientConfig);
                 _statLightService = new StatLightService(new NullLogger(), base.CreateTestDefaultClinetTestRunConfiguraiton(), serverConfig, postHandler);
             }
 
@@ -71,14 +71,14 @@ namespace StatLight.Core.Tests.WebServer.WcfHost
             {
                 base.Before_all_tests();
 
-                TestResultAggregator = new TestResultAggregator(TestLogger, TestEventAggregator, "test");
-                TestEventAggregator.AddListener(TestResultAggregator);
+                TestResultAggregator = new TestResultAggregator(TestLogger, TestEventPublisher, "test");
+                TestEventSubscriptionManager.AddListener(TestResultAggregator);
 
-                TestEventAggregator
+                TestEventSubscriptionManager
                     .AddListener<TestRunCompletedServerEvent>(e => WasTestCompleteSignalSent = true);
 
 
-                TestEventAggregator
+                TestEventSubscriptionManager
                     .AddListener<UnhandledExceptionClientEvent>(e => _errors.Add(e));
 
                 var postCount = PostMessagesToService();
@@ -186,7 +186,7 @@ namespace StatLight.Core.Tests.WebServer.WcfHost
             {
                 bool wasSignaledTestComplete = false;
 
-                TestEventAggregator
+                TestEventSubscriptionManager
                     .AddListener<TestRunCompletedServerEvent>(o => wasSignaledTestComplete = true);
 
                 SignalTestComplete(StatLightService, 1);
@@ -199,7 +199,7 @@ namespace StatLight.Core.Tests.WebServer.WcfHost
             {
                 bool wasSignaledTestComplete = false;
 
-                TestEventAggregator
+                TestEventSubscriptionManager
                     .AddListener<TestRunCompletedServerEvent>(o => wasSignaledTestComplete = true);
 
                 // Signal completion of the test with a total of 2 messages 
@@ -225,7 +225,7 @@ namespace StatLight.Core.Tests.WebServer.WcfHost
             public void when_one_message_was_posted_for_two_seperate_test_runs()
             {
                 bool wasSignaledTestComplete = false;
-                TestEventAggregator
+                TestEventSubscriptionManager
                     .AddListener<TestRunCompletedServerEvent>(o => wasSignaledTestComplete = true);
 
                 StatLightService.PostMessage(MessageFactory.Create<TraceClientEvent>());
@@ -312,7 +312,7 @@ namespace StatLight.Core.Tests.WebServer.WcfHost
             {
                 base.Before_all_tests();
 
-                TestEventAggregator.AddListener<MessageReceivedFromClientServerEvent>(() => _messageWasFired = true);
+                TestEventSubscriptionManager.AddListener<MessageReceivedFromClientServerEvent>(() => _messageWasFired = true);
 
                 base.StatLightService.PostMessage("hello world".ToStream());
             }

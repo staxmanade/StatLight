@@ -21,28 +21,31 @@ namespace StatLight.Core.Runners
         private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
         private readonly IXapFileBuildChangedMonitor _xapFileBuildChangedMonitor;
         private readonly ILogger _logger;
-        private readonly IEventAggregator _eventAggregator;
+        private readonly IEventSubscriptionManager _eventSubscriptionManager;
         private TestResultAggregator _testResultAggregator;
         private DateTime _startOfRun;
         private string _xapPath;
+        private IEventPublisher _eventPublisher;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ContinuousTestRunner"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ctor")]
         internal ContinuousTestRunner(
             ILogger logger,
-            IEventAggregator eventAggregator,
+            IEventSubscriptionManager eventSubscriptionManager,
+            IEventPublisher eventPublisher,
             IWebBrowser webBrowser,
             ClientTestRunConfiguration clientTestRunConfiguration,
             IXapFileBuildChangedMonitor xapFileBuildChangedMonitor,
             string xapPath)
         {
             _logger = logger;
-            _eventAggregator = eventAggregator;
+            _eventSubscriptionManager = eventSubscriptionManager;
+            _eventPublisher = eventPublisher;
             _webBrowser = webBrowser;
             _clientTestRunConfiguration = clientTestRunConfiguration;
             _xapFileBuildChangedMonitor = xapFileBuildChangedMonitor;
             _xapPath = xapPath;
 
-            _eventAggregator.AddListener(this);
+            _eventSubscriptionManager.AddListener(this);
 
             _logger.Debug("ContinuousTestRunner.ctor()");
 
@@ -64,8 +67,8 @@ namespace StatLight.Core.Runners
 
         private void Start()
         {
-            _testResultAggregator = new TestResultAggregator(_logger, _eventAggregator, _xapPath);
-            _eventAggregator.AddListener(_testResultAggregator);
+            _testResultAggregator = new TestResultAggregator(_logger, _eventPublisher, _xapPath);
+            _eventSubscriptionManager.AddListener(_testResultAggregator);
 
             _logger.Information("{1}{1}Starting Test Run: {0}{1}{1}"
                 .FormatWith(DateTime.Now, Environment.NewLine));
@@ -81,7 +84,7 @@ namespace StatLight.Core.Runners
             _webBrowser.Stop();
             IsCurrentlyRunningTest = false;
 
-            _eventAggregator.RemoveListener(_testResultAggregator);
+            _eventSubscriptionManager.RemoveListener(_testResultAggregator);
             _testResultAggregator.Dispose();
             _testResultAggregator = null;
         }
@@ -97,7 +100,7 @@ namespace StatLight.Core.Runners
         {
             if (disposing)
             {
-                _eventAggregator.AddListener(this);
+                _eventSubscriptionManager.AddListener(this);
                 if (_testResultAggregator != null)
                     _testResultAggregator.Dispose();
             }

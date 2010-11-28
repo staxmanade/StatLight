@@ -15,7 +15,7 @@ namespace StatLight.IntegrationTests
         private StatLightRunnerFactory _statLightRunnerFactory;
         private string _pathToIntegrationTestXap;
         private readonly ILogger _testLogger;
-        private EventAggregator _eventAggregator;
+        private EventAggregator _eventSubscriptionManager;
 
         protected IntegrationFixtureBase()
         {
@@ -35,7 +35,8 @@ namespace StatLight.IntegrationTests
             }
         }
 
-        protected IEventAggregator EventAggregator { get { return _eventAggregator; } }
+        protected IEventSubscriptionManager EventSubscriptionManager { get { return _eventSubscriptionManager; } }
+        protected IEventPublisher EventPublisher { get { return _eventSubscriptionManager; } }
 
         protected TestReport TestReport { get; private set; }
         private IRunner Runner { get; set; }
@@ -53,8 +54,8 @@ namespace StatLight.IntegrationTests
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
-            _eventAggregator = new EventAggregator();
-            _statLightRunnerFactory = new StatLightRunnerFactory(_eventAggregator);
+            _eventSubscriptionManager = new EventAggregator();
+            _statLightRunnerFactory = new StatLightRunnerFactory(_eventSubscriptionManager);
         }
 
         protected override void Because()

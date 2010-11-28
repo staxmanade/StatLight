@@ -17,24 +17,25 @@ namespace StatLight.Core.Runners
         private readonly Uri _testHtmlPageUrl;
         private readonly string _xapPath;
         private readonly ILogger _logger;
-        private readonly IEventAggregator _eventAggregator;
+        private readonly IEventSubscriptionManager _eventSubscriptionManager;
         private readonly TestResultAggregator _testResultAggregator;
 
         internal WebServerOnlyRunner(
             ILogger logger,
-            IEventAggregator eventAggregator,
+            IEventSubscriptionManager eventSubscriptionManager,
+            IEventPublisher eventPublisher,
             IWebServer webServer,
             Uri testHtmlPageUrl,
             string xapPath)
         {
             _logger = logger;
-            _eventAggregator = eventAggregator;
+            _eventSubscriptionManager = eventSubscriptionManager;
             _webServer = webServer;
             _testHtmlPageUrl = testHtmlPageUrl;
             _xapPath = xapPath;
 
-            _testResultAggregator = new TestResultAggregator(logger, eventAggregator, _xapPath);
-            _eventAggregator.AddListener(_testResultAggregator);
+            _testResultAggregator = new TestResultAggregator(logger, eventPublisher, _xapPath);
+            _eventSubscriptionManager.AddListener(_testResultAggregator);
             _continuousRunnerThread = new Thread(() =>
             {
                 string line;
@@ -68,7 +69,7 @@ namespace StatLight.Core.Runners
         {
             if (disposing)
             {
-                _eventAggregator.RemoveListener(_testResultAggregator);
+                _eventSubscriptionManager.RemoveListener(_testResultAggregator);
                 _testResultAggregator.Dispose();
             }
         }
