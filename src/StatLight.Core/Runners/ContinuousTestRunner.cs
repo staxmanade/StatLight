@@ -100,7 +100,7 @@ namespace StatLight.Core.Runners
         {
             if (disposing)
             {
-                _eventSubscriptionManager.AddListener(this);
+                _eventSubscriptionManager.RemoveListener(this);
                 if (_testResultAggregator != null)
                     _testResultAggregator.Dispose();
             }
