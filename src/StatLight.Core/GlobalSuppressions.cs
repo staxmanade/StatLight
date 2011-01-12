@@ -129,3 +129,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "StatLight", Scope = "member", Target = "StatLight.Core.WebBrowser.FirefoxWebBrowser.#Start()")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ForceBrowserStart", Scope = "member", Target = "StatLight.Core.WebBrowser.OutOfProcessWebBrowserBase.#Start()")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "StatLight", Scope = "member", Target = "StatLight.Core.WebBrowser.OutOfProcessWebBrowserBase.#Start()")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Scope = "member", Target = "StatLight.Core.Reporting.Providers.TFS.TFS2010.XmlReport.#GetXmlReport()")]

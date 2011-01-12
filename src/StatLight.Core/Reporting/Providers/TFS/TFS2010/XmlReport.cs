@@ -27,7 +27,6 @@ namespace StatLight.Core.Reporting.Providers.TFS.TFS2010
             using (var writer = new StreamWriter(outputFilePath))
             {
                 writer.Write(GetXmlReport());
-                writer.Close();
             }
         }
 
