@@ -104,6 +104,28 @@ namespace StatLight.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+        ///&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; elementFormDefault=&quot;qualified&quot;&gt;
+        ///    &lt;xs:complexType name=&quot;failureType&quot;&gt;
+        ///        &lt;xs:sequence&gt;
+        ///            &lt;xs:element ref=&quot;message&quot; /&gt;
+        ///            &lt;xs:element ref=&quot;stack-trace&quot; /&gt;
+        ///        &lt;/xs:sequence&gt;
+        ///    &lt;/xs:complexType&gt;
+        ///    &lt;xs:complexType name=&quot;reasonType&quot;&gt;
+        ///        &lt;xs:sequence&gt;
+        ///            &lt;xs:element ref=&quot;message&quot; /&gt;
+        ///        &lt;/xs:sequence&gt;
+        ///    &lt;/xs:complexType&gt;
+        ///    &lt;xs:element name=&quot;message&quot; t [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string NUnitXmlResults {
+            get {
+                return ResourceManager.GetString("NUnitXmlResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
         ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; &gt;
         ///&lt;!-- saved from url=(0014)about:internet --&gt;

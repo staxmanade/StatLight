@@ -1,4 +1,7 @@
-﻿namespace StatLight.Core.Reporting.Providers.Xml
+﻿
+using StatLight.Core.Reporting.Providers.Xml;
+
+namespace StatLight.Core.Reporting.Providers.NUnit
 {
     using System;
     using System.Collections.Generic;
@@ -11,11 +14,12 @@
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Properties;
 
-    public class XmlReport
+
+    public class NUnitXmlReport
     {
         private readonly TestReportCollection _report;
 
-        public XmlReport(TestReportCollection report)
+        public NUnitXmlReport(TestReportCollection report)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
@@ -28,35 +32,34 @@
             using (var writer = new StreamWriter(outputFilePath))
             {
                 writer.Write(GetXmlReport());
-                writer.Close();
             }
         }
 
         public string GetXmlReport()
         {
-            var root =
-                    new XElement("StatLightTestResults"
-                        , new XAttribute("total", _report.TotalResults)
-                        , new XAttribute("ignored", _report.TotalIgnored)
-                        , new XAttribute("failed", _report.TotalFailed)
-                        , new XAttribute("dateRun", _report.DateTimeRunCompleted.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture))
+            var root = ""; // TODO:...
+                    //new XElement("test-results"
+                    //    , new XAttribute("total", _report.TotalResults)
+                    //    , new XAttribute("ignored", _report.TotalIgnored)
+                    //    , new XAttribute("failures", _report.TotalFailed)
+                    //    , new XAttribute("dateRun", _report.DateTimeRunCompleted.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture))
 
-                        , GetTestsRuns(_report)
-                    );
+                    //    , GetTestsRuns(_report)
+                    //);
             return root.ToString();
         }
 
         private static List<XElement> GetTestsRuns(IEnumerable<TestReport> report)
         {
-            return report.Select(item => 
-                    new XElement("tests", 
-                        new XAttribute("xapFileName", item.XapPath), 
+            return report.Select(item =>
+                    new XElement("tests",
+                        new XAttribute("xapFileName", item.XapPath),
                         item.TestResults.Select(GetResult))).ToList();
         }
 
         private static XElement GetResult(TestCaseResult result)
         {
-            Func<TestCaseResult, string> formatName = 
+            Func<TestCaseResult, string> formatName =
                 resultX => resultX.FullMethodName();
 
             XElement otherInfoElement = null;
@@ -108,7 +111,7 @@
 
         public static bool ValidateSchema(string pathToXmlFileToValidate, out IList<string> validationErrors)
         {
-            return XmlSchemaValidatorHelper.ValidateSchema(pathToXmlFileToValidate, Resources.XmlReportSchema, out validationErrors);
+            return XmlSchemaValidatorHelper.ValidateSchema(pathToXmlFileToValidate, Resources.NUnitXmlResults, out validationErrors);
         }
     }
 }

@@ -153,9 +153,11 @@
     <Compile Include="Reporting\Messages\TestOutcome.cs" />
     <Compile Include="Reporting\Providers\Console\ConsoleTestCompleteMessage.cs" />
     <Compile Include="Reporting\Providers\Console\ConsoleResultHandler.cs" />
+    <Compile Include="Reporting\Providers\NUnit\NUnitXmlReport.cs" />
     <Compile Include="Reporting\Providers\TFS\TFS2010\TestResultType.cs" />
     <Compile Include="Reporting\Providers\TFS\TFS2010\XmlReport.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlReport.cs" />
+    <Compile Include="Reporting\Providers\Xml\XmlSchemaValidator.cs" />
     <Compile Include="Runners\ContinuousConsoleRunner.cs" />
     <Compile Include="Runners\ContinuousTestRunner.cs" />
     <Compile Include="Monitoring\MessageBoxMonitor.cs" />
@@ -247,7 +249,12 @@
     <None Include="Resources\CrossDomain.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\XmlReportSchema.xsd" />
+    <None Include="Resources\NUnitXmlResults.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\XmlReportSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resources\FavIcon.ico" />
     <None Include="Resources\TestPage.html" />
   </ItemGroup>

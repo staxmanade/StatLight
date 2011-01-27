@@ -1,34 +1,36 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
-using System.Collections.Generic;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Reporting;
-using StatLight.Core.Reporting.Providers.Xml;
+using StatLight.Core.Reporting.Providers.NUnit;
+using StatLight.Core.Tests.Reporting.Providers.Xml;
 
-namespace StatLight.Core.Tests.Reporting.Providers.Xml
+namespace StatLight.Core.Tests.Reporting.Providers
 {
-    public class when_validating_the_XmlReport_is_correct : FixtureBase
+
+    public class when_validating_the_NUnitXmlReport_is_correct : FixtureBase
     {
-        private XmlReport _xmlReport;
+        private NUnitXmlReport _xmlReport;
 
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
 
             Func<ResultType, ExceptionInfo, TestCaseResult> getResult = (resultType, exceptionInfo) =>
+            {
+                return new TestCaseResult(resultType)
                 {
-                    return new TestCaseResult(resultType)
-                               {
-                                   ClassName = "class_name",
-                                   MethodName = "method_name",
-                                   NamespaceName = "namespace.here",
-                                   Finished = new DateTime(2009, 2, 2, 2, 2, 2),
-                                   Started = new DateTime(2009, 2, 2, 2, 2, 1),
-                                   ExceptionInfo = exceptionInfo,
-                               };
+                    ClassName = "class_name",
+                    MethodName = "method_name",
+                    NamespaceName = "namespace.here",
+                    Finished = new DateTime(2009, 2, 2, 2, 2, 2),
+                    Started = new DateTime(2009, 2, 2, 2, 2, 1),
+                    ExceptionInfo = exceptionInfo,
                 };
+            };
 
             var testReport = new TestReport("Test.xap")
                 .AddResult(getResult(ResultType.Passed, null))
@@ -37,7 +39,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.Xml
                 .AddResult(getResult(ResultType.SystemGeneratedFailure, new ExceptionInfo(new Exception("fail"))))
                 ;
 
-            _xmlReport = new XmlReport(testReport.ToTestReportCollection());
+            _xmlReport = new NUnitXmlReport(testReport.ToTestReportCollection());
         }
 
         private static Exception GetException()
@@ -74,7 +76,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.Xml
             }
 
             IList<string> errors;
-            if (!XmlReport.ValidateSchema(file, out errors))
+            if (!NUnitXmlReport.ValidateSchema(file, out errors))
             {
                 var msg = string.Join(Environment.NewLine, errors.ToArray());
                 Assert.Fail(msg);
@@ -84,18 +86,8 @@ namespace StatLight.Core.Tests.Reporting.Providers.Xml
         [Test]
         public void Should_not_throw_any_exceptions_if_there_are_no_tests()
         {
-            XmlReport xmlReport = new XmlReport(new TestReport("Test.xap").ToTestReportCollection());
+            NUnitXmlReport xmlReport = new NUnitXmlReport(new TestReport("Test.xap").ToTestReportCollection());
             xmlReport.GetXmlReport().ShouldNotBeEmpty();
         }
     }
-
-    static class helperExtensions
-    {
-        public static TestReportCollection ToTestReportCollection(this TestReport testReport)
-        {
-            return new TestReportCollection { testReport };
-        }
-    }
 }
-
-
