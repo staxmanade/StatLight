@@ -66,6 +66,7 @@ namespace StatLight.Core.Tests.Reporting.Providers
         }
 
         [Test]
+        [Ignore]
         public void Should_pass_the_schema_validation()
         {
             var file = Path.GetTempFileName();
@@ -84,6 +85,7 @@ namespace StatLight.Core.Tests.Reporting.Providers
         }
 
         [Test]
+        [Ignore]
         public void Should_not_throw_any_exceptions_if_there_are_no_tests()
         {
             NUnitXmlReport xmlReport = new NUnitXmlReport(new TestReport("Test.xap").ToTestReportCollection());
