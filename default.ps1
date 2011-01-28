@@ -762,6 +762,13 @@ Task test-all-mstest-version-acceptance-tests {
 	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests $_ }
 }
 
+Task test-custom-test-provider {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.CustomTestProvider\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.CustomTestProvider.xap"  "-r=$scriptFile" "--OverrideTestProvider=SomeCustomProvider"
+	
+	Assert-statlight-xml-report-results -message "test-custom-test-provider" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 00 -expectedFailedCount 0 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
+}
+
 #########################################
 #
 # Release packaging
