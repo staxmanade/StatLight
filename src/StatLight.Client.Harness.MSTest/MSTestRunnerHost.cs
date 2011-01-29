@@ -1,12 +1,17 @@
-﻿using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows;
 using Microsoft.Silverlight.Testing;
 using Microsoft.Silverlight.Testing.Harness;
+using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Client.Harness.Events;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit;
 using StatLight.Client.Harness.Messaging;
+using StatLight.Core.Common;
 using StatLight.Core.Configuration;
 
 namespace StatLight.Client.Harness.Hosts.MSTest
@@ -52,9 +57,10 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             Server.SignalTestComplete(signalTestCompleteClientEvent);
         }
 
-        private static void SetupUnitTestProvider(UnitTestProviderType unitTestProviderType)
+        private void SetupUnitTestProvider(UnitTestProviderType unitTestProviderType)
         {
             Microsoft.Silverlight.Testing.UnitTesting.Metadata.UnitTestProviders.Providers.Clear();
+
             if (unitTestProviderType == UnitTestProviderType.XUnit)
             {
                 UnitTestSystem.RegisterUnitTestProvider(new XUnitTestProvider());
@@ -66,6 +72,30 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             else if (unitTestProviderType == UnitTestProviderType.UnitDriven)
             {
                 UnitTestSystem.RegisterUnitTestProvider(new UnitDrivenTestProvider());
+            }
+            else if (unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
+            {
+                Type interfaceLookingFor = typeof(IUnitTestProvider);
+
+                var allProviderPossibilities = (from assembly in _loadedXapData.TestAssemblies
+                                                from type in assembly.GetTypes()
+                                                where interfaceLookingFor.IsAssignableFrom(type)
+                                                select type).ToList();
+
+                if (allProviderPossibilities.Count == 1)
+                {
+                    var customProviderType = allProviderPossibilities.First();
+                    var instance = Activator.CreateInstance(customProviderType);
+                    var provider = (IUnitTestProvider)instance;
+                    UnitTestSystem.RegisterUnitTestProvider(provider);
+                }
+                else
+                {
+                    if (allProviderPossibilities.Any())
+                        throw new StatLightException("Found multiple unit test provider types. (TODO: how to handle this???)");
+
+                    throw new StatLightException("Could not find any classes that inherit from IUnitTestProvider.");
+                }
             }
             else
             {

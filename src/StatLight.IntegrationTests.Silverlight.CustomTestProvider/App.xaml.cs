@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using Microsoft.Silverlight.Testing;
+using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
+using Raven.Tests.Silverlight.UnitTestProvider;
 
 namespace StatLight.IntegrationTests.Silverlight.CustomTestProvider
 {
@@ -18,6 +20,9 @@ namespace StatLight.IntegrationTests.Silverlight.CustomTestProvider
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            UnitTestProviders.Providers.Clear();
+            UnitTestSystem.RegisterUnitTestProvider(new RavenCustomProvider());
+
             RootVisual = UnitTestSystem.CreateTestPage();
         }
 

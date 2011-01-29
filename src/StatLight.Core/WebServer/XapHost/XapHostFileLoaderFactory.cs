@@ -49,6 +49,7 @@ namespace StatLight.Core.WebServer.XapHost
                 case UnitTestProviderType.XUnit:
                     return XapHostType.MSTestMay2010;
 
+                case UnitTestProviderType.MSTestWithCustomProvider:
                 case UnitTestProviderType.MSTest:
 
                     if(microsoftTestingFrameworkVersion.HasValue)

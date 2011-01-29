@@ -104,23 +104,22 @@ namespace StatLight.Console
                 .Add("o|OverrideTestProvider", "Allows you to override the default test provider of MSTest. Pass in one of the following [{0}]".FormatWith(typeof(UnitTestProviderType).FormatEnumString()), v =>
                     {
                         v = v ?? string.Empty;
-                        UnitTestProviderType result;
+                        UnitTestProviderType? result = null;
 
-                        if (v.Is("xunit"))
-                            result = UnitTestProviderType.XUnit;
-                        else if (v.Is("nunit"))
-                            result = UnitTestProviderType.NUnit;
-                        else if (v.Is("unitdriven"))
-                            result = UnitTestProviderType.UnitDriven;
-                        else if (v.Is("mstest"))
-                            result = UnitTestProviderType.MSTest;
-                        else if (v.Is(string.Empty))
-                            result = UnitTestProviderType.MSTest;
-                        else
+                        foreach (var typeName in Enum.GetNames(typeof(UnitTestProviderType)))
+                        {
+                            if (v.Is(typeName))
+                            {
+                                result = (UnitTestProviderType)Enum.Parse(typeof(UnitTestProviderType), typeName);
+                                break;
+                            }
+                        }
+
+                        if (!result.HasValue)
                         {
                             throw new StatLightException("Could not find an OverrideTestProvider defined as [{0}]. Please specify one of the following [{1}]".FormatWith(v, typeof(UnitTestProviderType).FormatEnumString()));
                         }
-                        UnitTestProviderType = result;
+                        UnitTestProviderType = result.Value;
                     })
                 .Add("v|Version", "Specify a specific Microsoft.Silverlight.Testing build version. Pass in one of the following [{0}]".FormatWith(typeof(MicrosoftTestingFrameworkVersion).FormatEnumString()), v =>
                     {
