@@ -80,6 +80,8 @@ namespace StatLight.Client.Harness.Hosts.MSTest
                 var allProviderPossibilities = (from assembly in _loadedXapData.TestAssemblies
                                                 from type in assembly.GetTypes()
                                                 where interfaceLookingFor.IsAssignableFrom(type)
+													&& !type.IsAbstract
+													&& type != typeof(Microsoft.Silverlight.Testing.UnitTesting.Metadata.VisualStudio.VsttProvider)
                                                 select type).ToList();
 
                 if (allProviderPossibilities.Count == 1)
