@@ -247,6 +247,7 @@ Global
 		{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}.Release|x86.ActiveCfg = Release|Any CPU
+		{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
