@@ -94,7 +94,12 @@ namespace StatLight.Client.Harness.Hosts.MSTest
                 else
                 {
                     if (allProviderPossibilities.Any())
-                        throw new StatLightException("Found multiple unit test provider types. (TODO: how to handle this???)");
+                    {
+						var providers = string.Join(Environment.NewLine, allProviderPossibilities.Select(x=>x.FullName).ToArray());
+						// TODO: how to handle this???
+						throw new StatLightException("Multiple unit test provider types where present in the xap, but only one was expected. The types found were: " + Environment.NewLine + providers);
+                    }
+                        
 
                     throw new StatLightException("Could not find any classes that inherit from IUnitTestProvider.");
                 }
