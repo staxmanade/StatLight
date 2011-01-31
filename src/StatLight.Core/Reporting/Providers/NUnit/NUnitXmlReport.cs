@@ -17,14 +17,14 @@ namespace StatLight.Core.Reporting.Providers.NUnit
 
     public class NUnitXmlReport
     {
-        private readonly TestReportCollection _report;
+        //private readonly TestReportCollection _report;
 
         public NUnitXmlReport(TestReportCollection report)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
 
-            _report = report;
+            //_report = report;
         }
 
         public void WriteXmlReport(string outputFilePath)
@@ -35,6 +35,8 @@ namespace StatLight.Core.Reporting.Providers.NUnit
             }
         }
 
+        //Temporary supression (till this feature is implemented
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public string GetXmlReport()
         {
             var root = ""; // TODO:...
@@ -49,64 +51,64 @@ namespace StatLight.Core.Reporting.Providers.NUnit
             return root.ToString();
         }
 
-        private static List<XElement> GetTestsRuns(IEnumerable<TestReport> report)
-        {
-            return report.Select(item =>
-                    new XElement("tests",
-                        new XAttribute("xapFileName", item.XapPath),
-                        item.TestResults.Select(GetResult))).ToList();
-        }
+        //private static List<XElement> GetTestsRuns(IEnumerable<TestReport> report)
+        //{
+        //    return report.Select(item =>
+        //            new XElement("tests",
+        //                new XAttribute("xapFileName", item.XapPath),
+        //                item.TestResults.Select(GetResult))).ToList();
+        //}
 
-        private static XElement GetResult(TestCaseResult result)
-        {
-            Func<TestCaseResult, string> formatName =
-                resultX => resultX.FullMethodName();
+        //private static XElement GetResult(TestCaseResult result)
+        //{
+        //    Func<TestCaseResult, string> formatName =
+        //        resultX => resultX.FullMethodName();
 
-            XElement otherInfoElement = null;
-            if (!string.IsNullOrEmpty(result.OtherInfo))
-            {
-                otherInfoElement = new XElement("otherInfo", result.OtherInfo);
-            }
+        //    XElement otherInfoElement = null;
+        //    if (!string.IsNullOrEmpty(result.OtherInfo))
+        //    {
+        //        otherInfoElement = new XElement("otherInfo", result.OtherInfo);
+        //    }
 
-            XElement exceptionInfoElement = null;
-            if (result.ExceptionInfo != null)
-            {
-                exceptionInfoElement = FormatExceptionInfoElement(result.ExceptionInfo);
-            }
+        //    XElement exceptionInfoElement = null;
+        //    if (result.ExceptionInfo != null)
+        //    {
+        //        exceptionInfoElement = FormatExceptionInfoElement(result.ExceptionInfo);
+        //    }
 
-            return new XElement("test",
-                        new XAttribute("name", formatName(result)),
-                        new XAttribute("resulttype", result.ResultType),
-                        new XAttribute("timeToComplete", result.TimeToComplete.ToString()),
-                        exceptionInfoElement,
-                        otherInfoElement
-                        );
-        }
+        //    return new XElement("test",
+        //                new XAttribute("name", formatName(result)),
+        //                new XAttribute("resulttype", result.ResultType),
+        //                new XAttribute("timeToComplete", result.TimeToComplete.ToString()),
+        //                exceptionInfoElement,
+        //                otherInfoElement
+        //                );
+        //}
 
-        private static XElement FormatExceptionInfoElement(ExceptionInfo exceptionInfo)
-        {
-            if (exceptionInfo == null)
-                return null;
+        //private static XElement FormatExceptionInfoElement(ExceptionInfo exceptionInfo)
+        //{
+        //    if (exceptionInfo == null)
+        //        return null;
 
-            return FormatExceptionInfoElement(exceptionInfo, false);
-        }
+        //    return FormatExceptionInfoElement(exceptionInfo, false);
+        //}
 
-        private static XElement FormatExceptionInfoElement(ExceptionInfo exceptionInfo, bool isInnerException)
-        {
-            if (exceptionInfo == null)
-                return null;
+        //private static XElement FormatExceptionInfoElement(ExceptionInfo exceptionInfo, bool isInnerException)
+        //{
+        //    if (exceptionInfo == null)
+        //        return null;
 
-            string elementName = "exceptionInfo";
+        //    string elementName = "exceptionInfo";
 
-            if (isInnerException)
-                elementName = "innerExceptionInfo";
+        //    if (isInnerException)
+        //        elementName = "innerExceptionInfo";
 
-            return new XElement(elementName
-                            , new XElement("message", exceptionInfo.Message)
-                            , new XElement("stackTrace", exceptionInfo.StackTrace)
-                            , FormatExceptionInfoElement(exceptionInfo.InnerException, true)
-                            );
-        }
+        //    return new XElement(elementName
+        //                    , new XElement("message", exceptionInfo.Message)
+        //                    , new XElement("stackTrace", exceptionInfo.StackTrace)
+        //                    , FormatExceptionInfoElement(exceptionInfo.InnerException, true)
+        //                    );
+        //}
 
 
         public static bool ValidateSchema(string pathToXmlFileToValidate, out IList<string> validationErrors)
