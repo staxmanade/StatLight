@@ -53,7 +53,9 @@ namespace StatLight.Core.Configuration
                     }
 
                     if (
-                        (xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest || unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
+                        (   xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest || 
+                            unitTestProviderType == UnitTestProviderType.MSTest || 
+                            unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
                         && microsoftTestingFrameworkVersion == null)
                     {
                         microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
