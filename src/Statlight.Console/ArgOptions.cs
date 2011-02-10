@@ -164,7 +164,7 @@ namespace StatLight.Console
                         }
                     })
                 .Add("QueryString", "Specify some QueryString that will be appended to the browser test page request. This can be helpful to setup a remote web service and pass in the url, or a port used. You can then access the querystring within silverlight HtmlPage.Document.QueryString[..]", v => QueryString = v ?? String.Empty)
-                .Add("debug", v => IsRequestingDebug = true)
+                .Add<string>("debug", "Prints a verbose spattering of internal logging information. Useful when trying to understand possible issues or when reporting issues back to StatLight.CodePlex.com", v => IsRequestingDebug = true)
                 .Add<string>("teamcity", "Changes the console output to generate the teamcity message spec.", v => OutputForTeamCity = true)
                 .Add<string>("MSGenericTestFormat", "When specifying the -r|--ReportOutputFile=[FilePath] you can choose to format the xml report that conforms to the MSTest's generic test.", v => TFSGenericReport = true)
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
