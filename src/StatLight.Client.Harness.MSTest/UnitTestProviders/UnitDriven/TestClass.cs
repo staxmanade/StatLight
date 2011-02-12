@@ -95,7 +95,12 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven
 		/// </summary>
 		private IDictionary<Methods, LazyDynamicMethodInfo> _m;
 
-		/// <summary>
+        public string Namespace
+        {
+            get { return _type.Namespace; }
+        }
+
+	    /// <summary>
 		/// Gets the test assembly metadata.
 		/// </summary>
 		public IAssembly Assembly

@@ -79,7 +79,12 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit
 		/// </summary>
 		private bool _testsLoaded;
 
-		/// <summary>
+        public string Namespace
+        {
+            get { return _type.Namespace; }
+        }
+        
+        /// <summary>
 		/// Gets the test assembly metadata.
 		/// </summary>
 		public IAssembly Assembly

@@ -7,6 +7,11 @@ namespace StatLight.Client.Harness.Mocks
     {
         #region ITestClass Members
 
+        public string Namespace
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public IAssembly Assembly
         {
             get { throw new NotImplementedException(); }
