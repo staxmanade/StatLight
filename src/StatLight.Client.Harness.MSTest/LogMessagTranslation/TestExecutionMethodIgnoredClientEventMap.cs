@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Silverlight.Testing.Harness;
-#if MSTestMarch2010
+#if March2010 || April2010 || May2010
 #else
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 #endif

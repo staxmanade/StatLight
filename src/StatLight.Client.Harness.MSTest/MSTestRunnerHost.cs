@@ -112,7 +112,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 
         private UnitTestSettings ConfigureSettings()
         {
-#if MSTestMarch2010
+#if March2010 || April2010 || May2010
             var settings = new UnitTestSettings();
             settings.TestHarness = new UnitTestHarness();
 

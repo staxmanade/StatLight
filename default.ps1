@@ -29,6 +29,7 @@ properties {
 	#  - 2. Add the version below 
 	#  - 3. Add the version to the MicrosoftTestingFrameworkVersion enum in the project
 	$microsoft_silverlight_testing_versions = @(
+			#'Feb2011'
 			'March2010'
 			'April2010'
 			'May2010'
@@ -224,20 +225,8 @@ function compile-StatLight-MSTestHost {
 		| where{!$_.Contains('App.g.i.cs')}
 echo $sourceFiles
 
-	$extraCompilerFlags = [string]''
+	$extraCompilerFlags = "$microsoft_Silverlight_Testing_Version_Name"
 
-
-	
-	
-	if("$microsoft_Silverlight_Testing_Version_Name" -eq 'July2009' -or "$microsoft_Silverlight_Testing_Version_Name" -eq 'October2009' -or "$microsoft_Silverlight_Testing_Version_Name" -eq 'November2009')
-	{
-		$extraCompilerFlags = ''
-	}
-	else
-	{
-		$extraCompilerFlags = 'MSTestMarch2010'
-	}
-	
 	$buildConfigToUpper = $build_configuration.ToUpper();
 	echo $buildConfigToUpper
 	$options = @(

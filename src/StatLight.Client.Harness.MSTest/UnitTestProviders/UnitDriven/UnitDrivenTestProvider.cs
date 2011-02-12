@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-#if MSTestMarch2010
+#if March2010 || April2010 || May2010
 using ITestHarness = Microsoft.Silverlight.Testing.Harness.UnitTestHarness;
 #else
 using Microsoft.Silverlight.Testing.Harness;

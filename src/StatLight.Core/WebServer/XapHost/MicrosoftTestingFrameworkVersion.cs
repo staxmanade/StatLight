@@ -16,6 +16,8 @@ namespace StatLight.Core.WebServer.XapHost
 
         May2010 = 8,
 
+        Feb2011 = 9,
+
         //FYI: go update StatLightClientXapNames.Default value when changing the default runner...
     }
 }
