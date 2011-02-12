@@ -11,6 +11,10 @@ namespace StatLight.Client.Harness.Hosts.MSTest
     {
         protected override void ProcessRemainder(LogMessage message)
         {
+            //DEBUG
+            //var msg = TraceLogMessage(message);
+            //Console.WriteLine(msg.Message);
+
             try
             {
                 ClientEvent clientEvent;

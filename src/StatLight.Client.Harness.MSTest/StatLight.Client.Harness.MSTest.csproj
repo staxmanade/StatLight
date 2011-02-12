@@ -33,7 +33,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Bin\Debug</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT; March2010</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT; May2010</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -44,7 +44,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>Bin\Release</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT; March2010</DefineConstants>
+    <DefineConstants>TRACE;SILVERLIGHT; May2010</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -53,11 +53,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
@@ -105,6 +103,7 @@
     <Compile Include="UnitTestProviders\NUnit\TestClass.cs" />
     <Compile Include="UnitTestProviders\NUnit\TestMethod.cs" />
     <Compile Include="UnitTestProviders\NUnit\UnitTestFrameworkAssembly.cs" />
+    <Compile Include="UnitTestProviders\UnitTestFrameworkAssemblyBase.cs" />
     <Compile Include="UnitTestProviders\UnitDriven\ExpectedException.cs" />
     <Compile Include="UnitTestProviders\UnitDriven\Priority.cs" />
     <Compile Include="UnitTestProviders\UnitDriven\ProviderAttributes.cs" />

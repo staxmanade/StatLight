@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Silverlight.Testing.Harness;
 #if March2010 || April2010 || May2010
-#else
+#elif May2010 || July2009 || October2009 || November2009
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 #endif
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
