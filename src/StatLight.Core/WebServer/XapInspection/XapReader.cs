@@ -97,6 +97,7 @@ namespace StatLight.Core.WebServer.XapInspection
                 // SL 3 build of the SL4 release to support phone
                 new { Version = MicrosoftTestingFrameworkVersion.May2010, Hash = "de70e6249e6c13b60d8b556c6495b2d34a737d7c", Supported = true, },
 
+                // Custom build of the framework - until and 'official' signed build is available
                 new { Version = MicrosoftTestingFrameworkVersion.Feb2011, Hash = "8962C4BF1FFE3A2E432BC5991E2B142AFE1167A8", Supported = true, },
             };
 
