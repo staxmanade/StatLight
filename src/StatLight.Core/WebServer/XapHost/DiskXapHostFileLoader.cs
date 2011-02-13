@@ -4,7 +4,6 @@ using StatLight.Core.Common;
 
 namespace StatLight.Core.WebServer.XapHost
 {
-    using System.IO;
 
     public class DiskXapHostFileLoader : IXapHostFileLoader
     {
@@ -17,10 +16,10 @@ namespace StatLight.Core.WebServer.XapHost
             if (fileName == null) throw new ArgumentNullException("fileName");
 
             _logger = logger;
-            var pathToThisExe = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            _fileName = Path.Combine(pathToThisExe, fileName);
+            var pathToThisExe = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            _fileName = System.IO.Path.Combine(pathToThisExe, fileName);
 
-            if (!File.Exists(_fileName))
+            if (!System.IO.File.Exists(_fileName))
                 logger.Debug("DiskXapHostFileLoader cannot find file - {0}".FormatWith(_fileName));
         }
 
@@ -28,11 +27,16 @@ namespace StatLight.Core.WebServer.XapHost
         {
             _logger.Debug("Loading XapHost [" + _fileName + "]");
 
-            var fileInfo = new FileInfo(_fileName);
+            var fileInfo = new System.IO.FileInfo(_fileName);
             var file = fileInfo.OpenRead();
             var stuff = new byte[file.Length];
             file.Read(stuff, 0, (int)file.Length);
             return stuff;
+        }
+
+        public string Path
+        {
+            get { return _fileName; }
         }
     }
 }

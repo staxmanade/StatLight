@@ -157,7 +157,7 @@ namespace StatLight.Core.Runners
 
             showTestingBrowserHost = GetShowTestingBrowserHost(serverTestRunConfiguration, showTestingBrowserHost);
 
-            webBrowsers = GetWebBrowsers(logger, location.TestPageUrl, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart);
+            webBrowsers = GetWebBrowsers(logger, location.TestPageUrl, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart, statLightConfiguration.Server.HostXapPathOnDisk, location);
 
             dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
 
@@ -165,15 +165,16 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "testPageUrlWithQueryString")]
-        private static List<IWebBrowser> GetWebBrowsers(ILogger logger, Uri testPageUrl, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, string queryString, bool forceBrowserStart)
+        private static List<IWebBrowser> GetWebBrowsers(ILogger logger, Uri testPageUrl, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, string queryString, bool forceBrowserStart, string fileOnDiskPath, WebServerLocation location)
         {
             var webBrowserType = clientTestRunConfiguration.WebBrowserType;
             var webBrowserFactory = new WebBrowserFactory(logger);
             var testPageUrlWithQueryString = new Uri(testPageUrl + "?" + queryString);
             logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);
+            Uri uriToXapToHostXap = (location.BaseUrl + StatLightServiceRestApi.GetTestPageHostXap).ToUri();
             List<IWebBrowser> webBrowsers = Enumerable
                 .Range(1, clientTestRunConfiguration.NumberOfBrowserHosts)
-                .Select(browserI => webBrowserFactory.Create(webBrowserType, testPageUrlWithQueryString, showTestingBrowserHost, forceBrowserStart, clientTestRunConfiguration.NumberOfBrowserHosts > 1))
+                .Select(browserI => webBrowserFactory.Create(webBrowserType, testPageUrlWithQueryString, showTestingBrowserHost, forceBrowserStart, clientTestRunConfiguration.NumberOfBrowserHosts > 1, fileOnDiskPath, uriToXapToHostXap))
                 .Cast<IWebBrowser>()
                 .ToList();
             return webBrowsers;
@@ -229,7 +230,7 @@ namespace StatLight.Core.Runners
                                                    HttpUtility.UrlEncode(location.BaseUrl.ToString()));
             var testPageUrlAndPostbackQuerystring = new Uri(location.TestPageUrl + querystring);
             logger.Debug("testPageUrlAndPostbackQuerystring={0}".FormatWith(testPageUrlAndPostbackQuerystring.ToString()));
-            var webBrowsers = GetWebBrowsers(logger, testPageUrlAndPostbackQuerystring, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart);
+            var webBrowsers = GetWebBrowsers(logger, testPageUrlAndPostbackQuerystring, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart, serverTestRunConfiguration.HostXapPathOnDisk, location);
 
             var dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
 

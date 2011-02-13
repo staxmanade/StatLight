@@ -74,5 +74,10 @@ namespace StatLight.Core.WebServer.XapHost
 
             return XapHostType.UnitDrivenDecember2009;
         }
+
+        public string GetXapHostPath(XapHostType xapHostType)
+        {
+            return XapHostFileLoaders[xapHostType].Path;
+        }
     }
 }

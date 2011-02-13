@@ -172,6 +172,7 @@
     <Compile Include="Runners\RunnerType.cs" />
     <Compile Include="Runners\WebServerOnlyRunner.cs" />
     <Compile Include="Runners\IRunner.cs" />
+    <Compile Include="WebBrowser\OutOfBrowser.cs" />
     <Compile Include="WebServer\IPostHandler.cs" />
     <Compile Include="WebServer\PostHandler.cs" />
     <Compile Include="WebServer\ResponseFactory.cs" />

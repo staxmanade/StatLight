@@ -789,6 +789,15 @@ Task test-custom-test-provider {
 	Assert-statlight-xml-report-results -message "test-custom-test-provider" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 2 -expectedFailedCount 0 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
 }
 
+Task test-OutOfBrowser {
+	$scriptFile = GetTemporaryXmlFile;
+    execStatLight "-x=.\src\StatLight.IntegrationTests.OutOfBrowser\Bin\$build_configuration\StatLight.IntegrationTests.OutOfBrowser.xap" "-r=$scriptFile" "-WebBrowserType=OutOfBrowser"
+    #execStatLight "-x=.\src\StatLight.IntegrationTests.OutOfBrowser\Bin\$build_configuration\StatLight.IntegrationTests.OutOfBrowser.xap" "-r=$scriptFile"
+
+	Assert-statlight-xml-report-results -message "test-custom-test-provider" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1 -expectedFailedCount 0 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
+}
+
+
 #########################################
 #
 # Release packaging

@@ -7,7 +7,7 @@ namespace StatLight.Core.Configuration
     {
         private readonly Func<byte[]> _xapToTextFactory;
 
-        public ServerTestRunConfiguration(byte[] xapHost, long dialogSmackDownElapseMilliseconds, string xapToTest, XapHostType xapHostType, Func<byte[]> xapToTextFactory, string queryString, bool forceBrowserStart, bool showTestingBrowserHost)
+        public ServerTestRunConfiguration(byte[] xapHost, long dialogSmackDownElapseMilliseconds, string xapToTest, XapHostType xapHostType, Func<byte[]> xapToTextFactory, string queryString, bool forceBrowserStart, bool showTestingBrowserHost, string hostXapPathOnDisk)
         {
             _xapToTextFactory = xapToTextFactory;
             if (xapHost == null) throw new ArgumentNullException("xapHost");
@@ -20,6 +20,7 @@ namespace StatLight.Core.Configuration
             QueryString = queryString;
             ForceBrowserStart = forceBrowserStart;
             ShowTestingBrowserHost = showTestingBrowserHost;
+            HostXapPathOnDisk = hostXapPathOnDisk;
         }
 
         public long DialogSmackDownElapseMilliseconds { get; private set; }
@@ -34,5 +35,7 @@ namespace StatLight.Core.Configuration
         public bool ForceBrowserStart { get; private set; }
 
         public bool ShowTestingBrowserHost { get; private set; }
+
+        public string HostXapPathOnDisk { get; private set; }
     }
 }
