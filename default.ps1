@@ -437,22 +437,27 @@ function Execute-MSTest-Version-Acceptance-Tests {
 
 function AssertXmlReportIsValid([string]$scriptFile)
 {
+	if([System.Environment]::Version.Major -ge 4) {
 		$statLightCoreFilePath = (Get-Item "$build_dir\StatLight.Core.dll").FullName
-	$fileStream = ([System.IO.FileInfo] (Get-Item $statLightCoreFilePath)).OpenRead()
-	$assemblyBytes = new-object byte[] $fileStream.Length
-	$fileStream.Read($assemblyBytes, 0, $fileStream.Length) | Out-Null #out null this because this function should only return the version & this call was outputting some garbage number
-	$fileStream.Close()
-	[System.Reflection.Assembly]::Load($assemblyBytes) | Out-Null;
-	
-	$errs = $null
-	$passed = [StatLight.Core.Reporting.Providers.Xml.XmlReport]::ValidateSchema($scriptFile, [ref] $errs)
-	if($passed -eq $false)
-	{
-		foreach($msg in $errs)
+		$fileStream = ([System.IO.FileInfo] (Get-Item $statLightCoreFilePath)).OpenRead()
+		$assemblyBytes = new-object byte[] $fileStream.Length
+		$fileStream.Read($assemblyBytes, 0, $fileStream.Length) | Out-Null #out null this because this function should only return the version & this call was outputting some garbage number
+		$fileStream.Close()
+		[System.Reflection.Assembly]::Load($assemblyBytes) | Out-Null;
+		
+		$errs = $null
+		$passed = [StatLight.Core.Reporting.Providers.Xml.XmlReport]::ValidateSchema($scriptFile, [ref] $errs)
+		if($passed -eq $false)
 		{
-			Write-Host $msg -ForegroundColor Red
+			foreach($msg in $errs)
+			{
+				Write-Host $msg -ForegroundColor Red
+			}
+			throw "Failed the xmlreport schema validation."
 		}
-		throw "Failed the xmlreport schema validation."
+	}
+	else {
+		Write-Warning "Not running xml schema validation - must run powershell under .net 4.0 or higher"
 	}
 }
 
@@ -580,7 +585,7 @@ Task create-AssemblyInfo {
 
 	$versionInfoFile = 'src/VersionInfo.cs'
 	Remove-If-Exists $versionInfoFile
-	New-Item -ItemType file $versionInfoFile -Force
+	New-Item -ItemType file $versionInfoFile -Force | out-null
 	
 	$commit = Get-Git-Commit
 
