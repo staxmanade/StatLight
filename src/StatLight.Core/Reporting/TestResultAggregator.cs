@@ -99,6 +99,7 @@ namespace StatLight.Core.Reporting
                     Finished = message.Finished,
                     Started = message.Started,
                     ExceptionInfo = message.ExceptionInfo,
+                    OtherInfo = message.Description,
                 };
 
                 TranslateCoreInfo(ref msg, message);
@@ -229,7 +230,7 @@ namespace StatLight.Core.Reporting
                     if (_awaitingForAMatch.ContainsKey(clientEvent.FullMethodName))
                     {
                         Action a = _awaitingForAMatch[clientEvent.FullMethodName];
-                        if(a != null)
+                        if (a != null)
                         {
                             a();
                         }

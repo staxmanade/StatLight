@@ -54,6 +54,7 @@ namespace StatLight.IntegrationTests.Silverlight
 
         #region Failing Tests
         [TestMethod]
+        [Description("Test description on failing test.")]
         public void this_should_be_a_Failing_test()
         {
             Exception ex1;

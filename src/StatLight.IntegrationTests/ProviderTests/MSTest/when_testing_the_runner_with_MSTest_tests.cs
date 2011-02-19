@@ -17,9 +17,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         private ClientTestRunConfiguration _clientTestRunConfiguration;
         private InitializationOfUnitTestHarnessClientEvent _initializationOfUnitTestHarnessClientEvent;
 
-        //private readonly IList<TestExecutionClassBeginClientEvent> _testExecutionClassBeginClientEvent = new List<TestExecutionClassBeginClientEvent>();
         private readonly IList<TestExecutionClassCompletedClientEvent> _testExecutionClassCompletedClientEvent = new List<TestExecutionClassCompletedClientEvent>();
-        //private readonly IList<TestExecutionMethodBeginClientEvent> _testExecutionMethodBeginClientEvent = new List<TestExecutionMethodBeginClientEvent>();
         private readonly IList<TestExecutionMethodIgnoredClientEvent> _testExecutionMethodIgnoredClientEvent = new List<TestExecutionMethodIgnoredClientEvent>();
         private readonly IList<TestExecutionMethodFailedClientEvent> _testExecutionMethodFailedClientEvent = new List<TestExecutionMethodFailedClientEvent>();
         private readonly IList<TestExecutionMethodPassedClientEvent> _testExecutionMethodPassedClientEvent = new List<TestExecutionMethodPassedClientEvent>();
@@ -35,12 +33,9 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
             PathToIntegrationTestXap = TestXapFileLocations.MSTest;
             _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration();
-
             EventSubscriptionManager
                 .AddListener<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e)
-                //                .AddListener<TestExecutionClassBeginClientEvent>(e => _testExecutionClassBeginClientEvent.Add(e))
                 .AddListener<TestExecutionClassCompletedClientEvent>(e => _testExecutionClassCompletedClientEvent.Add(e))
-                //                .AddListener<TestExecutionMethodBeginClientEvent>(e => _testExecutionMethodBeginClientEvent.Add(e))
                 .AddListener<TestExecutionMethodIgnoredClientEvent>(e => _testExecutionMethodIgnoredClientEvent.Add(e))
                 .AddListener<TestExecutionMethodFailedClientEvent>(e => _testExecutionMethodFailedClientEvent.Add(e))
                 .AddListener<TestExecutionMethodPassedClientEvent>(e => _testExecutionMethodPassedClientEvent.Add(e))
@@ -79,31 +74,12 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             _initializationOfUnitTestHarnessClientEvent.ShouldNotBeNull();
         }
 
-        //[Test]
-        //public void Should_receive_the_TestExecutionClassBeginClientEvent()
-        //{
-        //    _testExecutionClassBeginClientEvent.Count().ShouldEqual(2);
-        //    _testExecutionClassBeginClientEvent.Each(AssertTestExecutionClassData);
-        //}
-
         [Test]
         public void Should_receive_the_TestExecutionClassCompletedClientEvent()
         {
             _testExecutionClassCompletedClientEvent.Count().ShouldEqual(2);
             _testExecutionClassCompletedClientEvent.Each(AssertTestExecutionClassData);
         }
-
-        //        [Test]
-        //        public void Should_receive_the_TestExecutionMethodBeginClientEvent()
-        //        {
-        //#if DEBUG
-        //            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(8);
-        //#else
-        //            _testExecutionMethodBeginClientEvent.Count().ShouldEqual(7);
-        //#endif
-        //            foreach (var e in _testExecutionMethodBeginClientEvent)
-        //                AssertTestExecutionClassData(e);
-        //        }
 
         [Test]
         public void Should_receive_the_TestExecutionMethodIgnoredClientEvent()
@@ -179,6 +155,16 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             theOneWeWant.OtherInfo.ShouldContain("Should_fail_due_to_a_message_box_modal_dialog - message");
 
             theOneWeWant.ResultType.ShouldEqual(ResultType.SystemGeneratedFailure);
+        }
+
+        [Test]
+        public void Should_have_pulled_the_DescriptionAttribute_information_out_of_a_test()
+        {
+            var nonEmptyOtherInfoResults = TestReport.TestResults.Where(w => !string.IsNullOrEmpty(w.OtherInfo));
+            var theOneWeWant = nonEmptyOtherInfoResults.Single(w => w.MethodName.Equals("this_should_be_a_Failing_test"));
+
+            theOneWeWant.ShouldNotBeNull()
+                .OtherInfo.ShouldEqual("Test description on failing test.");
         }
     }
 

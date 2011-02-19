@@ -81,6 +81,8 @@ namespace StatLight.Client.Harness.Events
         {
             get { return Finished - Started; }
         }
+
+        public string Description { get; set; }
     }
 
     public class TestExecutionMethodPassedClientEvent : TestExecutionMethod
