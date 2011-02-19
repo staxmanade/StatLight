@@ -456,6 +456,18 @@ function AssertXmlReportIsValid([string]$scriptFile)
 	}
 }
 
+function Get-Git-Commit
+{
+	try {
+		$gitLog = git log --oneline -1
+		return $gitLog.Split(' ')[0]
+	}
+	catch {
+		return "0000000"
+	}
+}
+
+
 function LoadZipAssembly {
 	if(!(Test-Path ('variable:hasLoadedIonicZipDll')))
 	{
@@ -562,6 +574,20 @@ Task initialize {
 	echo "running build with configuration of $build_configuration"
 	echo "running build with configuration of $build_dir"
 	
+}
+
+Task create-AssemblyInfo {
+
+	$versionInfoFile = 'src/VersionInfo.cs'
+	Remove-If-Exists $versionInfoFile
+	New-Item -ItemType file $versionInfoFile -Force
+	
+	$commit = Get-Git-Commit
+
+	$asmInfo = "
+[assembly: System.Reflection.AssemblyInformationalVersion(""$commit"")]
+"
+	Write-Output $asmInfo > $versionInfoFile
 }
 
 Task clean-build {
@@ -896,5 +922,5 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider {
 }
 
-Task build-all -depends clean-build, initialize, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {
+Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {
 }

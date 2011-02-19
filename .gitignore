@@ -13,3 +13,4 @@ temp_build*.ps1
 ClientBin/
 bin/
 *.swp
+src/VersionInfo.cs

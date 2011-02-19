@@ -95,6 +95,9 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="ArgOptions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Tools\ConsoleIconSwapper.cs" />

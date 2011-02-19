@@ -129,6 +129,9 @@
     <Compile Include="..\StatLight.Client.Harness\Events\TestFailedEvent.cs">
       <Link>Events\TestFailedEvent.cs</Link>
     </Compile>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="AssemblyInfo.Core.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="Common\ConsoleLogger.cs" />
