@@ -63,7 +63,7 @@ namespace StatLight.Core.Configuration
                 }
             }
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, xapUrl, webBrowserType);
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, xapUrl, webBrowserType, showTestingBrowserHost);
 
             var serverConfig = CreateServerConfiguration(
                 xapPath,

@@ -34,7 +34,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
             var consoleLogger = new ConsoleLogger(LogChatterLevels.Full);
             _xapToTestFactory = () => new byte[] { 0, 1, 2, 3, 4 };
             _hostXap = new byte[] { 5, 4, 2, 1, 4 };
-            var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
+            var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false);
             _serializedConfiguration = clientConfig.Serialize();
             var responseFactory = new ResponseFactory(_xapToTestFactory, _hostXap, clientConfig);
 

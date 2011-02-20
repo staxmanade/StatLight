@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Silverlight.Testing;
 using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
@@ -80,8 +81,8 @@ namespace StatLight.Client.Harness.Hosts.MSTest
                 var allProviderPossibilities = (from assembly in _loadedXapData.TestAssemblies
                                                 from type in assembly.GetTypes()
                                                 where interfaceLookingFor.IsAssignableFrom(type)
-													&& !type.IsAbstract
-													&& type != typeof(Microsoft.Silverlight.Testing.UnitTesting.Metadata.VisualStudio.VsttProvider)
+                                                    && !type.IsAbstract
+                                                    && type != typeof(Microsoft.Silverlight.Testing.UnitTesting.Metadata.VisualStudio.VsttProvider)
                                                 select type).ToList();
 
                 if (allProviderPossibilities.Count == 1)
@@ -95,11 +96,11 @@ namespace StatLight.Client.Harness.Hosts.MSTest
                 {
                     if (allProviderPossibilities.Any())
                     {
-						var providers = string.Join(Environment.NewLine, allProviderPossibilities.Select(x=>x.FullName).ToArray());
-						// TODO: how to handle this???
-						throw new StatLightException("Multiple unit test provider types where present in the xap, but only one was expected. The types found were: " + Environment.NewLine + providers);
+                        var providers = string.Join(Environment.NewLine, allProviderPossibilities.Select(x => x.FullName).ToArray());
+                        // TODO: how to handle this???
+                        throw new StatLightException("Multiple unit test provider types where present in the xap, but only one was expected. The types found were: " + Environment.NewLine + providers);
                     }
-                        
+
 
                     throw new StatLightException("Could not find any classes that inherit from IUnitTestProvider.");
                 }
@@ -128,7 +129,12 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             {
             }
 
-
+            // Don't enable a U.I. when not specifying the U.I. Mode.
+            if (!_clientTestRunConfiguration.ShowTestingBrowserHost)
+            {
+                settings.TestPanelType = typeof(StatLightTestPage);
+            }
+            
             settings.StartRunImmediately = true;
             settings.ShowTagExpressionEditor = false;
             settings.TestService = null;
@@ -145,8 +151,27 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             settings.TestHarness.TestHarnessCompleted += CurrentHarness_TestHarnessCompleted;
             return settings;
         }
-
-
-
     }
+
+#if March2010 || April2010 || May2010 || Feb2011
+    public class StatLightTestPage : Panel, ITestPage
+    {
+        public Panel TestPanel
+        {
+            get { return new TestPanelImplementation(); }
+        }
+
+        /// <summary>
+        /// Initializes the TestPage object.
+        /// </summary>
+        /// <param name="harness">The test harness instance.</param>
+        public StatLightTestPage(UnitTestHarness harness)
+        {
+        }
+
+        private class TestPanelImplementation : Panel
+        {
+        }
+    }
+#endif
 }

@@ -155,8 +155,6 @@ namespace StatLight.Core.Runners
             SetupDebugClientEventListener(logger);
             webServer = CreateWebServer(logger, statLightConfiguration, location);
 
-            showTestingBrowserHost = GetShowTestingBrowserHost(serverTestRunConfiguration, showTestingBrowserHost);
-
             webBrowsers = GetWebBrowsers(logger, location.TestPageUrl, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart);
 
             dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
@@ -223,7 +221,7 @@ namespace StatLight.Core.Runners
             SetupDebugClientEventListener(logger);
             var webServer = CreateWebServer(logger, statLightConfiguration, location);
 
-            var showTestingBrowserHost = GetShowTestingBrowserHost(serverTestRunConfiguration, serverTestRunConfiguration.ShowTestingBrowserHost);
+            var showTestingBrowserHost = serverTestRunConfiguration.ShowTestingBrowserHost;
 
             var querystring = "?{0}={1}".FormatWith(StatLightServiceRestApi.StatLightResultPostbackUrl,
                                                    HttpUtility.UrlEncode(location.BaseUrl.ToString()));
@@ -254,16 +252,6 @@ namespace StatLight.Core.Runners
             }
 
             return new DialogMonitorRunner(logger, _eventPublisher, debugAssertMonitorTimer, dialogMonitors);
-        }
-
-        private static bool GetShowTestingBrowserHost(ServerTestRunConfiguration serverTestRunConfiguration, bool showTestingBrowserHost)
-        {
-            // The new March/April 2010 will fail in the "minimized mode" 
-            //TODO figure out how to not get the errors when these are minimized
-            if (serverTestRunConfiguration.XapHostType == XapHostType.MSTestMarch2010 ||
-                serverTestRunConfiguration.XapHostType == XapHostType.MSTestApril2010)
-                showTestingBrowserHost = true;
-            return showTestingBrowserHost;
         }
     }
 }
