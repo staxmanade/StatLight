@@ -43,7 +43,7 @@ namespace StatLight.Core.Tests.WebServer.WcfHost
                 var serverConfig = MockServerTestRunConfiguration;
 
                 _hostXap = serverConfig.HostXap;
-                var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted);
+                var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false);
                 var postHandler = new PostHandler(base.TestLogger, base.TestEventPublisher, clientConfig);
                 _statLightService = new StatLightService(new NullLogger(), base.CreateTestDefaultClinetTestRunConfiguraiton(), serverConfig, postHandler);
             }
@@ -139,7 +139,7 @@ namespace StatLight.Core.Tests.WebServer.WcfHost
             {
                 base.Before_all_tests();
 
-                var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new Collection<string>(), _tagFilter, 1, "", StatLight.Core.WebBrowser.WebBrowserType.SelfHosted);
+                var config = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new Collection<string>(), _tagFilter, 1, "", StatLight.Core.WebBrowser.WebBrowserType.SelfHosted, false);
 
                 _statLightService = new StatLightService(new NullLogger(), config, MockServerTestRunConfiguration, new Mock<IPostHandler>().Object);
             }

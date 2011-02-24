@@ -137,3 +137,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Scope = "member", Target = "StatLight.Core.Reporting.Providers.Xml.XmlSchemaValidatorHelper.#ValidateSchema(System.String,System.String,System.Collections.Generic.IList`1<System.String>&)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "OutOfBrowser", Scope = "member", Target = "StatLight.Core.WebBrowser.OutOfBrowser.#Finalize()")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "webBrowser", Scope = "member", Target = "StatLight.Core.WebBrowser.OutOfBrowser.#Finalize()")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2243:AttributeStringLiteralsShouldParseCorrectly")]
