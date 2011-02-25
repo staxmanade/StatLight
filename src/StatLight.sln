@@ -64,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.ExternalWebTest",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.CustomTestProvider", "StatLight.IntegrationTests.Silverlight.CustomTestProvider\StatLight.IntegrationTests.Silverlight.CustomTestProvider.csproj", "{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.xUnitContrib", "StatLight.IntegrationTests.Silverlight.xUnitContrib\StatLight.IntegrationTests.Silverlight.xUnitContrib.csproj", "{40538134-161C-43F3-95E5-19F65D785E5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -248,6 +250,14 @@ Global
 		{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}.Release|x86.ActiveCfg = Release|Any CPU
 		{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}.Release|x86.Build.0 = Release|Any CPU
+		{40538134-161C-43F3-95E5-19F65D785E5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40538134-161C-43F3-95E5-19F65D785E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40538134-161C-43F3-95E5-19F65D785E5F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{40538134-161C-43F3-95E5-19F65D785E5F}.Debug|x86.Build.0 = Debug|Any CPU
+		{40538134-161C-43F3-95E5-19F65D785E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40538134-161C-43F3-95E5-19F65D785E5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40538134-161C-43F3-95E5-19F65D785E5F}.Release|x86.ActiveCfg = Release|Any CPU
+		{40538134-161C-43F3-95E5-19F65D785E5F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -266,6 +276,7 @@ Global
 		{CB2B6883-2461-4115-848C-DA79D20A3E0A} = {CBFFC0A9-9D77-443F-84FB-831A1C368EA0}
 		{0FB6602A-EF21-4A26-8A65-E1C9A01F206E} = {CBFFC0A9-9D77-443F-84FB-831A1C368EA0}
 		{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD} = {CBFFC0A9-9D77-443F-84FB-831A1C368EA0}
+		{40538134-161C-43F3-95E5-19F65D785E5F} = {CBFFC0A9-9D77-443F-84FB-831A1C368EA0}
 		{348760C9-0276-4574-9BBD-EAE8F20E4AD3} = {0FB6602A-EF21-4A26-8A65-E1C9A01F206E}
 		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19} = {0FB6602A-EF21-4A26-8A65-E1C9A01F206E}
 		{8281421C-D572-4817-BBD2-796A8DB2B2E0} = {0FB6602A-EF21-4A26-8A65-E1C9A01F206E}

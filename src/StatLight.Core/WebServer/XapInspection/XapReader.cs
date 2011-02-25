@@ -130,13 +130,18 @@ namespace StatLight.Core.WebServer.XapInspection
 
             foreach (ZipEntry zipEntry in archive)
             {
+                // http://staxmanade.blogspot.com/2009/02/xunit-light-for-silverlight.html
                 if (fileNameCompare(zipEntry.FileName, "XUnitLight.Silverlight.dll"))
                     return UnitTestProviderType.XUnit;
 
-                if (zipEntry.FileName.ToLower().Contains("unitdriven"))
+                //http://xunitcontrib.codeplex.com/
+                if (zipEntry.FileName.ContainsIgnoreCase("xunitcontrib.runner.silverlight"))
+                    return UnitTestProviderType.XUnit;
+
+                if (zipEntry.FileName.ContainsIgnoreCase("unitdriven"))
                     return UnitTestProviderType.UnitDriven;
 
-                if (zipEntry.FileName.ToLower().Contains("nunit"))
+                if (zipEntry.FileName.ContainsIgnoreCase("nunit"))
                     return UnitTestProviderType.NUnit;
 
                 if (fileNameCompare(zipEntry.FileName, "Microsoft.Silverlight.Testing.dll"))

@@ -49,7 +49,7 @@ namespace StatLight.Core.WebServer
         private bool TryPortNumber(int port)
         {
             var url = "http://localhost:{0}/".FormatWith(port);
-
+            _logger.Debug("Attempting to open port at {0}".FormatWith(url));
             var server = new HttpListener();
             try
             {

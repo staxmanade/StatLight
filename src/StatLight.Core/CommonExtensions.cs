@@ -30,6 +30,17 @@ namespace StatLight
             return string.Format(CultureInfo.CurrentCulture, format, args);
         }
 
+        public static bool ContainsIgnoreCase(this string source, string toCheck)
+        {
+            return source.Contains(toCheck, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool Contains(this string source, string toCheck, StringComparison comp)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            return source.IndexOf(toCheck, comp) >= 0;
+        }
+
         public static Stream ToStream(this string value)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(value));
