@@ -68,7 +68,12 @@ namespace StatLight.Client.Harness.Hosts
                             if (assemblyStream == null)
                                 throw new Exception(string.Format("Assembly resource missing for [{0}]. (file not found in xap)", assemblyPart.Source));
 
-                            Assembly ass = assemblyPart.Load(assemblyStream.Stream);
+                            Assembly ass;
+#if WINDOWS_PHONE
+                            throw new NotImplementedException();
+#else
+                            ass = assemblyPart.Load(assemblyStream.Stream);
+#endif
 
                             if (part == entryPoint + ".dll")
                             {

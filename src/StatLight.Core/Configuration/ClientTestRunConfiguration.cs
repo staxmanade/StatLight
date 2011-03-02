@@ -131,13 +131,14 @@ namespace StatLight.Core.Configuration
                 if (!_instanceNumber.HasValue)
                 {
                     const string instanceNumber = "InstaneNumber";
-
+#if !WINDOWS_PHONE
                     if (System.Windows.Application.Current.Host.InitParams.ContainsKey(instanceNumber))
                     {
                         string initParam = System.Windows.Application.Current.Host.InitParams[instanceNumber];
                         _instanceNumber = int.Parse(initParam);
                     }
                     else
+#endif
                     {
                         _instanceNumber = 1;
                     }
