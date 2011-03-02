@@ -136,7 +136,7 @@ namespace StatLight.Core.WebServer.XapInspection
 
                 //http://xunitcontrib.codeplex.com/
                 if (zipEntry.FileName.ContainsIgnoreCase("xunitcontrib.runner.silverlight"))
-                    return UnitTestProviderType.XUnit;
+                    return UnitTestProviderType.MSTestWithCustomProvider;
 
                 if (zipEntry.FileName.ContainsIgnoreCase("unitdriven"))
                     return UnitTestProviderType.UnitDriven;
