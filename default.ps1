@@ -216,6 +216,11 @@ function compile-StatLight-MSTestHost {
 		"src\AssemblyInfo.cs"
 		".\src\StatLight.Client.Harness.MSTest\App.g.cs"
 	)
+	
+	$debugOption = ""
+	if($build_configuration -eq "DEBUG"){
+		$debugOption = "/debug /pdb:$outAssemblyName.pdb"
+	}
 
 	$sourceFiles += Get-ChildItem 'src\StatLight.Client.Harness.MSTest\' -recurse `
 		| where{$_.Extension -like "*.cs"} `
@@ -232,12 +237,12 @@ echo $sourceFiles
 	$options = @(
 		'/noconfig',
 		'/nowarn:1701`,1702',
+		"$debugOption",
 		'/nostdlib+',
 		'/errorreport:prompt',
 		'/platform:anycpu',
 		'/warn:4'
 		"/define:$buildConfigToUpper``;TRACE``;SILVERLIGHT``;$extraCompilerFlags``;$microsoft_Silverlight_Testing_Version_Name",
-		'/debug-',
 		'/optimize+',
 		'/keyfile:src\StatLight.snk',
 		"/out:$outAssemblyName",
@@ -261,6 +266,11 @@ function compile-StatLight-MSTestHostIntegrationTests {
 	$sourceFiles = @(
 		".\src\StatLight.IntegrationTests.Silverlight.MSTest\App.g.cs"
 	)
+	
+	$debugOption = ""
+	if($build_configuration -eq "DEBUG"){
+		$debugOption = "/debug /pdb:$outAssemblyName.pdb"
+	}
 
 	$sourceFiles += Get-ChildItem 'src\StatLight.IntegrationTests.Silverlight.MSTest\' -recurse `
 		| where{$_.Extension -like "*.cs"} `
@@ -268,7 +278,8 @@ function compile-StatLight-MSTestHostIntegrationTests {
 		| where{!$_.Contains($not_build_configuration)} `
 		| where{!$_.Contains('App.g.cs')} `
 		| where{!$_.Contains('App.g.i.cs')}
-echo $sourceFiles
+
+	echo $sourceFiles
 
 	$buildConfigToUpper = $build_configuration.ToUpper();
 	echo $buildConfigToUpper
@@ -276,11 +287,11 @@ echo $sourceFiles
 		'/noconfig',
 		'/nowarn:1701`,1702',
 		'/nostdlib+',
+		"$debugOption",
 		'/errorreport:prompt',
 		'/platform:anycpu',
 		'/warn:4'
 		"/define:$buildConfigToUpper``;TRACE``;SILVERLIGHT``;$microsoft_Silverlight_Testing_Version_Name",
-		'/debug-',
 		'/optimize+',
 		'/keyfile:src\StatLight.snk',
 		"/out:$outAssemblyName",
@@ -332,6 +343,14 @@ function Build-And-Package-StatLight-MSTest {
 					Get-Item $newAppManifestFile
 					Get-Item $statlightBuildFilePath
 				)
+	if($build_configuration -eq 'debug')
+	{
+		$zipFiles += @(
+						Get-Item ($statlightBuildFilePath + ".pdb")
+						Get-Item ".\src\StatLight.Client.Harness\Bin\$build_configuration\StatLight.Client.Harness.pdb"
+					)
+	}
+	
 	Create-Xap $zippedName $zipFiles
 }
 
