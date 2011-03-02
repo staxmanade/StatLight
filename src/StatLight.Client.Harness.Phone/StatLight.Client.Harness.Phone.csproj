@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EBDA7B79-46B5-4763-AD62-9F0AA25AF2D6}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StatLight.Client.Harness.Phone</RootNamespace>
+    <AssemblyName>StatLight.Client.Harness.Phone</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightApplication>true</SilverlightApplication>
+    <SupportedCultures>
+    </SupportedCultures>
+    <XapOutputs>true</XapOutputs>
+    <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
+    <XapFilename>StatLight.Client.Harness.Phone.xap</XapFilename>
+    <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
+    <SilverlightAppEntry>StatLight.Client.Harness.Phone.App</SilverlightAppEntry>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Phone" />
+    <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\StatLight.Client.Harness\Events\ExceptionInfo.cs">
+      <Link>Events\ExceptionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Events\TestFailedEvent.cs">
+      <Link>Events\TestFailedEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\CurrentXapData.cs">
+      <Link>Hosts\CurrentXapData.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\ILoadedXapData.cs">
+      <Link>Hosts\ILoadedXapData.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\ITestRunnerHost.cs">
+      <Link>Hosts\ITestRunnerHost.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\LoadedXapData.cs">
+      <Link>Hosts\LoadedXapData.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\LoadedXapDataBase.cs">
+      <Link>Hosts\LoadedXapDataBase.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\NormalStatLightSystem.cs">
+      <Link>Hosts\NormalStatLightSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\ReflectionInfoHelper.cs">
+      <Link>Hosts\ReflectionInfoHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\RemoteRunStatLightSystem.cs">
+      <Link>Hosts\RemoteRunStatLightSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\StatLightSystemBase.cs">
+      <Link>Hosts\StatLightSystemBase.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Messaging\HttpResponseCompleteEventArgs.cs">
+      <Link>Messaging\HttpResponseCompleteEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Messaging\HttpResponseCompleteEventHandler.cs">
+      <Link>Messaging\HttpResponseCompleteEventHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Messaging\HttpWebRequest.cs">
+      <Link>Messaging\HttpWebRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Messaging\IQuerystringReader.cs">
+      <Link>Messaging\IQuerystringReader.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Messaging\Server.cs">
+      <Link>Messaging\Server.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\CommonExtensions.cs">
+      <Link>Core\CommonExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Common\StatLightException.cs">
+      <Link>Core\Common\StatLightException.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Configuration\ClientTestRunConfiguration.cs">
+      <Link>Core\Configuration\ClientTestRunConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Configuration\UnitTestProviderTypes.cs">
+      <Link>Core\Common\UnitTestProviderTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Reporting\Messages\LogMessageType.cs">
+      <Link>Core\Reporting\Messages\LogMessageType.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Reporting\Messages\MobilOtherMessageType.cs">
+      <Link>Core\Reporting\Messages\MobilOtherMessageType.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Reporting\Messages\MobilScenarioResult.cs">
+      <Link>Core\Reporting\Messages\MobilScenarioResult.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Reporting\Messages\TestOutcome.cs">
+      <Link>Core\Reporting\Messages\TestOutcome.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\WebBrowser\WebBrowserType.cs">
+      <Link>Core\WebBrowser\WebBrowserType.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\WebServer\StatLightServiceRestApi.cs">
+      <Link>Core\WebServer\StatLightServiceRestApi.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness\AssemblyInfo.This.cs">
+      <Link>AssemblyInfo.This.cs</Link>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+    <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AppManifest.xml" />
+    <None Include="Properties\WMAppManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ApplicationIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Background.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplashScreenImage.jpg" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions />
+</Project>

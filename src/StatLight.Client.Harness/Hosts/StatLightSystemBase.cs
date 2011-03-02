@@ -24,11 +24,16 @@ namespace StatLight.Client.Harness.Hosts
             T service = null;
             try
             {
-                Assembly[] list = Deployment.Current.Parts
+
+                Assembly[] list;
+#if WINDOWS_PHONE
+                throw new NotImplementedException();
+#else
+                list = Deployment.Current.Parts
                                     .Where(w => w.Source.Contains("StatLight", StringComparison.OrdinalIgnoreCase))
                                     .Select(ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative)))
                                     .Select(stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
-
+#endif
                 var type = list
                     .SelectMany(s => s.GetTypes())
                     .Where(w => w != typeof(T))

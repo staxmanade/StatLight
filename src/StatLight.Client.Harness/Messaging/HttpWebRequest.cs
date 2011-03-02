@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Windows.Browser;
 
 namespace StatLight.Client.Model.Messaging
 {
@@ -43,7 +42,7 @@ namespace StatLight.Client.Model.Messaging
                 {
                     using (var writer = new StreamWriter(helper.Request.EndGetRequestStream(ar)))
                     {
-                        writer.Write(HttpUtility.UrlEncode(PostData));
+                        writer.Write(Uri.EscapeDataString(PostData));
                     }
                 }
 
