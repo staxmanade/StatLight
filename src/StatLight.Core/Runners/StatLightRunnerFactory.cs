@@ -159,7 +159,7 @@ namespace StatLight.Core.Runners
 
             dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
 
-            StartupBrowserCommunicationTimeoutMonitor(new TimeSpan(0, 0, 5, 0));
+            StartupBrowserCommunicationTimeoutMonitor();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "testPageUrlWithQueryString")]
@@ -177,10 +177,13 @@ namespace StatLight.Core.Runners
             return webBrowsers;
         }
 
-        private void StartupBrowserCommunicationTimeoutMonitor(TimeSpan maxTimeAllowedBeforeCommErrorSent)
+        private void StartupBrowserCommunicationTimeoutMonitor()
         {
             if (_browserCommunicationTimeoutMonitor == null)
-                _browserCommunicationTimeoutMonitor = new BrowserCommunicationTimeoutMonitor(_eventPublisher, new TimerWrapper(3000), maxTimeAllowedBeforeCommErrorSent);
+            {
+                _browserCommunicationTimeoutMonitor = new BrowserCommunicationTimeoutMonitor(_eventPublisher, new TimerWrapper(3000), TimeSpan.FromMinutes(5));
+                _eventSubscriptionManager.AddListener(_browserCommunicationTimeoutMonitor);
+            }
         }
 
         private void CreateAndAddConsoleResultHandlerToEventAggregator(ILogger logger)
@@ -231,7 +234,7 @@ namespace StatLight.Core.Runners
 
             var dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
 
-            StartupBrowserCommunicationTimeoutMonitor(new TimeSpan(0, 0, 5, 0));
+            StartupBrowserCommunicationTimeoutMonitor();
             CreateAndAddConsoleResultHandlerToEventAggregator(logger);
 
             IRunner runner = new OnetimeRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
