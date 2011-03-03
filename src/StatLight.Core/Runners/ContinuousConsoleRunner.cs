@@ -1,13 +1,12 @@
 ﻿
-using StatLight.Core.Configuration;
-using StatLight.Core.Events.Aggregation;
-using StatLight.Core.Monitoring.XapFileMonitoring;
-
 namespace StatLight.Core.Runners
 {
     using System;
     using System.Threading;
     using StatLight.Core.Common;
+    using StatLight.Core.Configuration;
+    using StatLight.Core.Events.Aggregation;
+    using StatLight.Core.Monitoring;
     using StatLight.Core.Reporting;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;

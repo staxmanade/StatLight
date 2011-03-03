@@ -217,7 +217,7 @@
     <Compile Include="WebServer\WcfHost\StatLightServiceHost.cs" />
     <Compile Include="Configuration\ClientTestRunConfiguration.cs" />
     <Compile Include="WebServer\WebServerLocation.cs" />
-    <Compile Include="Monitoring\XapFileMonitoring\XapFileBuildChangedMonitor.cs" />
+    <Compile Include="Monitoring\XapFileBuildChangedMonitor.cs" />
     <Compile Include="WebServer\XapHost\XapHostType.cs" />
     <Compile Include="WebServer\XapHost\DiskXapHostFileLoader.cs" />
     <Compile Include="WebServer\XapHost\IXapHostFileLoader.cs" />

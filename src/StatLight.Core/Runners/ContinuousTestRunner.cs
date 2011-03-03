@@ -1,18 +1,17 @@
 ﻿
-using StatLight.Core.Configuration;
-using StatLight.Core.Events.Aggregation;
-using StatLight.Core.Monitoring.XapFileMonitoring;
 
 namespace StatLight.Core.Runners
 {
     using System;
     using System.Threading;
     using StatLight.Core.Common;
+    using StatLight.Core.Configuration;
+    using StatLight.Core.Events;
+    using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Reporting;
+    using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
-    using StatLight.Core.Events;
-    using StatLight.Core.Reporting.Providers.Console;
 
     internal class ContinuousTestRunner : IDisposable,
         IListener<TestRunCompletedServerEvent>,

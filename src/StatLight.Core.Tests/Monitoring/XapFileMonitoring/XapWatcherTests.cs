@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using NUnit.Framework;
 using StatLight.Core.Events;
-using StatLight.Core.Monitoring.XapFileMonitoring;
 using StatLight.Core.Events.Aggregation;
+using StatLight.Core.Monitoring;
 
 namespace StatLight.Core.Tests.Monitoring.XapFileMonitoring
 {
