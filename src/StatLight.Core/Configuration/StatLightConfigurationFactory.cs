@@ -30,12 +30,10 @@ namespace StatLight.Core.Configuration
             if (queryString == null)
                 throw new ArgumentNullException("queryString");
 
-            string xapUrl = null;
             XapReadItems xapReadItems = null;
             string entryPointAssembly = string.Empty;
             if (isRemoteRun)
             {
-                xapUrl = xapPath;
             }
             else
             {
@@ -100,9 +98,6 @@ namespace StatLight.Core.Configuration
         {
             XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
 
-            //TODO: remove this thing.
-            Func<byte[]> xapToTestFactory = () => new byte[] { };
-
             Func<byte[]> hostXapFactory = () =>
                                       {
                                           byte[] hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
@@ -110,14 +105,6 @@ namespace StatLight.Core.Configuration
                                           if (xapReadItems != null)
                                           {
                                               hostXap = RewriteXapWithSpecialFiles(hostXap, xapReadItems);
-
-                                              xapToTestFactory = () =>
-                                                                     {
-                                                                         AssertXapToTestFileExists(xapPath);
-                                                                         _logger.Debug(
-                                                                             "Loading XapToTest {0}".FormatWith(xapPath));
-                                                                         return File.ReadAllBytes(xapPath);
-                                                                     };
                                           }
                                           return hostXap;
                                       };
@@ -127,16 +114,8 @@ namespace StatLight.Core.Configuration
         {
             if (xapReadItems != null)
             {
-                //TODO: maybe specify this list as something passed in by the user???
-                var specialFilesToCopyIntoHostXap = new List<string>
-                                                        {
-                                                            "ServiceReferences.ClientConfig",
-                                                        };
-
-                var filesToCopyIntoHostXap = (from x in xapReadItems.FilesContianedWithinXap
-                                              //from specialFile in specialFilesToCopyIntoHostXap
-                                              //where x.FileName.Equals(specialFile, StringComparison.OrdinalIgnoreCase)
-                                              select x).ToList();
+                List<IXapFile> filesToCopyIntoHostXap = (from x in xapReadItems.FilesContianedWithinXap
+                                                         select x).ToList();
 
                 if (filesToCopyIntoHostXap.Any())
                 {
@@ -174,7 +153,6 @@ namespace StatLight.Core.Configuration
                 if ((Path.GetExtension(file.FileName) ?? string.Empty).Equals(".dll", StringComparison.OrdinalIgnoreCase))
                 {
                     var name = Path.GetFileNameWithoutExtension(file.FileName);
-                    XNamespace x = "x";
                     parts.Add(new XElement("AssemblyPart",
                                            new XAttribute("StatLightTempName", name),
                                            new XAttribute("Source", file.FileName)));
