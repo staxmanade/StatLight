@@ -108,4 +108,7 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>copy $(ProjectDir)$(OutDir)$(ProjectName).xap $(ProjectDir)$(ProjectName).xap</PostBuildEvent>
+  </PropertyGroup>
 </Project>
