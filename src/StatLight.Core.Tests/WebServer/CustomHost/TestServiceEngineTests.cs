@@ -36,7 +36,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
             _hostXap = new byte[] { 5, 4, 2, 1, 4 };
             var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false, string.Empty);
             _serializedConfiguration = clientConfig.Serialize();
-            var responseFactory = new ResponseFactory(_xapToTestFactory, _hostXap, clientConfig);
+            var responseFactory = new ResponseFactory(() => _hostXap, clientConfig);
 
             _mockPostHandler = new Mock<IPostHandler>();
             _testServiceEngine = new TestServiceEngine(consoleLogger, port, responseFactory, _mockPostHandler.Object);
@@ -80,13 +80,6 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
             var expectedFile = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", 0.ToString());
             GetString(StatLightServiceRestApi.GetHtmlTestPage)
                 .ShouldEqual(expectedFile);
-        }
-
-        [Test]
-        public void Should_serve_the_GetXapToTest_file()
-        {
-            _webClient.DownloadData(GetUrl(StatLightServiceRestApi.GetXapToTest))
-                .ShouldEqual(_xapToTestFactory());
         }
 
         [Test]

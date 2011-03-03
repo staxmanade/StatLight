@@ -42,7 +42,7 @@ namespace StatLight.Core.Tests.WebServer.WcfHost
 
                 var serverConfig = MockServerTestRunConfiguration;
 
-                _hostXap = serverConfig.HostXap;
+                _hostXap = serverConfig.HostXap();
                 var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false, string.Empty);
                 var postHandler = new PostHandler(base.TestLogger, base.TestEventPublisher, clientConfig);
                 _statLightService = new StatLightService(new NullLogger(), base.CreateTestDefaultClinetTestRunConfiguraiton(), serverConfig, postHandler);

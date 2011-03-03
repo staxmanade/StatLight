@@ -26,10 +26,6 @@ namespace StatLight.Core.WebServer.WcfHost
 		void PostMessage(Stream stream);
 
 		[OperationContract]
-		[WebGet(UriTemplate = StatLightServiceRestApi.GetXapToTest, BodyStyle = WebMessageBodyStyle.Bare)]
-		Stream GetTestXap();
-
-		[OperationContract]
 		[WebGet(UriTemplate = StatLightServiceRestApi.GetHtmlTestPage, BodyStyle = WebMessageBodyStyle.Bare)]
 		Stream GetHtmlTestPage();
 

@@ -9,14 +9,12 @@ namespace StatLight.Core.WebServer
 {
     public class ResponseFactory
     {
-        private readonly Func<byte[]> _xapToTestFactory;
-        private readonly byte[] _hostXap;
+        private readonly Func<byte[]> _hostXapFactory;
         private readonly string _serializedConfiguration;
 
-        public ResponseFactory(Func<byte[]> xapToTestFactory, byte[] hostXap, ClientTestRunConfiguration clientTestRunConfiguration)
+        public ResponseFactory(Func<byte[]> hostXapFactory, ClientTestRunConfiguration clientTestRunConfiguration)
         {
-            _xapToTestFactory = xapToTestFactory;
-            _hostXap = hostXap;
+            _hostXapFactory = hostXapFactory;
             _serializedConfiguration = clientTestRunConfiguration.Serialize();
         }
 
@@ -35,11 +33,8 @@ namespace StatLight.Core.WebServer
                 return GetTestHtmlPage();
             }
 
-            if (IsKnown(localPath, StatLightServiceRestApi.GetXapToTest))
-                return new ResponseFile { FileData = _xapToTestFactory(), ContentType = "application/x-silverlight-app" };
-
             if (IsKnown(localPath, StatLightServiceRestApi.GetTestPageHostXap))
-                return new ResponseFile { FileData = _hostXap, ContentType = "application/x-silverlight-app" };
+                return new ResponseFile { FileData = _hostXapFactory(), ContentType = "application/x-silverlight-app" };
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetTestRunConfiguration))
                 return new ResponseFile { FileData = _serializedConfiguration.ToByteArray(), ContentType = "text/xml" };
@@ -57,9 +52,6 @@ namespace StatLight.Core.WebServer
                 return true;
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetHtmlTestPage))
-                return true;
-
-            if (IsKnown(localPath, StatLightServiceRestApi.GetXapToTest))
                 return true;
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetTestPageHostXap))

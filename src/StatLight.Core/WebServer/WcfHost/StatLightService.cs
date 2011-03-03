@@ -106,7 +106,7 @@ namespace StatLight.Core.WebServer.WcfHost
         public Stream GetTestPageHostXap()
         {
             _logger.Debug("StatLightService.GetTestPageHostXap()");
-            return _serverTestRunConfiguration.HostXap.ToStream();
+            return _serverTestRunConfiguration.HostXap().ToStream();
         }
 
 

@@ -116,16 +116,10 @@ namespace StatLight.Core.Runners
             return runner;
         }
 
-        private static void SetXapHostUrl(StatLightConfiguration statLightConfiguration, WebServerLocation location)
-        {
-            if (statLightConfiguration.Client.XapToTestUrl == null)
-                statLightConfiguration.Client.XapToTestUrl = (location.BaseUrl + StatLightServiceRestApi.GetXapToTest);
-        }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private IWebServer CreateWebServer(ILogger logger, StatLightConfiguration statLightConfiguration, WebServerLocation location)
         {
-            SetXapHostUrl(statLightConfiguration, location);
 
             var postHandler = new PostHandler(logger, _eventPublisher, statLightConfiguration.Client);
 
@@ -133,7 +127,7 @@ namespace StatLight.Core.Runners
             //return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
 
             int port = location.BaseUrl.Port;
-            var responseFactory = new ResponseFactory(statLightConfiguration.Server.XapToTextFactory, statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
+            var responseFactory = new ResponseFactory(statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
             return new TestServiceEngine(logger, port, responseFactory, postHandler);
 
         }
@@ -217,28 +211,29 @@ namespace StatLight.Core.Runners
             ClientTestRunConfiguration clientTestRunConfiguration = statLightConfiguration.Client;
             ServerTestRunConfiguration serverTestRunConfiguration = statLightConfiguration.Server;
 
-            var urlToTestPage = statLightConfiguration.Client.XapToTestUrl.ToUri();
+            throw new NotImplementedException();
+            //var urlToTestPage = statLightConfiguration.Client.XapToTestUrl.ToUri();
 
-            var location = new RemoteSiteOverriddenLocation(logger, urlToTestPage);
-            var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
-            SetupDebugClientEventListener(logger);
-            var webServer = CreateWebServer(logger, statLightConfiguration, location);
-
-            var showTestingBrowserHost = serverTestRunConfiguration.ShowTestingBrowserHost;
-
-            var querystring = "?{0}={1}".FormatWith(StatLightServiceRestApi.StatLightResultPostbackUrl,
-                                                   HttpUtility.UrlEncode(location.BaseUrl.ToString()));
-            var testPageUrlAndPostbackQuerystring = new Uri(location.TestPageUrl + querystring);
-            logger.Debug("testPageUrlAndPostbackQuerystring={0}".FormatWith(testPageUrlAndPostbackQuerystring.ToString()));
-            var webBrowsers = GetWebBrowsers(logger, testPageUrlAndPostbackQuerystring, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart);
-
-            var dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
-
-            StartupBrowserCommunicationTimeoutMonitor();
-            CreateAndAddConsoleResultHandlerToEventAggregator(logger);
-
-            IRunner runner = new OnetimeRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
-            return runner;
+            //var location = new RemoteSiteOverriddenLocation(logger, urlToTestPage);
+            //var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
+            //SetupDebugClientEventListener(logger);
+            //var webServer = CreateWebServer(logger, statLightConfiguration, location);
+            //
+            //var showTestingBrowserHost = serverTestRunConfiguration.ShowTestingBrowserHost;
+            //
+            //var querystring = "?{0}={1}".FormatWith(StatLightServiceRestApi.StatLightResultPostbackUrl,
+            //                                       HttpUtility.UrlEncode(location.BaseUrl.ToString()));
+            //var testPageUrlAndPostbackQuerystring = new Uri(location.TestPageUrl + querystring);
+            //logger.Debug("testPageUrlAndPostbackQuerystring={0}".FormatWith(testPageUrlAndPostbackQuerystring.ToString()));
+            //var webBrowsers = GetWebBrowsers(logger, testPageUrlAndPostbackQuerystring, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart);
+            //
+            //var dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
+            //
+            //StartupBrowserCommunicationTimeoutMonitor();
+            //CreateAndAddConsoleResultHandlerToEventAggregator(logger);
+            //
+            //IRunner runner = new OnetimeRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
+            //return runner;
         }
 
         private IDialogMonitorRunner SetupDialogMonitorRunner(ILogger logger, List<IWebBrowser> webBrowsers, TimerWrapper debugAssertMonitorTimer)

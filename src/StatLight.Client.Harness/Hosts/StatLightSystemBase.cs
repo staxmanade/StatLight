@@ -73,7 +73,6 @@ namespace StatLight.Client.Harness.Hosts
                                                 ClientTestRunConfiguration.CurrentClientTestRunConfiguration = clientTestRunConfiguration;
                                                 TestRunConfigurationDownloadComplete = true;
                                                 TestRunnerHost.ConfigureWithClientTestRunConfiguration(clientTestRunConfiguration);
-                                                Server.Debug("XapToTestUrl: {0}".FormatWith(clientTestRunConfiguration.XapToTestUrl));
                                                 OnTestRunConfigurationDownloaded(clientTestRunConfiguration);
                                             };
             client.OpenReadAsync(StatLightServiceRestApi.GetTestRunConfiguration.ToFullUri());

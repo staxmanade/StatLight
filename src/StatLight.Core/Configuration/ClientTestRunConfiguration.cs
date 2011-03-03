@@ -33,7 +33,6 @@ namespace StatLight.Core.Configuration
             _tagFilters = tagFilters ?? string.Empty;
             UnitTestProviderType = unitTestProviderType;
             NumberOfBrowserHosts = numberOfBrowserHosts;
-            XapToTestUrl = xapToTestUrl;
             WebBrowserType = webBrowserType;
             ShowTestingBrowserHost = showTestingBrowserHost;
             EntryPointAssembly = entryPointAssembly;
@@ -41,10 +40,6 @@ namespace StatLight.Core.Configuration
 
         [DataMember]
         public string EntryPointAssembly { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "System.Uri is not DataContract serializable")]
-        [DataMember]
-        public string XapToTestUrl { get; set; }
 
         [DataMember]
         public WebBrowserType WebBrowserType { get; set; }
