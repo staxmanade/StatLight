@@ -182,7 +182,6 @@
     <Compile Include="WebBrowser\OutOfProcessWebBrowserBase.cs" />
     <Compile Include="WebBrowser\WebBrowserFactory.cs" />
     <Compile Include="WebBrowser\WebBrowserType.cs" />
-    <Compile Include="Monitoring\XapFileMonitoring\IXapFileBuildChangedMonitor.cs" />
     <Compile Include="Reporting\Messages\MobilOtherMessageType.cs" />
     <Compile Include="Reporting\Providers\TeamCity\ConsoleMessageWriter.cs" />
     <Compile Include="Reporting\TestReport.cs" />
@@ -219,7 +218,6 @@
     <Compile Include="Configuration\ClientTestRunConfiguration.cs" />
     <Compile Include="WebServer\WebServerLocation.cs" />
     <Compile Include="Monitoring\XapFileMonitoring\XapFileBuildChangedMonitor.cs" />
-    <Compile Include="Monitoring\XapFileMonitoring\XapFileBuildChangedArgs.cs" />
     <Compile Include="WebServer\XapHost\XapHostType.cs" />
     <Compile Include="WebServer\XapHost\DiskXapHostFileLoader.cs" />
     <Compile Include="WebServer\XapHost\IXapHostFileLoader.cs" />

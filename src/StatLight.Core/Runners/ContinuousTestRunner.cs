@@ -15,11 +15,11 @@ namespace StatLight.Core.Runners
     using StatLight.Core.Reporting.Providers.Console;
 
     internal class ContinuousTestRunner : IDisposable,
-        IListener<TestRunCompletedServerEvent>
+        IListener<TestRunCompletedServerEvent>,
+        IListener<XapFileBuildChangedServerEvent>
     {
         private readonly IWebBrowser _webBrowser;
         private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
-        private readonly IXapFileBuildChangedMonitor _xapFileBuildChangedMonitor;
         private readonly ILogger _logger;
         private readonly IEventSubscriptionManager _eventSubscriptionManager;
         private TestResultAggregator _testResultAggregator;
@@ -34,7 +34,6 @@ namespace StatLight.Core.Runners
             IEventPublisher eventPublisher,
             IWebBrowser webBrowser,
             ClientTestRunConfiguration clientTestRunConfiguration,
-            IXapFileBuildChangedMonitor xapFileBuildChangedMonitor,
             string xapPath)
         {
             _logger = logger;
@@ -42,23 +41,11 @@ namespace StatLight.Core.Runners
             _eventPublisher = eventPublisher;
             _webBrowser = webBrowser;
             _clientTestRunConfiguration = clientTestRunConfiguration;
-            _xapFileBuildChangedMonitor = xapFileBuildChangedMonitor;
             _xapPath = xapPath;
 
             _eventSubscriptionManager.AddListener(this);
 
             _logger.Debug("ContinuousTestRunner.ctor()");
-
-            _xapFileBuildChangedMonitor.FileChanged += (sender, e) =>
-            {
-                _logger.Debug("Xap file changed detected.");
-                if (!IsCurrentlyRunningTest)
-                {
-                    // let the file system finish flushing anything out before we start up a new test run
-                    Thread.Sleep(2000);
-                    Start();
-                }
-            };
 
             Start();
         }
@@ -115,6 +102,17 @@ namespace StatLight.Core.Runners
         public void Handle(TestRunCompletedServerEvent message)
         {
             Stop();
+        }
+
+        public void Handle(XapFileBuildChangedServerEvent message)
+        {
+            _logger.Debug("Xap file changed detected.");
+            if (!IsCurrentlyRunningTest)
+            {
+                // let the file system finish flushing anything out before we start up a new test run
+                Thread.Sleep(2000);
+                Start();
+            }
         }
     }
 }

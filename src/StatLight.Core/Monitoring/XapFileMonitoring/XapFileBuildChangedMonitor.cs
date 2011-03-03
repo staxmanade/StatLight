@@ -1,19 +1,21 @@
 ﻿
 using System;
 using System.IO;
+using StatLight.Core.Events;
+using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.Monitoring.XapFileMonitoring
 {
-    public class XapFileBuildChangedMonitor : IXapFileBuildChangedMonitor, IDisposable
+    public class XapFileBuildChangedMonitor : IDisposable
 	{
-		public event EventHandler<XapFileBuildChangedEventArgs> FileChanged = delegate {};
-
-		FileSystemWatcher _fileSystemWatcher = new FileSystemWatcher();
+        private readonly IEventPublisher _eventPublisher;
+        FileSystemWatcher _fileSystemWatcher = new FileSystemWatcher();
 		private FileInfo _file;
 
-		public XapFileBuildChangedMonitor(string filePath)
+		public XapFileBuildChangedMonitor(IEventPublisher eventPublisher, string filePath)
 		{
-			if (!File.Exists(filePath))
+		    _eventPublisher = eventPublisher;
+		    if (!File.Exists(filePath))
 				throw new FileNotFoundException(filePath);
 
 			_file = new FileInfo(filePath);
@@ -43,7 +45,7 @@ namespace StatLight.Core.Monitoring.XapFileMonitoring
 			if((DateTime.Now - startTime) > diffTime)
 			{
 				startTime = DateTime.Now;
-				this.FileChanged(this, new XapFileBuildChangedEventArgs());
+				_eventPublisher.SendMessage(new XapFileBuildChangedServerEvent(_file.FullName));
 			}
 		}
 

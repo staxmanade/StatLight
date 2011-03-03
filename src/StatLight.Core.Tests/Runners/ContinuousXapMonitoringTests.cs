@@ -17,12 +17,11 @@ namespace StatLight.Core.Tests.Runners
     {
         readonly Mock<IStatLightService> _mockStatLightService = new Mock<IStatLightService>();
         readonly Mock<IWebBrowser> _mockWebBrowser = new Mock<IWebBrowser>();
-        readonly Mock<IXapFileBuildChangedMonitor> _xapFileBuildChangedMonitor = new Mock<IXapFileBuildChangedMonitor>();
 
         private ContinuousTestRunner CreateContinuousTestRunner()
         {
             var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false, string.Empty);
-            var runner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
+            var runner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, clientTestRunConfiguration, "test");
             return runner;
         }
 
@@ -56,19 +55,17 @@ namespace StatLight.Core.Tests.Runners
     public class when_a_ContinuousTestRunner_has_already_gone_through_the_first_testing_cylce : FixtureBase
     {
         Mock<IWebBrowser> _mockWebBrowser;
-        Mock<IXapFileBuildChangedMonitor> _xapFileBuildChangedMonitor;
         ContinuousTestRunner _continuousTestRunner;
         private ClientTestRunConfiguration _clientTestRunConfiguration;
 
         protected override void Before_all_tests()
         {
             _mockWebBrowser = new Mock<IWebBrowser>();
-            _xapFileBuildChangedMonitor = new Mock<IXapFileBuildChangedMonitor>();
 
             base.Before_all_tests();
 
             _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false, string.Empty);
-            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, _clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
+            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, _clientTestRunConfiguration, "test");
 
             // Signal that the first test has already finished.
             TestEventPublisher.SendMessage(new TestRunCompletedServerEvent());
@@ -77,7 +74,7 @@ namespace StatLight.Core.Tests.Runners
         [Test]
         public void it_should_start_a_new_test_when_the_xap_file_changed()
         {
-            _xapFileBuildChangedMonitor.Raise(x => x.FileChanged += null, GetTestXapFileBuildChangedArgs());
+            TestEventPublisher.SendMessage(new XapFileBuildChangedServerEvent(string.Empty));
 
             System.Threading.Thread.Sleep(10);
 
@@ -93,12 +90,12 @@ namespace StatLight.Core.Tests.Runners
             // because we are currently running a test
             _mockWebBrowser.Setup(s => s.Start()).AtMost(2);
 
-            _xapFileBuildChangedMonitor.Raise(x => x.FileChanged += null, GetTestXapFileBuildChangedArgs());
+            TestEventPublisher.SendMessage(new XapFileBuildChangedServerEvent(string.Empty));
 
             // quick test to verify that the test is "running"
             _continuousTestRunner.IsCurrentlyRunningTest.ShouldBeTrue();
 
-            _xapFileBuildChangedMonitor.Raise(x => x.FileChanged += null, GetTestXapFileBuildChangedArgs());
+            TestEventPublisher.SendMessage(new XapFileBuildChangedServerEvent(string.Empty));
         }
 
         [Test]
@@ -130,11 +127,6 @@ namespace StatLight.Core.Tests.Runners
             TestEventPublisher.SendMessage(new TestRunCompletedServerEvent());
 
             _continuousTestRunner.IsCurrentlyRunningTest.ShouldBeFalse();
-        }
-
-        private static XapFileBuildChangedEventArgs GetTestXapFileBuildChangedArgs()
-        {
-            return new XapFileBuildChangedEventArgs();
         }
     }
 

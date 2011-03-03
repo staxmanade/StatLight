@@ -12,7 +12,7 @@ namespace StatLight.Core.Runners
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
 
-    internal class ContinuousConsoleRunner : IRunner, IDisposable
+    internal class ContinuousConsoleRunner : IRunner
     {
         private readonly string _xapPath;
         private readonly IWebServer _webServer;
@@ -30,11 +30,11 @@ namespace StatLight.Core.Runners
         {
             _xapPath = xapPath;
             _webServer = webServer;
-            _xapFileBuildChangedMonitor = new XapFileBuildChangedMonitor(_xapPath);
+            _xapFileBuildChangedMonitor = new XapFileBuildChangedMonitor(eventPublisher, _xapPath);
 
             _continuousRunnerThread = new Thread(() =>
             {
-                using (var runner = new ContinuousTestRunner(logger, eventSubscriptionManager, eventPublisher, webBrowser, clientTestRunConfiguration, _xapFileBuildChangedMonitor, _xapPath))
+                using (var runner = new ContinuousTestRunner(logger, eventSubscriptionManager, eventPublisher, webBrowser, clientTestRunConfiguration, _xapPath))
                 {
                     string line;
                     while (!(line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))

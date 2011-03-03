@@ -25,7 +25,6 @@ namespace StatLight.Core.Configuration
         public long DialogSmackDownElapseMilliseconds { get; private set; }
         public Func<byte[]> HostXap { get; private set; }
         public byte[] XapToTest { get { return _xapToTextFactory(); } }
-        public Func<byte[]> XapToTextFactory { get { return _xapToTextFactory; } }
         public string XapToTestPath { get; private set; }
         public XapHostType XapHostType { get; private set; }
 

@@ -1,14 +1,11 @@
 ﻿
-using System.Threading;
-using StatLight.Core.Events;
-using StatLight.Core.WebBrowser;
-
 namespace StatLight.Core.Monitoring
 {
-    using System.Diagnostics;
+    using System;
     using System.Windows.Automation;
     using StatLight.Core.Common;
-    using System;
+    using StatLight.Core.Events;
+    using StatLight.Core.WebBrowser;
 
     internal class MessageBoxMonitor : IDialogMonitor
     {

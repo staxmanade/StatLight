@@ -34,6 +34,15 @@
         public string Message { get; set; }
     }
 
+    public sealed class XapFileBuildChangedServerEvent
+    {
+        public string XapPath { get; set; }
+
+        public XapFileBuildChangedServerEvent(string xapPath)
+        {
+            XapPath = xapPath;
+        }
+    }
     public sealed class TestRunCompletedServerEvent { }
     public sealed class BrowserHostCommunicationTimeoutServerEvent
     {
