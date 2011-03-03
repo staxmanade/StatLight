@@ -20,7 +20,11 @@ namespace StatLight.Core.Configuration
         private Collection<string> _methodsToTest;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "4#", Justification = "System.Uri is not DataContract serializable")]
-        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, WebBrowserType webBrowserType, bool showTestingBrowserHost, string entryPointAssembly, IEnumerable<string> testAssemblyFormalNames)
+<<<<<<< HEAD
+        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, WebBrowserType webBrowserType, bool showTestingBrowserHost, string entryPointAssembly)
+=======
+        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, string xapToTestUrl, WebBrowserType webBrowserType, bool showTestingBrowserHost, string entryPointAssembly, IEnumerable<string> testAssemblyFormalNames)
+>>>>>>> Added code to pass the full assembly names up through the configuration object in hopes that the WP7 side can load those assemblies
         {
             if (methodsToTest == null) throw new ArgumentNullException("methodsToTest");
             if (unitTestProviderType == UnitTestProviderType.Undefined)
@@ -103,15 +107,6 @@ namespace StatLight.Core.Configuration
 
         private static readonly IEqualityComparer<string> _ignoreCaseStringComparer =
             StringComparer.Create(CultureInfo.InvariantCulture, true);
-
-        public static bool IsTestExplicit(MemberInfo memberInfo)
-        {
-            if (CurrentClientTestRunConfiguration.MethodsToTest.Count == 1)
-                if (ContainsMethod(memberInfo))
-                    return true;
-
-            return false;
-        }
 
         public static bool ContainsMethod(MemberInfo memberInfo)
         {

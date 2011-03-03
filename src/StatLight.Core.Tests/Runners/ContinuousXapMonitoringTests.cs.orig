@@ -15,8 +15,13 @@ namespace StatLight.Core.Tests.Runners
 
         private ContinuousTestRunner CreateContinuousTestRunner()
         {
-            var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty, new List<string>());
+<<<<<<< HEAD
+            var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty);
             var runner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, clientTestRunConfiguration, "test");
+=======
+            var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false, string.Empty, new List<string>());
+            var runner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
+>>>>>>> Added code to pass the full assembly names up through the configuration object in hopes that the WP7 side can load those assemblies
             return runner;
         }
 
@@ -59,8 +64,13 @@ namespace StatLight.Core.Tests.Runners
 
             base.Before_all_tests();
 
-            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty, new List<string>());
+<<<<<<< HEAD
+            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty);
             _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, _clientTestRunConfiguration, "test");
+=======
+            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false, string.Empty, new List<string>());
+            _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, _clientTestRunConfiguration, _xapFileBuildChangedMonitor.Object, "test");
+>>>>>>> Added code to pass the full assembly names up through the configuration object in hopes that the WP7 side can load those assemblies
 
             // Signal that the first test has already finished.
             TestEventPublisher.SendMessage(new TestRunCompletedServerEvent());

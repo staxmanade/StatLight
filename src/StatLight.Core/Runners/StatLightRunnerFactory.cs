@@ -245,6 +245,7 @@ namespace StatLight.Core.Runners
             return webBrowsers;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private void StartupBrowserCommunicationTimeoutMonitor()
         {
             if (_browserCommunicationTimeoutMonitor == null)

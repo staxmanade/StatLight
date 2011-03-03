@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace StatLight.Core.WebServer.XapInspection
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -11,11 +12,13 @@ namespace StatLight.Core.WebServer.XapInspection
     using System.Xml.Linq;
     using Ionic.Zip;
     using StatLight.Core.Common;
+    using StatLight.Core.WebServer.XapHost;
+    using StatLight.Core.Configuration;
+    using StatLight.Core.WebServer.XapHost;
 
     public class XapReader
     {
         private readonly ILogger _logger;
-
         public XapReader(ILogger logger)
         {
             _logger = logger;
@@ -44,11 +47,53 @@ namespace StatLight.Core.WebServer.XapInspection
                                 let fileBytes = ReadFileIntoBytes(archive, zipEntry.FileName)
                                 select new TestFile(zipEntry.FileName, fileBytes)).ToList());
 
+                xapItems.MicrosoftSilverlightTestingFrameworkVersion = DetermineUnitTestVersion(archive);
+
+                xapItems.FilesContianedWithinXap = (from zipEntry in archive
+                                                    let fileBytes = ReadFileIntoBytes(archive, zipEntry.FileName)
+                                                    select new XapFile(zipEntry.FileName, fileBytes)).Cast<IXapFile>().ToList();
+
+                foreach (var item in xapItems.FilesContianedWithinXap)
+                    _logger.Debug("XapItems.FilesContainedWithinXap = {0}".FormatWith(item.FileName));
                 foreach (var item in files)
                     _logger.Debug("XapItems.FilesContainedWithinXap = {0}".FormatWith(item.FileName));
+                xapItems.MicrosoftSilverlightTestingFrameworkVersion = DetermineUnitTestVersion(archive);
+
+                xapItems.FilesContianedWithinXap = (from zipEntry in archive
+                                                    let fileBytes = ReadFileIntoBytes(archive, zipEntry.FileName)
+                                                    select new XapFile(zipEntry.FileName, fileBytes)).Cast<IXapFile>().ToList();
+
+                xapItems.AssemblyNames = GetAssemblyNames(xapItems.FilesContianedWithinXap);
             }
 
-            var xapItems = new TestFileCollection(_logger, testAssemblyFullName, files);
+        private IList<string> GetAssemblyNames(IEnumerable<IXapFile> filesContianedWithinXap)
+        {
+            _logger.Debug("XapItems.GetAssemblyNames");
+            var assemblyNames = new List<string>();
+            foreach (var item in filesContianedWithinXap)
+            {
+                _logger.Debug("      - Attempting from: {0}".FormatWith(item.FileName));
+                if (Path.GetExtension(item.FileName).Equals(".dll", StringComparison.OrdinalIgnoreCase))
+                {
+                    var filePath = Path.GetTempFileName();
+                    var fileInfo = new FileInfo(filePath);
+                    using (var write = fileInfo.OpenWrite())
+                    {
+                        write.Write(item.File, 0, item.File.Length);
+                    }
+                    var assemblyName = AssemblyName.GetAssemblyName(filePath).FullName;
+                    File.Delete(filePath);
+                    _logger.Debug("      - Found assemblyName {0}".FormatWith(assemblyName));
+
+                    assemblyNames.Add(assemblyName);
+                }
+            }
+            return assemblyNames;
+        }
+
+        private static string SHA1Encryption(byte[] bytes)
+        {
+            var encryptedString = new StringBuilder();
 
 
             return xapItems;

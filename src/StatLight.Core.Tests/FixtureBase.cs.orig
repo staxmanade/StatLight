@@ -29,7 +29,7 @@ namespace StatLight.Core.Tests
         [TestFixtureSetUp]
         public void SetupContext()
         {
-            _eventSubscriptionManager = new EventAggregator(TestLogger);
+            _eventSubscriptionManager = new EventAggregator();
 
             Before_all_tests();
             Because();
@@ -112,7 +112,11 @@ namespace StatLight.Core.Tests
         protected ClientTestRunConfiguration CreateTestDefaultClinetTestRunConfiguraiton()
         {
             return new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new Collection<string>(),
-                                                                         string.Empty, 1, StatLight.Core.WebBrowser.WebBrowserType.SelfHosted, false, string.Empty, new List<string>());
+<<<<<<< HEAD
+                                                                         string.Empty, 1, StatLight.Core.WebBrowser.WebBrowserType.SelfHosted, false, string.Empty);
+=======
+                                                                         string.Empty, 1, "", StatLight.Core.WebBrowser.WebBrowserType.SelfHosted, false, string.Empty, new List<string>());
+>>>>>>> Added code to pass the full assembly names up through the configuration object in hopes that the WP7 side can load those assemblies
         }
     }
 
