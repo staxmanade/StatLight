@@ -1,5 +1,7 @@
 ﻿
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Xml.Linq;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 
@@ -33,6 +35,7 @@ namespace StatLight.Core.Configuration
 
             string xapUrl = null;
             XapReadItems xapReadItems = null;
+            string entryPointAssembly = string.Empty;
             if (isRemoteRun)
             {
                 xapUrl = xapPath;
@@ -53,17 +56,19 @@ namespace StatLight.Core.Configuration
                     }
 
                     if (
-                        (   xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest || 
-                            unitTestProviderType == UnitTestProviderType.MSTest || 
+                        (xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest ||
+                            unitTestProviderType == UnitTestProviderType.MSTest ||
                             unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
                         && microsoftTestingFrameworkVersion == null)
                     {
                         microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
                     }
                 }
+
+                entryPointAssembly = xapReadItems.TestAssembly.FullName;
             }
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, xapUrl, webBrowserType, showTestingBrowserHost);
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, xapUrl, webBrowserType, showTestingBrowserHost, entryPointAssembly);
 
             var serverConfig = CreateServerConfiguration(
                 xapPath,
@@ -72,7 +77,7 @@ namespace StatLight.Core.Configuration
                 xapReadItems,
                 DefaultDialogSmackDownElapseMilliseconds,
                 queryString,
-                forceBrowserStart, 
+                forceBrowserStart,
                 showTestingBrowserHost);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
@@ -127,8 +132,8 @@ namespace StatLight.Core.Configuration
                                                         };
 
                 var filesToCopyIntoHostXap = (from x in xapReadItems.FilesContianedWithinXap
-                                              from specialFile in specialFilesToCopyIntoHostXap
-                                              where x.FileName.Equals(specialFile, StringComparison.OrdinalIgnoreCase)
+                                              //from specialFile in specialFilesToCopyIntoHostXap
+                                              //where x.FileName.Equals(specialFile, StringComparison.OrdinalIgnoreCase)
                                               select x).ToList();
 
                 if (filesToCopyIntoHostXap.Any())
@@ -142,14 +147,44 @@ namespace StatLight.Core.Configuration
 
         private byte[] RewriteZipHostWithFiles(byte[] hostXap, IEnumerable<IXapFile> filesToPlaceIntoHostXap)
         {
+            //TODO: Write tests and clean up the below
+            // It's adding assemblies and other content, and re-writing the AppManifest.xaml
+
             ZipFile zipFile = ZipFile.Read(hostXap);
+
+            ZipEntry appManifestEntry = zipFile["AppManifest.xaml"];
+            var xAppManifest = XElement.Load(appManifestEntry.OpenReader());
+
+            var parts = xAppManifest.Elements().First();
 
             _logger.Debug("re-writing host xap with the following files");
             foreach (var file in filesToPlaceIntoHostXap)
             {
+                if (zipFile.EntryFileNames.Contains(file.FileName))
+                {
+                    _logger.Debug("    -  already has file {0}".FormatWith(file.FileName));
+                    continue;
+                }
+
                 _logger.Debug("    -  {0}".FormatWith(file.FileName));
                 zipFile.AddEntry(file.FileName, "/", file.File);
+
+                if ((Path.GetExtension(file.FileName) ?? string.Empty).Equals(".dll", StringComparison.OrdinalIgnoreCase))
+                {
+                    var name = Path.GetFileNameWithoutExtension(file.FileName);
+                    XNamespace x = "x";
+                    parts.Add(new XElement("AssemblyPart",
+                                           new XAttribute("StatLightTempName", name),
+                                           new XAttribute("Source", file.FileName)));
+
+                    _logger.Debug("    -  Updating AppManifest - {0}".FormatWith(name));
+
+                }
             }
+
+            zipFile.RemoveEntry("AppManifest.xaml");
+            string manifestRewritten = xAppManifest.ToString().Replace("StatLightTempName", "x:Name").Replace("xmlns=\"\"", string.Empty);
+            zipFile.AddEntry("AppManifest.xaml", "/", manifestRewritten);
 
             using (var stream = new MemoryStream())
             {

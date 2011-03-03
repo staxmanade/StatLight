@@ -35,7 +35,6 @@ namespace StatLight.Client.Harness.Hosts
             TestRunnerHost.ConfigureWithLoadedXapData(loadedXapData);
             CompletedTestXapRequest = true;
             DisplayTestHarness();
-
         }
 
 

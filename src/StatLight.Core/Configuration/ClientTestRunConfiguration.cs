@@ -20,7 +20,7 @@ namespace StatLight.Core.Configuration
         private Collection<string> _methodsToTest;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "4#", Justification = "System.Uri is not DataContract serializable")]
-        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, string xapToTestUrl, WebBrowserType webBrowserType, bool showTestingBrowserHost)
+        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, string xapToTestUrl, WebBrowserType webBrowserType, bool showTestingBrowserHost, string entryPointAssembly)
         {
             if (methodsToTest == null) throw new ArgumentNullException("methodsToTest");
             if (unitTestProviderType == UnitTestProviderType.Undefined)
@@ -36,7 +36,11 @@ namespace StatLight.Core.Configuration
             XapToTestUrl = xapToTestUrl;
             WebBrowserType = webBrowserType;
             ShowTestingBrowserHost = showTestingBrowserHost;
+            EntryPointAssembly = entryPointAssembly;
         }
+
+        [DataMember]
+        public string EntryPointAssembly { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "System.Uri is not DataContract serializable")]
         [DataMember]

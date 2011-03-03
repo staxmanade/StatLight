@@ -64,7 +64,12 @@ namespace StatLight.Client.Harness.Hosts
 
         protected override void OnTestRunConfigurationDownloaded(ClientTestRunConfiguration clientTestRunConfiguration)
         {
-            GoGetTheXapUnderTest(clientTestRunConfiguration.XapToTestUrl.ToUri());
+            var loadedXapData = new ThisXapData(clientTestRunConfiguration.EntryPointAssembly);
+            Server.Debug("OnTestRunConfigurationDownloaded");
+            TestRunnerHost.ConfigureWithLoadedXapData(loadedXapData);
+
+            CompletedTestXapRequest = true;
+            DisplayTestHarness();
         }
     }
 }

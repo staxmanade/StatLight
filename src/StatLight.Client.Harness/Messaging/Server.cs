@@ -28,6 +28,7 @@ namespace StatLight.Client.Harness.Messaging
         public static void Debug(string message)
         {
 #if DEBUG
+            //System.Console.WriteLine(message);
             var traceClientEvent = new DebugClientEvent
             {
                 Message = message
