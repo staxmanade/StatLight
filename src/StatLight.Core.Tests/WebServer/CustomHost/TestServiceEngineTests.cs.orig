@@ -10,52 +10,58 @@ using StatLight.Core.Serialization;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 using System.Collections.Generic;
+using StatLight.Core.WebServer.CustomHost;
 
 namespace StatLight.Core.Tests.WebServer.CustomHost
 {
     [TestFixture]
     public class TestServiceEngineTests : FixtureBase
     {
-        private Core.WebServer.InMemoryWebServer _inMemoryWebServer;
+        private TestServiceEngine _testServiceEngine;
 
         private string _baseUrl;
         private WebClient _webClient;
+        private Func<byte[]> _xapToTestFactory;
         private byte[] _hostXap;
         private string _serializedConfiguration;
         private Mock<IPostHandler> _mockPostHandler;
-        private ResponseFactory _responseFactory;
 
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
 
-            var webServerLocation = new WebServerLocation(TestLogger, 38881);
+            const int port = 38881;
             var consoleLogger = new ConsoleLogger(LogChatterLevels.Full);
+            _xapToTestFactory = () => new byte[] { 0, 1, 2, 3, 4 };
             _hostXap = new byte[] { 5, 4, 2, 1, 4 };
-            var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty, new List<string>());
+<<<<<<< HEAD
+            var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty);
+=======
+            var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false, string.Empty, new List<string>());
+>>>>>>> Added code to pass the full assembly names up through the configuration object in hopes that the WP7 side can load those assemblies
             _serializedConfiguration = clientConfig.Serialize();
-            _responseFactory = new ResponseFactory(() => _hostXap, clientConfig);
+            var responseFactory = new ResponseFactory(() => _hostXap, clientConfig);
 
             _mockPostHandler = new Mock<IPostHandler>();
-            _inMemoryWebServer = new Core.WebServer.InMemoryWebServer(consoleLogger, webServerLocation, _responseFactory, _mockPostHandler.Object);
+            _testServiceEngine = new TestServiceEngine(consoleLogger, port, responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 
-            _baseUrl = webServerLocation.BaseUrl.ToString();
+            _baseUrl = "http://{0}:{1}/".FormatWith("localhost", port);
 
-            _inMemoryWebServer.Start();
+            _testServiceEngine.Start();
         }
 
         [SetUp]
         public void Setup()
         {
-            _responseFactory.Reset();
+            ResponseFactory.Reset();
         }
 
         protected override void After_all_tests()
         {
             base.After_all_tests();
 
-            _inMemoryWebServer.Stop();
+            _testServiceEngine.Stop();
         }
 
         [Test]

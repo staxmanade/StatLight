@@ -42,6 +42,9 @@ namespace StatLight.Core.Configuration
                 AssertFileExists(xapPath);
 
                 var xapReader = new XapReader(_logger);
+                xapReadItems = xapReader.GetTestAssembly(xapPath);
+                testAssemblyFormalNames = xapReadItems.AssemblyNames;
+                
 
                 TestFileCollection testFileCollection = xapReader.LoadXapUnderTest(xapPath);
                 runtimeVersion = XapReader.GetRuntimeVersion(xapPath);
@@ -57,11 +60,9 @@ namespace StatLight.Core.Configuration
 
             }
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly);
-
             var serverConfig = CreateServerConfiguration(
                 xapPath,
-                clientConfig.UnitTestProviderType,
+                unitTestProviderType,
                 microsoftTestingFrameworkVersion,
                 filesToCopyIntoHostXap,
                 DefaultDialogSmackDownElapseMilliseconds,
@@ -102,6 +103,7 @@ namespace StatLight.Core.Configuration
                 SetupUnitTestProviderType(xapReadItems, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
 
                 entryPointAssembly = xapReadItems.TestAssemblyFullName;
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly, testAssemblyFormalNames);
 
                 filesToCopyIntoHostXap =()=>
                                             {
@@ -201,6 +203,7 @@ namespace StatLight.Core.Configuration
 
 
     }
+}
 
     public interface IStatLightConfigurationFactory
     {
@@ -208,4 +211,5 @@ namespace StatLight.Core.Configuration
 
         StatLightConfiguration GetStatLightConfigurationForDll(UnitTestProviderType unitTestProviderType, string dllPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost);
     }
+}
 }

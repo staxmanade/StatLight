@@ -93,6 +93,9 @@
     <Compile Include="..\StatLight.Client.Harness\Hosts\StatLightSystemBase.cs">
       <Link>Hosts\StatLightSystemBase.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\ThisXapData.cs">
+      <Link>Hosts\ThisXapData.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Client.Harness\Messaging\HttpResponseCompleteEventArgs.cs">
       <Link>Messaging\HttpResponseCompleteEventArgs.cs</Link>
     </Compile>
