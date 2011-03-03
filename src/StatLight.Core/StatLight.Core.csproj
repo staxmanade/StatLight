@@ -212,9 +212,6 @@
     <Compile Include="Configuration\ServerTestRunConfiguration.cs" />
     <Compile Include="WebServer\RemoteSiteOverriddenLocation.cs" />
     <Compile Include="WebServer\StatLightServiceRestApi.cs" />
-    <Compile Include="WebServer\WcfHost\IStatLightService.cs" />
-    <Compile Include="WebServer\WcfHost\StatLightService.cs" />
-    <Compile Include="WebServer\WcfHost\StatLightServiceHost.cs" />
     <Compile Include="Configuration\ClientTestRunConfiguration.cs" />
     <Compile Include="WebServer\WebServerLocation.cs" />
     <Compile Include="Monitoring\XapFileBuildChangedMonitor.cs" />

@@ -1,18 +1,15 @@
 ﻿
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Xml.Linq;
-using StatLight.Core.WebBrowser;
-using StatLight.Core.WebServer;
-
 namespace StatLight.Core.Configuration
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
+    using System.Xml.Linq;
     using Ionic.Zip;
     using StatLight.Core.Common;
+    using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.WebServer.XapInspection;
 
@@ -68,7 +65,7 @@ namespace StatLight.Core.Configuration
                 entryPointAssembly = xapReadItems.TestAssembly.FullName;
             }
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, xapUrl, webBrowserType, showTestingBrowserHost, entryPointAssembly);
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly);
 
             var serverConfig = CreateServerConfiguration(
                 xapPath,
@@ -124,7 +121,7 @@ namespace StatLight.Core.Configuration
                                           }
                                           return hostXap;
                                       };
-            return new ServerTestRunConfiguration(hostXapFactory, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, xapToTestFactory, queryString, forceBrowserStart, showTestingBrowserHost);
+            return new ServerTestRunConfiguration(hostXapFactory, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, queryString, forceBrowserStart, showTestingBrowserHost);
         }
         private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, XapReadItems xapReadItems)
         {

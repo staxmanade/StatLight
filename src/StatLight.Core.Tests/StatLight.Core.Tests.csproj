@@ -115,8 +115,6 @@
     <Compile Include="WebBrowser\FirefoxWebBrowserTests.cs" />
     <Compile Include="WebBrowser\SelfHostedWebBrowserTests.cs" />
     <Compile Include="WebServer\CustomHost\TestServiceEngineTests.cs" />
-    <Compile Include="WebServer\WcfHost\StatLightServiceHostTests.cs" />
-    <Compile Include="WebServer\WcfHost\StatLightServiceTests.cs" />
     <Compile Include="SpecificationExtensions.cs" />
     <Compile Include="WebServer\WebServerLocationTests.cs" />
     <Compile Include="WebServer\XapHost\XapHostFileLoaderFactoryTests.cs" />

@@ -5,19 +5,17 @@ using StatLight.Core.Runners;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.Events;
 using System.Collections.Generic;
-using StatLight.Core.WebServer.WcfHost;
 
 namespace StatLight.Core.Tests.Runners
 {
     [TestFixture]
     public class when_ContinuousTestRunner_has_not_gon_through_its_first_test_cycle : FixtureBase
     {
-        readonly Mock<IStatLightService> _mockStatLightService = new Mock<IStatLightService>();
         readonly Mock<IWebBrowser> _mockWebBrowser = new Mock<IWebBrowser>();
 
         private ContinuousTestRunner CreateContinuousTestRunner()
         {
-            var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false, string.Empty);
+            var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty);
             var runner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, clientTestRunConfiguration, "test");
             return runner;
         }
@@ -61,7 +59,7 @@ namespace StatLight.Core.Tests.Runners
 
             base.Before_all_tests();
 
-            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, "test", WebBrowserType.SelfHosted, false, string.Empty);
+            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty);
             _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, _clientTestRunConfiguration, "test");
 
             // Signal that the first test has already finished.

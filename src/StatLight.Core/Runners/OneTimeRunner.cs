@@ -1,7 +1,4 @@
 ﻿
-
-using StatLight.Core.Monitoring;
-
 namespace StatLight.Core.Runners
 {
     using System;
@@ -10,6 +7,7 @@ namespace StatLight.Core.Runners
     using StatLight.Core.Common;
     using StatLight.Core.Events;
     using StatLight.Core.Events.Aggregation;
+    using StatLight.Core.Monitoring;
     using StatLight.Core.Reporting;
     using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.WebBrowser;

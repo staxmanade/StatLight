@@ -166,7 +166,6 @@ namespace StatLight.Core.Runners
             List<IWebBrowser> webBrowsers = Enumerable
                 .Range(1, clientTestRunConfiguration.NumberOfBrowserHosts)
                 .Select(browserI => webBrowserFactory.Create(webBrowserType, testPageUrlWithQueryString, showTestingBrowserHost, forceBrowserStart, clientTestRunConfiguration.NumberOfBrowserHosts > 1))
-                .Cast<IWebBrowser>()
                 .ToList();
             return webBrowsers;
         }
