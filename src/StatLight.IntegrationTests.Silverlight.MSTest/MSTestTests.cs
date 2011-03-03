@@ -1,7 +1,4 @@
-﻿
-using System.Diagnostics;
-using System.Reflection;
-using System.Windows;
+﻿using System.Windows;
 using Microsoft.Silverlight.Testing;
 
 namespace StatLight.IntegrationTests.Silverlight
@@ -94,7 +91,7 @@ namespace StatLight.IntegrationTests.Silverlight
         [TestMethod]
         public void Should_fail_due_to_a_dialog_assertion()
         {
-            Debug.Assert(false, "Should_fail_due_to_a_dialog_assertion - message");
+            System.Diagnostics.Debug.Assert(false, "Should_fail_due_to_a_dialog_assertion - message");
         }
 #endif
 

@@ -8,7 +8,7 @@ using StatLight.Core.Tests;
 namespace StatLight.IntegrationTests
 {
     [TestFixture]
-    public class when_something_tests_are_in_a_NestedCLassInheritance_structure
+    public class SampleResourceFileTests
         : IntegrationFixtureBase
     {
         private ClientTestRunConfiguration _clientTestRunConfiguration;
@@ -22,12 +22,10 @@ namespace StatLight.IntegrationTests
         {
             base.Before_all_tests();
 
-            const string prefix = "StatLight.IntegrationTests.Silverlight.NestedClassInheritanceTests.A+B";
             _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
                 new List<string>
                    {
-                       prefix + "1.MethodA",
-                       prefix + "2.MethodA",
+                       "StatLight.IntegrationTests.Silverlight.SampleResourceFileTests.Should_be_able_to_read_the_local_xml_file_in_the_xap_under_test",
                    });
         }
 
@@ -38,15 +36,15 @@ namespace StatLight.IntegrationTests
         }
 
         [Test]
-        public void Should_have_detected_three_message_box_failures()
+        public void Should_have_not_found_any_failures()
         {
             TestReport.TotalFailed.ShouldEqual(0);
         }
 
         [Test]
-        public void Should_only_have_two_results_because_this_should_have_only_executed_2_tests()
+        public void Should_only_have_a_single_result()
         {
-            TestReport.TestResults.Count().ShouldEqual(2);
+            TestReport.TestResults.Count().ShouldEqual(1);
         }
     }
 }

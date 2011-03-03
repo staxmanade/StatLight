@@ -84,6 +84,7 @@
     <Compile Include="DebugAssertTests.cs" />
     <Compile Include="NestedClassInheritanceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleResourceFileTests.cs" />
     <Compile Include="TeamCityTests.cs" />
     <Compile Include="MessageBoxTests.cs" />
   </ItemGroup>
@@ -98,6 +99,9 @@
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
     <Compile Include="ServiceReference.ClientConfigTests.cs" />
+    <Content Include="SampleXmlFile.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>
