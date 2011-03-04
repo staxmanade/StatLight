@@ -14,3 +14,4 @@ ClientBin/
 bin/
 *.swp
 src/VersionInfo.cs
+temp_statlight-integration*
