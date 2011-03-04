@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading;
 using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;

@@ -1,4 +1,6 @@
 ﻿
+using System.Diagnostics;
+
 namespace StatLight.Core.Configuration
 {
     using System;
@@ -6,8 +8,6 @@ namespace StatLight.Core.Configuration
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
-    using System.Xml.Linq;
-    using Ionic.Zip;
     using StatLight.Core.Common;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer.XapHost;
@@ -119,58 +119,14 @@ namespace StatLight.Core.Configuration
 
                 if (filesToCopyIntoHostXap.Any())
                 {
-                    xapHost = RewriteZipHostWithFiles(xapHost, filesToCopyIntoHostXap);
+                    var rewriter = new XapRewriter(_logger);
+                    xapHost = rewriter.RewriteZipHostWithFiles(xapHost, filesToCopyIntoHostXap).ToByteArray();
                 }
             }
 
             return xapHost;
         }
 
-        private byte[] RewriteZipHostWithFiles(byte[] hostXap, IEnumerable<IXapFile> filesToPlaceIntoHostXap)
-        {
-            //TODO: Write tests and clean up the below
-            // It's adding assemblies and other content, and re-writing the AppManifest.xaml
-
-            ZipFile zipFile = ZipFile.Read(hostXap);
-
-            ZipEntry appManifestEntry = zipFile["AppManifest.xaml"];
-            var xAppManifest = XElement.Load(appManifestEntry.OpenReader());
-
-            var parts = xAppManifest.Elements().First();
-
-            _logger.Debug("re-writing host xap with the following files");
-            foreach (var file in filesToPlaceIntoHostXap)
-            {
-                if (zipFile.EntryFileNames.Contains(file.FileName))
-                {
-                    _logger.Debug("    -  already has file {0}".FormatWith(file.FileName));
-                    continue;
-                }
-
-                _logger.Debug("    -  {0}".FormatWith(file.FileName));
-                zipFile.AddEntry(file.FileName, "/", file.File);
-
-                if ((Path.GetExtension(file.FileName) ?? string.Empty).Equals(".dll", StringComparison.OrdinalIgnoreCase))
-                {
-                    var name = Path.GetFileNameWithoutExtension(file.FileName);
-                    parts.Add(new XElement("AssemblyPart",
-                                           new XAttribute("StatLightTempName", name),
-                                           new XAttribute("Source", file.FileName)));
-
-                    _logger.Debug("    -  Updating AppManifest - {0}".FormatWith(name));
-
-                }
-            }
-
-            zipFile.RemoveEntry("AppManifest.xaml");
-            string manifestRewritten = xAppManifest.ToString().Replace("StatLightTempName", "x:Name").Replace("xmlns=\"\"", string.Empty);
-            zipFile.AddEntry("AppManifest.xaml", "/", manifestRewritten);
-
-            using (var stream = new MemoryStream())
-            {
-                zipFile.Save(stream);
-                return stream.ToArray();
-            }
-        }
+        
     }
 }

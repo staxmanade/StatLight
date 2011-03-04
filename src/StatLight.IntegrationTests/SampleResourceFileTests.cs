@@ -26,11 +26,12 @@ namespace StatLight.IntegrationTests
                 new List<string>
                    {
                        "StatLight.IntegrationTests.Silverlight.SampleResourceFileTests.Should_be_able_to_read_the_local_xml_file_in_the_xap_under_test",
+                       "StatLight.IntegrationTests.Silverlight.SampleResourceFileTests.Should_be_able_to_read_the_local_xml_file_in_the_xap_under_test_contianed_within_nested_folders"
                    });
         }
 
         [Test]
-        public void the_final_result_should_be_a_failure()
+        public void the_final_result_should_be_correct()
         {
             TestReport.FinalResult.ShouldEqual(RunCompletedState.Successful);
         }
@@ -44,7 +45,7 @@ namespace StatLight.IntegrationTests
         [Test]
         public void Should_only_have_a_single_result()
         {
-            TestReport.TestResults.Count().ShouldEqual(1);
+            TestReport.TestResults.Count().ShouldEqual(2);
         }
     }
 }

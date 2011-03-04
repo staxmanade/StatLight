@@ -1,6 +1,6 @@
 ﻿using System;
+using System.IO;
 using System.Text;
-using StatLight.Client.Harness.Events;
 
 namespace StatLight
 {
@@ -58,4 +58,18 @@ namespace StatLight
         }
 
     }
+
+    public static class ZipExtensions
+    {
+        public static byte[] ToByteArray(this Ionic.Zip.ZipFile zip)
+        {
+            if (zip == null) throw new ArgumentNullException("zip");
+            using (var stream = new MemoryStream())
+            {
+                zip.Save(stream);
+                return stream.ToArray();
+            }
+        }
+    }
+
 }
