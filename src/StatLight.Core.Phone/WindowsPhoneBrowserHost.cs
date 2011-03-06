@@ -10,53 +10,44 @@ namespace StatLight.Core.Phone
     {
         private readonly ILogger _logger;
         private readonly string _testXapPath;
-        RemoteApplication _remoteApplication;
+        private RemoteApplication _remoteApplication;
+
+        private readonly Device _wp7Device;
+
+        private readonly Guid _phoneGuid = new Guid("6a158125-6083-43ec-9313-c4cc46a89bc4");
+        private readonly Guid _appGuid = new Guid("74c3dd9a-fde3-4059-ae52-ef27fd85762f");
 
         public WindowsPhoneBrowserHost(ILogger logger, string testXapPath)
         {
             _logger = logger;
             _testXapPath = testXapPath;
-        }
 
-        public void Dispose()
-        {
+            var dsmgrObj = new DatastoreManager(1033);
+            Platform wp7Sdk = dsmgrObj.GetPlatforms().First();
+
+            bool useEmulator = true;
+            if (useEmulator)
+                _wp7Device = wp7Sdk.GetDevices().Single(d => d.Name == "Windows Phone 7 Emulator");
+            else
+                _wp7Device = wp7Sdk.GetDevices().Single(d => d.Name == "Windows Phone 7 Device");
+
         }
 
         public void Start()
         {
-            var appGuid = new Guid("6a158125-6083-43ec-9313-c4cc46a89bc4");
-            var phoneGuid = new Guid("74c3dd9a-fde3-4059-ae52-ef27fd85762f");
-
             // Get CoreCon WP7 SDK
-            var dsmgrObj = new DatastoreManager(1033);
-            Platform WP7SDK = dsmgrObj.GetPlatforms().First();
-            bool useEmulator = true;
-            Device WP7Device = null;
-            if (useEmulator)
-                WP7Device = WP7SDK.GetDevices().Single(d => d.Name == "Windows Phone 7 Emulator");
-            else
-                WP7Device = WP7SDK.GetDevices().Single(d => d.Name == "Windows Phone 7 Device");
             _logger.Debug("Connecting to Windows Phone 7 Emulator/Device...");
-            WP7Device.Connect();
+            _wp7Device.Connect();
             _logger.Debug("Windows Phone 7 Emulator/Device Connected...");
 
-            if (WP7Device.IsApplicationInstalled(phoneGuid))
-            {
-                _logger.Debug("Uninstalling sample XAP to Windows Phone 7 Emulator/Device...");
+            Uninstall();
 
-                _remoteApplication = WP7Device.GetApplication(phoneGuid);
-                _remoteApplication.Uninstall();
-
-                _logger.Debug("Sample XAP Uninstalled from Windows Phone 7 Emulator/Device...");
-            }
-
-
-            //JJ:
-            _remoteApplication = WP7Device.InstallApplication(
-                appGuid,
-                phoneGuid,
+            
+            _remoteApplication = _wp7Device.InstallApplication(
+                _appGuid,
+                _phoneGuid,
                 "WindowsPhoneApplication1",
-                @"C:\Code\temp\WindowsPhoneAutomation\WindowsPhoneApplication1\Bin\Debug\ApplicationIcon.png",
+                null,
                 _testXapPath);
 
             _logger.Debug("Sample XAP installed to Windows Phone 7 Emulator...");
@@ -66,8 +57,33 @@ namespace StatLight.Core.Phone
             _remoteApplication.Launch();
         }
 
+        private void Uninstall()
+        {
+            if (_wp7Device.IsApplicationInstalled(_appGuid))
+            {
+                _logger.Debug("Uninstalling sample XAP to Windows Phone 7 Emulator/Device...");
+
+                _remoteApplication = _wp7Device.GetApplication(_appGuid);
+                _remoteApplication.Uninstall();
+
+                _logger.Debug("Sample XAP Uninstalled from Windows Phone 7 Emulator/Device...");
+            }
+        }
+
         public void Stop()
         {
+            _remoteApplication.TerminateRunningInstances();
+
+            Uninstall();
+
+            _wp7Device.Disconnect();
+            _remoteApplication = null;
+        }
+
+
+        public void Dispose()
+        {
+            Stop();
         }
 
         public int? ProcessId
