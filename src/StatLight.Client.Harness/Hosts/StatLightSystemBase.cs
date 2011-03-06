@@ -27,7 +27,9 @@ namespace StatLight.Client.Harness.Hosts
 
                 Assembly[] list;
 #if WINDOWS_PHONE
-                throw new NotImplementedException();
+                Assembly.Load("StatLight.Client.Harness.MSTest, Culture=neutral, PublicKeyToken=9f7f221db79a30d0");
+                var runnerHost = Type.GetType("StatLight.Client.Harness.Hosts.MSTest.MSTestRunnerHost");
+                return (T)Activator.CreateInstance(runnerHost);
 #else
                 list = Deployment.Current.Parts
                                     .Where(w => w.Source.Contains("StatLight", StringComparison.OrdinalIgnoreCase))

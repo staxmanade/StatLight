@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Threading;
 using Microsoft.SmartDevice.Connectivity;
 using StatLight.Core.Common;
 using StatLight.Core.WebBrowser;
@@ -42,7 +45,7 @@ namespace StatLight.Core.Phone
 
             Uninstall();
 
-            
+
             _remoteApplication = _wp7Device.InstallApplication(
                 _appGuid,
                 _phoneGuid,
@@ -55,6 +58,17 @@ namespace StatLight.Core.Phone
             // Launch Application 
             _logger.Debug("Launching sample app on Windows Phone 7 Emulator...");
             _remoteApplication.Launch();
+
+            //NOGO:
+            //Thread.Sleep(10000);
+            ////app.GetIsolatedStore(); <-- Throws NotImplementedException
+            //object conManServer = _wp7Device.GetType().GetField("mConmanServer", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(_wp7Device);
+            //FileDeployer f = (FileDeployer)typeof(FileDeployer).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)[0].Invoke(new object[] { conManServer });
+
+            ////Next, we’ll copy the Foo.txt file from the application isolated storage into our local binary folder and read it into the console: 
+            ////f.ReceiveFile(@"\Applications\Data\" + _appGuid + @"\data\isolatedstore\Foo.txt", @"\Foo.txt");
+            //f.SendFile(@"D:\temp\statlight.txt", @"\Applications\Data\" + _appGuid + @"\data\isolatedstore\Foo.txt");
+
         }
 
         private void Uninstall()

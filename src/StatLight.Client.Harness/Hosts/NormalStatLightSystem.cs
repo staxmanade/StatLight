@@ -15,6 +15,7 @@ namespace StatLight.Client.Harness.Hosts
         {
 #if WINDOWS_PHONE
             var urlx = "http://localhost:8887/";
+            MessageBox.Show(urlx);
 #else
             var src = Application.Current.Host.Source;
             var urlx = src.Scheme + "://" + src.Host + ":" + src.Port + "/";
