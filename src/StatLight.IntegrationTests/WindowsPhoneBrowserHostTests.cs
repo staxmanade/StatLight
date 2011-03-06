@@ -19,7 +19,7 @@ namespace StatLight.IntegrationTests
 
             windowsPhoneBrowserHost.Start();
 
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(10000);
 
             windowsPhoneBrowserHost.Stop();
         }
