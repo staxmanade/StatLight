@@ -16,7 +16,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
     [TestFixture]
     public class TestServiceEngineTests : FixtureBase
     {
-        private Core.WebServer.WebServer _webServer;
+        private Core.WebServer.InMemoryWebServer _inMemoryWebServer;
 
         private string _baseUrl;
         private WebClient _webClient;
@@ -36,12 +36,12 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
             var responseFactory = new ResponseFactory(() => _hostXap, clientConfig);
 
             _mockPostHandler = new Mock<IPostHandler>();
-            _webServer = new Core.WebServer.WebServer(consoleLogger, webServerLocation, responseFactory, _mockPostHandler.Object);
+            _inMemoryWebServer = new Core.WebServer.InMemoryWebServer(consoleLogger, webServerLocation, responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 
             _baseUrl = webServerLocation.BaseUrl.ToString();
 
-            _webServer.Start();
+            _inMemoryWebServer.Start();
         }
 
         [SetUp]
@@ -54,7 +54,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
         {
             base.After_all_tests();
 
-            _webServer.Stop();
+            _inMemoryWebServer.Stop();
         }
 
         [Test]

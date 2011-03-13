@@ -177,7 +177,7 @@
     <Compile Include="WebServer\PostHandler.cs" />
     <Compile Include="WebServer\ResponseFactory.cs" />
     <Compile Include="WebServer\ResponseFile.cs" />
-    <Compile Include="WebServer\WebServer.cs" />
+    <Compile Include="WebServer\InMemoryWebServer.cs" />
     <Compile Include="WebBrowser\ChromeWebBrowser.cs" />
     <Compile Include="WebBrowser\FirefoxWebBrowser.cs" />
     <Compile Include="WebBrowser\OutOfProcessWebBrowserBase.cs" />

@@ -9,7 +9,7 @@ using StatLight.Core.Common;
 
 namespace StatLight.Core.WebServer
 {
-    public class WebServer : IWebServer, IDisposable
+    public class InMemoryWebServer : IWebServer, IDisposable
     {
         private const string ContentTypeXml = "text/xml";
 
@@ -24,7 +24,7 @@ namespace StatLight.Core.WebServer
 
         private HttpListener Server { get; set; }
 
-        public WebServer(ILogger logger, WebServerLocation webServerLocation, ResponseFactory responseFactory, IPostHandler postHandler)
+        public InMemoryWebServer(ILogger logger, WebServerLocation webServerLocation, ResponseFactory responseFactory, IPostHandler postHandler)
         {
             _logger = logger;
             _webServerLocation = webServerLocation;

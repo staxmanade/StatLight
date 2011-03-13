@@ -138,3 +138,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2243:AttributeStringLiteralsShouldParseCorrectly")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Scope = "member", Target = "StatLight.Core.Runners.StatLightRunnerFactory.#StartupBrowserCommunicationTimeoutMonitor()")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Scope = "member", Target = "StatLight.Core.Runners.StatLightRunnerFactory.#CreateRemotelyHostedRunner(StatLight.Core.Common.ILogger,StatLight.Core.Configuration.StatLightConfiguration)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Scope = "member", Target = "StatLight.Core.WebServer.WebServerLocation.#.ctor(StatLight.Core.Common.ILogger,System.Int32)")]

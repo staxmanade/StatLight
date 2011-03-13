@@ -126,7 +126,7 @@ namespace StatLight.Core.Runners
             //return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
 
             var responseFactory = new ResponseFactory(statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
-            return new WebServer(logger, webServerLocation, responseFactory, postHandler);
+            return new InMemoryWebServer(logger, webServerLocation, responseFactory, postHandler);
 
         }
 
