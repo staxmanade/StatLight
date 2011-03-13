@@ -13,23 +13,22 @@ namespace StatLight.Core.WebServer.CustomHost
     {
         private const string ContentTypeXml = "text/xml";
 
-        private const string PrefixUrlFormat = "http://localhost:{0}/";
 
         private readonly ResponseFactory _responseFactory;
         private readonly ILogger _logger;
+        private readonly WebServerLocation _webServerLocation;
         private Task _serverListener;
         private readonly IPostHandler _postHandler;
         private bool Listening { get; set; }
 
 
-        public int Port { get; private set; }
         private HttpListener Server { get; set; }
 
-        public TestServiceEngine(ILogger logger, int port, ResponseFactory responseFactory, IPostHandler postHandler)
+        public TestServiceEngine(ILogger logger, WebServerLocation webServerLocation, ResponseFactory responseFactory, IPostHandler postHandler)
         {
             _logger = logger;
+            _webServerLocation = webServerLocation;
             _postHandler = postHandler;
-            Port = port;
             _responseFactory = responseFactory;
         }
 
@@ -123,8 +122,8 @@ namespace StatLight.Core.WebServer.CustomHost
             {
                 string prefix = string.Format(
                     CultureInfo.InvariantCulture,
-                    PrefixUrlFormat,
-                    Port);
+                    _webServerLocation.BaseUrl.ToString(),
+                    _webServerLocation.Port);
                 Server.Prefixes.Add(prefix);
                 Server.Start();
                 Log("Listening on {0}", new object[] { prefix });

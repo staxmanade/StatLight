@@ -118,7 +118,7 @@ namespace StatLight.Core.Runners
 
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        private IWebServer CreateWebServer(ILogger logger, StatLightConfiguration statLightConfiguration, WebServerLocation location)
+        private IWebServer CreateWebServer(ILogger logger, StatLightConfiguration statLightConfiguration, WebServerLocation webServerLocation)
         {
 
             var postHandler = new PostHandler(logger, _eventPublisher, statLightConfiguration.Client);
@@ -126,9 +126,8 @@ namespace StatLight.Core.Runners
             //var statLightService = new StatLightService(logger, statLightConfiguration.Client, statLightConfiguration.Server, postHandler);
             //return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
 
-            int port = location.BaseUrl.Port;
             var responseFactory = new ResponseFactory(statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
-            return new TestServiceEngine(logger, port, responseFactory, postHandler);
+            return new TestServiceEngine(logger, webServerLocation, responseFactory, postHandler);
 
         }
 

@@ -21,7 +21,6 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
 
         private string _baseUrl;
         private WebClient _webClient;
-        private Func<byte[]> _xapToTestFactory;
         private byte[] _hostXap;
         private string _serializedConfiguration;
         private Mock<IPostHandler> _mockPostHandler;
@@ -30,19 +29,18 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
         {
             base.Before_all_tests();
 
-            const int port = 38881;
+            var webServerLocation = new WebServerLocation(TestLogger, 38881);
             var consoleLogger = new ConsoleLogger(LogChatterLevels.Full);
-            _xapToTestFactory = () => new byte[] { 0, 1, 2, 3, 4 };
             _hostXap = new byte[] { 5, 4, 2, 1, 4 };
             var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty);
             _serializedConfiguration = clientConfig.Serialize();
             var responseFactory = new ResponseFactory(() => _hostXap, clientConfig);
 
             _mockPostHandler = new Mock<IPostHandler>();
-            _testServiceEngine = new TestServiceEngine(consoleLogger, port, responseFactory, _mockPostHandler.Object);
+            _testServiceEngine = new TestServiceEngine(consoleLogger, webServerLocation, responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 
-            _baseUrl = "http://{0}:{1}/".FormatWith("localhost", port);
+            _baseUrl = webServerLocation.BaseUrl.ToString();
 
             _testServiceEngine.Start();
         }

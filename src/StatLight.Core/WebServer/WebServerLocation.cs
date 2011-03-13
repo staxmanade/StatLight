@@ -7,10 +7,14 @@ namespace StatLight.Core.WebServer
     public class WebServerLocation
     {
         private readonly ILogger _logger;
+        private readonly int _defaultPortToTry;
+        private readonly Lazy<int> _port;
 
-        public WebServerLocation(ILogger logger)
+        public WebServerLocation(ILogger logger, int defaultPortToTry = 8887)
         {
             _logger = logger;
+            _defaultPortToTry = defaultPortToTry;
+            _port = new Lazy<int>(GetUnusedPort);
         }
 
         public virtual Uri TestPageUrl
@@ -30,14 +34,19 @@ namespace StatLight.Core.WebServer
             }
         }
 
+        public  int Port
+        {
+            get { return _port.Value; }
+        }
+
         private string GetBaseUrl()
         {
-            return ("http://localhost:" + GetUnusedPort() + "/");
+            return ("http://localhost:" + Port + "/");
         }
 
         private int GetUnusedPort()
         {
-            int port = 8887;
+            int port = _defaultPortToTry;
 
             while (!TryPortNumber(port))
                 port++;
