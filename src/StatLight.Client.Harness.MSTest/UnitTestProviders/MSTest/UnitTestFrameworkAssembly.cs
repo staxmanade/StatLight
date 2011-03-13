@@ -22,12 +22,12 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
         /// <summary>
         /// Assembly initialization method information.
         /// </summary>
-        private LazyDynamicMethodInfo _init;
+        private LazyDynamicAssemblyMethodInfo _init;
 
         /// <summary>
         /// Assembly cleanup method information.
         /// </summary>
-        private LazyDynamicMethodInfo _cleanup;
+        private LazyDynamicAssemblyMethodInfo _cleanup;
 
         /// <summary>
         /// Creates a new unit test assembly wrapper.

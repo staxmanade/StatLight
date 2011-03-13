@@ -422,11 +422,11 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	if($build_configuration -eq 'Debug')
 	{
-		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 6 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 7 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
 	else
 	{
-		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 6 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 7 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
 	
 	#added sleep to wait for file system to loose the lock on the file so we can delete it
@@ -720,7 +720,7 @@ Task test-multiple-xaps {
 	$scriptFile = GetTemporaryXmlFile;
 	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-o=MSTest" "-r=$scriptFile" 
 	
-	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 10 -expectedFailedCount 6 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 2
+	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 11 -expectedFailedCount 6 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 2
 }
 
 Task test-remote-access-querystring {

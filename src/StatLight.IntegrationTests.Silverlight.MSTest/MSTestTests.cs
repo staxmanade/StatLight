@@ -9,6 +9,7 @@ namespace StatLight.IntegrationTests.Silverlight
     [TestClass]
     public class MSTestTests : SilverlightTest
     {
+        private bool _assemblyInitializeWasCalled;
 
         #region Passing Tests
         [TestClass]
@@ -117,6 +118,18 @@ namespace StatLight.IntegrationTests.Silverlight
         public void Should_have_access_to_the_MSTest_TestContext()
         {
             Assert.IsNotNull(TestContext);
+        }
+
+        [TestMethod]
+        public void Should_have_executed_assembly_initialize()
+        {
+            Assert.IsTrue(_assemblyInitializeWasCalled);
+        }
+
+        [AssemblyInitialize]
+        public void AssemblyInitialize_Method()
+        {
+            _assemblyInitializeWasCalled = true;
         }
 
         public TestContext TestContext { get; set; }
