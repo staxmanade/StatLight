@@ -10,14 +10,13 @@ using StatLight.Core.Serialization;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 using System.Collections.Generic;
-using StatLight.Core.WebServer.CustomHost;
 
 namespace StatLight.Core.Tests.WebServer.CustomHost
 {
     [TestFixture]
     public class TestServiceEngineTests : FixtureBase
     {
-        private TestServiceEngine _testServiceEngine;
+        private Core.WebServer.WebServer _webServer;
 
         private string _baseUrl;
         private WebClient _webClient;
@@ -37,12 +36,12 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
             var responseFactory = new ResponseFactory(() => _hostXap, clientConfig);
 
             _mockPostHandler = new Mock<IPostHandler>();
-            _testServiceEngine = new TestServiceEngine(consoleLogger, webServerLocation, responseFactory, _mockPostHandler.Object);
+            _webServer = new Core.WebServer.WebServer(consoleLogger, webServerLocation, responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 
             _baseUrl = webServerLocation.BaseUrl.ToString();
 
-            _testServiceEngine.Start();
+            _webServer.Start();
         }
 
         [SetUp]
@@ -55,7 +54,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
         {
             base.After_all_tests();
 
-            _testServiceEngine.Stop();
+            _webServer.Stop();
         }
 
         [Test]

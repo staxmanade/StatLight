@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using StatLight.Core.Common;
 
-namespace StatLight.Core.WebServer.CustomHost
+namespace StatLight.Core.WebServer
 {
-    public class TestServiceEngine : IWebServer, IDisposable
+    public class WebServer : IWebServer, IDisposable
     {
         private const string ContentTypeXml = "text/xml";
 
@@ -24,7 +24,7 @@ namespace StatLight.Core.WebServer.CustomHost
 
         private HttpListener Server { get; set; }
 
-        public TestServiceEngine(ILogger logger, WebServerLocation webServerLocation, ResponseFactory responseFactory, IPostHandler postHandler)
+        public WebServer(ILogger logger, WebServerLocation webServerLocation, ResponseFactory responseFactory, IPostHandler postHandler)
         {
             _logger = logger;
             _webServerLocation = webServerLocation;

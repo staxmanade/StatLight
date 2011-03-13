@@ -1,6 +1,5 @@
 ﻿
 using StatLight.Core.Common.Abstractions.Timing;
-using StatLight.Core.WebServer.CustomHost;
 
 namespace StatLight.Core.Runners
 {
@@ -127,7 +126,7 @@ namespace StatLight.Core.Runners
             //return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
 
             var responseFactory = new ResponseFactory(statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
-            return new TestServiceEngine(logger, webServerLocation, responseFactory, postHandler);
+            return new WebServer(logger, webServerLocation, responseFactory, postHandler);
 
         }
 
