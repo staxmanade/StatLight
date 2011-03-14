@@ -11,7 +11,7 @@
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Properties;
 
-    public class XmlReport
+    public class XmlReport : IXmlReport
     {
         private readonly TestReportCollection _report;
 

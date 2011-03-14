@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.Reporting.Providers;
+
 namespace StatLight.Console
 {
     using System;
@@ -240,25 +242,39 @@ Try: (the following two steps that should allow StatLight to start a web server 
 
             string xmlReportOutputPath = _options.XmlReportOutputPath;
             bool tfsGenericReport = _options.TFSGenericReport;
-            WriteXmlReport(testReports, xmlReportOutputPath, tfsGenericReport);
+            XmlReportType xmlReportType = XmlReportType.StatLight;
+            if (tfsGenericReport)
+                xmlReportType = XmlReportType.TFS;
+
+            WriteXmlReport(testReports, xmlReportOutputPath, xmlReportType);
 
             return testReports;
         }
 
-        private static void WriteXmlReport(TestReportCollection testReports, string xmlReportOutputPath, bool tfsGenericReport)
+        public enum XmlReportType
+        {
+            StatLight,
+            TFS,
+        }
+
+        private static void WriteXmlReport(TestReportCollection testReports, string xmlReportOutputPath, XmlReportType xmlReportType)
         {
             if (!string.IsNullOrEmpty(xmlReportOutputPath))
             {
-                if (tfsGenericReport)
+                IXmlReport xmlReport = null;
+                switch (xmlReportType)
                 {
-                    var xmlReport = new Core.Reporting.Providers.TFS.TFS2010.XmlReport(testReports);
-                    xmlReport.WriteXmlReport(xmlReportOutputPath);
+                    case XmlReportType.TFS:
+                        xmlReport = new Core.Reporting.Providers.TFS.TFS2010.XmlReport(testReports);
+                        break;
+                    case XmlReportType.StatLight:
+                        xmlReport = new XmlReport(testReports);
+                        break;
+                    default:
+                        throw new StatLightException("Unknown XmlReportType chosen Name=[{0}], Value=[{1}]".FormatWith(xmlReportType.ToString(), (int)xmlReportType));
                 }
-                else
-                {
-                    var xmlReport = new XmlReport(testReports);
-                    xmlReport.WriteXmlReport(xmlReportOutputPath);
-                }
+
+                xmlReport.WriteXmlReport(xmlReportOutputPath);
 
                 "*********************************"
                     .WrapConsoleMessageWithColor(ConsoleColor.White, true);

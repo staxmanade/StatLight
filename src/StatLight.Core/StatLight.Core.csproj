@@ -143,6 +143,7 @@
     <Compile Include="Common\Resources.cs" />
     <Compile Include="CommonExtensions.Desktop.cs" />
     <Compile Include="Common\StatLightException.cs" />
+    <Compile Include="Reporting\Providers\IXmlReport.cs" />
     <Compile Include="WebServer\XapInspection\XapRewriter.cs" />
     <Compile Include="Events\Aggregation\EventAggregator.cs" />
     <Compile Include="Events\PayloadEvent.cs" />

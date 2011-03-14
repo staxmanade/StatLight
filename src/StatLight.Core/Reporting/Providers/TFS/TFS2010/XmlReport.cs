@@ -1,6 +1,7 @@
 ﻿
 
 using System.Text;
+using StatLight.Core.Reporting.Providers.Xml;
 
 namespace StatLight.Core.Reporting.Providers.TFS.TFS2010
 {
@@ -10,7 +11,7 @@ namespace StatLight.Core.Reporting.Providers.TFS.TFS2010
     using System.Linq;
     using System.Xml.Linq;
 
-    public class XmlReport
+    public class XmlReport : IXmlReport
     {
         private readonly TestReportCollection _report;
 
