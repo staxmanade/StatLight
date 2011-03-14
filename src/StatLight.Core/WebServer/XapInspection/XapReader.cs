@@ -23,7 +23,7 @@ namespace StatLight.Core.WebServer.XapInspection
             _logger = logger;
         }
 
-        public XapReadItems GetTestAssembly(string archiveFileName)
+        public XapReadItems LoadXapUnderTest(string archiveFileName)
         {
             var xapItems = new XapReadItems();
 

@@ -136,7 +136,6 @@
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="Common\ConsoleLogger.cs" />
     <Compile Include="Common\NullLogger.cs" />
-    <Compile Include="Common\Ensure.cs" />
     <Compile Include="Common\LoggerBase.cs" />
     <Compile Include="Common\LogChatterLevel.cs" />
     <Compile Include="Common\ILogger.cs" />

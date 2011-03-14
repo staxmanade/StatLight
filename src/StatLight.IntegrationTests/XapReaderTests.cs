@@ -25,7 +25,7 @@ namespace StatLight.IntegrationTests
 
 				string fileName = ProviderTests.TestXapFileLocations.SilverlightIntegrationTests;
 
-                _xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).GetTestAssembly(fileName);
+                _xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(fileName);
 			}
 
 			[Test]
@@ -90,7 +90,7 @@ namespace StatLight.IntegrationTests
 					zipFile.Save();
 				}
 
-                _xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).GetTestAssembly(_xapPath);
+                _xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(_xapPath);
 			}
 
 			protected override void After_all_tests()
@@ -158,7 +158,7 @@ namespace StatLight.IntegrationTests
 
 			private void ShouldLoadCorrectType(string fileName, UnitTestProviderType unitTestProviderType)
 			{
-                var xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).GetTestAssembly(fileName);
+                var xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(fileName);
 				xapReadItems.UnitTestProvider.ShouldEqual(unitTestProviderType);
 			}
 		}

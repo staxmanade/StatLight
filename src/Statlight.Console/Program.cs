@@ -184,17 +184,26 @@ Try: (the following two steps that should allow StatLight to start a web server 
         private readonly Func<IRunner, TestReport> _runnerFunc;
         private readonly IStatLightRunnerFactory _statLightRunnerFactory;
 
+        private RunnerType GetRunnerType()
+        {
+            bool continuousIntegrationMode = _options.ContinuousIntegrationMode;
+            bool useTeamCity = _options.OutputForTeamCity;
+            bool startWebServerOnly = _options.StartWebServerOnly;
+            bool useRemoteTestPage = _options.UseRemoteTestPage;
+
+            RunnerType runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly, useRemoteTestPage);
+
+            return runnerType;
+        }
+
         public TestReportCollection Run()
         {
 
             IEnumerable<string> xapPaths = _options.XapPaths;
             IEnumerable<string> testDlls = _options.Dlls;
 
-            bool continuousIntegrationMode = _options.ContinuousIntegrationMode;
             bool showTestingBrowserHost = _options.ShowTestingBrowserHost;
-            bool useTeamCity = _options.OutputForTeamCity;
             bool useRemoteTestPage = _options.UseRemoteTestPage;
-            bool startWebServerOnly = _options.StartWebServerOnly;
             Collection<string> methodsToTest = _options.MethodsToTest;
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = _options.MicrosoftTestingFrameworkVersion;
             string tagFilters = _options.TagFilters;
@@ -206,7 +215,7 @@ Try: (the following two steps that should allow StatLight to start a web server 
 
             _options.DumpValuesForDebug(_logger);
 
-            RunnerType runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly, useRemoteTestPage);
+            var runnerType = GetRunnerType();
 
             _logger.Debug("RunnerType = {0}".FormatWith(runnerType));
 

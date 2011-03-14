@@ -28,7 +28,7 @@ namespace StatLight.Core.Configuration
             if (queryString == null)
                 throw new ArgumentNullException("queryString");
 
-            XapReadItems xapReadItems = null;
+            IEnumerable<IXapFile> filesToCopyIntoHostXap = new List<IXapFile>();
             string entryPointAssembly = string.Empty;
             if (isRemoteRun)
             {
@@ -37,7 +37,10 @@ namespace StatLight.Core.Configuration
             {
                 AssertXapToTestFileExists(xapPath);
 
-                xapReadItems = new XapReader(_logger).GetTestAssembly(xapPath);
+                var xapReader = new XapReader(_logger);
+
+                XapReadItems xapReadItems = xapReader.LoadXapUnderTest(xapPath);
+
                 if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
                 {
                     //TODO: Print message telling the user what the type is - and if they give it
@@ -59,6 +62,8 @@ namespace StatLight.Core.Configuration
                 }
 
                 entryPointAssembly = xapReadItems.TestAssembly.FullName;
+
+                filesToCopyIntoHostXap = xapReadItems.FilesContianedWithinXap;
             }
 
             var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly);
@@ -67,7 +72,7 @@ namespace StatLight.Core.Configuration
                 xapPath,
                 clientConfig.UnitTestProviderType,
                 microsoftTestingFrameworkVersion,
-                xapReadItems,
+                filesToCopyIntoHostXap,
                 DefaultDialogSmackDownElapseMilliseconds,
                 queryString,
                 forceBrowserStart,
@@ -88,7 +93,7 @@ namespace StatLight.Core.Configuration
             string xapPath,
             UnitTestProviderType unitTestProviderType,
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion,
-            XapReadItems xapReadItems,
+            IEnumerable<IXapFile> filesToCopyIntoHostXap,
             long dialogSmackDownElapseMilliseconds,
             string queryString,
             bool forceBrowserStart,
@@ -96,36 +101,30 @@ namespace StatLight.Core.Configuration
         {
             XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
 
-            Func<byte[]> hostXapFactory = () =>
+            Func<byte[]> hostXapFactory;
+            hostXapFactory = () =>
                                       {
                                           byte[] hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
-
-                                          if (xapReadItems != null)
-                                          {
-                                              hostXap = RewriteXapWithSpecialFiles(hostXap, xapReadItems);
-                                          }
+                                          hostXap = RewriteXapWithSpecialFiles(hostXap, filesToCopyIntoHostXap);
                                           return hostXap;
                                       };
             return new ServerTestRunConfiguration(hostXapFactory, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, queryString, forceBrowserStart, showTestingBrowserHost);
         }
-        private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, XapReadItems xapReadItems)
-        {
-            if (xapReadItems != null)
-            {
-                List<IXapFile> filesToCopyIntoHostXap = (from x in xapReadItems.FilesContianedWithinXap
-                                                         select x).ToList();
 
-                if (filesToCopyIntoHostXap.Any())
-                {
-                    var rewriter = new XapRewriter(_logger);
-                    xapHost = rewriter.RewriteZipHostWithFiles(xapHost, filesToCopyIntoHostXap).ToByteArray();
-                }
+        private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, IEnumerable<IXapFile> filesToCopyIntoHostXap)
+        {
+            if (filesToCopyIntoHostXap.Any())
+            {
+                var rewriter = new XapRewriter(_logger);
+
+                xapHost = rewriter.RewriteZipHostWithFiles(xapHost, filesToCopyIntoHostXap)
+                                .ToByteArray();
             }
 
             return xapHost;
         }
 
-        
+
     }
 
     public interface IStatLightConfigurationFactory
