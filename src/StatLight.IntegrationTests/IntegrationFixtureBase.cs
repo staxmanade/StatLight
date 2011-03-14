@@ -64,7 +64,7 @@ namespace StatLight.IntegrationTests
 
             var statLightConfigurationFactory = new StatLightConfigurationFactory(_testLogger);
 
-            var statLightConfiguration = statLightConfigurationFactory.GetStatLightConfiguration(
+            var statLightConfiguration = statLightConfigurationFactory.GetStatLightConfigurationForXap(
                 ClientTestRunConfiguration.UnitTestProviderType,
                 _pathToIntegrationTestXap,
                 MSTestVersion,

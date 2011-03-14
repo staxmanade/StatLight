@@ -42,15 +42,18 @@ namespace StatLight.Console
                 {
                     options = new ArgOptions(args);
 
-                    if (options.ShowHelp ||
-                        !options.XapPaths.Any())
+                    if (options.ShowHelp)
                     {
                         ArgOptions.ShowHelpMessage(Console.Out, options);
                         return;
                     }
 
-                    ILogger logger = GetLogger(options.IsRequestingDebug);
+                    if (!options.XapPaths.Any() && !options.Dlls.Any())
+                    {
+                        throw new StatLightException("No xap or silverlight dll's specified.");
+                    }
 
+                    ILogger logger = GetLogger(options.IsRequestingDebug);
 
                     var commandLineExecutionEngine = new CommandLineExecutionEngine(logger, options);
                     TestReportCollection testReports = commandLineExecutionEngine.Run();
@@ -198,10 +201,6 @@ Try: (the following two steps that should allow StatLight to start a web server 
 
         public TestReportCollection Run()
         {
-
-            IEnumerable<string> xapPaths = _options.XapPaths;
-            IEnumerable<string> testDlls = _options.Dlls;
-
             bool showTestingBrowserHost = _options.ShowTestingBrowserHost;
             bool useRemoteTestPage = _options.UseRemoteTestPage;
             Collection<string> methodsToTest = _options.MethodsToTest;
@@ -213,6 +212,9 @@ Try: (the following two steps that should allow StatLight to start a web server 
             WebBrowserType webBrowserType = _options.WebBrowserType;
             bool forceBrowserStart = _options.ForceBrowserStart;
 
+            IEnumerable<string> xapPaths = _options.XapPaths;
+            IEnumerable<string> testDlls = _options.Dlls;
+
             _options.DumpValuesForDebug(_logger);
 
             var runnerType = GetRunnerType();
@@ -223,8 +225,9 @@ Try: (the following two steps that should allow StatLight to start a web server 
 
             foreach (var xapPath in xapPaths)
             {
+                _logger.Debug("Starting configuration for: {0}".FormatWith(xapPath));
                 StatLightConfiguration statLightConfiguration = _statLightConfigurationFactory
-                    .GetStatLightConfiguration(
+                    .GetStatLightConfigurationForXap(
                         unitTestProviderType,
                         xapPath,
                         microsoftTestingFrameworkVersion,
@@ -237,16 +240,29 @@ Try: (the following two steps that should allow StatLight to start a web server 
                         forceBrowserStart,
                         showTestingBrowserHost);
 
-                using (IRunner runner = GetRunner(
-                        _logger,
-                        runnerType,
-                        statLightConfiguration,
-                        _statLightRunnerFactory))
-                {
-                    _logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
-                    TestReport testReport = _runnerFunc(runner);
-                    testReports.Add(testReport);
-                }
+                var testReport = DoTheRun(runnerType, statLightConfiguration);
+                testReports.Add(testReport);
+            }
+
+            foreach (var dllPath in testDlls)
+            {
+                _logger.Debug("Starting configuration for: {0}".FormatWith(dllPath));
+                StatLightConfiguration statLightConfiguration = _statLightConfigurationFactory
+                    .GetStatLightConfigurationForDll(
+                        unitTestProviderType,
+                        dllPath,
+                        microsoftTestingFrameworkVersion,
+                        methodsToTest,
+                        tagFilters,
+                        numberOfBrowserHosts,
+                        useRemoteTestPage,
+                        queryString,
+                        webBrowserType,
+                        forceBrowserStart,
+                        showTestingBrowserHost);
+
+                var testReport = DoTheRun(runnerType, statLightConfiguration);
+                testReports.Add(testReport);
             }
 
             string xmlReportOutputPath = _options.XmlReportOutputPath;
@@ -258,6 +274,19 @@ Try: (the following two steps that should allow StatLight to start a web server 
             WriteXmlReport(testReports, xmlReportOutputPath, xmlReportType);
 
             return testReports;
+        }
+
+        private TestReport DoTheRun(RunnerType runnerType, StatLightConfiguration statLightConfiguration)
+        {
+            using (IRunner runner = GetRunner(
+                _logger,
+                runnerType,
+                statLightConfiguration,
+                _statLightRunnerFactory))
+            {
+                _logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
+                return _runnerFunc(runner);
+            }
         }
 
         public enum XmlReportType

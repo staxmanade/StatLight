@@ -800,7 +800,7 @@ Task test-custom-test-provider {
 
 Task test-single-assembly-run {
 	$scriptFile = GetTemporaryXmlFile;
-	execStatLight "-d=C:\Code\StatLight\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\Debug\Microsoft.Silverlight.Testing.dll"  "-r=$scriptFile"
+	execStatLight "-d=C:\Code\StatLight\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll"  "-r=$scriptFile" "--debug"
 	
 	Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 2 -expectedFailedCount 1 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
 }

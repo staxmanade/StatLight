@@ -29,13 +29,17 @@ namespace StatLight.Core.WebServer.XapInspection
 
             using (var archive = ZipFile.Read(archiveFileName))
             {
-                xapItems.AppManifest = LoadAppManifest(archive);
+                var appManifest = LoadAppManifest(archive);
 
-                if (xapItems.AppManifest != null)
+                if (appManifest != null)
                 {
-                    string testAssemblyName = GetTestAssemblyNameFromAppManifest(xapItems.AppManifest);
+                    string testAssemblyName = GetTestAssemblyNameFromAppManifest(appManifest);
 
-                    xapItems.TestAssembly = LoadTestAssembly(archive, testAssemblyName);
+                    AssemblyName assemblyName = GetAssemblyName(archive, testAssemblyName);
+                    if(assemblyName != null)
+                    {
+                    xapItems.TestAssemblyFullName = assemblyName.ToString();
+                    }
                 }
 
                 xapItems.UnitTestProvider = DetermineUnitTestProviderType(archive);
@@ -69,7 +73,7 @@ namespace StatLight.Core.WebServer.XapInspection
         private MicrosoftTestingFrameworkVersion? DetermineUnitTestVersion(ZipFile archive)
         {
             var incomingHash = (from zipEntry in archive
-                                where fileNameCompare(zipEntry.FileName, "Microsoft.Silverlight.Testing.dll")
+                                where FileNameCompare(zipEntry.FileName, "Microsoft.Silverlight.Testing.dll")
                                 select SHA1Encryption(ReadFileIntoBytes(archive, zipEntry.FileName))).SingleOrDefault();
             if (incomingHash == null)
                 return null;
@@ -119,19 +123,19 @@ namespace StatLight.Core.WebServer.XapInspection
             return foundVersion.Version;
         }
 
-        private bool fileNameCompare(string fileA, string fileB)
+        private static bool FileNameCompare(string fileA, string fileB)
         {
             return string.Equals(fileA, fileB, StringComparison.CurrentCultureIgnoreCase);
         }
 
-        private UnitTestProviderType DetermineUnitTestProviderType(ZipFile archive)
+        private static UnitTestProviderType DetermineUnitTestProviderType(ZipFile archive)
         {
             bool hasMSTest = false;
 
             foreach (ZipEntry zipEntry in archive)
             {
                 // http://staxmanade.blogspot.com/2009/02/xunit-light-for-silverlight.html
-                if (fileNameCompare(zipEntry.FileName, "XUnitLight.Silverlight.dll"))
+                if (FileNameCompare(zipEntry.FileName, "XUnitLight.Silverlight.dll"))
                     return UnitTestProviderType.XUnit;
 
                 //http://xunitcontrib.codeplex.com/
@@ -144,7 +148,7 @@ namespace StatLight.Core.WebServer.XapInspection
                 if (zipEntry.FileName.ContainsIgnoreCase("nunit"))
                     return UnitTestProviderType.NUnit;
 
-                if (fileNameCompare(zipEntry.FileName, "Microsoft.Silverlight.Testing.dll"))
+                if (FileNameCompare(zipEntry.FileName, "Microsoft.Silverlight.Testing.dll"))
                     hasMSTest = true;
             }
 
@@ -154,11 +158,15 @@ namespace StatLight.Core.WebServer.XapInspection
             return UnitTestProviderType.Undefined;
         }
 
-        private static Assembly LoadTestAssembly(ZipFile zip1, string testAssemblyName)
+        private static AssemblyName GetAssemblyName(ZipFile zip1, string testAssemblyName)
         {
+            string tempFileName = Path.GetTempFileName();
             var fileData = ReadFileIntoBytes(zip1, testAssemblyName);
             if (fileData != null)
-                return Assembly.Load(fileData);
+            {
+                File.WriteAllBytes(tempFileName, fileData);
+                return AssemblyName.GetAssemblyName(tempFileName);
+            }
             return null;
         }
 

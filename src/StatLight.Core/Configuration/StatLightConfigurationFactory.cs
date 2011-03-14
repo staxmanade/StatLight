@@ -1,4 +1,6 @@
 ﻿
+using System.Reflection;
+
 namespace StatLight.Core.Configuration
 {
     using System;
@@ -23,7 +25,7 @@ namespace StatLight.Core.Configuration
             _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
         }
 
-        public StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost)
+        public StatLightConfiguration GetStatLightConfigurationForXap(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost)
         {
             if (queryString == null)
                 throw new ArgumentNullException("queryString");
@@ -35,33 +37,15 @@ namespace StatLight.Core.Configuration
             }
             else
             {
-                AssertXapToTestFileExists(xapPath);
+                AssertFileExists(xapPath);
 
                 var xapReader = new XapReader(_logger);
 
                 XapReadItems xapReadItems = xapReader.LoadXapUnderTest(xapPath);
 
-                if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
-                {
-                    //TODO: Print message telling the user what the type is - and if they give it
-                    // we don't have to "reflect" on the xap to determine the test provider type.
+                SetupUnitTestProviderType(xapReadItems, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
 
-                    if (unitTestProviderType == UnitTestProviderType.Undefined)
-                    {
-                        unitTestProviderType = xapReadItems.UnitTestProvider;
-                    }
-
-                    if (
-                        (xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest ||
-                            unitTestProviderType == UnitTestProviderType.MSTest ||
-                            unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
-                        && microsoftTestingFrameworkVersion == null)
-                    {
-                        microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
-                    }
-                }
-
-                entryPointAssembly = xapReadItems.TestAssembly.FullName;
+                entryPointAssembly = xapReadItems.TestAssemblyFullName;
 
                 filesToCopyIntoHostXap = xapReadItems.FilesContianedWithinXap;
             }
@@ -81,7 +65,81 @@ namespace StatLight.Core.Configuration
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
 
-        private static void AssertXapToTestFileExists(string xapPath)
+
+        public StatLightConfiguration GetStatLightConfigurationForDll(UnitTestProviderType unitTestProviderType, string dllPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost)
+        {
+            if (queryString == null)
+                throw new ArgumentNullException("queryString");
+
+            IEnumerable<IXapFile> filesToCopyIntoHostXap = new List<IXapFile>();
+            string entryPointAssembly = string.Empty;
+            if (isRemoteRun)
+            {
+            }
+            else
+            {
+                AssertFileExists(dllPath);
+
+                byte[] fileBytes = File.ReadAllBytes(dllPath);
+                string fullFilePath = new FileInfo(dllPath).FullName;
+                var xapReadItems = new XapReadItems
+                {
+                    FilesContianedWithinXap = new List<IXapFile>
+                                                                         {
+                                                                             new XapFile(Path.GetFileName(dllPath),
+                                                                                         fileBytes)
+                                                                         },
+                    MicrosoftSilverlightTestingFrameworkVersion = MicrosoftTestingFrameworkVersion.May2010,
+                    TestAssemblyFullName = AssemblyName.GetAssemblyName(fullFilePath).ToString(),
+                    UnitTestProvider = UnitTestProviderType.MSTest,
+                };
+
+                SetupUnitTestProviderType(xapReadItems, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
+
+                entryPointAssembly = xapReadItems.TestAssemblyFullName;
+
+                filesToCopyIntoHostXap = xapReadItems.FilesContianedWithinXap;
+            }
+
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly);
+
+            var serverConfig = CreateServerConfiguration(
+                dllPath,
+                clientConfig.UnitTestProviderType,
+                microsoftTestingFrameworkVersion,
+                filesToCopyIntoHostXap,
+                DefaultDialogSmackDownElapseMilliseconds,
+                queryString,
+                forceBrowserStart,
+                showTestingBrowserHost);
+
+            return new StatLightConfiguration(clientConfig, serverConfig);
+        }
+
+        private static void SetupUnitTestProviderType(XapReadItems xapReadItems, ref UnitTestProviderType unitTestProviderType, ref MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion)
+        {
+            if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
+            {
+                //TODO: Print message telling the user what the type is - and if they give it
+                // we don't have to "reflect" on the xap to determine the test provider type.
+
+                if (unitTestProviderType == UnitTestProviderType.Undefined)
+                {
+                    unitTestProviderType = xapReadItems.UnitTestProvider;
+                }
+
+                if (
+                    (xapReadItems.UnitTestProvider == UnitTestProviderType.MSTest ||
+                     unitTestProviderType == UnitTestProviderType.MSTest ||
+                     unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
+                    && microsoftTestingFrameworkVersion == null)
+                {
+                    microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
+                }
+            }
+        }
+
+        private static void AssertFileExists(string xapPath)
         {
             if (!File.Exists(xapPath))
             {
@@ -129,6 +187,8 @@ namespace StatLight.Core.Configuration
 
     public interface IStatLightConfigurationFactory
     {
-        StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost);
+        StatLightConfiguration GetStatLightConfigurationForXap(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost);
+
+        StatLightConfiguration GetStatLightConfigurationForDll(UnitTestProviderType unitTestProviderType, string dllPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost);
     }
 }

@@ -28,23 +28,23 @@ namespace StatLight.IntegrationTests
                 _xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(fileName);
 			}
 
-			[Test]
-			public void Should_find_XapManifest()
-			{
-				_xapReadItems.AppManifest.ShouldNotBeNull();
-				_xapReadItems.AppManifest.ShouldNotBeEmpty();
-			}
+			//[Test]
+			//public void Should_find_XapManifest()
+			//{
+			//	_xapReadItems.AppManifest.ShouldNotBeNull();
+			//	_xapReadItems.AppManifest.ShouldNotBeEmpty();
+			//}
 
-			[Test]
-			public void Should_have_the_correct_assembly_specified_as_the_entry_assembly()
-			{
-				_xapReadItems.AppManifest.Contains("EntryPointAssembly=\"StatLight.IntegrationTests.Silverlight\"");
-			}
+			//[Test]
+			//public void Should_have_the_correct_assembly_specified_as_the_entry_assembly()
+			//{
+			//	_xapReadItems.AppManifest.Contains("EntryPointAssembly=\"StatLight.IntegrationTests.Silverlight\"");
+			//}
 
 			[Test]
 			public void Should_load_the_test_assembly()
 			{
-				_xapReadItems.TestAssembly.ShouldNotBeNull();
+				_xapReadItems.TestAssemblyFullName.ShouldNotBeNull();
 			}
 
 			[Test]
@@ -117,15 +117,8 @@ namespace StatLight.IntegrationTests
 			[Test]
 			public void Should_expose_the_TestAssembly_as_null()
 			{
-				_xapReadItems.TestAssembly.ShouldBeNull();
+                _xapReadItems.TestAssemblyFullName.ShouldBeNull();
 			}
-
-			[Test]
-			public void Should_expose_the_AppManifest_as_null()
-			{
-				_xapReadItems.AppManifest.ShouldBeNull();
-			}
-
 		}
 
 		[TestFixture]
