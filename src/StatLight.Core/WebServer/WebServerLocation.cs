@@ -21,7 +21,7 @@ namespace StatLight.Core.WebServer
         {
             get
             {
-                var uriString = GetBaseUrl() + StatLightServiceRestApi.GetHtmlTestPage;
+                var uriString = GetBaseUrl(Port) + StatLightServiceRestApi.GetHtmlTestPage;
                 return new Uri(uriString);
             }
         }
@@ -30,7 +30,7 @@ namespace StatLight.Core.WebServer
         {
             get
             {
-                return GetBaseUrl().ToUri();
+                return GetBaseUrl(Port).ToUri();
             }
         }
 
@@ -39,9 +39,9 @@ namespace StatLight.Core.WebServer
             get { return _port.Value; }
         }
 
-        private string GetBaseUrl()
+        private static string GetBaseUrl(int port)
         {
-            return ("http://localhost:" + Port + "/");
+            return ("http://localhost:" + port + "/");
         }
 
         private int GetUnusedPort()
@@ -57,7 +57,7 @@ namespace StatLight.Core.WebServer
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private bool TryPortNumber(int port)
         {
-            var url = "http://localhost:{0}/".FormatWith(port);
+            var url = GetBaseUrl(port);
             _logger.Debug("Attempting to open port at {0}".FormatWith(url));
             var server = new HttpListener();
             try
