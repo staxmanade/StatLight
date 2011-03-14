@@ -767,7 +767,8 @@ function Assert-statlight-xml-report-results
 			$expectedPassedCount = 0,
 			$expectedIgnoredCount = 0,
 			$expectedFailedCount = 0,
-			$expectedSystemGeneratedfailedCount = 0 )
+			$expectedSystemGeneratedfailedCount = 0 )	
+			
 	Echo "Asserting xml report results for $message. File=$resultsXmlTextFilePath"
 	AssertXmlReportIsValid $scriptFile
 
@@ -795,6 +796,13 @@ Task test-custom-test-provider {
 	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.CustomTestProvider\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.CustomTestProvider.xap"  "-r=$scriptFile" "--OverrideTestProvider=MSTestWithCustomProvider"
 	
 	Assert-statlight-xml-report-results -message "test-custom-test-provider" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 2 -expectedFailedCount 0 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
+}
+
+Task test-single-assembly-run {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-d=C:\Code\StatLight\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\Debug\Microsoft.Silverlight.Testing.dll"  "-r=$scriptFile"
+	
+	Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 2 -expectedFailedCount 1 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
 }
 
 #########################################

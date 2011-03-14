@@ -18,7 +18,7 @@ namespace StatLight.Core.Runners
     using StatLight.Core.WebServer;
     using StatLight.Core.WebServer.XapHost;
 
-    public class StatLightRunnerFactory
+    public class StatLightRunnerFactory : IStatLightRunnerFactory
     {
         private readonly IEventSubscriptionManager _eventSubscriptionManager;
         private readonly IEventPublisher _eventPublisher;
@@ -248,5 +248,16 @@ namespace StatLight.Core.Runners
 
             return new DialogMonitorRunner(logger, _eventPublisher, debugAssertMonitorTimer, dialogMonitors);
         }
+    }
+
+    public interface IStatLightRunnerFactory
+    {
+        IRunner CreateContinuousTestRunner(ILogger logger, StatLightConfiguration statLightConfiguration);
+        IRunner CreateTeamCityRunner(StatLightConfiguration statLightConfiguration);
+        IRunner CreateOnetimeConsoleRunner(ILogger logger, StatLightConfiguration statLightConfiguration);
+        IRunner CreateWebServerOnlyRunner(ILogger logger, StatLightConfiguration statLightConfiguration);
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        IRunner CreateRemotelyHostedRunner(ILogger logger, StatLightConfiguration statLightConfiguration);
     }
 }

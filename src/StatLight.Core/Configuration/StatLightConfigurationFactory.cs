@@ -1,6 +1,4 @@
 ﻿
-using System.Diagnostics;
-
 namespace StatLight.Core.Configuration
 {
     using System;
@@ -13,7 +11,7 @@ namespace StatLight.Core.Configuration
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.WebServer.XapInspection;
 
-    public class StatLightConfigurationFactory
+    public class StatLightConfigurationFactory : IStatLightConfigurationFactory
     {
         public const int DefaultDialogSmackDownElapseMilliseconds = 5000;
         private readonly ILogger _logger;
@@ -128,5 +126,10 @@ namespace StatLight.Core.Configuration
         }
 
         
+    }
+
+    public interface IStatLightConfigurationFactory
+    {
+        StatLightConfiguration GetStatLightConfiguration(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost);
     }
 }

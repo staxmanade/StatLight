@@ -99,6 +99,7 @@
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="ArgOptions.cs" />
+    <Compile Include="AssemblyInfo.Console.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Tools\ConsoleIconSwapper.cs" />
     <Compile Include="Tools\Mono.Options.cs" />

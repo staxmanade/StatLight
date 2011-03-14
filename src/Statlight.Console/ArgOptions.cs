@@ -19,10 +19,10 @@ namespace StatLight.Console
 
         private readonly string[] _args;
 
-        private readonly IList<string> _xapPath = new List<string>();
-        public IList<string> XapPath
+        private readonly IList<string> _xapPaths = new List<string>();
+        public IList<string> XapPaths
         {
-            get { return _xapPath; }
+            get { return _xapPaths; }
         }
 
         public string XmlReportOutputPath { get; private set; }
@@ -60,6 +60,12 @@ namespace StatLight.Console
 
         public bool TFSGenericReport { get; set; }
 
+        private readonly IList<string> _dlls = new List<string>();
+        public IList<string> Dlls
+        {
+            get { return _dlls; }
+        }
+
         private ArgOptions()
             : this(new string[] { })
         {
@@ -92,7 +98,14 @@ namespace StatLight.Console
                                   select version).ToDictionary(key => key.ToString().ToLower(), value => value);
 
             return new OptionSet()
-                .Add("x|XapPath=", "Path to test xap file. (Can specify multiple -x={path1} -x={path2})", v => _xapPath.Add(v ?? string.Empty), OptionValueType.Required)
+                .Add("x|XapPath", "Path to test xap file. (Can specify multiple -x={path1} -x={path2})", v => _xapPaths.Add(v ?? string.Empty), OptionValueType.Required)
+                .Add("d|Dll", "Assembly to test.", v=>
+                    {
+                        if (!string.IsNullOrEmpty(v))
+                        {
+                            _dlls.Add(v);
+                        }
+                    })
                 .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, OptionValueType.Optional)
                 .Add<string>("c|Continuous", "Runs a single test run, and then monitors the xap for build changes and re-runs the tests automatically.", v => ContinuousIntegrationMode = true)
                 .Add<string>("b|ShowTestingBrowserHost", "Show the browser that is running the tests - necessary to run UI specific tests (hidden by default)", v => ShowTestingBrowserHost = true)
