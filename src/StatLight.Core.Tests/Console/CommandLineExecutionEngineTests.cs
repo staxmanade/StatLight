@@ -22,14 +22,14 @@ namespace StatLight.Core.Tests.Console
                 var mockConfiugrationFactory = new Mock<IStatLightConfigurationFactory>();
                 var mockStatLightRunnerFactory = new Mock<IStatLightRunnerFactory>();
                 mockStatLightRunnerFactory
-                    .Setup(s => s.CreateOnetimeConsoleRunner(TestLogger, It.IsAny<StatLightConfiguration>()))
+                    .Setup(s => s.CreateOnetimeConsoleRunner(It.IsAny<StatLightConfiguration>()))
                     .Returns(new Mock<IRunner>().Object);
                 Func<IRunner, TestReport> f = runner => new TestReport(argOptions.XapPaths.First());
                 var engine = new CommandLineExecutionEngine(TestLogger, argOptions, mockConfiugrationFactory.Object, f, mockStatLightRunnerFactory.Object);
 
                 engine.Run();
 
-                mockStatLightRunnerFactory.Verify(x => x.CreateOnetimeConsoleRunner(TestLogger, It.IsAny<StatLightConfiguration>()));
+                mockStatLightRunnerFactory.Verify(x => x.CreateOnetimeConsoleRunner(It.IsAny<StatLightConfiguration>()));
             }
         }
     }

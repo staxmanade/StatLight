@@ -1,60 +1,61 @@
 ﻿
-using StatLight.Core.Common.Abstractions.Timing;
-
 namespace StatLight.Core.Runners
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Web;
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Configuration;
     using StatLight.Core.Common;
+    using StatLight.Core.Common.Abstractions.Timing;
     using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Monitoring;
     using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.Reporting.Providers.TeamCity;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
-    using StatLight.Core.WebServer.XapHost;
 
     public class StatLightRunnerFactory : IStatLightRunnerFactory
     {
+        private readonly ILogger _logger;
         private readonly IEventSubscriptionManager _eventSubscriptionManager;
         private readonly IEventPublisher _eventPublisher;
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
         private ConsoleResultHandler _consoleResultHandler;
         private Action<DebugClientEvent> _debugEventListener;
 
-        public StatLightRunnerFactory() : this(new EventAggregator()) { }
-
-        internal StatLightRunnerFactory(EventAggregator eventAggregator) : this(eventAggregator, eventAggregator) { }
-
-        public StatLightRunnerFactory(IEventSubscriptionManager eventSubscriptionManager, IEventPublisher eventPublisher)
+        public StatLightRunnerFactory(ILogger logger) : this(logger, new EventAggregator())
         {
+        }
+
+        internal StatLightRunnerFactory(ILogger logger, EventAggregator eventAggregator) : this(logger, eventAggregator, eventAggregator) { }
+
+        public StatLightRunnerFactory(ILogger logger, IEventSubscriptionManager eventSubscriptionManager, IEventPublisher eventPublisher)
+        {
+            if (logger == null) throw new ArgumentNullException("logger");
+            _logger = logger;
             _eventSubscriptionManager = eventSubscriptionManager;
             _eventPublisher = eventPublisher;
         }
 
-        public IRunner CreateContinuousTestRunner(ILogger logger, StatLightConfiguration statLightConfiguration)
+        public IRunner CreateContinuousTestRunner(StatLightConfiguration statLightConfiguration)
         {
-            if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             IWebServer webServer;
             List<IWebBrowser> webBrowsers;
             IDialogMonitorRunner dialogMonitorRunner;
 
             BuildAndReturnWebServiceAndBrowser(
-                logger,
+                _logger,
                 statLightConfiguration.Server.ShowTestingBrowserHost,
                 statLightConfiguration,
                 out webServer,
                 out webBrowsers,
                 out dialogMonitorRunner);
 
-            CreateAndAddConsoleResultHandlerToEventAggregator(logger);
+            CreateAndAddConsoleResultHandlerToEventAggregator(_logger);
 
-            IRunner runner = new ContinuousConsoleRunner(logger, _eventSubscriptionManager, _eventPublisher, statLightConfiguration.Server.XapToTestPath, statLightConfiguration.Client, webServer, webBrowsers.First());
+            IRunner runner = new ContinuousConsoleRunner(_logger, _eventSubscriptionManager, _eventPublisher, statLightConfiguration.Server.XapToTestPath, statLightConfiguration.Client, webServer, webBrowsers.First());
             return runner;
         }
 
@@ -75,42 +76,40 @@ namespace StatLight.Core.Runners
                 out dialogMonitorRunner);
 
             var teamCityTestResultHandler = new TeamCityTestResultHandler(new ConsoleCommandWriter(), statLightConfiguration.Server.XapToTestPath);
-            IRunner runner = new TeamCityRunner(new NullLogger(), _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, teamCityTestResultHandler, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
+            IRunner runner = new TeamCityRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, teamCityTestResultHandler, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
 
             return runner;
         }
 
-        public IRunner CreateOnetimeConsoleRunner(ILogger logger, StatLightConfiguration statLightConfiguration)
+        public IRunner CreateOnetimeConsoleRunner(StatLightConfiguration statLightConfiguration)
         {
-            if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             IWebServer webServer;
             List<IWebBrowser> webBrowsers;
             IDialogMonitorRunner dialogMonitorRunner;
 
             BuildAndReturnWebServiceAndBrowser(
-                logger,
+                _logger,
                 statLightConfiguration.Server.ShowTestingBrowserHost,
                 statLightConfiguration,
                 out webServer,
                 out webBrowsers,
                 out dialogMonitorRunner);
 
-            CreateAndAddConsoleResultHandlerToEventAggregator(logger);
-            IRunner runner = new OnetimeRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
+            CreateAndAddConsoleResultHandlerToEventAggregator(_logger);
+            IRunner runner = new OnetimeRunner(_logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
             return runner;
         }
 
-        public IRunner CreateWebServerOnlyRunner(ILogger logger, StatLightConfiguration statLightConfiguration)
+        public IRunner CreateWebServerOnlyRunner(StatLightConfiguration statLightConfiguration)
         {
-            if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
-            var location = new WebServerLocation(logger);
+            var location = new WebServerLocation(_logger);
 
-            var webServer = CreateWebServer(logger, statLightConfiguration, location);
-            CreateAndAddConsoleResultHandlerToEventAggregator(logger);
-            SetupDebugClientEventListener(logger);
-            IRunner runner = new WebServerOnlyRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, location.TestPageUrl, statLightConfiguration.Server.XapToTestPath);
+            var webServer = CreateWebServer(_logger, statLightConfiguration, location);
+            CreateAndAddConsoleResultHandlerToEventAggregator(_logger);
+            SetupDebugClientEventListener(_logger);
+            IRunner runner = new WebServerOnlyRunner(_logger, _eventSubscriptionManager, _eventPublisher, webServer, location.TestPageUrl, statLightConfiguration.Server.XapToTestPath);
 
             return runner;
         }
@@ -200,9 +199,8 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public IRunner CreateRemotelyHostedRunner(ILogger logger, StatLightConfiguration statLightConfiguration)
+        public IRunner CreateRemotelyHostedRunner(StatLightConfiguration statLightConfiguration)
         {
-            if (logger == null) throw new ArgumentNullException("logger");
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
 
             ClientTestRunConfiguration clientTestRunConfiguration = statLightConfiguration.Client;
@@ -252,12 +250,12 @@ namespace StatLight.Core.Runners
 
     public interface IStatLightRunnerFactory
     {
-        IRunner CreateContinuousTestRunner(ILogger logger, StatLightConfiguration statLightConfiguration);
+        IRunner CreateContinuousTestRunner(StatLightConfiguration statLightConfiguration);
         IRunner CreateTeamCityRunner(StatLightConfiguration statLightConfiguration);
-        IRunner CreateOnetimeConsoleRunner(ILogger logger, StatLightConfiguration statLightConfiguration);
-        IRunner CreateWebServerOnlyRunner(ILogger logger, StatLightConfiguration statLightConfiguration);
+        IRunner CreateOnetimeConsoleRunner(StatLightConfiguration statLightConfiguration);
+        IRunner CreateWebServerOnlyRunner(StatLightConfiguration statLightConfiguration);
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        IRunner CreateRemotelyHostedRunner(ILogger logger, StatLightConfiguration statLightConfiguration);
+        IRunner CreateRemotelyHostedRunner(StatLightConfiguration statLightConfiguration);
     }
 }

@@ -164,7 +164,7 @@ Try: (the following two steps that should allow StatLight to start a web server 
             : this(logger, args,
                 new StatLightConfigurationFactory(logger),
                 runner => runner.Run(),
-                new StatLightRunnerFactory())
+                new StatLightRunnerFactory(logger))
         {
         }
 
@@ -191,11 +191,9 @@ Try: (the following two steps that should allow StatLight to start a web server 
             bool continuousIntegrationMode = _options.ContinuousIntegrationMode;
             bool showTestingBrowserHost = _options.ShowTestingBrowserHost;
             bool useTeamCity = _options.OutputForTeamCity;
-            bool tfsGenericReport = _options.TFSGenericReport;
             bool useRemoteTestPage = _options.UseRemoteTestPage;
             bool startWebServerOnly = _options.StartWebServerOnly;
             Collection<string> methodsToTest = _options.MethodsToTest;
-            string xmlReportOutputPath = _options.XmlReportOutputPath;
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = _options.MicrosoftTestingFrameworkVersion;
             string tagFilters = _options.TagFilters;
             UnitTestProviderType unitTestProviderType = _options.UnitTestProviderType;
@@ -240,6 +238,15 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 }
             }
 
+            string xmlReportOutputPath = _options.XmlReportOutputPath;
+            bool tfsGenericReport = _options.TFSGenericReport;
+            WriteXmlReport(testReports, xmlReportOutputPath, tfsGenericReport);
+
+            return testReports;
+        }
+
+        private static void WriteXmlReport(TestReportCollection testReports, string xmlReportOutputPath, bool tfsGenericReport)
+        {
             if (!string.IsNullOrEmpty(xmlReportOutputPath))
             {
                 if (tfsGenericReport)
@@ -263,8 +270,6 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 "*********************************"
                     .WrapConsoleMessageWithColor(ConsoleColor.White, true);
             }
-
-            return testReports;
         }
 
 
@@ -278,16 +283,16 @@ Try: (the following two steps that should allow StatLight to start a web server 
                     return statLightRunnerFactory.CreateTeamCityRunner(statLightConfiguration);
 
                 case RunnerType.ContinuousTest:
-                    return statLightRunnerFactory.CreateContinuousTestRunner(logger, statLightConfiguration);
+                    return statLightRunnerFactory.CreateContinuousTestRunner(statLightConfiguration);
 
                 case RunnerType.WebServerOnly:
-                    return statLightRunnerFactory.CreateWebServerOnlyRunner(logger, statLightConfiguration);
+                    return statLightRunnerFactory.CreateWebServerOnlyRunner(statLightConfiguration);
 
                 case RunnerType.RemoteRun:
-                    return statLightRunnerFactory.CreateRemotelyHostedRunner(logger, statLightConfiguration);
+                    return statLightRunnerFactory.CreateRemotelyHostedRunner(statLightConfiguration);
 
                 default:
-                    return statLightRunnerFactory.CreateOnetimeConsoleRunner(logger, statLightConfiguration);
+                    return statLightRunnerFactory.CreateOnetimeConsoleRunner(statLightConfiguration);
             }
         }
 
