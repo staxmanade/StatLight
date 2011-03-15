@@ -17,12 +17,32 @@ namespace StatLight.Core.WebServer.XapInspection
 
         public AssemblyResolver(ILogger logger, DirectoryInfo assemblyDirectoryInfo)
         {
+            if (logger == null) throw new ArgumentNullException("logger");
+            if (assemblyDirectoryInfo == null) throw new ArgumentNullException("assemblyDirectoryInfo");
             _logger = logger;
 
             _silverlightFolder = new Lazy<string>(SilverlightFolder);
             _originalAssemblyDir = assemblyDirectoryInfo.FullName;
 
             _logger.Debug("AssemblyResolver - OriginalAssembly - [{0}]".FormatWith(_originalAssemblyDir));
+        }
+
+        public IEnumerable<string> ResolveAllDependentAssemblies(string path)
+        {
+            _logger.Debug("AssemblyResolver - path: {0}".FormatWith(path));
+            Assembly reflectionOnlyLoadFrom = Assembly.ReflectionOnlyLoadFrom(path);
+            Debug.Assert(reflectionOnlyLoadFrom != null);
+            AssemblyName[] referencedAssemblies = reflectionOnlyLoadFrom.GetReferencedAssemblies();
+
+
+            var assemblies = new List<string>();
+
+            foreach (var assembly in referencedAssemblies)
+            {
+                BuildDependentAssemblyList(assembly, assemblies);
+            }
+
+            return assemblies;
         }
 
         private static string SilverlightFolder()
@@ -46,7 +66,7 @@ namespace StatLight.Core.WebServer.XapInspection
             return silverlightFolder;
         }
 
-        public string ResolveAssemblyPath(AssemblyName assemblyName)
+        private string ResolveAssemblyPath(AssemblyName assemblyName)
         {
             var pathsTried = new List<string>();
             Func<string, bool> tryPath = path =>
@@ -76,7 +96,7 @@ namespace StatLight.Core.WebServer.XapInspection
                                                                                                                                  Environment.NewLine, string.Join(Environment.NewLine, pathsTried.ToArray())));
         }
 
-        public string[] BuildDependentAssemblyList(AssemblyName assemblyName, List<string> assemblies)
+        private string[] BuildDependentAssemblyList(AssemblyName assemblyName, List<string> assemblies)
         {
             if (assemblies == null) throw new ArgumentNullException("assemblies");
 
@@ -122,22 +142,5 @@ namespace StatLight.Core.WebServer.XapInspection
             return asm;
         }
 
-        public IEnumerable<string> ResolveAllDependentAssemblies(string path)
-        {
-            _logger.Debug("AssemblyResolver - path: {0}".FormatWith(path));
-            Assembly reflectionOnlyLoadFrom = Assembly.ReflectionOnlyLoadFrom(path);
-            Debug.Assert(reflectionOnlyLoadFrom != null);
-            AssemblyName[] referencedAssemblies = reflectionOnlyLoadFrom.GetReferencedAssemblies();
-
-
-            var assemblies = new List<string>();
-
-            foreach (var assembly in referencedAssemblies)
-            {
-                BuildDependentAssemblyList(assembly, assemblies);
-            }
-
-            return assemblies;
-        }
     }
 }

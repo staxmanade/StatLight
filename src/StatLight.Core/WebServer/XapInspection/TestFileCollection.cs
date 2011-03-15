@@ -7,10 +7,10 @@ using StatLight.Core.WebServer.XapHost;
 
 namespace StatLight.Core.WebServer.XapInspection
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
     public class TestFileCollection
     {
         private readonly ILogger _logger;
-        private readonly string _testAssemblyFullName;
         private readonly IEnumerable<ITestFile> _files;
         private MicrosoftTestingFrameworkVersion? _msTestVersion;
 
@@ -18,7 +18,7 @@ namespace StatLight.Core.WebServer.XapInspection
         public TestFileCollection(ILogger logger, string testAssemblyFullName, IEnumerable<ITestFile> files)
         {
             _logger = logger;
-            _testAssemblyFullName = testAssemblyFullName;
+            TestAssemblyFullName = testAssemblyFullName;
             _files = files;
         }
 
@@ -27,20 +27,19 @@ namespace StatLight.Core.WebServer.XapInspection
             get
             {
                 return _msTestVersion ??
-                (_msTestVersion = DetermineUnitTestVersion(this.FilesContianedWithinXap));
+                (_msTestVersion = DetermineUnitTestVersion(this.FilesContainedWithinXap));
             }
             set { _msTestVersion = value; }
         }
 
         public string TestAssemblyFullName { get; private set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public IEnumerable<ITestFile> FilesContianedWithinXap { get { return _files; } }
+        public IEnumerable<ITestFile> FilesContainedWithinXap { get { return _files; } }
 
         public UnitTestProviderType UnitTestProvider
         {
             get
             {
-                return DetermineUnitTestProviderType(this.FilesContianedWithinXap);
+                return DetermineUnitTestProviderType(this.FilesContainedWithinXap);
             }
         }
 

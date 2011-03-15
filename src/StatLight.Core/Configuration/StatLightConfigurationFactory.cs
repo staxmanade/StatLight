@@ -46,7 +46,7 @@ namespace StatLight.Core.Configuration
 
                 entryPointAssembly = testFileCollection.TestAssemblyFullName;
 
-                filesToCopyIntoHostXap = testFileCollection.FilesContianedWithinXap;
+                filesToCopyIntoHostXap = testFileCollection.FilesContainedWithinXap;
             }
 
             var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly);
@@ -95,7 +95,7 @@ namespace StatLight.Core.Configuration
 
                 entryPointAssembly = xapReadItems.TestAssemblyFullName;
 
-                filesToCopyIntoHostXap = xapReadItems.FilesContianedWithinXap;
+                filesToCopyIntoHostXap = xapReadItems.FilesContainedWithinXap;
             }
 
             var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly);

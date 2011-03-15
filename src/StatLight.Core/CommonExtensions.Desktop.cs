@@ -57,6 +57,7 @@ namespace StatLight
             return enc.GetString(value);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.Byte.ToString(System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1304:SpecifyCultureInfo", MessageId = "System.String.ToUpper")]
         public static string Hash(this byte[] value)
         {
             var encryptedString = new StringBuilder();
