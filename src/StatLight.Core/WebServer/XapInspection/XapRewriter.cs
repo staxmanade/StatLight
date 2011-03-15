@@ -42,25 +42,7 @@ namespace StatLight.Core.WebServer.XapInspection
 
                 _logger.Debug("    add -  {0}".FormatWith(file.FileName));
 
-                if (file.FileName.IndexOf('\\') >= 1)
-                {
-                    zipFile.AddEntry(Path.GetFileName(file.FileName), Path.GetDirectoryName(file.FileName), file.File);
-                }
-                else
-                {
-                    zipFile.AddEntry(file.FileName, "/", file.File);
-                }
-
-                if ((Path.GetExtension(file.FileName) ?? string.Empty).Equals(".dll", StringComparison.OrdinalIgnoreCase))
-                {
-                    var name = Path.GetFileNameWithoutExtension(file.FileName);
-                    parts.Add(new XElement("AssemblyPart",
-                                           new XAttribute("StatLightTempName", name),
-                                           new XAttribute("Source", file.FileName)));
-
-                    _logger.Debug("        updateed AppManifest - {0}".FormatWith(name));
-
-                }
+                AddFile(zipFile, file, parts);
             }
 
             //NOTE: the StatLightTempName is a crazy string hick because I couldn't figure out how to get the XAttribute to look like x:Name=...
@@ -70,6 +52,46 @@ namespace StatLight.Core.WebServer.XapInspection
             zipFile.AddEntry("AppManifest.xaml", "/", manifestRewritten);
 
             return zipFile;
+        }
+
+        private void AddFile(ZipFile zipFile, ITestFile file, XElement parts)
+        {
+            AddFileToZip(zipFile, file.FileName, file.File);
+
+            if ((Path.GetExtension(file.FileName) ?? string.Empty).Equals(".dll", StringComparison.OrdinalIgnoreCase))
+            {
+/*
+                //TODO: at a possible later time - understand if the pdb files have 
+                // value in a silverlight xap and how to truly leverage them.
+
+                var pdbName = Path.Combine(Path.GetDirectoryName(file.FileName), Path.GetFileNameWithoutExtension(file.FileName), ".pdb");
+                if (File.Exists(pdbName))
+                {
+                    AddFileToZip(zipFile, pdbName, File.ReadAllBytes(pdbName));
+                    _logger.Debug("        including pdb - {0}".FormatWith(pdbName));
+
+                }
+*/
+                var name = Path.GetFileNameWithoutExtension(file.FileName);
+                parts.Add(new XElement("AssemblyPart",
+                                       new XAttribute("StatLightTempName", name),
+                                       new XAttribute("Source", file.FileName)));
+
+                _logger.Debug("        updateed AppManifest - {0}".FormatWith(name));
+
+            }
+        }
+
+        private static void AddFileToZip(ZipFile zipFile, string fileName, byte[] fileBytes)
+        {
+            if (fileName.IndexOf('\\') >= 1)
+            {
+                zipFile.AddEntry(Path.GetFileName(fileName), Path.GetDirectoryName(fileName), fileBytes);
+            }
+            else
+            {
+                zipFile.AddEntry(fileName, "/", fileBytes);
+            }
         }
     }
 }
