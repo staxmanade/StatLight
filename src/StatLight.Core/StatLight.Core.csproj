@@ -221,9 +221,9 @@
     <Compile Include="WebServer\XapHost\DiskXapHostFileLoader.cs" />
     <Compile Include="WebServer\XapHost\IXapHostFileLoader.cs" />
     <Compile Include="WebServer\XapHost\XapHostFileLoaderFactory.cs" />
-    <Compile Include="WebServer\XapInspection\IXapFile.cs" />
-    <Compile Include="WebServer\XapInspection\XapFile.cs" />
-    <Compile Include="WebServer\XapInspection\XapReadItems.cs" />
+    <Compile Include="WebServer\XapInspection\ITestFile.cs" />
+    <Compile Include="WebServer\XapInspection\TestFile.cs" />
+    <Compile Include="WebServer\XapInspection\TestFileCollection.cs" />
     <Compile Include="WebServer\XapInspection\XapReader.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 namespace StatLight.Core.WebServer.XapInspection
 {
     using System.IO;
@@ -18,10 +20,10 @@ namespace StatLight.Core.WebServer.XapInspection
             _logger = logger;
         }
 
-        public XapReadItems LoadXapUnderTest(string archiveFileName)
+        public TestFileCollection LoadXapUnderTest(string archiveFileName)
         {
-            var xapItems = new XapReadItems(_logger);
-
+            var files = new List<ITestFile>();
+            string testAssemblyFullName = null;
             using (var archive = ZipFile.Read(archiveFileName))
             {
                 var appManifest = LoadAppManifest(archive);
@@ -31,19 +33,23 @@ namespace StatLight.Core.WebServer.XapInspection
                     string testAssemblyName = GetTestAssemblyNameFromAppManifest(appManifest);
 
                     AssemblyName assemblyName = GetAssemblyName(archive, testAssemblyName);
-                    if(assemblyName != null)
+                    if (assemblyName != null)
                     {
-                    xapItems.TestAssemblyFullName = assemblyName.ToString();
+                        testAssemblyFullName = assemblyName.ToString();
                     }
                 }
 
-                xapItems.FilesContianedWithinXap = (from zipEntry in archive
-                                                    let fileBytes = ReadFileIntoBytes(archive, zipEntry.FileName)
-                                                    select new XapFile(zipEntry.FileName, fileBytes)).Cast<IXapFile>().ToList();
+                files.AddRange((from zipEntry in archive
+                                let fileBytes = ReadFileIntoBytes(archive, zipEntry.FileName)
+                                select new TestFile(zipEntry.FileName, fileBytes)).ToList());
 
-                foreach (var item in xapItems.FilesContianedWithinXap)
+                foreach (var item in files)
                     _logger.Debug("XapItems.FilesContainedWithinXap = {0}".FormatWith(item.FileName));
             }
+
+            var xapItems = new TestFileCollection(_logger, testAssemblyFullName, files);
+
+
             return xapItems;
         }
 

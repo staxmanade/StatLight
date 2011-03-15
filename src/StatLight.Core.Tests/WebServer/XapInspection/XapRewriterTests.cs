@@ -102,10 +102,10 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
         [Test]
         public void Should_rewrite_correctly()
         {
-            var newFiles = new List<IXapFile>
+            var newFiles = new List<ITestFile>
                                {
-                                   new TempXapFile("StatLight.IntegrationTests.Silverlight.MSTest.dll"),
-                                   new TempXapFile("Test/Test/Test.xml"),
+                                   new TempTestFile("StatLight.IntegrationTests.Silverlight.MSTest.dll"),
+                                   new TempTestFile("Test/Test/Test.xml"),
                                };
 
             ZipFile actualXapHost = _xapRewriter.RewriteZipHostWithFiles(_originalXapHost.ToByteArray(), newFiles);
@@ -130,11 +130,11 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
 
         }
 
-        private class TempXapFile : IXapFile
+        private class TempTestFile : ITestFile
         {
             private readonly string _fileName;
 
-            public TempXapFile(string fileName)
+            public TempTestFile(string fileName)
             {
                 _fileName = fileName;
             }

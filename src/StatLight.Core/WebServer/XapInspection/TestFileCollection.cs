@@ -1,24 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
 using StatLight.Core.WebServer.XapHost;
 
 namespace StatLight.Core.WebServer.XapInspection
 {
-    public class XapReadItems
+    public class TestFileCollection
     {
         private readonly ILogger _logger;
+        private readonly string _testAssemblyFullName;
+        private readonly IEnumerable<ITestFile> _files;
+        private MicrosoftTestingFrameworkVersion? _msTestVersion;
 
-        public XapReadItems(ILogger logger)
+
+        public TestFileCollection(ILogger logger, string testAssemblyFullName, IEnumerable<ITestFile> files)
         {
             _logger = logger;
+            _testAssemblyFullName = testAssemblyFullName;
+            _files = files;
         }
 
-        private MicrosoftTestingFrameworkVersion? _msTestVersion;
         public MicrosoftTestingFrameworkVersion? MSTestVersion
         {
             get
@@ -29,9 +32,9 @@ namespace StatLight.Core.WebServer.XapInspection
             set { _msTestVersion = value; }
         }
 
-        public string TestAssemblyFullName { get; set; }
+        public string TestAssemblyFullName { get; private set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public IList<IXapFile> FilesContianedWithinXap { get; set; }
+        public IEnumerable<ITestFile> FilesContianedWithinXap { get { return _files; } }
 
         public UnitTestProviderType UnitTestProvider
         {
@@ -44,14 +47,14 @@ namespace StatLight.Core.WebServer.XapInspection
         public void DebugWrite(ILogger logger)
         {
             if (logger == null) throw new ArgumentNullException("logger");
-            logger.Debug("XapReadItems.UnitTestProvider = {0}".FormatWith(UnitTestProvider));
-            logger.Debug("XapReadItems.MSTestVersion = {0}".FormatWith(MSTestVersion));
-            logger.Debug("XapReadItems.TestAssembly = {0}".FormatWith(TestAssemblyFullName));
+            logger.Debug("TestFileCollection.UnitTestProvider = {0}".FormatWith(UnitTestProvider));
+            logger.Debug("TestFileCollection.MSTestVersion = {0}".FormatWith(MSTestVersion));
+            logger.Debug("TestFileCollection.TestAssembly = {0}".FormatWith(TestAssemblyFullName));
 
         }
 
 
-        private MicrosoftTestingFrameworkVersion? DetermineUnitTestVersion(IEnumerable<IXapFile> files)
+        private MicrosoftTestingFrameworkVersion? DetermineUnitTestVersion(IEnumerable<ITestFile> files)
         {
             var incomingHash = (from xapFile in files
                                 where xapFile.FileName.Equals("Microsoft.Silverlight.Testing.dll",StringComparison.OrdinalIgnoreCase)
@@ -106,7 +109,7 @@ namespace StatLight.Core.WebServer.XapInspection
             return foundVersion.Version;
         }
 
-        private static UnitTestProviderType DetermineUnitTestProviderType(IEnumerable<IXapFile> files)
+        private static UnitTestProviderType DetermineUnitTestProviderType(IEnumerable<ITestFile> files)
         {
             bool hasMSTest = false;
 

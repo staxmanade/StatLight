@@ -17,7 +17,7 @@ namespace StatLight.IntegrationTests
 		[TestFixture]
 		public class when_XapReader_is_loading_an_MSTest_xap : FixtureBase
 		{
-			private XapReadItems _xapReadItems;
+			private TestFileCollection _testFileCollection;
 
 			protected override void Before_all_tests()
 			{
@@ -25,7 +25,7 @@ namespace StatLight.IntegrationTests
 
 				string fileName = ProviderTests.TestXapFileLocations.SilverlightIntegrationTests;
 
-                _xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(fileName);
+                _testFileCollection = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(fileName);
 			}
 
 			//[Test]
@@ -44,20 +44,20 @@ namespace StatLight.IntegrationTests
 			[Test]
 			public void Should_load_the_test_assembly()
 			{
-				_xapReadItems.TestAssemblyFullName.ShouldNotBeNull();
+				_testFileCollection.TestAssemblyFullName.ShouldNotBeNull();
 			}
 
 			[Test]
 			public void Should_determine_the_UnitTestProvider()
 			{
-				_xapReadItems.UnitTestProvider.ShouldEqual(UnitTestProviderType.MSTest);
+				_testFileCollection.UnitTestProvider.ShouldEqual(UnitTestProviderType.MSTest);
 			}
 		}
 
 		[TestFixture]
 		public class when_XapReader_is_loading_an_invalid_xap : FixtureBase
 		{
-			private XapReadItems _xapReadItems;
+			private TestFileCollection _testFileCollection;
 			private string _xapPath;
 
 			private List<string> _filesToCleanup = new List<string>();
@@ -90,7 +90,7 @@ namespace StatLight.IntegrationTests
 					zipFile.Save();
 				}
 
-                _xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(_xapPath);
+                _testFileCollection = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(_xapPath);
 			}
 
 			protected override void After_all_tests()
@@ -105,19 +105,19 @@ namespace StatLight.IntegrationTests
 			[Test]
 			public void Should_not_fail_if_given_a_bad_xap()
 			{
-				_xapReadItems.ShouldNotBeNull();
+				_testFileCollection.ShouldNotBeNull();
 			}
 
 			[Test]
 			public void Should_result_in_an_Unknown_UnitTestProviderType()
 			{
-				_xapReadItems.UnitTestProvider.ShouldEqual(UnitTestProviderType.Undefined);
+				_testFileCollection.UnitTestProvider.ShouldEqual(UnitTestProviderType.Undefined);
 			}
 
 			[Test]
 			public void Should_expose_the_TestAssembly_as_null()
 			{
-                _xapReadItems.TestAssemblyFullName.ShouldBeNull();
+                _testFileCollection.TestAssemblyFullName.ShouldBeNull();
 			}
 		}
 

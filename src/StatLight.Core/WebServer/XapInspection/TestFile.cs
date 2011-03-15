@@ -1,17 +1,17 @@
 ﻿namespace StatLight.Core.WebServer.XapInspection
 {
-    public class XapFile : IXapFile
+    public class TestFile : ITestFile
     {
         private readonly byte[] _file;
         private readonly string _fileName;
 
-        public XapFile(string fullPath)
+        public TestFile(string fullPath)
             : this(System.IO.Path.GetFileName(fullPath), System.IO.File.ReadAllBytes(fullPath))
         {
 
         }
 
-        public XapFile(string fileName, byte[] file)
+        public TestFile(string fileName, byte[] file)
         {
             _file = file;
             _fileName = fileName;
