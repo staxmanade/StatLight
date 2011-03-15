@@ -71,14 +71,15 @@ namespace StatLight.Core.WebServer.XapInspection
         {
             var pathsTried = new List<string>();
             Func<string, bool> tryPath = path =>
-                                             {
-                                                 if (File.Exists(path))
-                                                     return true;
+            {
+                if (File.Exists(path))
+                    return true;
 
-                                                 pathsTried.Add(path);
-                                                 //Log path checked and not found
-                                                 return false;
-                                             };
+                pathsTried.Add(path);
+                //Log path checked and not found
+                return false;
+            };
+
 
             if (tryPath(assemblyName.CodeBase))
                 return assemblyName.CodeBase;
@@ -91,11 +92,15 @@ namespace StatLight.Core.WebServer.XapInspection
             if (tryPath(newTestPath))
                 return newTestPath;
 
+            // TODO: Look into how to support the following paths...
+            // C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Silverlight\v4.0\System.Windows.dll
+            // C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0
+
             throw new FileNotFoundException("Could not find assembly [{0}]. The following paths were searched:{1}{2}{1}Try setting the assembly to 'Copy Local=True' in your project so StatLight can attempt to find the assembly.".FormatWith(assemblyName.FullName,
                                                                                                                                  Environment.NewLine, string.Join(Environment.NewLine, pathsTried.ToArray())));
         }
 
-        private string[] BuildDependentAssemblyList(AssemblyName assemblyName, List<string> assemblies)
+        private void BuildDependentAssemblyList(AssemblyName assemblyName, List<string> assemblies)
         {
             if (assemblies == null) throw new ArgumentNullException("assemblies");
 
@@ -103,7 +108,9 @@ namespace StatLight.Core.WebServer.XapInspection
 
             // Don't load assemblies we've already worked on.
             if (assemblies.Contains(path))
-                return new string[] { };
+            {
+                return;
+            }
 
             Assembly asm = LoadAssembly(path);
 
@@ -118,7 +125,7 @@ namespace StatLight.Core.WebServer.XapInspection
 
             var temp = new string[assemblies.Count];
             assemblies.CopyTo(temp, 0);
-            return temp;
+            return;
         }
 
         private static Assembly LoadAssembly(string path)

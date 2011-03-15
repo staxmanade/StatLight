@@ -16,7 +16,7 @@ namespace StatLight.IntegrationTests.Silverlight.OtherTestAssembly
         [TestMethod]
         public void Should_have_pulled_in_crazy_dependency()
         {
-            var type = typeof (Microsoft.FSharp.Core.ClassAttribute);
+            var type = typeof (System.Threading.Tasks.Task);
             Assert.IsNotNull(type);
         }
     }
