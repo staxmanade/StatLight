@@ -5,6 +5,12 @@
         private readonly byte[] _file;
         private readonly string _fileName;
 
+        public XapFile(string fullPath)
+            : this(System.IO.Path.GetFileName(fullPath), System.IO.File.ReadAllBytes(fullPath))
+        {
+
+        }
+
         public XapFile(string fileName, byte[] file)
         {
             _file = file;

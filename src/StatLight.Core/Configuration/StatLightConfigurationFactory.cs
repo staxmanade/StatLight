@@ -1,6 +1,4 @@
 ﻿
-using System.Reflection;
-
 namespace StatLight.Core.Configuration
 {
     using System;
@@ -8,6 +6,7 @@ namespace StatLight.Core.Configuration
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using StatLight.Core.Common;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer.XapHost;
@@ -65,7 +64,6 @@ namespace StatLight.Core.Configuration
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
 
-
         public StatLightConfiguration GetStatLightConfigurationForDll(UnitTestProviderType unitTestProviderType, string dllPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost)
         {
             if (queryString == null)
@@ -80,18 +78,19 @@ namespace StatLight.Core.Configuration
             {
                 AssertFileExists(dllPath);
 
-                byte[] fileBytes = File.ReadAllBytes(dllPath);
-                string fullFilePath = new FileInfo(dllPath).FullName;
-                var xapReadItems = new XapReadItems
+                var dllFileInfo = new FileInfo(dllPath);
+
+                var assemblyResolver = new AssemblyResolver(_logger, dllFileInfo.Directory);
+                var dependentAssemblies = assemblyResolver.ResolveAllDependentAssemblies(dllFileInfo.FullName);
+
+                var coreFileUnderTest = new XapFile(dllFileInfo.FullName);
+                var dependentFilesUnderTest = dependentAssemblies.Select(file => new XapFile(file)).ToList();
+                dependentFilesUnderTest.Add(coreFileUnderTest);
+
+                var xapReadItems = new XapReadItems(_logger)
                 {
-                    FilesContianedWithinXap = new List<IXapFile>
-                                                                         {
-                                                                             new XapFile(Path.GetFileName(dllPath),
-                                                                                         fileBytes)
-                                                                         },
-                    MicrosoftSilverlightTestingFrameworkVersion = MicrosoftTestingFrameworkVersion.May2010,
-                    TestAssemblyFullName = AssemblyName.GetAssemblyName(fullFilePath).ToString(),
-                    UnitTestProvider = UnitTestProviderType.MSTest,
+                    FilesContianedWithinXap = new List<IXapFile>(dependentFilesUnderTest),
+                    TestAssemblyFullName = AssemblyName.GetAssemblyName(dllFileInfo.FullName).ToString(),
                 };
 
                 SetupUnitTestProviderType(xapReadItems, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
@@ -116,6 +115,9 @@ namespace StatLight.Core.Configuration
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
 
+
+
+
         private static void SetupUnitTestProviderType(XapReadItems xapReadItems, ref UnitTestProviderType unitTestProviderType, ref MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion)
         {
             if (unitTestProviderType == UnitTestProviderType.Undefined || microsoftTestingFrameworkVersion == null)
@@ -134,7 +136,7 @@ namespace StatLight.Core.Configuration
                      unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
                     && microsoftTestingFrameworkVersion == null)
                 {
-                    microsoftTestingFrameworkVersion = xapReadItems.MicrosoftSilverlightTestingFrameworkVersion;
+                    microsoftTestingFrameworkVersion = xapReadItems.MSTestVersion;
                 }
             }
         }
@@ -159,13 +161,13 @@ namespace StatLight.Core.Configuration
         {
             XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
 
-            Func<byte[]> hostXapFactory;
-            hostXapFactory = () =>
-                                      {
-                                          byte[] hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
-                                          hostXap = RewriteXapWithSpecialFiles(hostXap, filesToCopyIntoHostXap);
-                                          return hostXap;
-                                      };
+            Func<byte[]> hostXapFactory = () =>
+            {
+                byte[] hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
+                hostXap = RewriteXapWithSpecialFiles(hostXap, filesToCopyIntoHostXap);
+                return hostXap;
+            };
+
             return new ServerTestRunConfiguration(hostXapFactory, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, queryString, forceBrowserStart, showTestingBrowserHost);
         }
 

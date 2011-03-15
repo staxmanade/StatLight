@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace StatLight
@@ -55,6 +56,20 @@ namespace StatLight
         {
             var enc = new UTF8Encoding();
             return enc.GetString(value);
+        }
+
+        public static string Hash(this byte[] value)
+        {
+            var encryptedString = new StringBuilder();
+
+            using (var sha = new SHA1Managed())
+            {
+                var result = sha.ComputeHash(value);
+                foreach (byte outputByte in result)
+                    // convert each byte to a Hexadecimal upper case string
+                    encryptedString.Append(outputByte.ToString("x2").ToUpper());
+                return encryptedString.ToString();
+            }
         }
 
     }

@@ -802,7 +802,7 @@ Task test-single-assembly-run {
 	$scriptFile = GetTemporaryXmlFile;
 	execStatLight "-d=C:\Code\StatLight\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll"  "-r=$scriptFile" "--debug"
 	
-	Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 2 -expectedFailedCount 1 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 3 -expectedFailedCount 1 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
 }
 
 #########################################
@@ -940,8 +940,11 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 	Write-Documentation
 }
 
-Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib {
+Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies {
 }
 
 Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {
+}
+
+Task test-single-assemblies -depends test-single-assembly-run {
 }
