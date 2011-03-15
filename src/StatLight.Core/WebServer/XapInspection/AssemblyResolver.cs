@@ -45,6 +45,7 @@ namespace StatLight.Core.WebServer.XapInspection
             return assemblies;
         }
 
+
         private static string SilverlightFolder()
         {
             RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Silverlight");
@@ -90,9 +91,7 @@ namespace StatLight.Core.WebServer.XapInspection
             if (tryPath(newTestPath))
                 return newTestPath;
 
-            //TODO: Silverlight SDK folder
-            // EX: 'C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client'
-            throw new FileNotFoundException("Could not find assembly [{0}]. The following paths were searched:{1}{2}".FormatWith(assemblyName.FullName,
+            throw new FileNotFoundException("Could not find assembly [{0}]. The following paths were searched:{1}{2}{1}Try setting the assembly to 'Copy Local=True' in your project so StatLight can attempt to find the assembly.".FormatWith(assemblyName.FullName,
                                                                                                                                  Environment.NewLine, string.Join(Environment.NewLine, pathsTried.ToArray())));
         }
 
