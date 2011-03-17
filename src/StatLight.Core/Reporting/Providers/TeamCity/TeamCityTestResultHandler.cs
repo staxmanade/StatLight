@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.Properties;
+
 namespace StatLight.Core.Reporting.Providers.TeamCity
 {
     using System;
@@ -113,7 +115,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
                 default:
                     "Unknown TestCaseResult (to StatLight) - {0}".FormatWith(message.ResultType)
-                        .WrapConsoleMessageWithColor(ConsoleColor.Red, true);
+                        .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorError, true);
                     break;
             }
 

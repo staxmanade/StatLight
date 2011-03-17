@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="StatLight.Core.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ConsoleColorError" Type="System.ConsoleColor" Scope="Application">
+      <Value Profile="(Default)">Red</Value>
+    </Setting>
+    <Setting Name="ConsoleColorInformatoin" Type="System.ConsoleColor" Scope="Application">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="ConsoleColorDebug" Type="System.ConsoleColor" Scope="Application">
+      <Value Profile="(Default)">Cyan</Value>
+    </Setting>
+    <Setting Name="ConsoleColorWarning" Type="System.ConsoleColor" Scope="Application">
+      <Value Profile="(Default)">Yellow</Value>
+    </Setting>
+    <Setting Name="ConsoleColorSuccess" Type="System.ConsoleColor" Scope="Application">
+      <Value Profile="(Default)">Green</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

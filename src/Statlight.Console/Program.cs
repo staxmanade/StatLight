@@ -1,4 +1,5 @@
 ﻿
+using StatLight.Core.Properties;
 using StatLight.Core.Reporting.Providers;
 
 namespace StatLight.Console
@@ -135,7 +136,7 @@ Try: (the following two steps that should allow StatLight to start a web server 
             ArgOptions.ShowHelpMessage(Console.Out);
             Write("");
             Write("************* " + beginMsg + " *************");
-            errorMessage.WrapConsoleMessageWithColor(ConsoleColor.Red, true);
+            errorMessage.WrapConsoleMessageWithColor(Settings.Default.ConsoleColorError, true);
             Write("*********************************");
         }
 
@@ -315,14 +316,14 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 xmlReport.WriteXmlReport(xmlReportOutputPath);
 
                 "*********************************"
-                    .WrapConsoleMessageWithColor(ConsoleColor.White, true);
+                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformatoin, true);
 
                 "Wrote XML report to:{0}{1}"
                     .FormatWith(Environment.NewLine, new FileInfo(xmlReportOutputPath).FullName)
-                    .WrapConsoleMessageWithColor(ConsoleColor.Yellow, true);
+                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorWarning, true);
 
                 "*********************************"
-                    .WrapConsoleMessageWithColor(ConsoleColor.White, true);
+                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformatoin, true);
             }
         }
 

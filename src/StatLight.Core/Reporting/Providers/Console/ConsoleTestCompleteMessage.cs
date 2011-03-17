@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using StatLight.Core.Properties;
 using writer = System.Console;
 
 namespace StatLight.Core.Reporting.Providers.Console
@@ -18,19 +16,19 @@ namespace StatLight.Core.Reporting.Providers.Console
 
             var successfulMessage = "Successful {0}, ".FormatWith(completeState.TotalPassed);
             if (completeState.TotalPassed > 0)
-                successfulMessage.WrapConsoleMessageWithColor(ConsoleColor.Green, false);
+                successfulMessage.WrapConsoleMessageWithColor(Settings.Default.ConsoleColorSuccess, false);
             else
                 writer.Write(successfulMessage);
 
             var failedMessage = "Failed {0}, ".FormatWith(completeState.TotalFailed);
             if (completeState.TotalFailed > 0)
-                failedMessage.WrapConsoleMessageWithColor(ConsoleColor.Red, false);
+                failedMessage.WrapConsoleMessageWithColor(Settings.Default.ConsoleColorError, false);
             else
                 writer.Write(failedMessage);
 
             var ignoredMessage = "Ignored {0}".FormatWith(completeState.TotalIgnored);
             if (completeState.TotalIgnored > 0)
-                ignoredMessage.WrapConsoleMessageWithColor(ConsoleColor.Yellow, false);
+                ignoredMessage.WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformatoin, false);
 
             writer.WriteLine("");
         }

@@ -2,16 +2,24 @@
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
 using StatLight.Core.Common;
+using StatLight.Core.Properties;
 
 namespace StatLight.Core.Reporting.Providers.Console
 {
     public class ConsoleResultHandler : ITestingReportEvents
     {
         private readonly ILogger _logger;
+        private readonly Settings _settings;
 
         public ConsoleResultHandler(ILogger logger)
+            : this(logger, Settings.Default)
+        {
+        }
+
+        public ConsoleResultHandler(ILogger logger, Settings settings)
         {
             _logger = logger;
+            _settings = settings;
         }
 
         public void Handle(TraceClientEvent message)
@@ -47,39 +55,39 @@ namespace StatLight.Core.Reporting.Providers.Console
             switch (message.ResultType)
             {
                 case ResultType.Ignored:
-                    "I".WrapConsoleMessageWithColor(ConsoleColor.Yellow, false);
+                    "I".WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, false);
                     break;
                 case ResultType.Passed:
-                    ".".WrapConsoleMessageWithColor(ConsoleColor.White, false);
+                    ".".WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, false);
                     break;
                 case ResultType.Failed:
                 case ResultType.SystemGeneratedFailure:
                     System.Console.WriteLine("");
-                    "------------------ ".WrapConsoleMessageWithColor(ConsoleColor.DarkRed, false);
-                    "Test ".WrapConsoleMessageWithColor(ConsoleColor.DarkRed, false);
-                    "Failed".WrapConsoleMessageWithColor(ConsoleColor.Red, false);
-                    " ------------------".WrapConsoleMessageWithColor(ConsoleColor.DarkRed, true);
+                    "------------------ ".WrapConsoleMessageWithColor(_settings.ConsoleColorError, false);
+                    "Test ".WrapConsoleMessageWithColor(_settings.ConsoleColorError, false);
+                    "Failed".WrapConsoleMessageWithColor(_settings.ConsoleColorError, false);
+                    " ------------------".WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
 
-                    "Test Namespace:  ".WrapConsoleMessageWithColor(ConsoleColor.White, false);
-                    message.NamespaceName.WrapConsoleMessageWithColor(ConsoleColor.Red, true);
+                    "Test Namespace:  ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, false);
+                    message.NamespaceName.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
 
-                    "Test Class:  ".WrapConsoleMessageWithColor(ConsoleColor.White, false);
-                    message.ClassName.WrapConsoleMessageWithColor(ConsoleColor.Red, true);
+                    "Test Class:  ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, false);
+                    message.ClassName.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
 
-                    "Test Method: ".WrapConsoleMessageWithColor(ConsoleColor.White, false);
-                    message.MethodName.WrapConsoleMessageWithColor(ConsoleColor.Red, true);
+                    "Test Method: ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, false);
+                    message.MethodName.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
 
                     if (!string.IsNullOrEmpty(message.OtherInfo))
                     {
-                        "Other Info: ".WrapConsoleMessageWithColor(ConsoleColor.White, false);
-                        message.OtherInfo.WrapConsoleMessageWithColor(ConsoleColor.Red, true);
+                        "Other Info: ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, false);
+                        message.OtherInfo.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
                     }
 
                     if (message.ExceptionInfo != null)
                     {
                         //TODO: print to the console - the exception info in a more readable/visually parsable format
-                        "Exception Message: ".WrapConsoleMessageWithColor(ConsoleColor.White, true);
-                        message.ExceptionInfo.FullMessage.WrapConsoleMessageWithColor(ConsoleColor.Red, true);
+                        "Exception Message: ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, true);
+                        message.ExceptionInfo.FullMessage.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
                     }
 
                     "-------------------------------------------------"
@@ -88,7 +96,7 @@ namespace StatLight.Core.Reporting.Providers.Console
 
                 default:
                     "Unknown TestCaseResult (to StatLight) - {0}".FormatWith(message.ResultType)
-                        .WrapConsoleMessageWithColor(ConsoleColor.Red, true);
+                        .WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
                     break;
             }
         }
