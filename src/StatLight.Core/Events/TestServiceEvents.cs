@@ -1,4 +1,6 @@
-﻿namespace StatLight.Core.Events
+﻿using System.ComponentModel.Composition;
+
+namespace StatLight.Core.Events
 {
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Events.Aggregation;
@@ -51,6 +53,7 @@
 
     public class MessageReceivedFromClientServerEvent { }
 
+    [InheritedExport]
     public interface ITestingReportEvents : IListener<TestCaseResult>,
         IListener<TraceClientEvent>,
         IListener<BrowserHostCommunicationTimeoutServerEvent>,

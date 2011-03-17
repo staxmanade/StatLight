@@ -1,4 +1,10 @@
 ﻿
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
+using System.Diagnostics;
+using System.Reflection;
+using StatLight.Core.Events;
+
 namespace StatLight.Core.Runners
 {
     using System;
@@ -23,6 +29,7 @@ namespace StatLight.Core.Runners
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
         private ConsoleResultHandler _consoleResultHandler;
         private Action<DebugClientEvent> _debugEventListener;
+        private CompositionContainer _compositionContainer;
 
         public StatLightRunnerFactory(ILogger logger) : this(logger, new EventAggregator())
         {
@@ -36,6 +43,41 @@ namespace StatLight.Core.Runners
             _logger = logger;
             _eventSubscriptionManager = eventSubscriptionManager;
             _eventPublisher = eventPublisher;
+
+            try
+            {
+                var directoryCatalog = new DirectoryCatalog("Extensions");
+                _compositionContainer = new CompositionContainer(directoryCatalog);
+                foreach (var extension in _compositionContainer.GetExports<ITestingReportEvents>())
+                {
+                    var value = extension.Value;
+                    _eventSubscriptionManager.AddListener(value);
+                }
+            }
+            catch (ReflectionTypeLoadException rfex)
+            {
+                string loaderExceptionMessages = "";
+                //string msg = "********************* " + helperMessage + "*********************";
+                foreach (var t in rfex.LoaderExceptions)
+                {
+                    loaderExceptionMessages += "   -  ";
+                    loaderExceptionMessages += t.Message;
+                    loaderExceptionMessages += Environment.NewLine;
+                }
+
+                string msg = @"
+********************* ReflectionTypeLoadException *********************
+***** Begin Loader Exception Messages *****
+{0}
+***** End Loader Exception Messages *****
+".FormatWith(loaderExceptionMessages);
+
+                _logger.Error(msg);
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to initialize plugins. Error:{0}{1}".FormatWith(Environment.NewLine, e.ToString()));
+            }
         }
 
         public IRunner CreateContinuousTestRunner(StatLightConfiguration statLightConfiguration)

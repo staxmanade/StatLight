@@ -66,6 +66,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.xUnitContrib", "StatLight.IntegrationTests.Silverlight.xUnitContrib\StatLight.IntegrationTests.Silverlight.xUnitContrib.csproj", "{40538134-161C-43F3-95E5-19F65D785E5F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{CBBFE51F-1DDC-43CC-B78B-FDF51A1119F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleExtension", "Samples\SampleExtension\SampleExtension.csproj", "{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -258,6 +262,12 @@ Global
 		{40538134-161C-43F3-95E5-19F65D785E5F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{40538134-161C-43F3-95E5-19F65D785E5F}.Release|x86.ActiveCfg = Release|Any CPU
 		{40538134-161C-43F3-95E5-19F65D785E5F}.Release|x86.Build.0 = Release|Any CPU
+		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -280,5 +290,6 @@ Global
 		{348760C9-0276-4574-9BBD-EAE8F20E4AD3} = {0FB6602A-EF21-4A26-8A65-E1C9A01F206E}
 		{3F5D2A4A-3A06-4D96-ABF6-042BF2798A19} = {0FB6602A-EF21-4A26-8A65-E1C9A01F206E}
 		{8281421C-D572-4817-BBD2-796A8DB2B2E0} = {0FB6602A-EF21-4A26-8A65-E1C9A01F206E}
+		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D} = {CBBFE51F-1DDC-43CC-B78B-FDF51A1119F8}
 	EndGlobalSection
 EndGlobal

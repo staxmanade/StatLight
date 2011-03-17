@@ -72,6 +72,7 @@
       <HintPath>..\..\lib\Desktop\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -99,6 +100,7 @@
     <Compile Include="Events\Aggregation\EventAggregatorExtensions.cs" />
     <Compile Include="Events\Aggregation\EventAggregatorTests.cs" />
     <Compile Include="Events\ExceptionInfoTests.cs" />
+    <Compile Include="QuickSpikeTests.cs" />
     <Compile Include="Reporting\DialogAssertionMessageMatchMakerTests.cs" />
     <Compile Include="Reporting\Providers\NUnit\NUnitXmlReportTests.cs" />
     <Compile Include="Reporting\Providers\PublishedEventsToHandleBase.cs" />
