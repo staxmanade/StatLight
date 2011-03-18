@@ -31,7 +31,8 @@ namespace StatLight.Core.Runners
         private ConsoleResultHandler _consoleResultHandler;
         private Action<DebugClientEvent> _debugEventListener;
 
-        public StatLightRunnerFactory(ILogger logger) : this(logger, new EventAggregator(logger))
+        public StatLightRunnerFactory(ILogger logger)
+            : this(logger, new EventAggregator(logger))
         {
         }
 
@@ -69,13 +70,21 @@ namespace StatLight.Core.Runners
                     Directory.CreateDirectory(path);
                 }
 
-                using( var directoryCatalog = new DirectoryCatalog(path))
+                using (var directoryCatalog = new DirectoryCatalog(path))
                 using (var compositionContainer = new CompositionContainer(directoryCatalog))
                 {
-                    foreach (var extension in compositionContainer.GetExports<ITestingReportEvents>())
+                    
+                    var extensions = compositionContainer.GetExports<ITestingReportEvents>().ToList();
+                    if (extensions.Any())
                     {
-                        var value = extension.Value;
-                        eventSubscriptionManager.AddListener(value);
+                        _logger.Debug("********** Extensions **********");
+                        foreach (var lazyExtension in extensions)
+                        {
+                            var extensionInstance = lazyExtension.Value;
+                            _logger.Debug("* Adding - {0}".FormatWith(extensionInstance.GetType().FullName));
+                            eventSubscriptionManager.AddListener(extensionInstance);
+                        }
+                        _logger.Debug("********************************");
                     }
                 }
             }

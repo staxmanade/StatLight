@@ -805,6 +805,21 @@ Task test-single-assembly-run {
 	Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 3 -expectedFailedCount 1 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
 }
 
+Task test-sample-extension {
+
+	$build_configuration = 'Debug'
+	mkdir -Force ".\src\build\bin\$build_configuration\Extensions\" | Out-Null
+	cp ".\src\Samples\SampleExtension\bin\$build_configuration\SampleExtension.dll" ".\src\build\bin\$build_configuration\Extensions\" -Force
+
+	& ".\src\build\bin\$build_configuration\StatLight.exe" "-d=.\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" | Tee-Object -variable output 
+
+	if(($output | select-string "Hello From Class1" | Measure).Count -eq 0){
+		$output
+		throw "Extension did not print expected output"
+	}
+
+}
+
 #########################################
 #
 # Release packaging

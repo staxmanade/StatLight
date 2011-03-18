@@ -5,4 +5,13 @@
 
 #.\src\build\bin\Debug\StatLight.exe "-x=.\src\StatLight.IntegrationTests.Silverlight.LotsOfTests\Bin\Debug\StatLight.IntegrationTests.Silverlight.LotsOfTests.xap"
 
-.\src\build\bin\Debug\StatLight.exe "-x=C:\Code\StatLight\src\StatLight.IntegrationTests.Silverlight.UnitDriven\Bin\Debug\StatLight.IntegrationTests.Silverlight.UnitDriven.xap"
+$build_configuration = 'Debug'
+mkdir -Force ".\src\build\bin\$build_configuration\Extensions\" | Out-Null
+cp ".\src\Samples\SampleExtension\bin\$build_configuration\SampleExtension.dll" ".\src\build\bin\$build_configuration\Extensions\" -Force
+
+& ".\src\build\bin\$build_configuration\StatLight.exe" "-d=.\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" | Tee-Object -variable output 
+
+if(($output | select-string "Hello From Class1" | Measure).Count -eq 0){
+	$output
+	throw "Extension did not print expected output"
+}

@@ -69,6 +69,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{CBBFE51F-1DDC-43CC-B78B-FDF51A1119F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleExtension", "Samples\SampleExtension\SampleExtension.csproj", "{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AA6F387F-BB41-4FA8-B38A-7037A7C59716} = {AA6F387F-BB41-4FA8-B38A-7037A7C59716}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -265,9 +268,11 @@ Global
 		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Debug|x86.Build.0 = Debug|Any CPU
 		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Release|x86.ActiveCfg = Release|Any CPU
+		{C4BBAD1C-DE96-402E-961F-A0FE2A37E07D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
