@@ -1,6 +1,7 @@
 ﻿
 
 using System.Text;
+using StatLight.Core.Events;
 using StatLight.Core.Reporting.Providers.Xml;
 
 namespace StatLight.Core.Reporting.Providers.TFS.TFS2010

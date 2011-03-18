@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Configuration;
+using StatLight.Core.Events;
 using StatLight.Core.Tests;
 using StatLight.Core.Reporting;
 using StatLight.Core.Events.Aggregation;

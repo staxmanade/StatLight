@@ -1,4 +1,6 @@
-﻿namespace StatLight.Core.Reporting.Providers.Xml
+﻿using StatLight.Core.Events;
+
+namespace StatLight.Core.Reporting.Providers.Xml
 {
     using System;
     using System.Collections.Generic;

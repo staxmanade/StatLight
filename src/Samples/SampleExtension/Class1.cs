@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
-using StatLight;
+﻿using System.Windows.Forms;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
-using StatLight.Core.Reporting;
 
 namespace SampleExtension
 {

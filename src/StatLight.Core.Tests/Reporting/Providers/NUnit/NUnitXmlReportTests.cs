@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using StatLight.Client.Harness.Events;
+using StatLight.Core.Events;
 using StatLight.Core.Reporting;
 using StatLight.Core.Reporting.Providers.NUnit;
 using StatLight.Core.Tests.Reporting.Providers.Xml;

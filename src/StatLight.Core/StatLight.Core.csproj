@@ -148,6 +148,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Events\TestCaseResult.cs" />
+    <Compile Include="Events\ResultType.cs" />
+    <Compile Include="Reporting\TestReportCollection.cs" />
     <Compile Include="WebServer\XapInspection\AssemblyResolver.cs" />
     <Compile Include="Reporting\Providers\IXmlReport.cs" />
     <Compile Include="WebServer\XapInspection\XapRewriter.cs" />

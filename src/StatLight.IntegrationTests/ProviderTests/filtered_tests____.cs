@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using StatLight.Core.Events;
 using StatLight.Core.Reporting;
 using StatLight.Core.Tests;
 

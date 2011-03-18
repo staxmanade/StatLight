@@ -1,98 +1,10 @@
 ﻿
-using System.Collections;
-
 namespace StatLight.Core.Reporting
 {
     using System.Collections.Generic;
     using System.Linq;
     using System;
-    using StatLight.Client.Harness.Events;
-    using System.Diagnostics;
-
-    [DebuggerDisplay("Result=[{ResultType}], Method={NamespaceName}.{ClassName}.{MethodName}")]
-    public class TestCaseResult
-    {
-        public TestCaseResult(ResultType resultType)
-        {
-            ResultType = resultType;
-        }
-
-        public string NamespaceName { get; set; }
-        public string ClassName { get; set; }
-        public string MethodName { get; set; }
-        public DateTime Started { get; set; }
-        public DateTime? Finished { get; set; }
-        public string OtherInfo { get; set; }
-        public TimeSpan TimeToComplete
-        {
-            get
-            {
-                if (Finished.HasValue)
-                    return Finished.Value - Started;
-
-                return new TimeSpan();
-            }
-        }
-        public ExceptionInfo ExceptionInfo { get; set; }
-
-        public ResultType ResultType { get; private set; }
-
-        public string FullMethodName()
-        {
-            const string delimiter = ".";
-            return (NamespaceName ?? string.Empty) + delimiter +
-                   (ClassName ?? string.Empty) + delimiter +
-                   (MethodName ?? string.Empty) + delimiter;
-        }
-    }
-
-    public enum ResultType
-    {
-        Passed,
-        Failed,
-        Ignored,
-        SystemGeneratedFailure,
-    }
-
-    public class TestReportCollection : IEnumerable<TestReport>
-    {
-        private readonly List<TestReport> _testReports = new List<TestReport>();
-
-        public RunCompletedState FinalResult
-        {
-            get
-            {
-                if (_testReports.Any(testReport => testReport.FinalResult == RunCompletedState.Failure))
-                {
-                    return RunCompletedState.Failure;
-                }
-
-                return RunCompletedState.Successful;
-            }
-        }
-
-        public int TotalResults { get { return _testReports.Sum(s => s.TotalResults); } }
-        public int TotalPassed { get { return _testReports.Sum(s => s.TotalPassed); } }
-        public int TotalIgnored { get { return _testReports.Sum(s => s.TotalIgnored); } }
-        public int TotalFailed { get { return _testReports.Sum(s => s.TotalFailed); } }
-
-        public DateTime DateTimeRunCompleted { get { return _testReports.Max(m => m.DateTimeRunCompleted); } }
-
-        public IEnumerator<TestReport> GetEnumerator()
-        {
-            return _testReports.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Add(TestReport testReport)
-        {
-            _testReports.Add(testReport);
-        }
-    }
+    using StatLight.Core.Events;
 
     public class TestReport
     {

@@ -1,5 +1,6 @@
 ﻿
 using System;
+using StatLight.Core.Events;
 
 namespace StatLight.Core.Tests.Reporting
 {
