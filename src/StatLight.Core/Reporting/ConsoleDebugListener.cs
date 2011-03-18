@@ -1,10 +1,11 @@
-﻿using StatLight.Client.Harness.Events;
+﻿using System;
+using StatLight.Client.Harness.Events;
 using StatLight.Core.Common;
 using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.Core.Reporting
 {
-    public class ConsoleDebugListener : IListener<DebugClientEvent>
+    internal class ConsoleDebugListener : IListener<DebugClientEvent>
     {
         private readonly ILogger _logger;
 
@@ -15,6 +16,7 @@ namespace StatLight.Core.Reporting
 
         public void Handle(DebugClientEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
             _logger.Debug(message.Message);
         }
     }

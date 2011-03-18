@@ -139,7 +139,7 @@ namespace StatLight.Core.Events.Aggregation
             }
         }
 
-        public bool CallOn<T>(object target, Action<T> action)
+        public static bool CallOn<T>(object target, Action<T> action)
             where T : class
         {
             if (action == null) throw new ArgumentNullException("action");
@@ -152,7 +152,7 @@ namespace StatLight.Core.Events.Aggregation
             return false;
         }
 
-        public bool CallOnEach<TListener>(IEnumerable enumerable, Action<TListener> action)
+        public static bool CallOnEach<TListener>(IEnumerable enumerable, Action<TListener> action)
             where TListener : class
         {
             if (enumerable == null) throw new ArgumentNullException("enumerable");

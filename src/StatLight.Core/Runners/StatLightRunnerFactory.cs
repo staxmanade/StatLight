@@ -47,9 +47,9 @@ namespace StatLight.Core.Runners
             var debugListener = new ConsoleDebugListener(logger);
             _eventSubscriptionManager.AddListener(debugListener);
 
-            if (eventSubscriptionManager is EventAggregator)
+            var ea = eventSubscriptionManager as EventAggregator;
+            if (ea != null)
             {
-                var ea = (EventAggregator) eventSubscriptionManager;
                 ea.IgnoreTracingEvent<InitializationOfUnitTestHarnessClientEvent>();
                 ea.IgnoreTracingEvent<TestExecutionClassCompletedClientEvent>();
                 ea.IgnoreTracingEvent<TestExecutionClassBeginClientEvent>();
