@@ -28,7 +28,7 @@ namespace StatLight.Core.Tests
         [TestFixtureSetUp]
         public void SetupContext()
         {
-            _eventSubscriptionManager = new EventAggregator();
+            _eventSubscriptionManager = new EventAggregator(TestLogger);
 
             Before_all_tests();
             Because();

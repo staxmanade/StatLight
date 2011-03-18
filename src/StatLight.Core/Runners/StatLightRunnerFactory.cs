@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using StatLight.Core.Events;
 
@@ -29,9 +30,8 @@ namespace StatLight.Core.Runners
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
         private ConsoleResultHandler _consoleResultHandler;
         private Action<DebugClientEvent> _debugEventListener;
-        private CompositionContainer _compositionContainer;
 
-        public StatLightRunnerFactory(ILogger logger) : this(logger, new EventAggregator())
+        public StatLightRunnerFactory(ILogger logger) : this(logger, new EventAggregator(logger))
         {
         }
 
@@ -44,20 +44,44 @@ namespace StatLight.Core.Runners
             _eventSubscriptionManager = eventSubscriptionManager;
             _eventPublisher = eventPublisher;
 
+            SetupExtensions(_eventSubscriptionManager);
+        }
+
+
+        private static string GetFullPath(string path)
+        {
+            if (!Path.IsPathRooted(path) && AppDomain.CurrentDomain.BaseDirectory != null)
+            {
+                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+            }
+
+            return Path.GetFullPath(path);
+        }
+
+
+        private void SetupExtensions(IEventSubscriptionManager eventSubscriptionManager)
+        {
             try
             {
-                var directoryCatalog = new DirectoryCatalog("Extensions");
-                _compositionContainer = new CompositionContainer(directoryCatalog);
-                foreach (var extension in _compositionContainer.GetExports<ITestingReportEvents>())
+                var path = GetFullPath("Extensions");
+                if (!Directory.Exists(path))
                 {
-                    var value = extension.Value;
-                    _eventSubscriptionManager.AddListener(value);
+                    Directory.CreateDirectory(path);
+                }
+
+                using( var directoryCatalog = new DirectoryCatalog(path))
+                using (var compositionContainer = new CompositionContainer(directoryCatalog))
+                {
+                    foreach (var extension in compositionContainer.GetExports<ITestingReportEvents>())
+                    {
+                        var value = extension.Value;
+                        eventSubscriptionManager.AddListener(value);
+                    }
                 }
             }
             catch (ReflectionTypeLoadException rfex)
             {
                 string loaderExceptionMessages = "";
-                //string msg = "********************* " + helperMessage + "*********************";
                 foreach (var t in rfex.LoaderExceptions)
                 {
                     loaderExceptionMessages += "   -  ";
@@ -76,7 +100,7 @@ namespace StatLight.Core.Runners
             }
             catch (Exception e)
             {
-                _logger.Error("Failed to initialize plugins. Error:{0}{1}".FormatWith(Environment.NewLine, e.ToString()));
+                _logger.Error("Failed to initialize extension. Error:{0}{1}".FormatWith(Environment.NewLine, e.ToString()));
             }
         }
 

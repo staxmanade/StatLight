@@ -54,7 +54,7 @@ namespace StatLight.IntegrationTests
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
-            _eventSubscriptionManager = new EventAggregator();
+            _eventSubscriptionManager = new EventAggregator(_testLogger);
             _statLightRunnerFactory = new StatLightRunnerFactory(_testLogger, _eventSubscriptionManager);
         }
 

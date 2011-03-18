@@ -27,17 +27,19 @@ namespace StatLight.Core.Events.Aggregation
 
     public class EventAggregator : IEventPublisher, IEventSubscriptionManager
     {
+        private readonly ILogger _logger;
         private readonly SynchronizationContext _context;
         public ILogger Logger { get; set; }
         private readonly List<object> _listeners = new List<object>();
         private readonly object _locker = new object();
 
-        public EventAggregator()
-            : this(new SynchronizationContext())
+        public EventAggregator(ILogger logger)
+            : this(logger, new SynchronizationContext())
         { }
 
-        public EventAggregator(SynchronizationContext context)
+        public EventAggregator(ILogger logger, SynchronizationContext context)
         {
+            _logger = logger;
             _context = context;
         }
 
@@ -121,7 +123,7 @@ namespace StatLight.Core.Events.Aggregation
             }
         }
 
-        public static void CallOn<T>(object target, Action<T> action)
+        public static bool CallOn<T>(object target, Action<T> action)
             where T : class
         {
             if (action == null) throw new ArgumentNullException("action");
@@ -129,17 +131,28 @@ namespace StatLight.Core.Events.Aggregation
             if (subject != null)
             {
                 action(subject);
+                return true;
             }
+            return false;
         }
 
-        public static void CallOnEach<TListener>(IEnumerable enumerable, Action<TListener> action)
+        public void CallOnEach<TListener>(IEnumerable enumerable, Action<TListener> action)
             where TListener : class
         {
             if (enumerable == null) throw new ArgumentNullException("enumerable");
             if (action == null) throw new ArgumentNullException("action");
+            bool wereAnyCalled = false;
             foreach (object o in enumerable)
             {
-                CallOn(o, action);
+                if (CallOn(o, action))
+                {
+                    wereAnyCalled = true;
+                }
+            }
+
+            if (wereAnyCalled == false)
+            {
+                _logger.Debug("No event listener objects were defined to listen to message of type({0})".FormatWith(typeof(TListener).FullName));
             }
         }
     }
