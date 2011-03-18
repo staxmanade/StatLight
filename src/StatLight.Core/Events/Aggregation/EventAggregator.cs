@@ -37,6 +37,16 @@ namespace StatLight.Core.Events.Aggregation
             : this(logger, new SynchronizationContext())
         { }
 
+        private readonly List<Type> _eventsToNotTrace = new List<Type>();
+        public void IgnoreTracingEvent<T>()
+        {
+            lock (_locker)
+            {
+                if (!_eventsToNotTrace.Contains(typeof(T)))
+                    _eventsToNotTrace.Add(typeof(T));
+            }
+        }
+
         public EventAggregator(ILogger logger, SynchronizationContext context)
         {
             _logger = logger;
@@ -47,10 +57,16 @@ namespace StatLight.Core.Events.Aggregation
 
         public void SendMessage<T>(T message)
         {
-            //DEBUG
-            //if (Logger != null)
-            //    Logger.Debug(typeof(T).Name);
-            SendAction(() => CallOnEach<IListener<T>>(all(), x => x.Handle(message)));
+            SendAction(() =>
+            {
+                var wasAnyMessageHandled = CallOnEach<IListener<T>>(all(), x => x.Handle(message));
+
+                if (wasAnyMessageHandled)
+                    return;
+
+                if (!_eventsToNotTrace.Contains(typeof(T)))
+                    _logger.Debug("No event listener objects were defined to listen to message of type({0})".FormatWith(typeof(T).FullName));
+            });
         }
 
         public void SendMessage<T>() where T : new()
@@ -123,7 +139,7 @@ namespace StatLight.Core.Events.Aggregation
             }
         }
 
-        public static bool CallOn<T>(object target, Action<T> action)
+        public bool CallOn<T>(object target, Action<T> action)
             where T : class
         {
             if (action == null) throw new ArgumentNullException("action");
@@ -136,7 +152,7 @@ namespace StatLight.Core.Events.Aggregation
             return false;
         }
 
-        public void CallOnEach<TListener>(IEnumerable enumerable, Action<TListener> action)
+        public bool CallOnEach<TListener>(IEnumerable enumerable, Action<TListener> action)
             where TListener : class
         {
             if (enumerable == null) throw new ArgumentNullException("enumerable");
@@ -149,11 +165,7 @@ namespace StatLight.Core.Events.Aggregation
                     wereAnyCalled = true;
                 }
             }
-
-            if (wereAnyCalled == false)
-            {
-                _logger.Debug("No event listener objects were defined to listen to message of type({0})".FormatWith(typeof(TListener).FullName));
-            }
+            return wereAnyCalled;
         }
     }
 }

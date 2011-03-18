@@ -1,22 +1,22 @@
 ﻿
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using StatLight.Core.Events;
+
 
 namespace StatLight.Core.Runners
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.Composition.Hosting;
+    using System.IO;
     using System.Linq;
+    using System.Reflection;
     using StatLight.Client.Harness.Events;
-    using StatLight.Core.Configuration;
     using StatLight.Core.Common;
     using StatLight.Core.Common.Abstractions.Timing;
+    using StatLight.Core.Configuration;
+    using StatLight.Core.Events;
     using StatLight.Core.Events.Aggregation;
     using StatLight.Core.Monitoring;
+    using StatLight.Core.Reporting;
     using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.Reporting.Providers.TeamCity;
     using StatLight.Core.WebBrowser;
@@ -29,7 +29,6 @@ namespace StatLight.Core.Runners
         private readonly IEventPublisher _eventPublisher;
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
         private ConsoleResultHandler _consoleResultHandler;
-        private Action<DebugClientEvent> _debugEventListener;
 
         public StatLightRunnerFactory(ILogger logger)
             : this(logger, new EventAggregator(logger))
@@ -44,6 +43,18 @@ namespace StatLight.Core.Runners
             _logger = logger;
             _eventSubscriptionManager = eventSubscriptionManager;
             _eventPublisher = eventPublisher;
+
+            var debugListener = new ConsoleDebugListener(logger);
+            _eventSubscriptionManager.AddListener(debugListener);
+
+            if (eventSubscriptionManager is EventAggregator)
+            {
+                var ea = (EventAggregator) eventSubscriptionManager;
+                ea.IgnoreTracingEvent<InitializationOfUnitTestHarnessClientEvent>();
+                ea.IgnoreTracingEvent<TestExecutionClassCompletedClientEvent>();
+                ea.IgnoreTracingEvent<TestExecutionClassBeginClientEvent>();
+                ea.IgnoreTracingEvent<SignalTestCompleteClientEvent>();
+            }
 
             SetupExtensions(_eventSubscriptionManager);
         }
@@ -183,7 +194,6 @@ namespace StatLight.Core.Runners
 
             var webServer = CreateWebServer(_logger, statLightConfiguration, location);
             CreateAndAddConsoleResultHandlerToEventAggregator(_logger);
-            SetupDebugClientEventListener(_logger);
             IRunner runner = new WebServerOnlyRunner(_logger, _eventSubscriptionManager, _eventPublisher, webServer, location.TestPageUrl, statLightConfiguration.Server.XapToTestPath);
 
             return runner;
@@ -218,7 +228,6 @@ namespace StatLight.Core.Runners
 
             var location = new WebServerLocation(logger);
             var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
-            SetupDebugClientEventListener(logger);
             webServer = CreateWebServer(logger, statLightConfiguration, location);
 
             webBrowsers = GetWebBrowsers(logger, location.TestPageUrl, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart);
@@ -257,19 +266,6 @@ namespace StatLight.Core.Runners
             {
                 _consoleResultHandler = new ConsoleResultHandler(logger);
                 _eventSubscriptionManager.AddListener(_consoleResultHandler);
-            }
-        }
-
-        private void SetupDebugClientEventListener(ILogger logger)
-        {
-            var ea = _eventSubscriptionManager as EventAggregator;
-            if (ea != null)
-                ea.Logger = logger;
-
-            if (_debugEventListener == null)
-            {
-                _debugEventListener = e => logger.Debug(e.Message);
-                _eventSubscriptionManager.AddListener(_debugEventListener);
             }
         }
 
@@ -321,16 +317,5 @@ namespace StatLight.Core.Runners
 
             return new DialogMonitorRunner(logger, _eventPublisher, debugAssertMonitorTimer, dialogMonitors);
         }
-    }
-
-    public interface IStatLightRunnerFactory
-    {
-        IRunner CreateContinuousTestRunner(StatLightConfiguration statLightConfiguration);
-        IRunner CreateTeamCityRunner(StatLightConfiguration statLightConfiguration);
-        IRunner CreateOnetimeConsoleRunner(StatLightConfiguration statLightConfiguration);
-        IRunner CreateWebServerOnlyRunner(StatLightConfiguration statLightConfiguration);
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        IRunner CreateRemotelyHostedRunner(StatLightConfiguration statLightConfiguration);
     }
 }
