@@ -52,7 +52,7 @@ namespace StatLight.Core.Tests.Monitoring.XapFileMonitoring
                 base.replace_test_file();
 
                 // refresh event doesn't fire in time so we wait
-                System.Threading.Thread.Sleep(50);
+                System.Threading.Thread.Sleep(1000);
 
                 wasXapFileRefreshed.ShouldBeTrue();
             }

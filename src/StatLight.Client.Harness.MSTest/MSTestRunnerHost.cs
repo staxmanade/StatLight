@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using Microsoft.Silverlight.Testing;
 using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
@@ -114,6 +113,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
         private UnitTestSettings ConfigureSettings()
         {
 #if March2010 || April2010 || May2010 || Feb2011
+
             var settings = new UnitTestSettings();
             settings.TestHarness = new UnitTestHarness();
 
@@ -138,7 +138,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             settings.StartRunImmediately = true;
             settings.ShowTagExpressionEditor = false;
             settings.TestService = null;
-#elif May2010 || July2009 || October2009 || November2009
+#elif July2009 || October2009 || November2009
             var settings = UnitTestSystem.CreateDefaultSettings();
 #endif
             // Below is the custom stuff...
@@ -152,26 +152,4 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             return settings;
         }
     }
-
-#if March2010 || April2010 || May2010 || Feb2011
-    public class StatLightTestPage : Panel, ITestPage
-    {
-        public Panel TestPanel
-        {
-            get { return new TestPanelImplementation(); }
-        }
-
-        /// <summary>
-        /// Initializes the TestPage object.
-        /// </summary>
-        /// <param name="harness">The test harness instance.</param>
-        public StatLightTestPage(UnitTestHarness harness)
-        {
-        }
-
-        private class TestPanelImplementation : Panel
-        {
-        }
-    }
-#endif
 }

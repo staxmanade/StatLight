@@ -806,18 +806,27 @@ Task test-single-assembly-run {
 }
 
 Task test-sample-extension {
-
-	$build_configuration = 'Debug'
 	mkdir -Force ".\src\build\bin\$build_configuration\Extensions\" | Out-Null
 	cp ".\src\Samples\SampleExtension\bin\$build_configuration\SampleExtension.dll" ".\src\build\bin\$build_configuration\Extensions\" -Force
 
-	& ".\src\build\bin\$build_configuration\StatLight.exe" "-d=.\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" | Tee-Object -variable output 
+	execStatLight "-d=.\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" | Tee-Object -variable output 
 
 	if(($output | select-string "Hello From Class1" | Measure).Count -eq 0){
 		$output
 		throw "Extension did not print expected output"
 	}
 	rm -Force ".\src\build\bin\$build_configuration\Extensions\SampleExtension.dll"
+}
+
+
+Task test-usage-of-TestPanel-displays-warning {
+
+	execStatLight "-d=C:\Code\StatLight\src\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\Release\StatLight.IntegrationTests.Silverlight.MSTest.UITests.dll" | Tee-Object -variable output 
+
+	if(($output | select-string "Looks like your trying to use the Silverlight Test Framework's TestPanel." | Measure).Count -eq 0){
+		$output
+		throw "Did not detect usage of TestPanel and report to the user."
+	}
 }
 
 #########################################
