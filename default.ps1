@@ -579,6 +579,10 @@ Task initialize {
 	echo "running build with configuration of $build_configuration"
 	echo "running build with configuration of $build_dir"
 	
+	# warning in-case you place statlight source root too far down in the directory structure
+	if(((pwd).path.length + 180) -gt 255){
+		throw "It looks like you've placed the StatLight src in a directory that is too deep. You will run into problems building - look to move the StatLight up a few folders before trying the build."
+	}
 }
 
 Task create-AssemblyInfo {
