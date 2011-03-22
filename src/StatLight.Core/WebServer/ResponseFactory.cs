@@ -18,7 +18,7 @@ namespace StatLight.Core.WebServer
             _serializedConfiguration = clientTestRunConfiguration.Serialize();
         }
 
-        private static int _htmlPageInstanceId = 0;
+        private int _htmlPageInstanceId = 0;
 
         public ResponseFile Get(string localPath)
         {
@@ -65,7 +65,7 @@ namespace StatLight.Core.WebServer
 
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public static ResponseFile GetTestHtmlPage()
+        public ResponseFile GetTestHtmlPage()
         {
             var page = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", _htmlPageInstanceId.ToString(CultureInfo.InvariantCulture));
 
@@ -79,7 +79,7 @@ namespace StatLight.Core.WebServer
             return string.Equals(filea, fileb, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static void Reset()
+        public void Reset()
         {
             _htmlPageInstanceId = 0;
         }

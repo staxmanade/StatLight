@@ -19,9 +19,10 @@ namespace StatLight.Core.WebServer
         private readonly ILogger _logger;
         private readonly IEventPublisher _eventPublisher;
         private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
+        private readonly ResponseFactory _responseFactory;
         private readonly IDictionary<Type, MethodInfo> _publishMethods;
 
-        public PostHandler(ILogger logger, IEventPublisher eventPublisher, ClientTestRunConfiguration clientTestRunConfiguration)
+        public PostHandler(ILogger logger, IEventPublisher eventPublisher, ClientTestRunConfiguration clientTestRunConfiguration, ResponseFactory responseFactory)
         {
             if (logger == null) throw new ArgumentNullException("logger");
             if (eventPublisher == null) throw new ArgumentNullException("eventPublisher");
@@ -30,6 +31,7 @@ namespace StatLight.Core.WebServer
             _logger = logger;
             _eventPublisher = eventPublisher;
             _clientTestRunConfiguration = clientTestRunConfiguration;
+            _responseFactory = responseFactory;
 
 
             MethodInfo makeGenericMethod = GetType().GetMethod("PublishIt", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -117,7 +119,7 @@ namespace StatLight.Core.WebServer
 
         public void ResetTestRunStatistics()
         {
-            ResponseFactory.Reset();
+            _responseFactory.Reset();
             _browserInstancesComplete.Clear();
             _totalMessagesPostedCount = null;
             _currentMessagesPostedCount = 0;

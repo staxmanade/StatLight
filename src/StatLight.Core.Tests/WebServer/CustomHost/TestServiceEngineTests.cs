@@ -23,6 +23,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
         private byte[] _hostXap;
         private string _serializedConfiguration;
         private Mock<IPostHandler> _mockPostHandler;
+        private ResponseFactory _responseFactory;
 
         protected override void Before_all_tests()
         {
@@ -33,10 +34,10 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
             _hostXap = new byte[] { 5, 4, 2, 1, 4 };
             var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty);
             _serializedConfiguration = clientConfig.Serialize();
-            var responseFactory = new ResponseFactory(() => _hostXap, clientConfig);
+            _responseFactory = new ResponseFactory(() => _hostXap, clientConfig);
 
             _mockPostHandler = new Mock<IPostHandler>();
-            _inMemoryWebServer = new Core.WebServer.InMemoryWebServer(consoleLogger, webServerLocation, responseFactory, _mockPostHandler.Object);
+            _inMemoryWebServer = new Core.WebServer.InMemoryWebServer(consoleLogger, webServerLocation, _responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 
             _baseUrl = webServerLocation.BaseUrl.ToString();
@@ -47,7 +48,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
         [SetUp]
         public void Setup()
         {
-            ResponseFactory.Reset();
+            _responseFactory.Reset();
         }
 
         protected override void After_all_tests()

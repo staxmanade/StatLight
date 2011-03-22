@@ -199,19 +199,13 @@ namespace StatLight.Core.Runners
             return runner;
         }
 
-
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private IWebServer CreateWebServer(ILogger logger, StatLightConfiguration statLightConfiguration, WebServerLocation webServerLocation)
         {
-
-            var postHandler = new PostHandler(logger, _eventPublisher, statLightConfiguration.Client);
-
-            //var statLightService = new StatLightService(logger, statLightConfiguration.Client, statLightConfiguration.Server, postHandler);
-            //return new StatLightServiceHost(logger, statLightService, location.BaseUrl);
-
             var responseFactory = new ResponseFactory(statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
-            return new InMemoryWebServer(logger, webServerLocation, responseFactory, postHandler);
+            var postHandler = new PostHandler(logger, _eventPublisher, statLightConfiguration.Client, responseFactory);
 
+            return new InMemoryWebServer(logger, webServerLocation, responseFactory, postHandler);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
