@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 using Ionic.Zip;
 using NUnit.Framework;
 using StatLight.Core.WebServer.XapInspection;
@@ -14,6 +16,7 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
         private ZipFile _originalXapHost;
         private ZipFile _originalXapUnderTest;
         private ZipFile _expectedXapHost;
+        private string _expectedAppManifest;
 
         protected override void Before_all_tests()
         {
@@ -43,6 +46,7 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
             _originalXapHost.AddEntry("System.Xml.Serialization.dll", "/", new byte[] { 1, 2 });
             _originalXapHost.AddEntry("Microsoft.Silverlight.Testing.dll", "/", new byte[] { 1, 2 });
             _originalXapHost.AddEntry("Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll", "/", new byte[] { 1, 2 });
+
             string originalXapHostFileName = Path.GetTempFileName();
             _originalXapHost.Save(originalXapHostFileName);
 
@@ -61,11 +65,16 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
             _originalXapUnderTest.AddEntry("StatLight.IntegrationTests.Silverlight.MSTest.dll", "/", new byte[] { 1, 2 });
             _originalXapUnderTest.AddEntry("Microsoft.Silverlight.Testing.dll", "/", new byte[] { 1, 2 });
             _originalXapUnderTest.AddEntry("Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll", "/", new byte[] { 1, 2 });
-            _originalXapUnderTest.AddEntry("Test/Test/Test.xml", "/", "Hello");
+            _originalXapUnderTest.AddEntry("Test.xml", "Test/Test", "Hello");
+
+            // This was a crazy case that the Sterling db project exposed to StatLight (They had duplicate test assemblies)
+            _originalXapUnderTest.AddEntry("Microsoft.Silverlight.Testing.dll", "/Binaries/", new byte[] { 1, 2 });
+            _originalXapUnderTest.AddEntry("Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll", "/Binaries/", new byte[] { 1, 2 });
+
             string originalXapUnderTestFileName = Path.GetTempFileName();
             _originalXapUnderTest.Save(originalXapUnderTestFileName);
 
-            var expectedAppManifest = @"<Deployment xmlns=""http://schemas.microsoft.com/client/2007/deployment"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" EntryPointAssembly=""StatLight.Client.Harness"" EntryPointType=""StatLight.Client.Harness.App"" RuntimeVersion=""4.0.50826.0"">
+            _expectedAppManifest = @"<Deployment xmlns=""http://schemas.microsoft.com/client/2007/deployment"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" EntryPointAssembly=""StatLight.Client.Harness"" EntryPointType=""StatLight.Client.Harness.App"" RuntimeVersion=""4.0.50826.0"">
   <Deployment.Parts>
     <AssemblyPart x:Name=""StatLight.Client.Harness"" Source=""StatLight.Client.Harness.dll"" />
     <AssemblyPart x:Name=""System.Windows.Controls"" Source=""System.Windows.Controls.dll"" />
@@ -86,8 +95,13 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
             _expectedXapHost.AddEntry("Microsoft.Silverlight.Testing.dll", "/", new byte[] { 1, 2 });
             _expectedXapHost.AddEntry("Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll", "/", new byte[] { 1, 2 });
             _expectedXapHost.AddEntry("StatLight.IntegrationTests.Silverlight.MSTest.dll", "/", new byte[] { 1, 2 });
-            _expectedXapHost.AddEntry("Test/Test/Test.xml", "/", "Hello");
-            _expectedXapHost.AddEntry("AppManifest.xaml", "/", expectedAppManifest);
+            _expectedXapHost.AddEntry("Test.xml", "Test/Test", "Hello");
+            _expectedXapHost.AddEntry("AppManifest.xaml", "/", _expectedAppManifest);
+
+            // This was a crazy case that the Sterling db project exposed to StatLight (They had duplicate test assemblies)
+            _expectedXapHost.AddEntry("Microsoft.Silverlight.Testing.dll", "/Binaries/", new byte[] { 1, 2 });
+            _expectedXapHost.AddEntry("Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll", "/Binaries/", new byte[] { 1, 2 });
+
             string expectedXapHostFileName = Path.GetTempFileName();
             _expectedXapHost.Save(expectedXapHostFileName);
 
@@ -106,11 +120,19 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
                                {
                                    new TempTestFile("StatLight.IntegrationTests.Silverlight.MSTest.dll"),
                                    new TempTestFile("Test/Test/Test.xml"),
+                                   new TempTestFile("Binaries/Microsoft.Silverlight.Testing.dll"),
+                                   new TempTestFile("Binaries/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"),
                                };
 
             ZipFile actualXapHost = _xapRewriter.RewriteZipHostWithFiles(_originalXapHost.ToByteArray(), newFiles);
             string actualXapHostFileName = Path.GetTempFileName();
             actualXapHost.Save(actualXapHostFileName);
+
+
+            //var expectedAM = XElement.Load(_expectedAppManifest);
+            //var actualAM = XElement.Load(actualXapHost["AppManifest.xaml"].OpenReader());
+            //expectedAM.ShouldEqual(actualAM);
+
             AssertZipsEqual(_expectedXapHost, actualXapHost);
 
         }
@@ -119,14 +141,24 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
         {
             actual.Count.ShouldEqual(expected.Count, "zip files contain different counts");
 
-            for (int i = 0; i < expected.Count; i++)
-            {
-                var expectedFile = expected[i];
-                var actualFile = actual[i];
+                var allFiles = actual.Select(s => s.FileName).ToArray();
 
-                actualFile.FileName.ShouldEqual(expectedFile.FileName);
-                //actualFile.ToByteArray().ShouldEqual(expectedFile.ToByteArray(), "File [{0}] bytes not same.".FormatWith(actualFile.FileName));
+            foreach (var expectedFile in expected)
+            {
+                string firstOrDefault = allFiles.Where(w => w.Equals(expectedFile.FileName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                firstOrDefault.ShouldNotBeNull("Could not find file {0} in files \n{1}".FormatWith(
+                    expectedFile.FileName,
+                    string.Join(Environment.NewLine, allFiles)));
+                //allFiles.Contains(expectedFile.FileName).ShouldBeTrue();
             }
+            //for (int i = 0; i < expected.Count; i++)
+            //{
+            //    var expectedFile = expected[i];
+            //    var actualFile = actual[i];
+            //
+            //    actualFile.FileName.ShouldEqual(expectedFile.FileName);
+            //    //actualFile.ToByteArray().ShouldEqual(expectedFile.ToByteArray(), "File [{0}] bytes not same.".FormatWith(actualFile.FileName));
+            //}
 
         }
 

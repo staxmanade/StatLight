@@ -60,7 +60,7 @@ namespace StatLight.Core.WebServer.XapInspection
 
             if ((Path.GetExtension(file.FileName) ?? string.Empty).Equals(".dll", StringComparison.OrdinalIgnoreCase))
             {
-/*
+                /*
                 //TODO: at a possible later time - understand if the pdb files have 
                 // value in a silverlight xap and how to truly leverage them.
 
@@ -69,28 +69,37 @@ namespace StatLight.Core.WebServer.XapInspection
                 {
                     AddFileToZip(zipFile, pdbName, File.ReadAllBytes(pdbName));
                     _logger.Debug("        including pdb - {0}".FormatWith(pdbName));
-
                 }
-*/
-                var name = Path.GetFileNameWithoutExtension(file.FileName);
-                parts.Add(new XElement("AssemblyPart",
-                                       new XAttribute("StatLightTempName", name),
-                                       new XAttribute("Source", file.FileName)));
+                */
 
-                _logger.Debug("        updateed AppManifest - {0}".FormatWith(name));
+                var name = Path.GetFileNameWithoutExtension(file.FileName);
+
+                if (string.IsNullOrEmpty(Path.GetDirectoryName(file.FileName)))
+                {
+                    parts.Add(new XElement("AssemblyPart",
+                                           new XAttribute("StatLightTempName", name),
+                                           new XAttribute("Source", file.FileName)));
+
+                    _logger.Debug("        updateed AppManifest - {0}".FormatWith(name));
+                }
+                else
+                {
+                    _logger.Debug("        Assembly not at root - not adding to AppManifest - {0}".FormatWith(name));
+                }
+
 
             }
         }
 
         private static void AddFileToZip(ZipFile zipFile, string fileName, byte[] fileBytes)
         {
-            if (fileName.IndexOf('\\') >= 1)
+            if (Path.IsPathRooted(fileName))
             {
-                zipFile.AddEntry(Path.GetFileName(fileName), Path.GetDirectoryName(fileName), fileBytes);
+                zipFile.AddEntry(fileName, "/", fileBytes);
             }
             else
             {
-                zipFile.AddEntry(fileName, "/", fileBytes);
+                zipFile.AddEntry(Path.GetFileName(fileName), Path.GetDirectoryName(fileName), fileBytes);
             }
         }
     }
