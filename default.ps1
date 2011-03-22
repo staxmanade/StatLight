@@ -826,7 +826,6 @@ Task test-sample-extension {
 Task test-usage-of-TestPanel-displays-warning {
 
 # TODO: make this run against all supported MSTest versions?
-# TODO: Include with the full test suite?
 	execStatLight "-d=C:\Code\StatLight\src\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\Release\StatLight.IntegrationTests.Silverlight.MSTest.UITests.dll" | Tee-Object -variable output 
 
 	if(($output | select-string "Looks like your trying to use the Silverlight Test Framework's TestPanel." | Measure).Count -eq 0){
@@ -970,7 +969,7 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 	Write-Documentation
 }
 
-Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension {
+Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning {
 }
 
 Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {

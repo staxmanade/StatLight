@@ -132,6 +132,9 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             // Don't enable a U.I. when not specifying the U.I. Mode.
             if (!_clientTestRunConfiguration.ShowTestingBrowserHost)
             {
+                var statLightTestPage = new StatLightTestPage();
+                settings.TestHarness.TestPage = statLightTestPage;
+
                 settings.TestPanelType = typeof(StatLightTestPage);
             }
             
