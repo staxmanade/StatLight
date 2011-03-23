@@ -826,7 +826,7 @@ Task test-sample-extension {
 Task test-usage-of-TestPanel-displays-warning {
 
 # TODO: make this run against all supported MSTest versions?
-	execStatLight "-d=C:\Code\StatLight\src\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\Release\StatLight.IntegrationTests.Silverlight.MSTest.UITests.dll" | Tee-Object -variable output 
+	execStatLight "-d=.\src\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.UITests.dll" | Tee-Object -variable output 
 
 	if(($output | select-string "Looks like your trying to use the Silverlight Test Framework's TestPanel." | Measure).Count -eq 0){
 		$output
