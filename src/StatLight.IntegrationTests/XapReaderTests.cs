@@ -134,7 +134,7 @@ namespace StatLight.IntegrationTests
 			[Test]
 			public void Should_detect_XUnit()
 			{
-				ShouldLoadCorrectType(TestXapFileLocations.XUnit, UnitTestProviderType.XUnit);
+                ShouldLoadCorrectType(TestXapFileLocations.XUnitLight, UnitTestProviderType.XUnitLight);
 			}
 
 			[Test]

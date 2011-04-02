@@ -634,7 +634,7 @@ Task compile-StatLight-MSTestHostVersionIntegrationTests {
 
 Task compile-Solution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
-	$verbosity = "/verbosity:quiet"
+	$verbosity = "/verbosity:n"
 	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo } 'msbuild failed on StatLight.sln'
 }
 
@@ -645,6 +645,42 @@ Task compile-StatLIght-UnitDrivenHost {
 	
 	
 	$zippedName = "$build_dir\$statlight_xap_for_prefix.UnitDrivenDecember2009.zip"
+
+	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="4.0.50401.00">
+		<Deployment.Parts>'
+	
+	$referencedNames | foreach { 
+		$ass = $_
+		$extraStuff = "
+			<AssemblyPart x:Name=""$ass"" Source=""$ass.dll"" />"
+		$appManifestContent += $extraStuff	
+	}
+
+	$appManifestContent += '	</Deployment.Parts>
+	</Deployment>'
+
+	$newAppManifestFile = "$(($pwd).Path)\src\build\AppManifest.xaml"
+	Remove-If-Exists $newAppManifestFile
+	([xml]$appManifestContent).Save($newAppManifestFile);
+
+	$zipFiles = $references
+	$zipFiles += @(
+					Get-Item $newAppManifestFile
+				)
+
+	Remove-If-Exists $zippedName
+	#throw 'a'
+	$zipFiles | Zip-Files-From-Pipeline $zippedName | Out-Null
+	#Create-Xap $zippedName $zipFiles
+}
+
+Task compile-StatLIght-XUnitContribHost {
+	$xunitContribXapFile = ".\src\StatLight.Client.Harness.XUnit\Bin\$build_configuration\StatLight.Client.Harness.dll"
+	$references = (ls .\src\StatLight.Client.Harness.XUnit\Bin\$build_configuration\*.dll)
+	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
+	
+	
+	$zippedName = "$build_dir\$statlight_xap_for_prefix.XUnitContribApril2011.zip"
 
 	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="4.0.50401.00">
 		<Deployment.Parts>'
@@ -892,6 +928,7 @@ Task package-release -depends clean-release {
 			'StatLight.Client.For.November2009.xap'
 			'StatLight.Client.For.October2009.xap'
 			'StatLight.Client.For.UnitDrivenDecember2009.xap'
+			'StatLight.Client.For.XUnitContribApril2011.xap'
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'
@@ -972,7 +1009,7 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning {
 }
 
-Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {
+Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLIght-XUnitContribHost, compile-StatLight-MSTestHostVersionIntegrationTests {
 }
 
 Task test-single-assemblies -depends test-single-assembly-run {

@@ -90,17 +90,19 @@
     <Compile Include="FixtureBase.cs" />
     <Compile Include="IntegrationTestClientTestRunConfiguration.ClientConfigTests.cs" />
     <Compile Include="NestedClassInheritanceTests.cs" />
+    <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_xunit_tests.cs" />
+    <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_Xunit_tests_filtered_by_certain_methods.cs" />
     <Compile Include="ProviderTests\filtered_tests____.cs" />
     <Compile Include="ProviderTests\MSTest\when_testing_the_runner_with_MSTest_tests.cs" />
     <Compile Include="ProviderTests\NUnit\when_testing_the_runner_with_NUnit_tests.cs" />
     <Compile Include="ProviderTests\UnitDriven\when_testing_the_runner_with_UnitDriven_tests.cs" />
-    <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_xunit_tests.cs" />
+    <Compile Include="ProviderTests\XUnitLight\when_testing_the_runner_with_xunitlight_tests.cs" />
     <Compile Include="ProviderTests\TestXapFileLocations.cs" />
     <Compile Include="ProviderTests\UnitDriven\when_testing_the_runner_with_UnitDrive_tests_filtered_by_certain_methods.cs" />
     <Compile Include="MessageBoxMonitorTests.cs" />
     <Compile Include="ProviderTests\MSTest\when_testing_the_runner_with_MSTest_tests_filtered_by_certain_methods.cs" />
     <Compile Include="ProviderTests\NUnit\when_testing_the_runner_with_NUnit_tests_filtered_by_certain_methods.cs" />
-    <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_Xunit_tests_filtered_by_certain_methods.cs" />
+    <Compile Include="ProviderTests\XUnitLight\when_testing_the_runner_with_Xunitlight_tests_filtered_by_certain_methods.cs" />
     <Compile Include="DebugAssertMonitorTests.cs" />
     <Compile Include="IntegrationFixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -126,6 +128,10 @@
     <Content Include="..\StatLight.IntegrationTests.Silverlight.UnitDriven\StatLight.IntegrationTests.Silverlight.UnitDriven.xap">
       <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.UnitDriven.xap</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\StatLight.IntegrationTests.Silverlight.XunitLight\StatLight.IntegrationTests.Silverlight.XunitLight.xap">
+      <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.XunitLight.xap</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\StatLight.IntegrationTests.Silverlight.Xunit\StatLight.IntegrationTests.Silverlight.Xunit.xap">
       <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.Xunit.xap</Link>

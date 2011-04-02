@@ -13,6 +13,7 @@
         MSTestFeb2011,
 
         UnitDrivenDecember2009,
+        XunitContribApril2011
     }
 
     public enum MicrosoftTestingFrameworkVersion

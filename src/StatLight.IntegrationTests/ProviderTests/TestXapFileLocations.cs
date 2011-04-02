@@ -10,6 +10,7 @@ namespace StatLight.IntegrationTests.ProviderTests
 		public static string NUnit = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.NUnit.xap";
 		public static string UnitDriven =  CurrentDirectory + "StatLight.IntegrationTests.Silverlight.UnitDriven.xap";
 		public static string XUnit = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.Xunit.xap";
-		public static string SilverlightIntegrationTests = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.xap";
+        public static string XUnitLight = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.XunitLight.xap";
+        public static string SilverlightIntegrationTests = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.xap";
 	}
 }
