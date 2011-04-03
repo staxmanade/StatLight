@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
 using StatLight.Core.WebServer.XapHost;
@@ -52,6 +54,32 @@ namespace StatLight.Core.WebServer.XapInspection
 
         }
 
+
+        public IList<string> GetAssemblyNames()
+        {
+            _logger.Debug("XapItems.GetAssemblyNames");
+            var filesContianedWithinXap = FilesContainedWithinXap;
+            var assemblyNames = new List<string>();
+            foreach (var item in filesContianedWithinXap)
+            {
+                _logger.Debug("      - Attempting from: {0}".FormatWith(item.FileName));
+                if (Path.GetExtension(item.FileName).Equals(".dll", StringComparison.OrdinalIgnoreCase))
+                {
+                    var filePath = Path.GetTempFileName();
+                    var fileInfo = new FileInfo(filePath);
+                    using (var write = fileInfo.OpenWrite())
+                    {
+                        write.Write(item.File, 0, item.File.Length);
+                    }
+                    var assemblyName = AssemblyName.GetAssemblyName(filePath).FullName;
+                    File.Delete(filePath);
+                    _logger.Debug("      - Found assemblyName {0}".FormatWith(assemblyName));
+
+                    assemblyNames.Add(assemblyName);
+                }
+            }
+            return assemblyNames;
+        }
 
         private MicrosoftTestingFrameworkVersion? DetermineUnitTestVersion(IEnumerable<ITestFile> files)
         {
