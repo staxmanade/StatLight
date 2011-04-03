@@ -33,6 +33,7 @@ namespace StatLight.Core.Configuration
 
             Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string runtimeVersion = null;
+            IEnumerable<string> testAssemblyFormalNames = new List<string>();
             string entryPointAssembly = string.Empty;
             if (isRemoteRun)
             {
@@ -42,9 +43,6 @@ namespace StatLight.Core.Configuration
                 AssertFileExists(xapPath);
 
                 var xapReader = new XapReader(_logger);
-                xapReadItems = xapReader.GetTestAssembly(xapPath);
-                testAssemblyFormalNames = xapReadItems.AssemblyNames;
-                
 
                 TestFileCollection testFileCollection = xapReader.LoadXapUnderTest(xapPath);
                 runtimeVersion = XapReader.GetRuntimeVersion(xapPath);
@@ -58,7 +56,10 @@ namespace StatLight.Core.Configuration
                     return xapReader.LoadXapUnderTest(xapPath).FilesContainedWithinXap;
                 };
 
+                testAssemblyFormalNames = testFileCollection.GetAssemblyNames();
             }
+
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly, testAssemblyFormalNames);
 
             var serverConfig = CreateServerConfiguration(
                 xapPath,
@@ -82,6 +83,7 @@ namespace StatLight.Core.Configuration
             Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string entryPointAssembly = string.Empty;
             string runtimeVersion = null;
+            IEnumerable<string> testAssemblyFormalNames = new List<string>();
             if (isRemoteRun)
             {
             }
@@ -96,14 +98,13 @@ namespace StatLight.Core.Configuration
                 var coreFileUnderTest = new TestFile(dllFileInfo.FullName);
                 var dependentFilesUnderTest = dependentAssemblies.Select(file => new TestFile(file)).ToList();
                 dependentFilesUnderTest.Add(coreFileUnderTest);
-                var xapReadItems = new TestFileCollection(_logger,
+                var testFileCollection = new TestFileCollection(_logger,
                                                           AssemblyName.GetAssemblyName(dllFileInfo.FullName).ToString(),
                                                           dependentFilesUnderTest);
 
-                SetupUnitTestProviderType(xapReadItems, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
+                SetupUnitTestProviderType(testFileCollection, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
 
-                entryPointAssembly = xapReadItems.TestAssemblyFullName;
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly, testAssemblyFormalNames);
+                entryPointAssembly = testFileCollection.TestAssemblyFullName;
 
                 filesToCopyIntoHostXap =()=>
                                             {
@@ -112,9 +113,10 @@ namespace StatLight.Core.Configuration
                                                                            .ToString(),
                                                                        dependentFilesUnderTest).FilesContainedWithinXap;
                                             };
+                testAssemblyFormalNames = testFileCollection.GetAssemblyNames();
             }
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly);
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly, testAssemblyFormalNames);
 
             var serverConfig = CreateServerConfiguration(
                 dllPath,
@@ -203,7 +205,7 @@ namespace StatLight.Core.Configuration
 
 
     }
-}
+
 
     public interface IStatLightConfigurationFactory
     {
@@ -211,5 +213,5 @@ namespace StatLight.Core.Configuration
 
         StatLightConfiguration GetStatLightConfigurationForDll(UnitTestProviderType unitTestProviderType, string dllPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost);
     }
-}
+
 }
