@@ -115,8 +115,8 @@ namespace StatLight.Client.Harness.Hosts.XUnit
 
                     switch (mt.Status)
                     {
-                        case TestResult.Indeterminate:
-                            SendTestIgnoredClientEvent(methodInfo, string.Empty);
+                        case TestResult.Skip:
+                            SendTestIgnoredClientEvent(methodInfo, mt.Message);
                             break;
                         case TestResult.Fail:
                             SendTestFailureClientEvent(methodInfo, mt.Message);
@@ -139,7 +139,7 @@ namespace StatLight.Client.Harness.Hosts.XUnit
         {
             return methodTester.Status == TestResult.Fail ||
                    methodTester.Status == TestResult.Success ||
-                   methodTester.Status == TestResult.Indeterminate;
+                   methodTester.Status == TestResult.Skip;
         }
 
         private bool ShouldReportedThisInstanceOfTheFinalResult(MethodInfo methodInfo)
