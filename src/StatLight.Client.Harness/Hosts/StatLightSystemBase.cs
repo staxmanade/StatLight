@@ -21,15 +21,29 @@ namespace StatLight.Client.Harness.Hosts
 
         protected static T LocateStatLightService<T>() where T : class
         {
+            MessageBox.Show("HI");
             T service = null;
             try
             {
 
                 Assembly[] list;
 #if WINDOWS_PHONE
-                Assembly.Load("StatLight.Client.Harness.MSTest, Culture=neutral, PublicKeyToken=9f7f221db79a30d0");
-                var runnerHost = Type.GetType("StatLight.Client.Harness.Hosts.MSTest.MSTestRunnerHost");
-                return (T)Activator.CreateInstance(runnerHost);
+                Assembly.Load("StatLight.Client.Harness.Phone");
+                //Assembly.Load("StatLight.Client.Harness.MSTest");
+                var runnerHostType = Type.GetType("StatLight.Client.Harness.Hosts.MSTest.MSTestRunnerHost");
+                MessageBox.Show(runnerHostType.ToString());
+                //var constructorInfos = runnerHost.GetConstructor(Type.EmptyTypes);
+                //MessageBox.Show((constructorInfos != null).ToString());
+                //var obj = constructorInfos.Invoke(new object[0]);
+
+                var parameterlessCtor = (from c in runnerHostType.GetConstructors(
+  BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                                         where c.GetParameters().Length == 0
+                                         select c).FirstOrDefault();
+                if (parameterlessCtor != null)
+                    return (T)parameterlessCtor.Invoke(null);
+                throw new NotImplementedException();
+
 #else
                 list = Deployment.Current.Parts
                                     .Where(w => w.Source.Contains("StatLight", StringComparison.OrdinalIgnoreCase))

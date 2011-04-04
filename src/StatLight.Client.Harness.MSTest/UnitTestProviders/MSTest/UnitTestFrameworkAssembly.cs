@@ -5,7 +5,7 @@ using System.Reflection;
 using Microsoft.Silverlight.Testing.Harness;
 #if March2010 || April2010 || May2010
 using ITestHarness = Microsoft.Silverlight.Testing.Harness.UnitTestHarness;
-#elif Feb2011
+#elif Feb2011 || WINDOWS_PHONE
 using ITestHarness = Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 #else
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
