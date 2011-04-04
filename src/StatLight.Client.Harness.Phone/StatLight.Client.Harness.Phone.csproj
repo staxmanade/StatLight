@@ -50,6 +50,12 @@
   <ItemGroup>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Microsoft.Silverlight.Testing">
+      <HintPath>..\..\lib\Silverlight\Microsoft\Feb2011\Microsoft.Silverlight.Testing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight">
+      <HintPath>..\..\lib\Silverlight\Microsoft\Feb2011\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -60,6 +66,87 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\ILogMessageToClientEventTranslation.cs">
+      <Link>LogMessagTranslation\ILogMessageToClientEventTranslation.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\InitializationOfUnitTestHarnessClientEventMap.cs">
+      <Link>LogMessagTranslation\InitializationOfUnitTestHarnessClientEventMap.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\LogMessageTranslator.cs">
+      <Link>LogMessagTranslation\LogMessageTranslator.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\ReflectionInfoHelper.cs">
+      <Link>LogMessagTranslation\ReflectionInfoHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\TestExecutionClassBeginClientEventMap.cs">
+      <Link>LogMessagTranslation\TestExecutionClassBeginClientEventMap.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\TestExecutionClassCompletedClientEventMap.cs">
+      <Link>LogMessagTranslation\TestExecutionClassCompletedClientEventMap.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\TestExecutionDoNotReportMessageMap.cs">
+      <Link>LogMessagTranslation\TestExecutionDoNotReportMessageMap.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\TestExecutionMethodBeginClientEventMap.cs">
+      <Link>LogMessagTranslation\TestExecutionMethodBeginClientEventMap.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\TestExecutionMethodFailedClientEventMap.cs">
+      <Link>LogMessagTranslation\TestExecutionMethodFailedClientEventMap.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\TestExecutionMethodIgnoredClientEventMap.cs">
+      <Link>LogMessagTranslation\TestExecutionMethodIgnoredClientEventMap.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\TestExecutionMethodPassedClientEventMap.cs">
+      <Link>LogMessagTranslation\TestExecutionMethodPassedClientEventMap.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\UnitTestResultProviderExtensions.cs">
+      <Link>LogMessagTranslation\UnitTestResultProviderExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness.MSTest\MSTestRemotelyHostedTestRunnerHost.cs">
+      <Link>MSTestRemotelyHostedTestRunnerHost.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness.MSTest\MSTestRunnerHost.cs">
+      <Link>MSTestRunnerHost.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness.MSTest\ServerHandlingLogProvider.cs">
+      <Link>ServerHandlingLogProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Client.Harness.MSTest\StatLightTestPage.cs">
+      <Link>StatLightTestPage.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\DynamicAttributeHelper.cs">
+      <Link>UnitTestProviders\DynamicAttributeHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\LazyDynamicAssemblyMethodInfo.cs">
+      <Link>UnitTestProviders\LazyDynamicAssemblyMethodInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\LazyDynamicMethodInfo.cs">
+      <Link>UnitTestProviders\LazyDynamicMethodInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\mstest\ExpectedException.cs">
+      <Link>UnitTestProviders\MSTest\ExpectedException.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\mstest\Priority.cs">
+      <Link>UnitTestProviders\MSTest\Priority.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\mstest\ProviderAttributes.cs">
+      <Link>UnitTestProviders\MSTest\ProviderAttributes.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\mstest\TestClass.cs">
+      <Link>UnitTestProviders\MSTest\TestClass.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\mstest\TestMethod.cs">
+      <Link>UnitTestProviders\MSTest\TestMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\mstest\UnitTestFrameworkAssembly.cs">
+      <Link>UnitTestProviders\MSTest\UnitTestFrameworkAssembly.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\mstest\VsttProvider.cs">
+      <Link>UnitTestProviders\MSTest\VsttProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\statlight.client.harness.mstest\unittestproviders\UnitTestFrameworkAssemblyBase.cs">
+      <Link>UnitTestProviders\UnitTestFrameworkAssemblyBase.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Client.Harness\Events\ExceptionInfo.cs">
       <Link>Events\ExceptionInfo.cs</Link>
     </Compile>

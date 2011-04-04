@@ -7,9 +7,6 @@ using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Client.Harness.Events;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit;
 using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
@@ -18,6 +15,10 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 {
     public class MSTestRunnerHost : ITestRunnerHost
     {
+        public MSTestRunnerHost()
+        {
+            
+        }
         private ClientTestRunConfiguration _clientTestRunConfiguration;
         private ILoadedXapData _loadedXapData;
 
@@ -61,17 +62,18 @@ namespace StatLight.Client.Harness.Hosts.MSTest
         {
             Microsoft.Silverlight.Testing.UnitTesting.Metadata.UnitTestProviders.Providers.Clear();
 
+#if !WINDOWS_PHONE
             if (unitTestProviderType == UnitTestProviderType.XUnitLight)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new XUnitTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit.XUnitTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.NUnit)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new NUnitTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit.NUnitTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.UnitDriven)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new UnitDrivenTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven.UnitDrivenTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
             {
@@ -105,6 +107,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
                 }
             }
             else
+#endif
             {
                 UnitTestSystem.RegisterUnitTestProvider(new VsttProvider());
             }
@@ -112,7 +115,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 
         private UnitTestSettings ConfigureSettings()
         {
-#if March2010 || April2010 || May2010 || Feb2011
+#if March2010 || April2010 || May2010 || Feb2011 || WINDOWS_PHONE
 
             var settings = new UnitTestSettings();
             settings.TestHarness = new UnitTestHarness();

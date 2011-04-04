@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using Microsoft.SmartDevice.Connectivity;
 using StatLight.Core.Common;
 using StatLight.Core.WebBrowser;
