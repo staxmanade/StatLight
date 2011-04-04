@@ -5,5 +5,6 @@
         SelfHosted,
         Firefox,
         Chrome,
+        Phone,
     }
 }

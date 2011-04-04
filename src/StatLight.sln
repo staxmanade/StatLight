@@ -98,8 +98,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Core.Phone", "StatLight.Core.Phone\StatLight.Core.Phone.csproj", "{206DB70D-9F98-4CE1-85FD-D7A90AB2CD2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Harness.MSTest.Phone", "StatLight.Client.Harness.MSTest.Phone\StatLight.Client.Harness.MSTest.Phone.csproj", "{6753E561-BF69-4B55-B252-AAC8F6372400}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -398,12 +396,6 @@ Global
 		{206DB70D-9F98-4CE1-85FD-D7A90AB2CD2D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{206DB70D-9F98-4CE1-85FD-D7A90AB2CD2D}.Release|x86.ActiveCfg = Release|Any CPU
 		{206DB70D-9F98-4CE1-85FD-D7A90AB2CD2D}.Release|x86.Build.0 = Release|Any CPU
-		{6753E561-BF69-4B55-B252-AAC8F6372400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6753E561-BF69-4B55-B252-AAC8F6372400}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6753E561-BF69-4B55-B252-AAC8F6372400}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6753E561-BF69-4B55-B252-AAC8F6372400}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6753E561-BF69-4B55-B252-AAC8F6372400}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6753E561-BF69-4B55-B252-AAC8F6372400}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

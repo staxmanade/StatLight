@@ -50,12 +50,11 @@
   <ItemGroup>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
-    <Reference Include="Microsoft.Silverlight.Testing">
-      <HintPath>..\..\lib\Silverlight\Microsoft\Feb2011\Microsoft.Silverlight.Testing.dll</HintPath>
+    <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight">
-      <HintPath>..\..\lib\Silverlight\Microsoft\Feb2011\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
-    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -251,7 +250,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
-    <None Include="Properties\WMAppManifest.xml" />
+    <None Include="Properties\WMAppManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">
@@ -273,4 +274,8 @@
   </Target>
   -->
   <ProjectExtensions />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)StatLight.Client.Harness.Phone.xap $(SolutionDir)build\bin\$(ConfigurationName)\StatLight.Client.For.MSTestMay2010Phone.xap
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
