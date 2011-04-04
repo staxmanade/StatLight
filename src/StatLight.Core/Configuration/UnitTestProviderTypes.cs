@@ -4,8 +4,9 @@
     {
         Undefined,
         MSTest, // Default
+        MSTestPhone,
+        XUnit,
         XUnitLight,
-        Xunit,
         NUnit,
         UnitDriven,
         MSTestWithCustomProvider,

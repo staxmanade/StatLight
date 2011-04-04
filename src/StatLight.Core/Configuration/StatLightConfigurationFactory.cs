@@ -21,10 +21,17 @@ namespace StatLight.Core.Configuration
         private readonly XapHostFileLoaderFactory _xapHostFileLoaderFactory;
 
         public StatLightConfigurationFactory(ILogger logger)
+            : this(logger, new XapHostFileLoaderFactory(logger))
+        {
+        }
+
+        public StatLightConfigurationFactory(ILogger logger, XapHostFileLoaderFactory xapHostFileLoaderFactory)
         {
             _logger = logger;
-            _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
+            _xapHostFileLoaderFactory = xapHostFileLoaderFactory;
         }
+
+
 
         public StatLightConfiguration GetStatLightConfigurationForXap(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost)
         {

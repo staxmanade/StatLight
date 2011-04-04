@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using StatLight.Core.Common;
 using System;
 using StatLight.Core.Configuration;
@@ -12,7 +14,12 @@ namespace StatLight.Core.WebServer.XapHost
         private readonly ILogger _logger;
         private IDictionary<XapHostType, IXapHostFileLoader> XapHostFileLoaders { get; set; }
 
-        public XapHostFileLoaderFactory(ILogger logger)
+        
+        public XapHostFileLoaderFactory(ILogger logger):this(logger, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+        {
+        }
+
+        public XapHostFileLoaderFactory(ILogger logger, string xapDirectory)
         {
             _logger = logger;
             XapHostFileLoaders = new Dictionary<XapHostType, IXapHostFileLoader>();
@@ -22,11 +29,12 @@ namespace StatLight.Core.WebServer.XapHost
             {
                 var enumItemCasted = (MicrosoftTestingFrameworkVersion)enumItem;
                 var e = (XapHostType)Enum.Parse(typeof(XapHostType), "MSTest" + enumItemCasted);
-                XapHostFileLoaders.Add(e, new DiskXapHostFileLoader(_logger, ClientXapNameFormat.FormatWith(enumItemCasted)));
+                XapHostFileLoaders.Add(e, new DiskXapHostFileLoader(_logger, xapDirectory, ClientXapNameFormat.FormatWith(enumItemCasted)));
             }
 
-            XapHostFileLoaders.Add(XapHostType.UnitDrivenDecember2009, new DiskXapHostFileLoader(_logger, ClientXapNameFormat.FormatWith(XapHostType.UnitDrivenDecember2009)));
-            XapHostFileLoaders.Add(XapHostType.XunitContribApril2011, new DiskXapHostFileLoader(_logger, ClientXapNameFormat.FormatWith(XapHostType.XunitContribApril2011)));
+            XapHostFileLoaders.Add(XapHostType.MSTestMay2010Phone, new DiskXapHostFileLoader(_logger, xapDirectory, ClientXapNameFormat.FormatWith(XapHostType.MSTestMay2010Phone)));
+            XapHostFileLoaders.Add(XapHostType.UnitDrivenDecember2009, new DiskXapHostFileLoader(_logger, xapDirectory, ClientXapNameFormat.FormatWith(XapHostType.UnitDrivenDecember2009)));
+            XapHostFileLoaders.Add(XapHostType.XunitContribApril2011, new DiskXapHostFileLoader(_logger, xapDirectory, ClientXapNameFormat.FormatWith(XapHostType.XunitContribApril2011)));
         }
 
         public virtual byte[] LoadXapHostFor(XapHostType version)
@@ -49,6 +57,9 @@ namespace StatLight.Core.WebServer.XapHost
                 case UnitTestProviderType.NUnit:
                 case UnitTestProviderType.XUnitLight:
                     return XapHostType.MSTestMay2010;
+
+                case UnitTestProviderType.MSTestPhone:
+                    return XapHostType.MSTestMay2010Phone;
 
                 case UnitTestProviderType.MSTestWithCustomProvider:
                 case UnitTestProviderType.MSTest:

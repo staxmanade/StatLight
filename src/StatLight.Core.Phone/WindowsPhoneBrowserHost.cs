@@ -30,7 +30,6 @@ namespace StatLight.Core.Phone
                 _wp7Device = wp7Sdk.GetDevices().Single(d => d.Name == "Windows Phone 7 Emulator");
             else
                 _wp7Device = wp7Sdk.GetDevices().Single(d => d.Name == "Windows Phone 7 Device");
-
         }
 
         public void Start()

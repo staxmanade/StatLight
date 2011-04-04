@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using StatLight.Core.Common;
 
 namespace StatLight.Core.WebServer.XapHost
@@ -11,13 +10,13 @@ namespace StatLight.Core.WebServer.XapHost
         private readonly ILogger _logger;
         private readonly string _fileName;
 
-        public DiskXapHostFileLoader(ILogger logger, string fileName)
+        public DiskXapHostFileLoader(ILogger logger, string baseDirectory, string fileName)
         {
             if (logger == null) throw new ArgumentNullException("logger");
             if (fileName == null) throw new ArgumentNullException("fileName");
 
             _logger = logger;
-            var pathToThisExe = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var pathToThisExe = baseDirectory;
             _fileName = Path.Combine(pathToThisExe, fileName);
 
             if (!File.Exists(_fileName))

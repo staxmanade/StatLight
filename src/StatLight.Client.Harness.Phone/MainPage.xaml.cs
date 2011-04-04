@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows;
-using Microsoft.Phone.Controls;
+﻿using Microsoft.Phone.Controls;
 using StatLight.Client.Harness.Hosts;
 
 namespace StatLight.Client.Harness.Phone

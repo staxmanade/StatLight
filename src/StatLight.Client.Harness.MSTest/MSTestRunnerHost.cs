@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Microsoft.Silverlight.Testing;
 using Microsoft.Silverlight.Testing.Harness;
-using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Client.Harness.Events;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest;
 using StatLight.Client.Harness.Messaging;
@@ -77,7 +75,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             }
             else if (unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
             {
-                Type interfaceLookingFor = typeof(IUnitTestProvider);
+                System.Type interfaceLookingFor = typeof(Microsoft.Silverlight.Testing.UnitTesting.Metadata.IUnitTestProvider);
 
                 var allProviderPossibilities = (from assembly in _loadedXapData.TestAssemblies
                                                 from type in assembly.GetTypes()
@@ -89,8 +87,8 @@ namespace StatLight.Client.Harness.Hosts.MSTest
                 if (allProviderPossibilities.Count == 1)
                 {
                     var customProviderType = allProviderPossibilities.First();
-                    var instance = Activator.CreateInstance(customProviderType);
-                    var provider = (IUnitTestProvider)instance;
+                    var instance = System.Activator.CreateInstance(customProviderType);
+                    var provider = (Microsoft.Silverlight.Testing.UnitTesting.Metadata.IUnitTestProvider)instance;
                     UnitTestSystem.RegisterUnitTestProvider(provider);
                 }
                 else
