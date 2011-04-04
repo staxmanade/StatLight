@@ -926,6 +926,14 @@ Task test-usage-of-TestPanel-displays-warning {
 	}
 }
 
+Task test-phone-xap {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-x=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.xap"  "-r=$scriptFile" "--WebBrowserType=Phone" "-o=MSTestPhone"
+	
+
+	Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+}
+
 #########################################
 #
 # Release packaging

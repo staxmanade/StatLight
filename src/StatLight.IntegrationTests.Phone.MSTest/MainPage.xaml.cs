@@ -2,7 +2,6 @@
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Silverlight.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace StatLight.IntegrationTests.Phone.MSTest
 {
@@ -23,24 +22,6 @@ namespace StatLight.IntegrationTests.Phone.MSTest
 
             };
 
-        }
-    }
-
-
-    [TestClass]
-    public class BasicTests : SilverlightTest
-    {
-        [TestMethod]
-        public void AlwaysPass()
-        {
-            Assert.IsTrue(true, "method intended to always pass");
-        }
-
-        [TestMethod]
-        [Description("This test always fails intentionally")]
-        public void AlwaysFail()
-        {
-            Assert.IsFalse(true, "method intended to always fail");
         }
     }
 }

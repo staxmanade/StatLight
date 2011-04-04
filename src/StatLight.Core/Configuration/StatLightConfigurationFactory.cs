@@ -66,6 +66,8 @@ namespace StatLight.Core.Configuration
                 testAssemblyFormalNames = testFileCollection.GetAssemblyNames();
             }
 
+            ConfigureForPhone(unitTestProviderType, ref webBrowserType);
+
             var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly, testAssemblyFormalNames);
 
             var serverConfig = CreateServerConfiguration(
@@ -80,6 +82,15 @@ namespace StatLight.Core.Configuration
                 runtimeVersion);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
+        }
+
+        private static void ConfigureForPhone(UnitTestProviderType unitTestProviderType, ref WebBrowserType webBrowserType)
+        {
+            if (unitTestProviderType == UnitTestProviderType.MSTestPhone)
+            {
+                webBrowserType = WebBrowserType.Phone;
+                return;
+            }
         }
 
         public StatLightConfiguration GetStatLightConfigurationForDll(UnitTestProviderType unitTestProviderType, string dllPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost)
@@ -122,6 +133,8 @@ namespace StatLight.Core.Configuration
                                             };
                 testAssemblyFormalNames = testFileCollection.GetAssemblyNames();
             }
+
+            ConfigureForPhone(unitTestProviderType, ref webBrowserType);
 
             var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly, testAssemblyFormalNames);
 

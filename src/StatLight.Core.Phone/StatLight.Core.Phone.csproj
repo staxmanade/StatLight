@@ -51,7 +51,6 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="WindowsPhoneBrowserHost.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StatLight.Core\StatLight.Core.csproj">

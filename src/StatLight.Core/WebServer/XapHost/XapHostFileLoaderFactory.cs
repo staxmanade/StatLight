@@ -4,6 +4,7 @@ using System.Reflection;
 using StatLight.Core.Common;
 using System;
 using StatLight.Core.Configuration;
+using StatLight.Core.WebBrowser;
 
 namespace StatLight.Core.WebServer.XapHost
 {

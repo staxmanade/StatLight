@@ -112,14 +112,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleResourceFileTests.cs" />
     <Compile Include="ServiceReferenceClientConfigTests.ClientConfigTests.cs" />
-    <Compile Include="WindowsPhoneBrowserHostTests.cs" />
+    <Compile Include="TraceLogger.cs" />
+    <Compile Include="WindowsPhoneWebBrowserTests.cs" />
     <Compile Include="XapReaderTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StatLight.Core.Phone\StatLight.Core.Phone.csproj">
-      <Project>{206DB70D-9F98-4CE1-85FD-D7A90AB2CD2D}</Project>
-      <Name>StatLight.Core.Phone</Name>
-    </ProjectReference>
     <ProjectReference Include="..\StatLight.Core\StatLight.Core.csproj">
       <Project>{AA6F387F-BB41-4FA8-B38A-7037A7C59716}</Project>
       <Name>StatLight.Core</Name>
