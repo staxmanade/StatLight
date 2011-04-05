@@ -80,7 +80,7 @@ namespace StatLight.Core.WebServer.XapInspection
                                            new XAttribute("StatLightTempName", name),
                                            new XAttribute("Source", file.FileName)));
 
-                    _logger.Debug("        updateed AppManifest - {0}".FormatWith(name));
+                    _logger.Debug("        updated AppManifest - {0}".FormatWith(name));
                 }
                 else
                 {
