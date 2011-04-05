@@ -54,7 +54,6 @@ namespace StatLight.Core.WebBrowser
                 "WindowsPhoneApplication1",
                 null,
                 _tempFileName);
-
             _logger.Debug("Sample XAP installed to Windows Phone 7 Emulator...");
 
             // Launch Application 

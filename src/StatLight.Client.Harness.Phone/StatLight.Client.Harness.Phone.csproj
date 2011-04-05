@@ -161,9 +161,6 @@
     <Compile Include="..\StatLight.Client.Harness\Hosts\ITestRunnerHost.cs">
       <Link>Hosts\ITestRunnerHost.cs</Link>
     </Compile>
-    <Compile Include="..\StatLight.Client.Harness\Hosts\LoadedXapData.cs">
-      <Link>Hosts\LoadedXapData.cs</Link>
-    </Compile>
     <Compile Include="..\StatLight.Client.Harness\Hosts\LoadedXapDataBase.cs">
       <Link>Hosts\LoadedXapDataBase.cs</Link>
     </Compile>

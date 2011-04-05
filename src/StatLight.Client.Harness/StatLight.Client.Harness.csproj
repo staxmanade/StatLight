@@ -127,7 +127,6 @@
     <Compile Include="Hosts\ITestRunnerHost.cs" />
     <Compile Include="Hosts\LoadedXapDataBase.cs" />
     <Compile Include="Hosts\ReflectionInfoHelper.cs" />
-    <Compile Include="Hosts\LoadedXapData.cs" />
     <Compile Include="Hosts\ThisXapData.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventArgs.cs" />
     <Compile Include="Messaging\HttpResponseCompleteEventHandler.cs" />
