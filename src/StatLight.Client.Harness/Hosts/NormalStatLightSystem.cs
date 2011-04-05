@@ -13,7 +13,9 @@ namespace StatLight.Client.Harness.Hosts
 
         internal NormalStatLightSystem(Action<UIElement> onReady)
         {
+            
 #if WINDOWS_PHONE
+            
             var urlx = "http://localhost:8887/";
 #else
             var src = Application.Current.Host.Source;
