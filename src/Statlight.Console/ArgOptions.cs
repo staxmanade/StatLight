@@ -66,6 +66,8 @@ namespace StatLight.Console
             get { return _dlls; }
         }
 
+        public bool UserPhoneEmulator { get; private set; }
+
         private ArgOptions()
             : this(new string[] { })
         {
@@ -134,7 +136,7 @@ namespace StatLight.Console
                         }
                         UnitTestProviderType = result.Value;
                     })
-                .Add("v|Version", "Specify a specific Microsoft.Silverlight.Testing build version. Pass in one of the following [{0}]".FormatWith(typeof(MicrosoftTestingFrameworkVersion).FormatEnumString()), v =>
+                .Add("v|Version", "(NOTE: YOU SHOULD NOT HAVE TO DO THIS) - Give a specific Microsoft.Silverlight.Testing build version. Pass in one of the following [{0}]. One example this may come in useful is if you have an assembly in your xap named similar to what StatLight is using to automatically detect the version. You can use this to override the 'figured out type'.".FormatWith(typeof(MicrosoftTestingFrameworkVersion).FormatEnumString()), v =>
                     {
                         v = v ?? string.Empty;
 
@@ -157,7 +159,8 @@ namespace StatLight.Console
                         else
                             throw new DirectoryNotFoundException("Could not find directory in [{0}]".FormatWith(v));
                     })
-                .Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v => UseRemoteTestPage = true)
+                //This is not something anyone is really using and just muddies up the console api
+                //.Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v => UseRemoteTestPage = true)
                 .Add("WebBrowserType", "If you have other browser installed, you can have StatLight use any of the following web browsers [{0}]".FormatWith(typeof(WebBrowserType).FormatEnumString()), v =>
                     {
                         WebBrowserType = ParseEnum<WebBrowserType>(v);
@@ -176,11 +179,12 @@ namespace StatLight.Console
                             throw new StatLightException("Could not parse parameter [{0}] for numberofbrowsers into an integer.".FormatWith(v));
                         }
                     })
+                .Add<string>("UserPhoneEmulator", "If you have the windows phone SDK installed. Attempt this run with the emulator.", v => UserPhoneEmulator = true)
                 .Add("QueryString", "Specify some QueryString that will be appended to the browser test page request. This can be helpful to setup a remote web service and pass in the url, or a port used. You can then access the querystring within silverlight HtmlPage.Document.QueryString[..]", v => QueryString = v ?? String.Empty)
-                .Add<string>("debug", "Prints a verbose spattering of internal logging information. Useful when trying to understand possible issues or when reporting issues back to StatLight.CodePlex.com", v => IsRequestingDebug = true)
                 .Add<string>("teamcity", "Changes the console output to generate the teamcity message spec.", v => OutputForTeamCity = true)
                 .Add<string>("MSGenericTestFormat", "When specifying the -r|--ReportOutputFile=[FilePath] you can choose to format the xml report that conforms to the MSTest's generic test.", v => TFSGenericReport = true)
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
+                .Add<string>("debug", "Prints a verbose spattering of internal logging information. Useful when trying to understand possible issues or when reporting issues back to StatLight.CodePlex.com", v => IsRequestingDebug = true)
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)
                 ;
         }

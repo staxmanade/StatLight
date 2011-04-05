@@ -12,7 +12,12 @@ namespace StatLight.Core.WebBrowser
             _logger = logger;
         }
 
-        public IWebBrowser Create(WebBrowserType browserType, Uri pageToHost, bool browserVisible, bool forceBrowserStart, bool isStartingMultipleInstances, Func<byte[]> xapHost)
+        public IWebBrowser Create(
+            WebBrowserType browserType, 
+            Uri pageToHost, 
+            bool browserVisible, 
+            bool forceBrowserStart, 
+            bool isStartingMultipleInstances)
         {
             switch (browserType)
             {
@@ -22,8 +27,6 @@ namespace StatLight.Core.WebBrowser
                     return new FirefoxWebBrowser(_logger, pageToHost, forceBrowserStart, isStartingMultipleInstances);
                 case WebBrowserType.Chrome:
                     return new ChromeWebBrowser(_logger, pageToHost, forceBrowserStart, isStartingMultipleInstances);
-                case WebBrowserType.Phone:
-                    return new WindowsPhoneWebBrowser(_logger, xapHost);
             }
 
             throw new NotImplementedException();

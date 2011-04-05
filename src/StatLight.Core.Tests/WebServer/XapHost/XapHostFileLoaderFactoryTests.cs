@@ -25,60 +25,60 @@ namespace StatLight.Core.Tests.WebServer.XapHost
                 .ShouldBeThrownBy(() =>
                     _xapHostFileLoaderFactory.MapToXapHostType(
                         (UnitTestProviderType)int.MaxValue,
-                        (MicrosoftTestingFrameworkVersion)int.MaxValue));
+                        (MicrosoftTestingFrameworkVersion)int.MaxValue, isPhoneRun:false));
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_NUnit_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.NUnit, null).ShouldEqual(DefaultXapHostType);
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.NUnit, null, isPhoneRun: false).ShouldEqual(DefaultXapHostType);
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_XUnitLight_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.XUnitLight, null).ShouldEqual(DefaultXapHostType);
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.XUnitLight, null, isPhoneRun: false).ShouldEqual(DefaultXapHostType);
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_MSTest_December2008_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.December2008)
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.December2008, isPhoneRun: false)
                 .ShouldEqual(XapHostType.MSTestDecember2008);
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_MSTest_March2009_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.March2009)
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.March2009, isPhoneRun: false)
                 .ShouldEqual(XapHostType.MSTestMarch2009);
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_MSTest_July2009_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.July2009)
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.July2009, isPhoneRun: false)
                 .ShouldEqual(XapHostType.MSTestJuly2009);
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_MSTest_October2009_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.October2009)
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.October2009, isPhoneRun: false)
                 .ShouldEqual(XapHostType.MSTestOctober2009);
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_MSTest_November2009_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.November2009)
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.November2009, isPhoneRun: false)
                 .ShouldEqual(XapHostType.MSTestNovember2009);
         }
 
         [Test]
         public void Should_return_the_default_UnitDriven_xap_host_for_December2009_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.UnitDriven, null)
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.UnitDriven, null, isPhoneRun: false)
                 .ShouldEqual(XapHostType.UnitDrivenDecember2009);
         }
 

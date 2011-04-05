@@ -22,7 +22,7 @@ namespace StatLight.IntegrationTests
             var y = new XapHostFileLoaderFactory(logger, @"C:\code\statlight\src\build\bin\debug\");
             var statLightConfigurationFactory = new StatLightConfigurationFactory(logger, y);
             var statLightConfigurationForXap = statLightConfigurationFactory.GetStatLightConfigurationForXap(
-                UnitTestProviderType.MSTestPhone,
+                UnitTestProviderType.MSTest,
                 xapUnderTest,
                 MicrosoftTestingFrameworkVersion.May2010,
                 new Collection<string>(),
@@ -30,8 +30,8 @@ namespace StatLight.IntegrationTests
                 1,
                 false,
                 string.Empty,
-                WebBrowserType.Phone,
-                true, true);
+                WebBrowserType.SelfHosted,
+                true, true, true);
             var statLightRunnerFactory = new StatLightRunnerFactory(logger);
             var webServerLocation = new WebServerLocation(logger, 8887);
             var webServer = statLightRunnerFactory.CreateWebServer(logger, statLightConfigurationForXap, webServerLocation);
