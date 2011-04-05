@@ -9,7 +9,7 @@ namespace StatLight.Core.Runners
         IRunner CreateOnetimeConsoleRunner(StatLightConfiguration statLightConfiguration);
         IRunner CreateWebServerOnlyRunner(StatLightConfiguration statLightConfiguration);
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        IRunner CreateRemotelyHostedRunner(StatLightConfiguration statLightConfiguration);
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        //IRunner CreateRemotelyHostedRunner(StatLightConfiguration statLightConfiguration);
     }
 }

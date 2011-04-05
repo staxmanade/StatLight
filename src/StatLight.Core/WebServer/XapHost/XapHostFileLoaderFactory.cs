@@ -15,8 +15,9 @@ namespace StatLight.Core.WebServer.XapHost
         private readonly ILogger _logger;
         private IDictionary<XapHostType, IXapHostFileLoader> XapHostFileLoaders { get; set; }
 
-        
-        public XapHostFileLoaderFactory(ILogger logger):this(logger, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+
+        public XapHostFileLoaderFactory(ILogger logger)
+            : this(logger, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
         {
         }
 
@@ -44,7 +45,7 @@ namespace StatLight.Core.WebServer.XapHost
             return XapHostFileLoaders[version].LoadXapHost();
         }
 
-        public XapHostType MapToXapHostType(UnitTestProviderType unitTestProviderType, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion)
+        public XapHostType MapToXapHostType(UnitTestProviderType unitTestProviderType, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, bool isPhoneRun)
         {
             Action throwNotSupportedException = () =>
             {
@@ -53,38 +54,67 @@ namespace StatLight.Core.WebServer.XapHost
                         .FormatWith(unitTestProviderType, microsoftTestingFrameworkVersion));
             };
 
-            switch (unitTestProviderType)
+            if (isPhoneRun)
             {
-                case UnitTestProviderType.NUnit:
-                case UnitTestProviderType.XUnitLight:
-                    return XapHostType.MSTestMay2010;
+                switch (unitTestProviderType)
+                {
+                    case UnitTestProviderType.NUnit:
+                    case UnitTestProviderType.XUnitLight:
+                    case UnitTestProviderType.MSTest:
+                        if(microsoftTestingFrameworkVersion != null && microsoftTestingFrameworkVersion == MicrosoftTestingFrameworkVersion.May2010)
+                        return XapHostType.MSTestMay2010Phone;
 
-                case UnitTestProviderType.MSTestPhone:
-                    return XapHostType.MSTestMay2010Phone;
+                        throwNotSupportedException();
+                        break;
 
-                case UnitTestProviderType.MSTestWithCustomProvider:
-                case UnitTestProviderType.MSTest:
+                    case UnitTestProviderType.MSTestWithCustomProvider:
+                        throw new NotSupportedException("Could possibly be supported - but just not done yet");
 
-                    if(microsoftTestingFrameworkVersion.HasValue)
-                    {
-                        var msTestVersionXapHostStringName = "MSTest" + microsoftTestingFrameworkVersion.Value;
+                    case UnitTestProviderType.UnitDriven:
+                        throw new NotSupportedException("Could possibly be supported - but just not done yet");
 
-                        if (Enum.IsDefined(typeof(XapHostType), msTestVersionXapHostStringName))
-                            return (XapHostType)Enum.Parse(typeof(XapHostType), msTestVersionXapHostStringName);
-                    }
+                    case UnitTestProviderType.Undefined:
+                    default:
+                        throwNotSupportedException();
+                        break;
+                }
+            }
+            else
+            {
+                switch (unitTestProviderType)
+                {
+                    case UnitTestProviderType.NUnit:
+                    case UnitTestProviderType.XUnit:
+                        return XapHostType.MSTestMay2010;
 
-                    throwNotSupportedException();
-                    break;
+                    case UnitTestProviderType.MSTestWithCustomProvider:
+                    case UnitTestProviderType.MSTest:
 
+                        if (microsoftTestingFrameworkVersion.HasValue)
+                        {
+                            var msTestVersionXapHostStringName = "MSTest" + microsoftTestingFrameworkVersion.Value;
+
+                            if (Enum.IsDefined(typeof(XapHostType), msTestVersionXapHostStringName))
+                                return (XapHostType)Enum.Parse(typeof(XapHostType), msTestVersionXapHostStringName);
+                        }
+
+                        throwNotSupportedException();
+                        break;
+
+                case UnitTestProviderType.UnitDriven:
+                    return XapHostType.UnitDrivenDecember2009;
                 case UnitTestProviderType.UnitDriven:
                     return XapHostType.UnitDrivenDecember2009;
                 case UnitTestProviderType.Xunit:
                     return XapHostType.XunitContribApril2011;
+                    case UnitTestProviderType.UnitDriven:
+                        return XapHostType.UnitDrivenDecember2009;
 
-                case UnitTestProviderType.Undefined:
-                default:
-                    throwNotSupportedException();
-                    break;
+                    case UnitTestProviderType.Undefined:
+                    default:
+                        throwNotSupportedException();
+                        break;
+                }
             }
 
             return XapHostType.UnitDrivenDecember2009;

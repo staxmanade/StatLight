@@ -19,7 +19,6 @@ namespace StatLight.Core.Configuration
         public const int DefaultDialogSmackDownElapseMilliseconds = 5000;
         private readonly ILogger _logger;
         private readonly XapHostFileLoaderFactory _xapHostFileLoaderFactory;
-
         public StatLightConfigurationFactory(ILogger logger)
             : this(logger, new XapHostFileLoaderFactory(logger))
         {
@@ -31,9 +30,7 @@ namespace StatLight.Core.Configuration
             _xapHostFileLoaderFactory = xapHostFileLoaderFactory;
         }
 
-
-
-        public StatLightConfiguration GetStatLightConfigurationForXap(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost)
+        public StatLightConfiguration GetStatLightConfigurationForXap(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost, bool isPhoneRun)
         {
             if (queryString == null)
                 throw new ArgumentNullException("queryString");
@@ -66,8 +63,6 @@ namespace StatLight.Core.Configuration
                 testAssemblyFormalNames = testFileCollection.GetAssemblyNames();
             }
 
-            ConfigureForPhone(unitTestProviderType, ref webBrowserType);
-
             var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly, testAssemblyFormalNames);
 
             var serverConfig = CreateServerConfiguration(
@@ -79,21 +74,25 @@ namespace StatLight.Core.Configuration
                 queryString,
                 forceBrowserStart,
                 showTestingBrowserHost,
-                runtimeVersion);
+                runtimeVersion,
+                isPhoneRun);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
 
-        private static void ConfigureForPhone(UnitTestProviderType unitTestProviderType, ref WebBrowserType webBrowserType)
-        {
-            if (unitTestProviderType == UnitTestProviderType.MSTestPhone)
-            {
-                webBrowserType = WebBrowserType.Phone;
-                return;
-            }
-        }
-
-        public StatLightConfiguration GetStatLightConfigurationForDll(UnitTestProviderType unitTestProviderType, string dllPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost)
+        public StatLightConfiguration GetStatLightConfigurationForDll(
+            UnitTestProviderType unitTestProviderType, 
+            string dllPath, 
+            MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, 
+            Collection<string> methodsToTest, 
+            string tagFilters, 
+            int numberOfBrowserHosts, 
+            bool isRemoteRun, 
+            string queryString, 
+            WebBrowserType webBrowserType, 
+            bool forceBrowserStart, 
+            bool showTestingBrowserHost,
+            bool isPhoneRun)
         {
             if (queryString == null)
                 throw new ArgumentNullException("queryString");
@@ -110,7 +109,9 @@ namespace StatLight.Core.Configuration
                 AssertFileExists(dllPath);
 
                 var dllFileInfo = new FileInfo(dllPath);
-                var assemblyResolver = new AssemblyResolver(_logger);
+
+                var assemblyResolverFactory = new AssemblyResolverFactory(_logger);
+                var assemblyResolver = assemblyResolverFactory.Create(isPhoneRun, dllFileInfo.Directory);
                 var dependentAssemblies = assemblyResolver.ResolveAllDependentAssemblies(dllFileInfo.FullName);
 
                 var coreFileUnderTest = new TestFile(dllFileInfo.FullName);
@@ -134,8 +135,6 @@ namespace StatLight.Core.Configuration
                 testAssemblyFormalNames = testFileCollection.GetAssemblyNames();
             }
 
-            ConfigureForPhone(unitTestProviderType, ref webBrowserType);
-
             var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly, testAssemblyFormalNames);
 
             var serverConfig = CreateServerConfiguration(
@@ -147,7 +146,8 @@ namespace StatLight.Core.Configuration
                 queryString,
                 forceBrowserStart,
                 showTestingBrowserHost,
-                runtimeVersion);
+                runtimeVersion,
+                isPhoneRun);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
@@ -195,9 +195,10 @@ namespace StatLight.Core.Configuration
             string queryString,
             bool forceBrowserStart,
             bool showTestingBrowserHost,
-            string runtimeVersion)
+            string runtimeVersion,
+            bool isPhoneRun)
         {
-            XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
+            XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion, isPhoneRun);
 
             Func<byte[]> hostXapFactory = () =>
             {
@@ -206,7 +207,7 @@ namespace StatLight.Core.Configuration
                 return hostXap;
             };
 
-            return new ServerTestRunConfiguration(hostXapFactory, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, queryString, forceBrowserStart, showTestingBrowserHost);
+            return new ServerTestRunConfiguration(hostXapFactory, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, queryString, forceBrowserStart, showTestingBrowserHost, isPhoneRun);
         }
 
         private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, Func<IEnumerable<ITestFile>> filesToCopyIntoHostXapFunc, string runtimeVersion)
@@ -222,16 +223,5 @@ namespace StatLight.Core.Configuration
 
             return xapHost;
         }
-
-
     }
-
-
-    public interface IStatLightConfigurationFactory
-    {
-        StatLightConfiguration GetStatLightConfigurationForXap(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost);
-
-        StatLightConfiguration GetStatLightConfigurationForDll(UnitTestProviderType unitTestProviderType, string dllPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, bool showTestingBrowserHost);
-    }
-
 }

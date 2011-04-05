@@ -123,6 +123,7 @@
     <Compile Include="SpecificationExtensions.cs" />
     <Compile Include="WebServer\WebServerLocationTests.cs" />
     <Compile Include="WebServer\XapHost\XapHostFileLoaderFactoryTests.cs" />
+    <Compile Include="WebServer\XapInspection\SilverlightAssemblyResolverTests.cs" />
     <Compile Include="WebServer\XapInspection\XapReaderTests.cs" />
     <Compile Include="Monitoring\XapFileMonitoring\XapWatcherTests.cs" />
     <Compile Include="FixtureBase.cs" />

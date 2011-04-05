@@ -212,6 +212,7 @@ Try: (the following two steps that should allow StatLight to start a web server 
             string queryString = _options.QueryString;
             WebBrowserType webBrowserType = _options.WebBrowserType;
             bool forceBrowserStart = _options.ForceBrowserStart;
+            bool isPhoneRun = _options.UserPhoneEmulator;
 
             IEnumerable<string> xapPaths = _options.XapPaths;
             IEnumerable<string> testDlls = _options.Dlls;
@@ -239,7 +240,8 @@ Try: (the following two steps that should allow StatLight to start a web server 
                         queryString,
                         webBrowserType,
                         forceBrowserStart,
-                        showTestingBrowserHost);
+                        showTestingBrowserHost,
+                        isPhoneRun);
 
                 var testReport = DoTheRun(runnerType, statLightConfiguration);
                 testReports.Add(testReport);
@@ -260,7 +262,8 @@ Try: (the following two steps that should allow StatLight to start a web server 
                         queryString,
                         webBrowserType,
                         forceBrowserStart,
-                        showTestingBrowserHost);
+                        showTestingBrowserHost,
+                        isPhoneRun);
 
                 var testReport = DoTheRun(runnerType, statLightConfiguration);
                 testReports.Add(testReport);
@@ -343,8 +346,8 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 case RunnerType.WebServerOnly:
                     return statLightRunnerFactory.CreateWebServerOnlyRunner(statLightConfiguration);
 
-                case RunnerType.RemoteRun:
-                    return statLightRunnerFactory.CreateRemotelyHostedRunner(statLightConfiguration);
+                //case RunnerType.RemoteRun:
+                //    return statLightRunnerFactory.CreateRemotelyHostedRunner(statLightConfiguration);
 
                 default:
                     return statLightRunnerFactory.CreateOnetimeConsoleRunner(statLightConfiguration);

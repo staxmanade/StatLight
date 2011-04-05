@@ -147,6 +147,7 @@
     <Compile Include="Common\Resources.cs" />
     <Compile Include="CommonExtensions.Desktop.cs" />
     <Compile Include="Common\StatLightException.cs" />
+    <Compile Include="Configuration\IStatLightConfigurationFactory.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -158,8 +159,11 @@
     <Compile Include="Reporting\ConsoleDebugListener.cs" />
     <Compile Include="Runners\IStatLightRunnerFactory.cs" />
     <Compile Include="WebBrowser\WindowsPhoneWebBrowser.cs" />
-    <Compile Include="WebServer\XapInspection\AssemblyResolver.cs" />
+    <Compile Include="WebServer\XapInspection\AssemblyResolverFactory.cs" />
     <Compile Include="Reporting\Providers\IXmlReport.cs" />
+    <Compile Include="WebServer\XapInspection\AssemblyResolverBase.cs" />
+    <Compile Include="WebServer\XapInspection\PhoneAssemblyResolver.cs" />
+    <Compile Include="WebServer\XapInspection\SilverlightAssemblyResolver.cs" />
     <Compile Include="WebServer\XapInspection\XapRewriter.cs" />
     <Compile Include="Events\Aggregation\EventAggregator.cs" />
     <Compile Include="Events\PayloadEvent.cs" />
