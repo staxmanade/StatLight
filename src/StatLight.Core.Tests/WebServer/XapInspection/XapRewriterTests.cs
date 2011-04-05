@@ -124,7 +124,7 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
                                    new TempTestFile("Binaries/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"),
                                };
 
-            ZipFile actualXapHost = _xapRewriter.RewriteZipHostWithFiles(_originalXapHost.ToByteArray(), newFiles);
+            ZipFile actualXapHost = _xapRewriter.RewriteZipHostWithFiles(_originalXapHost.ToByteArray(), newFiles, null);
             string actualXapHostFileName = Path.GetTempFileName();
             actualXapHost.Save(actualXapHostFileName);
 

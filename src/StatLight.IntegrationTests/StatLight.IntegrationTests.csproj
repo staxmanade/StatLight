@@ -90,6 +90,9 @@
     <Compile Include="FixtureBase.cs" />
     <Compile Include="IntegrationTestClientTestRunConfiguration.ClientConfigTests.cs" />
     <Compile Include="NestedClassInheritanceTests.cs" />
+    <Compile Include="ProviderTests\MSTest\when_testing_the_runner_with_MSTest_tests_sl3.cs" />
+    <Compile Include="ProviderTests\UnitDriven\when_testing_the_runner_with_UnitDriven_tests_sl3.cs" />
+    <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_xunit_tests_sl3.cs" />
     <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_xunit_tests.cs" />
     <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_Xunit_tests_filtered_by_certain_methods.cs" />
     <Compile Include="ProviderTests\filtered_tests____.cs" />
@@ -121,6 +124,10 @@
       <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.MSTest.xap</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\StatLight.IntegrationTests.Silverlight.MSTest\StatLight.IntegrationTests.Silverlight.MSTest-SL3.xap">
+      <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.MSTest-SL3.xap</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\StatLight.IntegrationTests.Silverlight.NUnit\StatLight.IntegrationTests.Silverlight.NUnit.xap">
       <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.NUnit.xap</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -129,12 +136,20 @@
       <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.UnitDriven.xap</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\StatLight.IntegrationTests.Silverlight.UnitDriven\StatLight.IntegrationTests.Silverlight.UnitDriven-SL3.xap">
+      <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.UnitDriven-SL3.xap</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\StatLight.IntegrationTests.Silverlight.XunitLight\StatLight.IntegrationTests.Silverlight.XunitLight.xap">
       <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.XunitLight.xap</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\StatLight.IntegrationTests.Silverlight.Xunit\StatLight.IntegrationTests.Silverlight.Xunit.xap">
       <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.Xunit.xap</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\StatLight.IntegrationTests.Silverlight.Xunit\StatLight.IntegrationTests.Silverlight.Xunit-SL3.xap">
+      <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.Xunit-SL3.xap</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\StatLight.IntegrationTests.Silverlight\StatLight.IntegrationTests.Silverlight.xap">

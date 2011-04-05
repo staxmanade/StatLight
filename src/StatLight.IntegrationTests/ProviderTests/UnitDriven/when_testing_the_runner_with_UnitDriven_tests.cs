@@ -33,13 +33,13 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
         [Test]
         public void Should_have_correct_number_of_TotalResults()
         {
-            TestReport.TotalResults.ShouldEqual(11);
+            TestReport.TotalResults.ShouldEqual(12);
         }
 
         [Test]
         public void Should_have_correct_TotalPassed_count()
         {
-            TestReport.TotalPassed.ShouldEqual(7);
+            TestReport.TotalPassed.ShouldEqual(8);
         }
 
         [Test]

@@ -17,7 +17,7 @@ namespace StatLight.Core.WebServer.XapInspection
             _logger = logger;
         }
 
-        public ZipFile RewriteZipHostWithFiles(byte[] hostXap, IEnumerable<ITestFile> filesToPlaceIntoHostXap)
+        public ZipFile RewriteZipHostWithFiles(byte[] hostXap, IEnumerable<ITestFile> filesToPlaceIntoHostXap, string runtimeVersion)
         {
             if (filesToPlaceIntoHostXap == null) throw new ArgumentNullException("filesToPlaceIntoHostXap");
 
@@ -48,6 +48,8 @@ namespace StatLight.Core.WebServer.XapInspection
             //NOTE: the StatLightTempName is a crazy string hick because I couldn't figure out how to get the XAttribute to look like x:Name=...
 
             zipFile.RemoveEntry("AppManifest.xaml");
+            if (runtimeVersion != null)
+                xAppManifest.SetAttributeValue("RuntimeVersion", runtimeVersion);
             string manifestRewritten = xAppManifest.ToString().Replace("StatLightTempName", "x:Name").Replace(" xmlns=\"\"", string.Empty);
             zipFile.AddEntry("AppManifest.xaml", "/", manifestRewritten);
 

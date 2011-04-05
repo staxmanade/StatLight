@@ -107,6 +107,19 @@ namespace StatLight.IntegrationTests.Silverlight
         }
         #endregion
 
+#if !SILVERLIGHT3
+        [TestMethod]
+        public void ShouldBeSL4()
+        {
+            Assert.AreEqual('4', System.Windows.Deployment.Current.RuntimeVersion[0]);
+        }
+#else
+        [TestMethod]
+        public void ShouldBeSL3()
+        {
+            Assert.AreEqual('3', System.Windows.Deployment.Current.RuntimeVersion[0]);
+        }
+#endif
 
         [TestMethod]
         public void Should_fail_due_to_a_message_box_modal_dialog()

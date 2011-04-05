@@ -51,6 +51,7 @@ namespace StatLight.IntegrationTests.Silverlight.UnitDriven
 			}
 		}
 
+#if !SILVERLIGHT3
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void ExpectedExceptionExample()
@@ -91,8 +92,9 @@ namespace StatLight.IntegrationTests.Silverlight.UnitDriven
                 // and simply pass it back in Silverlight.
             }
         }
+#endif
 
-		[TestMethod]
+        [TestMethod]
 		public void FailureExample()
 		{
 			using (UnitTestContext context = GetContext())

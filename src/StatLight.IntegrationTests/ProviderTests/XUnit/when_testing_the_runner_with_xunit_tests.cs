@@ -71,7 +71,7 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
         [Test]
         public void Should_have_correct_TotalPassed_count()
         {
-            TestReport.TotalPassed.ShouldEqual(3);
+            TestReport.TotalPassed.ShouldEqual(4);
         }
 
         [Test]

@@ -30,6 +30,7 @@ namespace StatLight.Core.Configuration
                 throw new ArgumentNullException("queryString");
 
             IEnumerable<ITestFile> filesToCopyIntoHostXap = new List<ITestFile>();
+            string runtimeVersion = null;
             string entryPointAssembly = string.Empty;
             if (isRemoteRun)
             {
@@ -41,6 +42,7 @@ namespace StatLight.Core.Configuration
                 var xapReader = new XapReader(_logger);
 
                 TestFileCollection testFileCollection = xapReader.LoadXapUnderTest(xapPath);
+                runtimeVersion = XapReader.GetRuntimeVersion(xapPath);
 
                 SetupUnitTestProviderType(testFileCollection, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
 
@@ -59,7 +61,8 @@ namespace StatLight.Core.Configuration
                 DefaultDialogSmackDownElapseMilliseconds,
                 queryString,
                 forceBrowserStart,
-                showTestingBrowserHost);
+                showTestingBrowserHost,
+                runtimeVersion);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
@@ -71,6 +74,7 @@ namespace StatLight.Core.Configuration
 
             IEnumerable<ITestFile> filesToCopyIntoHostXap = new List<ITestFile>();
             string entryPointAssembly = string.Empty;
+            string runtimeVersion = null;
             if (isRemoteRun)
             {
             }
@@ -108,7 +112,8 @@ namespace StatLight.Core.Configuration
                 DefaultDialogSmackDownElapseMilliseconds,
                 queryString,
                 forceBrowserStart,
-                showTestingBrowserHost);
+                showTestingBrowserHost,
+                runtimeVersion);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
@@ -155,27 +160,28 @@ namespace StatLight.Core.Configuration
             long dialogSmackDownElapseMilliseconds,
             string queryString,
             bool forceBrowserStart,
-            bool showTestingBrowserHost)
+            bool showTestingBrowserHost,
+            string runtimeVersion)
         {
             XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
 
             Func<byte[]> hostXapFactory = () =>
             {
                 byte[] hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
-                hostXap = RewriteXapWithSpecialFiles(hostXap, filesToCopyIntoHostXap);
+                hostXap = RewriteXapWithSpecialFiles(hostXap, filesToCopyIntoHostXap, runtimeVersion);
                 return hostXap;
             };
 
             return new ServerTestRunConfiguration(hostXapFactory, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, queryString, forceBrowserStart, showTestingBrowserHost);
         }
 
-        private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, IEnumerable<ITestFile> filesToCopyIntoHostXap)
+        private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, IEnumerable<ITestFile> filesToCopyIntoHostXap, string runtimeVersion)
         {
             if (filesToCopyIntoHostXap.Any())
             {
                 var rewriter = new XapRewriter(_logger);
 
-                xapHost = rewriter.RewriteZipHostWithFiles(xapHost, filesToCopyIntoHostXap)
+                xapHost = rewriter.RewriteZipHostWithFiles(xapHost, filesToCopyIntoHostXap, runtimeVersion)
                                 .ToByteArray();
             }
 
