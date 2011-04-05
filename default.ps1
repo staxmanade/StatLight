@@ -931,7 +931,12 @@ Task test-phone-xap {
 	execStatLight "-x=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.xap"  "-r=$scriptFile" "--UserPhoneEmulator"
 	
 
-	Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	if( Is-Release-Build ) {
+		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 4 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
+	else {
+		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
 }
 
 Task test-phone-dll {
@@ -939,7 +944,12 @@ Task test-phone-dll {
 	execStatLight "-d=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.dll"  "-r=$scriptFile" "--UserPhoneEmulator"
 	
 
-	Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	if( Is-Release-Build ) {
+		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 4 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
+	else {
+		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
 }
 
 #########################################
