@@ -30,7 +30,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
             var testClass = (ITestClass)message.Decorators[UnitTestLogDecorator.TestClassMetadata];
             var clientEventX = new TestExecutionClassCompletedClientEvent
                                    {
-                                       ClassName = testClass.Type.ReadClassName(),
+                                       ClassName = testClass.Type.ClassNameIncludingParentsIfNested(),
                                        NamespaceName = testClass.Type.Namespace,
                                    };
             return clientEventX;

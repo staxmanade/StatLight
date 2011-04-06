@@ -203,7 +203,7 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
         private static TestExecutionMethod PopulateCoreInfo(TestExecutionMethod testExecutionMethod, MethodInfo method)
         {
             testExecutionMethod.NamespaceName = method.ReflectedType.Namespace;
-            testExecutionMethod.ClassName = method.ReflectedType.ReadClassName();
+            testExecutionMethod.ClassName = method.ReflectedType.ClassNameIncludingParentsIfNested();
             testExecutionMethod.MethodName = method.Name;
             return testExecutionMethod;
         }

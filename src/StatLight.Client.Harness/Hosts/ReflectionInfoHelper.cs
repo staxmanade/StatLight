@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Reflection;
-using StatLight.Client.Harness.Events;
 using StatLight.Client.Harness.Messaging;
 
 namespace StatLight.Client.Harness.Hosts
 {
     public static class ReflectionInfoHelper
     {
-        public static string ReadClassName(this Type type)
+        public static string ClassNameIncludingParentsIfNested(this Type type)
         {
-            return type.FullName.Substring(type.Namespace.Length + 1);
+            var @namespace = type.Namespace ?? string.Empty;
+            if (@namespace.Length > 0)
+                return type.FullName.Substring(@namespace.Length + 1);
+
+            return type.FullName;
         }
 
         public static string FullName(this MemberInfo methodInfo)
         {
             string m = "{0}.{1}.{2}".FormatWith(
                         methodInfo.ReflectedType.Namespace,
-                        methodInfo.ReflectedType.ReadClassName(),
+                        methodInfo.ReflectedType.ClassNameIncludingParentsIfNested(),
                         methodInfo.Name);
             return m;
         }

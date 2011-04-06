@@ -87,6 +87,7 @@
     <Compile Include="FluentSpecificationExtensions.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Harness\Hosts\MSTest\UnitTestProviders\MSTest\VsttProviderTests.cs" />
+    <Compile Include="Harness\Hosts\ReflectionInfoHelperTests.cs" />
     <Compile Include="Harness\Hosts\UnitDrivenTestHost\MethodTesterTests.cs" />
     <Compile Include="Harness\LogMessageHandling\when_the_LogMessages_is_a_ScenarioResult.cs" />
     <Compile Include="Harness\Mocks\MockTestClass.cs" />
