@@ -148,7 +148,7 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
 
         private bool ShouldReportedThisInstanceOfTheFinalResult(MethodInfo methodInfo)
         {
-            var fullName = methodInfo.FullName();
+            var fullName = methodInfo.ReflectedType.FullName;
 
             // Using the property changed events to report messages 
             // puts in a place where we could potentially report multiple 
@@ -203,7 +203,7 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
         private static TestExecutionMethod PopulateCoreInfo(TestExecutionMethod testExecutionMethod, MethodInfo method)
         {
             testExecutionMethod.NamespaceName = method.ReflectedType.Namespace;
-            testExecutionMethod.ClassName = method.ReflectedType.ReadClassName();
+            testExecutionMethod.ClassName = method.ReflectedType.ClassNameIncludingParentsIfNested();
             testExecutionMethod.MethodName = method.Name;
             return testExecutionMethod;
         }

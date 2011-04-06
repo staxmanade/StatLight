@@ -7,20 +7,14 @@ namespace StatLight.Client.Harness.Hosts
 {
     public static class ReflectionInfoHelper
     {
-        public static string ReadClassName(this Type type)
+        /// <summary>
+        /// Namespace.Class+Nested+Nested2 -> Class+Nested+Nested2
+        /// </summary>
+        public static string ClassNameIncludingParentsIfNested(this Type type)
         {
-            return type.FullName.Substring(type.Namespace.Length + 1);
+            int nameStart = type.Namespace != null ? type.Namespace.Length+1 : 0;
+            return type.FullName.Substring(nameStart);
         }
-
-        public static string FullName(this MemberInfo methodInfo)
-        {
-            string m = "{0}.{1}.{2}".FormatWith(
-                        methodInfo.ReflectedType.Namespace,
-                        methodInfo.ReflectedType.ReadClassName(),
-                        methodInfo.Name);
-            return m;
-        }
-
 
         public static void HandleReflectionTypeLoadException(ReflectionTypeLoadException rfex)
         {

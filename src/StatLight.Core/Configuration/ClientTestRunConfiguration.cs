@@ -107,7 +107,7 @@ namespace StatLight.Core.Configuration
             if (memberInfo == null)
                 throw new ArgumentNullException("memberInfo");
 
-            var methodName = memberInfo.FullName();
+            var methodName = memberInfo.ReflectedType.FullName;
             if (CurrentClientTestRunConfiguration.MethodsToTest.Count == 0)
                 return ShouldItBeRunInThisInstance(methodName);
 

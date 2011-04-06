@@ -9,7 +9,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
         {
             var methodInfo = testMethod.Method;
             testExecutionMethod.NamespaceName = methodInfo.ReflectedType.Namespace;
-            testExecutionMethod.ClassName = methodInfo.ReflectedType.ReadClassName();
+            testExecutionMethod.ClassName = methodInfo.ReflectedType.ClassNameIncludingParentsIfNested();
             testExecutionMethod.MethodName = testMethod.Name;
         }
     }
