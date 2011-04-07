@@ -1,6 +1,8 @@
 ﻿
 
 
+using System.Diagnostics;
+
 namespace StatLight.Core.Runners
 {
     using System;
@@ -29,6 +31,7 @@ namespace StatLight.Core.Runners
         private readonly IEventPublisher _eventPublisher;
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
         private ConsoleResultHandler _consoleResultHandler;
+        private ExternalComponentFactory _externalComponentFactory;
 
         public StatLightRunnerFactory(ILogger logger)
             : this(logger, new EventAggregator(logger))
@@ -56,72 +59,14 @@ namespace StatLight.Core.Runners
                 ea.IgnoreTracingEvent<SignalTestCompleteClientEvent>();
             }
 
+            _externalComponentFactory = new ExternalComponentFactory(_logger);
+
             SetupExtensions(_eventSubscriptionManager);
         }
 
-
-        private static string GetFullPath(string path)
-        {
-            if (!Path.IsPathRooted(path) && AppDomain.CurrentDomain.BaseDirectory != null)
-            {
-                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-            }
-
-            return Path.GetFullPath(path);
-        }
-
-
         private void SetupExtensions(IEventSubscriptionManager eventSubscriptionManager)
         {
-            try
-            {
-                var path = GetFullPath("Extensions");
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                using (var directoryCatalog = new DirectoryCatalog(path))
-                using (var compositionContainer = new CompositionContainer(directoryCatalog))
-                {
-
-                    var extensions = compositionContainer.GetExports<ITestingReportEvents>().ToList();
-                    if (extensions.Any())
-                    {
-                        _logger.Debug("********** Extensions **********");
-                        foreach (var lazyExtension in extensions)
-                        {
-                            var extensionInstance = lazyExtension.Value;
-                            _logger.Debug("* Adding - {0}".FormatWith(extensionInstance.GetType().FullName));
-                            eventSubscriptionManager.AddListener(extensionInstance);
-                        }
-                        _logger.Debug("********************************");
-                    }
-                }
-            }
-            catch (ReflectionTypeLoadException rfex)
-            {
-                string loaderExceptionMessages = "";
-                foreach (var t in rfex.LoaderExceptions)
-                {
-                    loaderExceptionMessages += "   -  ";
-                    loaderExceptionMessages += t.Message;
-                    loaderExceptionMessages += Environment.NewLine;
-                }
-
-                string msg = @"
-********************* ReflectionTypeLoadException *********************
-***** Begin Loader Exception Messages *****
-{0}
-***** End Loader Exception Messages *****
-".FormatWith(loaderExceptionMessages);
-
-                _logger.Error(msg);
-            }
-            catch (Exception e)
-            {
-                _logger.Error("Failed to initialize extension. Error:{0}{1}".FormatWith(Environment.NewLine, e.ToString()));
-            }
+            _externalComponentFactory.LoadUpExtensionsForTestingReportEvents(eventSubscriptionManager);
         }
 
         public IRunner CreateContinuousTestRunner(StatLightConfiguration statLightConfiguration)
@@ -226,20 +171,42 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "testPageUrlWithQueryString")]
-        private static List<IWebBrowser> GetWebBrowsers(ILogger logger, Uri testPageUrl, StatLightConfiguration statLightConfiguration)
+        private List<IWebBrowser> GetWebBrowsers(ILogger logger, Uri testPageUrl, StatLightConfiguration statLightConfiguration)
         {
-            if (statLightConfiguration.Server.IsPhoneRun)
-                return new List<IWebBrowser> { new WindowsPhoneWebBrowser(logger, statLightConfiguration.Server.HostXap) };
-
-            var webBrowserType = statLightConfiguration.Client.WebBrowserType;
             var webBrowserFactory = new WebBrowserFactory(logger);
-            var testPageUrlWithQueryString = new Uri(testPageUrl + "?" + statLightConfiguration.Server.QueryString);
-            logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);
-            List<IWebBrowser> webBrowsers = Enumerable
+
+            Func<int, IWebBrowser> webBrowserFactoryHelper;
+
+            if (statLightConfiguration.Server.IsPhoneRun)
+            {
+                webBrowserFactoryHelper = instanceId =>
+                {
+                    Func<byte[]> hostXap = statLightConfiguration.Server.HostXap;
+                    return _externalComponentFactory.CreatePhone(hostXap);
+                };
+            }
+            else
+            {
+                var webBrowserType = statLightConfiguration.Client.WebBrowserType;
+                var testPageUrlWithQueryString = new Uri(testPageUrl + "?" + statLightConfiguration.Server.QueryString);
+                logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);
+                webBrowserFactoryHelper = instanceId =>
+                {
+                    return webBrowserFactory.Create(webBrowserType,
+                                                    testPageUrlWithQueryString,
+                                                    statLightConfiguration.Server.
+                                                        ShowTestingBrowserHost,
+                                                    statLightConfiguration.Server.
+                                                        ForceBrowserStart,
+                                                    statLightConfiguration.Client.
+                                                        NumberOfBrowserHosts > 1);
+                };
+            }
+
+            return Enumerable
                 .Range(1, statLightConfiguration.Client.NumberOfBrowserHosts)
-                .Select(browserI => webBrowserFactory.Create(webBrowserType, testPageUrlWithQueryString, statLightConfiguration.Server.ShowTestingBrowserHost, statLightConfiguration.Server.ForceBrowserStart, statLightConfiguration.Client.NumberOfBrowserHosts > 1))
+                .Select(browserI => webBrowserFactoryHelper(browserI))
                 .ToList();
-            return webBrowsers;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]

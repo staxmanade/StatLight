@@ -3,20 +3,19 @@ using StatLight.Core.Common;
 
 namespace StatLight.Core.WebBrowser
 {
-    internal class WebBrowserFactory
+    public class WebBrowserFactory
     {
         private readonly ILogger _logger;
-
         public WebBrowserFactory(ILogger logger)
         {
             _logger = logger;
         }
 
         public IWebBrowser Create(
-            WebBrowserType browserType, 
-            Uri pageToHost, 
-            bool browserVisible, 
-            bool forceBrowserStart, 
+            WebBrowserType browserType,
+            Uri pageToHost,
+            bool browserVisible,
+            bool forceBrowserStart,
             bool isStartingMultipleInstances)
         {
             switch (browserType)

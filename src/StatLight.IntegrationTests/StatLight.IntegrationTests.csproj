@@ -112,7 +112,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleResourceFileTests.cs" />
     <Compile Include="ServiceReferenceClientConfigTests.ClientConfigTests.cs" />
-    <Compile Include="TraceLogger.cs" />
     <Compile Include="WindowsPhoneWebBrowserTests.cs" />
     <Compile Include="XapReaderTests.cs" />
   </ItemGroup>
