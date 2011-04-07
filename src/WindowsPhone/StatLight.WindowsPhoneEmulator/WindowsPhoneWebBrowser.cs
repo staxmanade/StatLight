@@ -4,9 +4,20 @@ using System.Linq;
 using System.Threading;
 using Microsoft.SmartDevice.Connectivity;
 using StatLight.Core.Common;
+using StatLight.Core.Runners;
+using StatLight.Core.WebBrowser;
 
-namespace StatLight.Core.WebBrowser
+namespace StatLight.WindowsPhoneEmulator
 {
+    public class WindowsPhoneEmulatorWrapper : IPhoneEmulator
+    {
+        public IWebBrowser Create(ILogger logger, Func<byte[]> hostXap)
+        {
+            return new WindowsPhoneWebBrowser(logger, hostXap);
+        }
+    }
+
+
     public class WindowsPhoneWebBrowser : IWebBrowser
     {
         private readonly ILogger _logger;

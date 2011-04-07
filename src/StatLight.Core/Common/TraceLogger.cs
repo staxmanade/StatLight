@@ -1,8 +1,7 @@
 using System;
 using System.Diagnostics;
-using StatLight.Core.Common;
 
-namespace StatLight.IntegrationTests
+namespace StatLight.Core.Common
 {
     public class TraceLogger : LoggerBase
     {
