@@ -7,8 +7,8 @@ TDD/BDD/(insert your test style here) during Silverlight development.
 
 Project Resource Links and Information
 =========================
-Source code location: http://github.com/staxmanade/StatLight
-Documentation, Issue tracking, Discussion, etc located: http://statlight.codeplex.com
+- Source code location: http://github.com/staxmanade/StatLight
+- Documentation, Issue tracking, Discussion, etc located: http://statlight.codeplex.com
 
 Where do I get the most current release?
 =========================
@@ -18,13 +18,13 @@ How to build?
 =========================
 StatLight build infrastructure is put together with a number of psake tasks [http://github.com/JamesKovacs/psake].
 
-1. Make sure the location you extract the project is not too far from your drive's 
+1. Make sure the location you extract the project is not too far from your drives 
    root - (looks like the project is hitting some msbuild max file path issues)
 2. Execute the build of choice.
    Release build ----- You can either execute 
-                  - build-Full-Release.bat (compile the solution, runs test suite, creates package relese)
+                  - build-Full-Release.bat (compile the solution, runs test suite, creates package release)
                   or
-                  - build-Full-Release-skip-tests.bat (compile the solution, creates package relese)
+                  - build-Full-Release-skip-tests.bat (compile the solution, creates package release)
                   then
                   - you should find the build artifacts in the .\Release folder.
    Debug build   ----- execute the build-Debug.bat file and you can check out the 
