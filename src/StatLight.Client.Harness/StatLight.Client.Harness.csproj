@@ -121,7 +121,7 @@
     </Compile>
     <Compile Include="AssemblyInfo.This.cs" />
     <Compile Include="Events\ExceptionInfo.cs" />
-    <Compile Include="Events\TestFailedEvent.cs" />
+    <Compile Include="Events\ClientEvents.cs" />
     <Compile Include="Hosts\CurrentXapData.cs" />
     <Compile Include="Hosts\ILoadedXapData.cs" />
     <Compile Include="Hosts\ITestRunnerHost.cs" />

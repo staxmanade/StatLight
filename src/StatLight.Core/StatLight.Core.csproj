@@ -124,11 +124,11 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Events\ClientEvents.cs">
+      <Link>Events\ClientEvents.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Client.Harness\Events\ExceptionInfo.cs">
       <Link>Events\ExceptionInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\StatLight.Client.Harness\Events\TestFailedEvent.cs">
-      <Link>Events\TestFailedEvent.cs</Link>
     </Compile>
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
@@ -158,7 +158,7 @@
     <Compile Include="WebServer\XapInspection\XapRewriter.cs" />
     <Compile Include="Events\Aggregation\EventAggregator.cs" />
     <Compile Include="Events\PayloadEvent.cs" />
-    <Compile Include="Events\TestServiceEvents.cs" />
+    <Compile Include="Events\ServerEvents.cs" />
     <Compile Include="Monitoring\BrowserCommunicationTimeoutMonitor.cs" />
     <Compile Include="Monitoring\DialogMonitorResult.cs" />
     <Compile Include="Monitoring\DialogMonitorRunner.cs" />
