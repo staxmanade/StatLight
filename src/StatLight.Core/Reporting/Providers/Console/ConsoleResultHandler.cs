@@ -83,12 +83,7 @@ namespace StatLight.Core.Reporting.Providers.Console
                         message.OtherInfo.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
                     }
 
-                    if (message.ExceptionInfo != null)
-                    {
-                        //TODO: print to the console - the exception info in a more readable/visually parsable format
-                        "Exception Message: ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, true);
-                        message.ExceptionInfo.FullMessage.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
-                    }
+                    WriteExceptionInfo(message.ExceptionInfo);
 
                     "-------------------------------------------------"
                         .WrapConsoleMessageWithColor(ConsoleColor.DarkRed, true);
@@ -101,10 +96,26 @@ namespace StatLight.Core.Reporting.Providers.Console
             }
         }
 
+        private void WriteExceptionInfo(ExceptionInfo exceptionInfo)
+        {
+            if (exceptionInfo != null)
+            {
+                //TODO: print to the console - the exception info in a more readable/visually parsable format
+                "Exception Message: ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, true);
+                exceptionInfo.FullMessage.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
+            }
+        }
+
         public void Handle(FatalSilverlightExceptionServerEvent message)
         {
             if (message == null) throw new ArgumentNullException("message");
             WriteString(message.Message);
+        }
+
+        public void Handle(UnhandledExceptionClientEvent message)
+        {
+            if (message == null) throw new ArgumentNullException("message");
+            WriteExceptionInfo(message.ExceptionInfo);
         }
     }
 }

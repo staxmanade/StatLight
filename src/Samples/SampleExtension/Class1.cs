@@ -22,5 +22,9 @@ namespace SampleExtension
         public void Handle(FatalSilverlightExceptionServerEvent message)
         {
         }
+
+        public void Handle(UnhandledExceptionClientEvent message)
+        {
+        }
     }
 }

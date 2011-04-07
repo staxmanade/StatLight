@@ -31,11 +31,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             }
             catch (Exception ex)
             {
-                var messageObject = new UnhandledExceptionClientEvent
-                                        {
-                                            Exception = ex,
-                                        };
-                Server.PostMessage(messageObject);
+                Server.LogException(ex);
             }
         }
 

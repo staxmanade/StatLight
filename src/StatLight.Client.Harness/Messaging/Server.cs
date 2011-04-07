@@ -41,7 +41,7 @@ namespace StatLight.Client.Harness.Messaging
         {
             var messageObject = new UnhandledExceptionClientEvent
             {
-                Exception = exception,
+                ExceptionInfo = exception,
             };
 
             PostMessage(messageObject);

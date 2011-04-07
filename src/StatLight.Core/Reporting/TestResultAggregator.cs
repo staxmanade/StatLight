@@ -17,7 +17,8 @@ namespace StatLight.Core.Reporting
         IListener<DialogAssertionServerEvent>,
         IListener<BrowserHostCommunicationTimeoutServerEvent>,
         IListener<FatalSilverlightExceptionServerEvent>,
-        IListener<TestExecutionMethodBeginClientEvent>
+        IListener<TestExecutionMethodBeginClientEvent>,
+        IListener<UnhandledExceptionClientEvent>
     {
         private readonly ILogger _logger;
         private readonly IEventPublisher _eventPublisher;
@@ -261,6 +262,16 @@ namespace StatLight.Core.Reporting
                           };
 
             ReportIt(msg);
+        }
+
+        public void Handle(UnhandledExceptionClientEvent message)
+        {
+            if (message == null) throw new ArgumentNullException("message");
+            if (message.ExceptionInfo == null) return;
+
+            string messageValue = message.ExceptionInfo.FullMessage;
+
+            ReportFailureMessage(messageValue);
         }
     }
 }

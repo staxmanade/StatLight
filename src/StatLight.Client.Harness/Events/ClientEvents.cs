@@ -100,7 +100,7 @@ namespace StatLight.Client.Harness.Events
 
     public class UnhandledExceptionClientEvent : ClientEvent
     {
-        public ExceptionInfo Exception { get; set; }
+        public ExceptionInfo ExceptionInfo { get; set; }
     }
 
     public class TraceClientEvent : ClientEvent

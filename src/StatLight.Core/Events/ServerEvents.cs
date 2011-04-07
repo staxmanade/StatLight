@@ -57,7 +57,8 @@ namespace StatLight.Core.Events
     public interface ITestingReportEvents : IListener<TestCaseResult>,
         IListener<TraceClientEvent>,
         IListener<BrowserHostCommunicationTimeoutServerEvent>,
-        IListener<FatalSilverlightExceptionServerEvent>
+        IListener<FatalSilverlightExceptionServerEvent>,
+        IListener<UnhandledExceptionClientEvent>
     { }
 
 }
