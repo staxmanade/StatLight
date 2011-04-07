@@ -1019,7 +1019,7 @@ Task package-release -depends clean-release {
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'
-			#'StatLight.Sources.v*'
+			'StatLight.WindowsPhoneEmulator.dll'
 		)
 
 	$knownFilesToExclude = @(

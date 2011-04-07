@@ -45,6 +45,7 @@ namespace StatLight.Core
 
         public void LoadUpExtensionsForTestingReportEvents(IEventSubscriptionManager eventSubscriptionManager)
         {
+            if (eventSubscriptionManager == null) throw new ArgumentNullException("eventSubscriptionManager");
             try
             {
                 var path = GetFullPath("Extensions");
