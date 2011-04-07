@@ -146,11 +146,11 @@
     <Compile Include="..\statlight.client.harness.mstest\unittestproviders\UnitTestFrameworkAssemblyBase.cs">
       <Link>UnitTestProviders\UnitTestFrameworkAssemblyBase.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Events\ClientEvents.cs">
+      <Link>Events\ClientEvents.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Client.Harness\Events\ExceptionInfo.cs">
       <Link>Events\ExceptionInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\StatLight.Client.Harness\Events\TestFailedEvent.cs">
-      <Link>Events\TestFailedEvent.cs</Link>
     </Compile>
     <Compile Include="..\StatLight.Client.Harness\Hosts\CurrentXapData.cs">
       <Link>Hosts\CurrentXapData.cs</Link>
