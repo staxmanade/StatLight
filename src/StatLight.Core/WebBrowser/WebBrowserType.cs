@@ -2,6 +2,7 @@
 {
     public enum WebBrowserType
     {
+        None,
         SelfHosted,
         Firefox,
         Chrome,

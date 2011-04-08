@@ -42,7 +42,12 @@ namespace StatLight.Console
         public UnitTestProviderType UnitTestProviderType { get; private set; }
 
         public MicrosoftTestingFrameworkVersion? MicrosoftTestingFrameworkVersion { get; private set; }
-        public WebBrowserType WebBrowserType { get; private set; }
+        private WebBrowserType _webBrowserType = WebBrowserType.SelfHosted;
+        public WebBrowserType WebBrowserType
+        {
+            get { return _webBrowserType; }
+        }
+
         public bool IsRequestingDebug { get; private set; }
 
         public int NumberOfBrowserHosts { get; private set; }
@@ -163,7 +168,7 @@ namespace StatLight.Console
                 //.Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v => UseRemoteTestPage = true)
                 .Add("WebBrowserType", "If you have other browser installed, you can have StatLight use any of the following web browsers [{0}]".FormatWith(typeof(WebBrowserType).FormatEnumString()), v =>
                     {
-                        WebBrowserType = ParseEnum<WebBrowserType>(v);
+                        _webBrowserType = ParseEnum<WebBrowserType>(v);
                     })
                 .Add("ForceBrowserStart", "You may need use this option to give permission for StatLight to forcefully close external web browser processes before starting a test run.", v=>ForceBrowserStart = true)
                 .Add("NumberOfBrowserHosts", "Default is 1. Allows you to specify the number of browser windows to spread work across.", v =>
