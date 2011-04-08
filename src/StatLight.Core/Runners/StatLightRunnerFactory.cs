@@ -173,6 +173,13 @@ namespace StatLight.Core.Runners
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "testPageUrlWithQueryString")]
         private List<IWebBrowser> GetWebBrowsers(ILogger logger, Uri testPageUrl, StatLightConfiguration statLightConfiguration)
         {
+            var webBrowserType = statLightConfiguration.Client.WebBrowserType;
+            if (webBrowserType == WebBrowserType.None)
+            {
+                _logger.Debug("Requested WebBrowserType.None. This could hang the build - unless something else out there is expected to run the tests.");
+                return new List<IWebBrowser>();
+            }
+
             var webBrowserFactory = new WebBrowserFactory(logger);
 
             Func<int, IWebBrowser> webBrowserFactoryHelper;
@@ -187,7 +194,6 @@ namespace StatLight.Core.Runners
             }
             else
             {
-                var webBrowserType = statLightConfiguration.Client.WebBrowserType;
                 var testPageUrlWithQueryString = new Uri(testPageUrl + "?" + statLightConfiguration.Server.QueryString);
                 logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);
                 webBrowserFactoryHelper = instanceId =>
@@ -203,10 +209,11 @@ namespace StatLight.Core.Runners
                 };
             }
 
-            return Enumerable
-                .Range(1, statLightConfiguration.Client.NumberOfBrowserHosts)
-                .Select(browserI => webBrowserFactoryHelper(browserI))
-                .ToList();
+            return (from i in Enumerable.Range(1, statLightConfiguration.Client.NumberOfBrowserHosts)
+                    let browser = webBrowserFactoryHelper(i)
+                    where browser != null
+                    select browser)
+                    .ToList();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
