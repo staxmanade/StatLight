@@ -30,8 +30,5 @@ StatLight build infrastructure is put together with a number of psake tasks [htt
    Debug build   ----- execute the build-Debug.bat file and you can check out the 
                        artifacts placed in .\src\build...
 
-Couple things to note during a build.
-   1. The unit/integration tests throw up quite a few assertion dialogs, and message boxes (Don't 
-      close them yourself, unless it hangs for more than 15 seconds). (They _should_ close automatically 
-      during the build, however sometimes the integration tests leave one behind. If it does you can 
-      close it and everything should be fine.)
+Build NOTE:
+      The unit/integration tests throw up quite a few assertion dialogs, and message boxes (Don't close them yourself, unless it hangs for more than 15 seconds). (They _should_ close automatically during the build, however sometimes the integration tests leave one behind. If it does you can close it and everything should be fine.)
