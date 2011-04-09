@@ -38,7 +38,7 @@ namespace StatLight.Core.Events
             const string delimiter = ".";
             return (NamespaceName ?? string.Empty) + delimiter +
                    (ClassName ?? string.Empty) + delimiter +
-                   (MethodName ?? string.Empty) + delimiter;
+                   (MethodName ?? string.Empty);
         }
     }
 }

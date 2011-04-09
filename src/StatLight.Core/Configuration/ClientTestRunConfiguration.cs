@@ -100,6 +100,15 @@ namespace StatLight.Core.Configuration
         private static readonly IEqualityComparer<string> _ignoreCaseStringComparer =
             StringComparer.Create(CultureInfo.InvariantCulture, true);
 
+        public static bool IsTestExplicit(MemberInfo memberInfo)
+        {
+            if (CurrentClientTestRunConfiguration.MethodsToTest.Count == 1)
+                if (ContainsMethod(memberInfo))
+                    return true;
+
+            return false;
+        }
+
         public static bool ContainsMethod(MemberInfo memberInfo)
         {
             if (CurrentClientTestRunConfiguration == null)

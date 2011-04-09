@@ -91,5 +91,12 @@ namespace StatLight.IntegrationTests.Silverlight
         {
             return p1;
         }
+
+        [Test]
+        [Explicit]
+        public void Should_only_run_Explicitly()
+        {
+            Assert.IsTrue(true);
+        }
     }
 }

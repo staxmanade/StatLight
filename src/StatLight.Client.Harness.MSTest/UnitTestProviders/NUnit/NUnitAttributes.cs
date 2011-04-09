@@ -3,6 +3,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 {
     internal static class NUnitAttributes
     {
+        public const string Explicit = "NUnit.Framework.ExplicitAttribute";
         public const string Ignore = "NUnit.Framework.IgnoreAttribute";
         public const string Description = "NUnit.Framework.DescriptionAttribute";
         public const string ExpectedException = "NUnit.Framework.ExpectedExceptionAttribute";

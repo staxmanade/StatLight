@@ -93,6 +93,7 @@
     <Compile Include="ProviderTests\filtered_tests____.cs" />
     <Compile Include="ProviderTests\MSTest\when_testing_the_runner_with_MSTest_tests.cs" />
     <Compile Include="ProviderTests\NUnit\when_testing_the_runner_with_NUnit_tests.cs" />
+    <Compile Include="ProviderTests\NUnit\when_testing_the_runner_with_NUnit_tests_filtered_by_an_explicit_test.cs" />
     <Compile Include="ProviderTests\UnitDriven\when_testing_the_runner_with_UnitDriven_tests.cs" />
     <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_xunit_tests.cs" />
     <Compile Include="ProviderTests\TestXapFileLocations.cs" />

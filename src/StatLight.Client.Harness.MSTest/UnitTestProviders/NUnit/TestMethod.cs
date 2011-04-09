@@ -80,7 +80,19 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 		/// </summary>
 		public bool Ignore
 		{
-			get { return this.Method.HasAttribute(NUnitAttributes.Ignore); }
+			get
+			{
+                if (this.Method.HasAttribute(NUnitAttributes.Ignore))
+                    return true;
+
+                if (this.Method.HasAttribute(NUnitAttributes.Explicit))
+                {
+                    if(StatLight.Core.Configuration.ClientTestRunConfiguration.IsTestExplicit(Method))
+                        return false;
+                    return true;
+                }
+                return false;
+			}
 		}
 
 		/// <summary>

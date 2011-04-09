@@ -37,7 +37,7 @@ namespace StatLight.IntegrationTests.ProviderTests.NUnit
         [Test]
         public void Should_have_correct_TotalIgnored_count()
         {
-            TestReport.TotalIgnored.ShouldEqual(1, "Ignored count wrong");
+            TestReport.TotalIgnored.ShouldEqual(2, "Ignored count wrong");
         }
     }
 }
