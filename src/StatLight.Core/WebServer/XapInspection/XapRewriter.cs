@@ -60,18 +60,6 @@ namespace StatLight.Core.WebServer.XapInspection
 
             if ((Path.GetExtension(file.FileName) ?? string.Empty).Equals(".dll", StringComparison.OrdinalIgnoreCase))
             {
-                /*
-                //TODO: at a possible later time - understand if the pdb files have 
-                // value in a silverlight xap and how to truly leverage them.
-
-                var pdbName = Path.Combine(Path.GetDirectoryName(file.FileName), Path.GetFileNameWithoutExtension(file.FileName), ".pdb");
-                if (File.Exists(pdbName))
-                {
-                    AddFileToZip(zipFile, pdbName, File.ReadAllBytes(pdbName));
-                    _logger.Debug("        including pdb - {0}".FormatWith(pdbName));
-                }
-                */
-
                 var name = Path.GetFileNameWithoutExtension(file.FileName);
 
                 if (string.IsNullOrEmpty(Path.GetDirectoryName(file.FileName)))

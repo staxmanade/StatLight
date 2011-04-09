@@ -34,8 +34,9 @@ namespace StatLight.Core.WebServer.XapInspection
             Debug.Assert(reflectionOnlyLoadFrom != null);
             AssemblyName[] referencedAssemblies = reflectionOnlyLoadFrom.GetReferencedAssemblies();
 
-
             var assemblies = new List<string>();
+
+            IncludePdb(assemblies, path);
 
             foreach (var assembly in referencedAssemblies)
             {
@@ -117,6 +118,9 @@ namespace StatLight.Core.WebServer.XapInspection
             if (asm != null)
             {
                 assemblies.Add(path);
+
+                IncludePdb(assemblies, path);
+
                 foreach (AssemblyName item in asm.GetReferencedAssemblies())
                 {
                     BuildDependentAssemblyList(item, assemblies);
@@ -126,6 +130,32 @@ namespace StatLight.Core.WebServer.XapInspection
             var temp = new string[assemblies.Count];
             assemblies.CopyTo(temp, 0);
             return;
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "path")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "assemblies")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        private void IncludePdb(List<string> assemblies, string path)
+        {
+            /*
+             * When including the pdb's it doesn't appear to help - meaning we still don't see line numbers...
+             * 
+            if (path.Length > 4)
+            {
+                var pdbFileName = path.Substring(0, path.Length - 4) + ".pdb";
+
+                if (File.Exists(pdbFileName))
+                {
+                    _logger.Debug("Resolved Assembly's PDB - {0}".FormatWith(pdbFileName));
+                    assemblies.Add(pdbFileName);
+                }
+                else
+                {
+                    _logger.Debug("Cannot resolve Assembly's PDB - {0}".FormatWith(pdbFileName));
+                }
+
+            }
+            */
         }
 
         private static Assembly LoadAssembly(string path)
