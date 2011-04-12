@@ -661,6 +661,12 @@ Task compile-Solution {
 	exec { . $msbuild $solutionFile /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo } 'msbuild failed on StatLight.sln'
 }
 
+Task compile-Solution-Phone {
+	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
+	$verbosity = "/verbosity:quiet"
+	exec { . $msbuild .\src\StatLight-Phone.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo }
+}
+
 Task compile-StatLIght-UnitDrivenHost {
 	$unitDrivenXapFile = ".\src\StatLight.Client.Harness.UnitDriven\Bin\$build_configuration\StatLight.Client.Harness.dll"
 	$references = (ls .\src\StatLight.Client.Harness.UnitDriven\Bin\$build_configuration\*.dll)
@@ -1093,11 +1099,13 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 	Write-Documentation
 }
 
-Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning, test-multiple-xaps, test-multiple-one-xap-one-dll, test-multiple-two-dlls, test-phone-xap,test-phone-dll {
+Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning, test-multiple-xaps, test-multiple-one-xap-one-dll, test-multiple-two-dlls, test-phone {
+Task test-single-assemblies -depends test-single-assembly-run {
+}
+
+Task test-phone -depends test-phone-xap, test-phone-dll {
 }
 
 Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLIght-XUnitContribHost, compile-StatLight-MSTestHostVersionIntegrationTests {
 }
 
-Task test-single-assemblies -depends test-single-assembly-run {
-}
