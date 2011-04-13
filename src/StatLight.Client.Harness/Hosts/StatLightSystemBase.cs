@@ -35,7 +35,6 @@ namespace StatLight.Client.Harness.Hosts
                                     .Where(w => w.Source.Contains("StatLight", StringComparison.OrdinalIgnoreCase))
                                     .Select(ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative)))
                                     .Select(stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
-#endif
                 var type = list
                     .SelectMany(s => s.GetTypes())
                     .Where(w => w != typeof(T))
@@ -56,6 +55,7 @@ namespace StatLight.Client.Harness.Hosts
                             string.Join("   - " + Environment.NewLine, list.Select(s => s.FullName).ToArray())));
                 }
                 service = (T)Activator.CreateInstance(type.Single());
+#endif
             }
             catch (ReflectionTypeLoadException rfex)
             {
