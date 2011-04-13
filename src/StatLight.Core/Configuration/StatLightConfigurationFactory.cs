@@ -29,7 +29,7 @@ namespace StatLight.Core.Configuration
             if (queryString == null)
                 throw new ArgumentNullException("queryString");
 
-            IEnumerable<ITestFile> filesToCopyIntoHostXap = new List<ITestFile>();
+            Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string entryPointAssembly = string.Empty;
             if (isRemoteRun)
             {
@@ -46,7 +46,13 @@ namespace StatLight.Core.Configuration
 
                 entryPointAssembly = testFileCollection.TestAssemblyFullName;
 
-                filesToCopyIntoHostXap = testFileCollection.FilesContainedWithinXap;
+
+
+                filesToCopyIntoHostXap = () =>
+                {
+                    return xapReader.LoadXapUnderTest(xapPath).FilesContainedWithinXap;
+                };
+
             }
 
             var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly);
@@ -69,7 +75,7 @@ namespace StatLight.Core.Configuration
             if (queryString == null)
                 throw new ArgumentNullException("queryString");
 
-            IEnumerable<ITestFile> filesToCopyIntoHostXap = new List<ITestFile>();
+            Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string entryPointAssembly = string.Empty;
             if (isRemoteRun)
             {
@@ -95,7 +101,13 @@ namespace StatLight.Core.Configuration
 
                 entryPointAssembly = xapReadItems.TestAssemblyFullName;
 
-                filesToCopyIntoHostXap = xapReadItems.FilesContainedWithinXap;
+                filesToCopyIntoHostXap =()=>
+                                            {
+                                                return new TestFileCollection(_logger,
+                                                                       AssemblyName.GetAssemblyName(dllFileInfo.FullName)
+                                                                           .ToString(),
+                                                                       dependentFilesUnderTest).FilesContainedWithinXap;
+                                            };
             }
 
             var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, showTestingBrowserHost, entryPointAssembly);
@@ -151,7 +163,7 @@ namespace StatLight.Core.Configuration
             string xapPath,
             UnitTestProviderType unitTestProviderType,
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion,
-            IEnumerable<ITestFile> filesToCopyIntoHostXap,
+            Func<IEnumerable<ITestFile>> filesToCopyIntoHostXapFunc,
             long dialogSmackDownElapseMilliseconds,
             string queryString,
             bool forceBrowserStart,
@@ -162,20 +174,21 @@ namespace StatLight.Core.Configuration
             Func<byte[]> hostXapFactory = () =>
             {
                 byte[] hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
-                hostXap = RewriteXapWithSpecialFiles(hostXap, filesToCopyIntoHostXap);
+                hostXap = RewriteXapWithSpecialFiles(hostXap, filesToCopyIntoHostXapFunc);
                 return hostXap;
             };
 
             return new ServerTestRunConfiguration(hostXapFactory, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, queryString, forceBrowserStart, showTestingBrowserHost);
         }
 
-        private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, IEnumerable<ITestFile> filesToCopyIntoHostXap)
+        private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, Func<IEnumerable<ITestFile>> filesToCopyIntoHostXapFunc)
         {
-            if (filesToCopyIntoHostXap.Any())
+            var files = filesToCopyIntoHostXapFunc();
+            if (files.Any())
             {
                 var rewriter = new XapRewriter(_logger);
 
-                xapHost = rewriter.RewriteZipHostWithFiles(xapHost, filesToCopyIntoHostXap)
+                xapHost = rewriter.RewriteZipHostWithFiles(xapHost, files)
                                 .ToByteArray();
             }
 
