@@ -12,6 +12,7 @@ src/build/*
 temp_build*.ps1
 ClientBin/
 bin/
+obj/
 *.swp
 src/VersionInfo.cs
 temp_statlight-integration*

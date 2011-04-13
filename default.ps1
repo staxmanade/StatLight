@@ -659,12 +659,8 @@ Task compile-Solution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
 	$verbosity = "/verbosity:normal"
 	exec { . $msbuild $solutionFile /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo } 'msbuild failed on StatLight.sln'
-}
-
-Task compile-Solution-Phone {
-	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
-	$verbosity = "/verbosity:quiet"
-	exec { . $msbuild .\src\StatLight-Phone.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo }
+	
+	Copy-Item ".\src\StatLight.Client.Harness.Phone\Bin\$build_configuration\StatLight.Client.Harness.Phone.xap" "$build_dir\StatLight.Client.For.MSTestMay2010Phone.xap"
 }
 
 Task compile-StatLIght-UnitDrivenHost {
@@ -1109,3 +1105,5 @@ Task test-phone -depends test-phone-xap, test-phone-dll {
 Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLIght-XUnitContribHost, compile-StatLight-MSTestHostVersionIntegrationTests {
 }
 
+Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {
+}
