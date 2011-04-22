@@ -880,7 +880,8 @@ Task package-zip-project-sources-snapshot {
 
 #Task package-release-temp {
 Task package-release -depends clean-release {
-	$versionBuildPath = "$release_dir\$(get-formatted-assembly-version $core_assembly_path)"
+	$versionNumber = get-formatted-assembly-version $core_assembly_path
+	$versionBuildPath = "$release_dir\$versionNumber"
 
 	$expectedFilesToInclude = @(
 			'Ionic.Zip.Reduced.dll'
@@ -941,7 +942,7 @@ Task package-release -depends clean-release {
 	
 	Get-Item $versionBuildPath | Zip-Files-From-Pipeline $release_zip_path
 	Write-Host -ForegroundColor Green "*************************************************"
-	Write-Host -ForegroundColor Green "Release build place in the following folder."
+	Write-Host -ForegroundColor Green "Release build $versionNumber - Created in the following folder."
 	Write-Host -ForegroundColor Green "     $(get-item $release_dir)"
 	Write-Host -ForegroundColor Green "*************************************************"
 	
