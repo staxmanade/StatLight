@@ -634,7 +634,7 @@ Task compile-StatLight-MSTestHostVersionIntegrationTests {
 
 Task compile-Solution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
-	$verbosity = "/verbosity:quiet"
+	$verbosity = "/verbosity:normal"
 	exec { . $msbuild .\src\StatLight.sln /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo } 'msbuild failed on StatLight.sln'
 }
 
