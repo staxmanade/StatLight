@@ -45,7 +45,7 @@ namespace StatLight.Client.Harness.Hosts
 
             OnReady = onReady;
 
-            _remotelyHostedTestRunnerHost = LocateService<IRemotelyHostedTestRunnerHost>();
+            _remotelyHostedTestRunnerHost = LocateStatLightService<IRemotelyHostedTestRunnerHost>();
 
             if (_remotelyHostedTestRunnerHost != null)
             {

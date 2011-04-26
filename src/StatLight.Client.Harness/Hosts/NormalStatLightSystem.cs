@@ -30,7 +30,7 @@ namespace StatLight.Client.Harness.Hosts
             OnReady = onReady;
 
 
-            TestRunnerHost = LocateService<ITestRunnerHost>();
+            TestRunnerHost = LocateStatLightService<ITestRunnerHost>();
             GoGetTheTestRunConfiguration();
         }
 

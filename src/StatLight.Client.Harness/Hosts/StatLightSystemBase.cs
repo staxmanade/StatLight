@@ -19,18 +19,19 @@ namespace StatLight.Client.Harness.Hosts
         protected Action<UIElement> OnReady;
         protected abstract void OnTestRunConfigurationDownloaded(ClientTestRunConfiguration clientTestRunConfiguration);
 
-        protected static T LocateService<T>() where T : class
+        protected static T LocateStatLightService<T>() where T : class
         {
             T service = null;
             try
             {
+                Assembly[] list = Deployment.Current.Parts
+                                    .Where(w => w.Source.Contains("StatLight"))
+                                    .Select(ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative)))
+                                    .Select(stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
 
-                Assembly[] list = System.Windows.Deployment.Current.Parts.Select(
-                            ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative))).Select(
-                                stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
                 var type = list
                     .SelectMany(s => s.GetTypes())
-                    .Where(w=>w != typeof(T))
+                    .Where(w => w != typeof(T))
                     .Where(w => typeof(T).IsAssignableFrom(w))
                     .ToArray();
 
