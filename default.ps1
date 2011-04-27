@@ -465,15 +465,12 @@ function AssertXmlReportIsValid([string]$scriptFile)
 
 function Get-Git-Commit
 {
-	$errorCount = $Error.Count
 	try {
 		$gitLog = git log --oneline -1
 		return $gitLog.Split(' ')[0]
 	}
 	catch {
-		if($errorCount -eq 0){
-			$Error.Clear();
-		}
+		$Error.Clear();
 		return "0000000"
 	}
 }
