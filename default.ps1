@@ -922,7 +922,7 @@ Task package-release -depends clean-release {
 	#Move-Item (Get-ChildItem $release_dir\$statLightSourcesFilePrefix*) "$versionBuildPath\$($_.Name)"
 	$filesToCopyFromBuild | foreach{ Copy-Item $_ "$versionBuildPath\$($_.Name)"  }
 
-	$knownFilesToExclude | foreach{Remove-Item $versionBuildPath\$_ }
+	$knownFilesToExclude | where { Test-Path "$versionBuildPath\$_" } | foreach{ Remove-Item "$versionBuildPath\$_" }
 	
 	$unexpectedFilesInReleaseDir = (Get-ChildItem $versionBuildPath -Exclude $expectedFilesToInclude)
 	if($unexpectedFilesInReleaseDir.Count)
