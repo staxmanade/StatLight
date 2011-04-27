@@ -890,6 +890,9 @@ Task package-zip-project-sources-snapshot {
 #Task package-release-temp {
 Task package-release -depends clean-release {
 	$versionNumber = get-formatted-assembly-version $core_assembly_path
+	$commit = Get-Git-Commit
+	$versionNumber = $versionNumber + "-" + $commit
+
 	$versionBuildPath = "$release_dir\$versionNumber"
 
 	$expectedFilesToInclude = @(
@@ -945,9 +948,7 @@ Task package-release -depends clean-release {
 	
 	Assert ($assertAllFilesWereFound.Count -eq $assertAllFilesWereFound.Count) "Not all the necessary files were found in the release directory - $expectedFilesToInclude"
 	
-	$version = get-assembly-version $core_assembly_path
-
-	$release_zip_path = "$release_dir\StatLight.v$($version.Major).$($version.Minor).zip"
+	$release_zip_path = "$release_dir\StatLight.$versionNumber.zip"
 	
 	Get-Item $versionBuildPath | Zip-Files-From-Pipeline $release_zip_path
 	Write-Host -ForegroundColor Green "*************************************************"
