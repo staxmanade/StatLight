@@ -467,12 +467,18 @@ function Get-Git-Commit
 {
 	try {
 		$gitLog = git log --oneline -1
-		return $gitLog.Split(' ')[0]
+		if($gitLog){
+			$gitLog.Split(' ')[0]
+		}
+		else {
+			#Pull the TeamCity environment variable (hash)
+			(ls env:BUILD_VCS_NUMBER).Value.SubString(0, 7)
+		}
 	}
 	catch {
-		$Error.Clear();
-		return "0000000"
+		"0000000"
 	}
+	$Error.Clear();
 }
 
 
