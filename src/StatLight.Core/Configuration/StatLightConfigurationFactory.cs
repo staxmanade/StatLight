@@ -1,4 +1,6 @@
 ﻿
+using System.Diagnostics;
+
 namespace StatLight.Core.Configuration
 {
     using System;
@@ -46,8 +48,6 @@ namespace StatLight.Core.Configuration
 
                 entryPointAssembly = testFileCollection.TestAssemblyFullName;
 
-
-
                 filesToCopyIntoHostXap = () =>
                 {
                     return xapReader.LoadXapUnderTest(xapPath).FilesContainedWithinXap;
@@ -85,14 +85,12 @@ namespace StatLight.Core.Configuration
                 AssertFileExists(dllPath);
 
                 var dllFileInfo = new FileInfo(dllPath);
-
-                var assemblyResolver = new AssemblyResolver(_logger, dllFileInfo.Directory);
+                var assemblyResolver = new AssemblyResolver(_logger);
                 var dependentAssemblies = assemblyResolver.ResolveAllDependentAssemblies(dllFileInfo.FullName);
 
                 var coreFileUnderTest = new TestFile(dllFileInfo.FullName);
                 var dependentFilesUnderTest = dependentAssemblies.Select(file => new TestFile(file)).ToList();
                 dependentFilesUnderTest.Add(coreFileUnderTest);
-
                 var xapReadItems = new TestFileCollection(_logger,
                                                           AssemblyName.GetAssemblyName(dllFileInfo.FullName).ToString(),
                                                           dependentFilesUnderTest);

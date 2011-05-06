@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Microsoft.Win32;
@@ -11,34 +10,50 @@ namespace StatLight.Core.WebServer.XapInspection
     public class AssemblyResolver
     {
         private readonly ILogger _logger;
-        private readonly string _originalAssemblyDir;
 
-        private readonly Lazy<string> _silverlightFolder;
-
-        public AssemblyResolver(ILogger logger, DirectoryInfo assemblyDirectoryInfo)
+        public AssemblyResolver(ILogger logger)
         {
             if (logger == null) throw new ArgumentNullException("logger");
-            if (assemblyDirectoryInfo == null) throw new ArgumentNullException("assemblyDirectoryInfo");
             _logger = logger;
-
-            _silverlightFolder = new Lazy<string>(SilverlightFolder);
-            _originalAssemblyDir = assemblyDirectoryInfo.FullName;
-
-            _logger.Debug("AssemblyResolver - OriginalAssembly - [{0}]".FormatWith(_originalAssemblyDir));
         }
 
         public IEnumerable<string> ResolveAllDependentAssemblies(string path)
         {
             _logger.Debug("AssemblyResolver - path: {0}".FormatWith(path));
-            Assembly reflectionOnlyLoadFrom = Assembly.ReflectionOnlyLoadFrom(path);
-            Debug.Assert(reflectionOnlyLoadFrom != null);
-            AssemblyName[] referencedAssemblies = reflectionOnlyLoadFrom.GetReferencedAssemblies();
 
+            _logger.Debug("Creating new AppDomain to reflect over assembly - " + path);
+            AppDomain tempDomain = AppDomain.CreateDomain("TemporaryAppDomain");
+
+            var instanceAndUnwrap = (AppDomainReflectionManager)tempDomain.CreateInstanceAndUnwrap(
+                GetType().Assembly.FullName,
+                typeof (AppDomainReflectionManager).FullName);
+
+            return instanceAndUnwrap.GetAllReferences(path);
+        }
+    }
+
+
+    /// <summary>
+    /// Handles doing a little reflection over in another 
+    /// AppDomain so we don't run into problems when running 
+    /// against multiple versions in different paths.
+    /// </summary>
+    [Serializable]
+    public class AppDomainReflectionManager : MarshalByRefObject
+    {
+        private string _originalAssemblyDir;
+        private Lazy<string> _silverlightFolder;
+
+        public IEnumerable<string> GetAllReferences(string path)
+        {
+            _silverlightFolder = new Lazy<string>(SilverlightFolder);
+            _originalAssemblyDir = new FileInfo(path).DirectoryName;
             var assemblies = new List<string>();
-
             IncludePdb(assemblies, path);
 
-            foreach (var assembly in referencedAssemblies)
+            Assembly asm = LoadAssembly(path);
+
+            foreach (var assembly in asm.GetReferencedAssemblies())
             {
                 BuildDependentAssemblyList(assembly, assemblies);
             }
@@ -46,6 +61,83 @@ namespace StatLight.Core.WebServer.XapInspection
             return assemblies;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "path")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "assemblies")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        private void IncludePdb(List<string> assemblies, string path)
+        {
+            /*
+             * When including the pdb's it doesn't appear to help - meaning we still don't see line numbers...
+             * 
+            if (path.Length > 4)
+            {
+                var pdbFileName = path.Substring(0, path.Length - 4) + ".pdb";
+
+                if (File.Exists(pdbFileName))
+                {
+                    _logger.Debug("Resolved Assembly's PDB - {0}".FormatWith(pdbFileName));
+                    assemblies.Add(pdbFileName);
+                }
+                else
+                {
+                    _logger.Debug("Cannot resolve Assembly's PDB - {0}".FormatWith(pdbFileName));
+                }
+
+            }
+            */
+        }
+
+
+        private void BuildDependentAssemblyList(AssemblyName assemblyName, List<string> assemblies)
+        {
+            if (assemblies == null) throw new ArgumentNullException("assemblies");
+
+            var path = ResolveAssemblyPath(assemblyName);
+
+            // Don't load assemblies we've already worked on.
+            if (assemblies.Contains(path))
+            {
+                return;
+            }
+            Assembly asm = LoadAssembly(path);
+
+            if (asm != null)
+            {
+                assemblies.Add(path);
+
+                IncludePdb(assemblies, path);
+
+                foreach (AssemblyName item in asm.GetReferencedAssemblies())
+                {
+                    BuildDependentAssemblyList(item, assemblies);
+                }
+            }
+
+            var temp = new string[assemblies.Count];
+            assemblies.CopyTo(temp, 0);
+            return;
+        }
+
+
+        private static Assembly LoadAssembly(string path)
+        {
+            if (path == null) throw new ArgumentNullException("path");
+            Assembly asm;
+
+            // Look for common path delimiters in the string to see if it is a name or a path.
+            if ((path.IndexOf(Path.DirectorySeparatorChar, 0, path.Length) != -1) ||
+                (path.IndexOf(Path.AltDirectorySeparatorChar, 0, path.Length) != -1))
+            {
+                // Load the assembly from a path.
+                asm = Assembly.ReflectionOnlyLoadFrom(path);
+            }
+            else
+            {
+                // Try as assembly name.
+                asm = Assembly.ReflectionOnlyLoad(path);
+            }
+            return asm;
+        }
 
         private static string SilverlightFolder()
         {
@@ -100,83 +192,6 @@ namespace StatLight.Core.WebServer.XapInspection
             throw new FileNotFoundException("Could not find assembly [{0}]. The following paths were searched:{1}{2}{1}Try setting the assembly to 'Copy Local=True' in your project so StatLight can attempt to find the assembly.".FormatWith(assemblyName.FullName,
                                                                                                                                  Environment.NewLine, string.Join(Environment.NewLine, pathsTried.ToArray())));
         }
-
-        private void BuildDependentAssemblyList(AssemblyName assemblyName, List<string> assemblies)
-        {
-            if (assemblies == null) throw new ArgumentNullException("assemblies");
-
-            var path = ResolveAssemblyPath(assemblyName);
-
-            // Don't load assemblies we've already worked on.
-            if (assemblies.Contains(path))
-            {
-                return;
-            }
-
-            Assembly asm = LoadAssembly(path);
-
-            if (asm != null)
-            {
-                assemblies.Add(path);
-
-                IncludePdb(assemblies, path);
-
-                foreach (AssemblyName item in asm.GetReferencedAssemblies())
-                {
-                    BuildDependentAssemblyList(item, assemblies);
-                }
-            }
-
-            var temp = new string[assemblies.Count];
-            assemblies.CopyTo(temp, 0);
-            return;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "path")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "assemblies")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        private void IncludePdb(List<string> assemblies, string path)
-        {
-            /*
-             * When including the pdb's it doesn't appear to help - meaning we still don't see line numbers...
-             * 
-            if (path.Length > 4)
-            {
-                var pdbFileName = path.Substring(0, path.Length - 4) + ".pdb";
-
-                if (File.Exists(pdbFileName))
-                {
-                    _logger.Debug("Resolved Assembly's PDB - {0}".FormatWith(pdbFileName));
-                    assemblies.Add(pdbFileName);
-                }
-                else
-                {
-                    _logger.Debug("Cannot resolve Assembly's PDB - {0}".FormatWith(pdbFileName));
-                }
-
-            }
-            */
-        }
-
-        private static Assembly LoadAssembly(string path)
-        {
-            if (path == null) throw new ArgumentNullException("path");
-            Assembly asm;
-
-            // Look for common path delimiters in the string to see if it is a name or a path.
-            if ((path.IndexOf(Path.DirectorySeparatorChar, 0, path.Length) != -1) ||
-                (path.IndexOf(Path.AltDirectorySeparatorChar, 0, path.Length) != -1))
-            {
-                // Load the assembly from a path.
-                asm = Assembly.ReflectionOnlyLoadFrom(path);
-            }
-            else
-            {
-                // Try as assembly name.
-                asm = Assembly.ReflectionOnlyLoad(path);
-            }
-            return asm;
-        }
-
     }
+
 }

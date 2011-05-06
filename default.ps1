@@ -723,7 +723,7 @@ Task test-specific-method-filter {
 
 Task test-auto-detects-xunit-contrib {
 	$scriptFile = GetTemporaryXmlFile;
-	
+
 	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.xUnitContrib\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.xUnitContrib.xap" "-r=$scriptFile"
 
 	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 3 -expectedFailedCount 1 -expectedIgnoredCount 1
@@ -731,14 +731,44 @@ Task test-auto-detects-xunit-contrib {
 
 Task test-multiple-xaps {
 	$scriptFile = GetTemporaryXmlFile;
-	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-o=MSTest" "-r=$scriptFile" 
-	
-	Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 11 -expectedFailedCount 6 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 2
+	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.UITests.xap" "-r=$scriptFile" -b
+
+	if(Is-Release-Build){
+		Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 8 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+	}
+	else {
+		Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 8 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+	}
 }
+
+Task test-multiple-one-xap-one-dll {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-d=.\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-r=$scriptFile" 
+
+	if(Is-Release-Build){
+		Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 10 -expectedFailedCount 3 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 1
+	}
+	else {
+		Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 10 -expectedFailedCount 4 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 1
+	}
+}
+
+Task test-multiple-two-dlls {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-d=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.dll" "-d=.\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-v=April2010" "-r=$scriptFile" 
+
+	if(Is-Release-Build){
+		Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 10 -expectedFailedCount 3 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 1
+	}
+	else {
+		Assert-statlight-xml-report-results -message "test-specific-method-filter" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 10 -expectedFailedCount 4 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 1
+	}
+}
+
 
 Task test-remote-access-querystring {
 	$hostServieWebsitePath = (Get-Item .\src\StatLight.RemoteIntegration\StatLight.RemoteIntegration.Web);
-	
+
 	$cassiniPort = 8085
 	$cassiniDevProcessExe = (Get-Item ".\Tools\CassiniDev\CassiniDev4-console.exe")
 	$cassiniDevProcessArgs = "/path:$hostServieWebsitePath /pm:Specific /p:8085"
@@ -791,7 +821,10 @@ function Assert-statlight-xml-report-results
 		$allTestNodes = $testReportXml.StatLightTestResults.Tests | %{ $_.Test }
 		$filteredTestNodes = ($allTestNodes | where-object { $_.ResultType -eq $resultTypeToLookFor })
 		$foundCount = ($filteredTestNodes| Measure-Object).Count
+		echo "*********************************"
+		echo "ERROR result type: $resultTypeToLookFor"
 		$foundCount.ShouldEqual($count)
+		echo "*********************************"
 	}
 	
 	assertResultTypeCount 'Passed' $expectedPassedCount
@@ -980,8 +1013,9 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 	Write-Documentation
 }
 
-Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning {
+Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning, test-multiple-xaps, test-multiple-one-xap-one-dll, test-multiple-two-dlls {
 }
+
 
 Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {
 }
