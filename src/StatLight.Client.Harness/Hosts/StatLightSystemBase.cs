@@ -25,7 +25,7 @@ namespace StatLight.Client.Harness.Hosts
             try
             {
                 Assembly[] list = Deployment.Current.Parts
-                                    .Where(w => w.Source.Contains("StatLight"))
+                                    .Where(w => w.Source.Contains("StatLight", StringComparison.OrdinalIgnoreCase))
                                     .Select(ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative)))
                                     .Select(stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
 
