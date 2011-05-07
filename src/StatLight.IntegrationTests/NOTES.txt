@@ -1,4 +1,4 @@
 ﻿
 xunit run of Moq.. (home desktop)
 
-Statlight.Console\bin\Debug\StatLight.exe -x=F:\Projects\moq\UnitTests.Silverlight\bin\Debug\Moq.Tests.Silverlight.xap -o=xunit
+StatLight.Console\bin\Debug\StatLight.exe -x=F:\Projects\moq\UnitTests.Silverlight\bin\Debug\Moq.Tests.Silverlight.xap -o=xunit
