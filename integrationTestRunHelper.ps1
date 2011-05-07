@@ -7,4 +7,6 @@
 
 $build_configuration = 'Debug'
 
-& ".\src\build\bin\$build_configuration\StatLight.exe" "-d=.\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" --webserveronly
+#& ".\src\build\bin\$build_configuration\StatLight.exe" "-d=.\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" --webserveronly
+
+& '.\tools\NUnit\nunit-console-x86.exe' /noshadow .\src\build\bin\debug\StatLight.IntegrationTests.dll /run StatLight.IntegrationTests.ProviderTests.XUnit.when_testing_the_runner_with_xunit_tests.Should_get_passing_test_result
