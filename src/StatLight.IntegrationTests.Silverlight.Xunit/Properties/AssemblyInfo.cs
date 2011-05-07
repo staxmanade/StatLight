@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("StatLight.IntegrationTests.Silverlight")]
+[assembly: AssemblyTitle("StatLight.IntegrationTests.Silverlight.Xunit")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("StatLight.IntegrationTests.Silverlight")]
-[assembly: AssemblyCopyright("Copyright ©  2009")]
+[assembly: AssemblyProduct("StatLight.IntegrationTests.Silverlight.Xunit")]
+[assembly: AssemblyCopyright("Copyright © 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("0dec0090-6869-4e20-8b1e-b4bdf1ec9b0d")]
+[assembly: Guid("b6701fd5-c178-41e3-a700-07936a4f14a8")]
 
 // Version information for an assembly consists of the following four values:
 //

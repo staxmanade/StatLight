@@ -116,11 +116,14 @@ namespace StatLight.Core.WebServer.XapInspection
             {
                 // http://staxmanade.blogspot.com/2009/02/xunit-light-for-silverlight.html
                 if (zipEntry.FileName.Equals("XUnitLight.Silverlight.dll", StringComparison.OrdinalIgnoreCase))
-                    return UnitTestProviderType.XUnit;
+                    return UnitTestProviderType.XUnitLight;
 
                 //http://xunitcontrib.codeplex.com/
                 if (zipEntry.FileName.ContainsIgnoreCase("xunitcontrib.runner.silverlight"))
                     return UnitTestProviderType.MSTestWithCustomProvider;
+
+                if (zipEntry.FileName.ContainsIgnoreCase("xunit.runner.silverlight"))
+                    return UnitTestProviderType.Xunit;
 
                 if (zipEntry.FileName.ContainsIgnoreCase("unitdriven"))
                     return UnitTestProviderType.UnitDriven;

@@ -5,6 +5,8 @@
             <Word>StatLight</Word>
             <Word>Xap</Word>
             <Word>Fav</Word>
+            <Word>Contrib</Word>
+            <Word>Xunit</Word>
         </Recognized>
     </Words>
 </Dictionary>

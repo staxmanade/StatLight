@@ -61,7 +61,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
         {
             Microsoft.Silverlight.Testing.UnitTesting.Metadata.UnitTestProviders.Providers.Clear();
 
-            if (unitTestProviderType == UnitTestProviderType.XUnit)
+            if (unitTestProviderType == UnitTestProviderType.XUnitLight)
             {
                 UnitTestSystem.RegisterUnitTestProvider(new XUnitTestProvider());
             }

@@ -35,9 +35,9 @@ namespace StatLight.Core.Tests.WebServer.XapHost
         }
 
         [Test]
-        public void Should_return_the_default_MSTest_xap_host_for_XUnit_test_provider()
+        public void Should_return_the_default_MSTest_xap_host_for_XUnitLight_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.XUnit, null).ShouldEqual(DefaultXapHostType);
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.XUnitLight, null).ShouldEqual(DefaultXapHostType);
         }
 
         [Test]

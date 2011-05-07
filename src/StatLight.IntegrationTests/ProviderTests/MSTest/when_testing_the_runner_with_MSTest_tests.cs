@@ -58,7 +58,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_have_correct_TotalPassed_count_except_theres_one_extra_passed_test_here_because_of_the_MessageBox_test()
         {
-            TestReport.TotalPassed.ShouldEqual(7);
+            TestReport.TotalPassed.ShouldEqual(8);
         }
 
         [Test]
@@ -110,9 +110,9 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         public void Should_receive_the_TestExecutionMethodPassedClientEvent()
         {
 #if DEBUG
-            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(8);
+            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(9);
 #else
-            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(7);
+            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(8);
 #endif
         }
 

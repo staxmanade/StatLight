@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using NUnit.Framework;
-using StatLight.Core.Configuration;
-using StatLight.Core.Tests;
-
 namespace StatLight.IntegrationTests.ProviderTests.XUnit
 {
+    using System;
+    using System.Linq;
+    using global::NUnit.Framework;
+    using StatLight.Core.Configuration;
+    using StatLight.Core.Tests;
+
     [TestFixture]
     public class when_testing_the_runner_with_xunit_tests
         : IntegrationFixtureBase
@@ -22,8 +22,7 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
             base.Before_all_tests();
 
             base.PathToIntegrationTestXap = TestXapFileLocations.XUnit;
-            this._clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.XUnit);
-
+            this._clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.Xunit);
         }
 
         [Test]
@@ -32,7 +31,6 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
 
             foreach (var r in TestReport.TestResults)
                 Console.WriteLine(r.FullMethodName());
-
 
             TestReport
                 .TestResults
@@ -73,7 +71,7 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
         [Test]
         public void Should_have_correct_TotalPassed_count()
         {
-            TestReport.TotalPassed.ShouldEqual(3);
+            TestReport.TotalPassed.ShouldEqual(4);
         }
 
         [Test]

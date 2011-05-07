@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace StatLight.Core.WebServer.XapInspection
 {
+    using System;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -101,6 +102,21 @@ namespace StatLight.Core.WebServer.XapInspection
             {
                 file.Extract(stream);
                 return stream.ToArray();
+            }
+        }
+
+        public static string GetRuntimeVersion(string xapPath)
+        {
+            using (var archive = ZipFile.Read(xapPath))
+            {
+                ZipEntry appManifestEntry = archive["AppManifest.xaml"];
+                if (appManifestEntry == null) 
+                    return null; 
+
+                var xAppManifest = XElement.Load(appManifestEntry.OpenReader());
+
+                var runtimeVersion = xAppManifest.Attribute("RuntimeVersion");
+                return runtimeVersion != null ? runtimeVersion.Value : null;
             }
         }
     }

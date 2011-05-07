@@ -26,6 +26,7 @@ namespace StatLight.Core.WebServer.XapHost
             }
 
             XapHostFileLoaders.Add(XapHostType.UnitDrivenDecember2009, new DiskXapHostFileLoader(_logger, ClientXapNameFormat.FormatWith(XapHostType.UnitDrivenDecember2009)));
+            XapHostFileLoaders.Add(XapHostType.XunitContribApril2011, new DiskXapHostFileLoader(_logger, ClientXapNameFormat.FormatWith(XapHostType.XunitContribApril2011)));
         }
 
         public virtual byte[] LoadXapHostFor(XapHostType version)
@@ -46,7 +47,7 @@ namespace StatLight.Core.WebServer.XapHost
             switch (unitTestProviderType)
             {
                 case UnitTestProviderType.NUnit:
-                case UnitTestProviderType.XUnit:
+                case UnitTestProviderType.XUnitLight:
                     return XapHostType.MSTestMay2010;
 
                 case UnitTestProviderType.MSTestWithCustomProvider:
@@ -65,6 +66,8 @@ namespace StatLight.Core.WebServer.XapHost
 
                 case UnitTestProviderType.UnitDriven:
                     return XapHostType.UnitDrivenDecember2009;
+                case UnitTestProviderType.Xunit:
+                    return XapHostType.XunitContribApril2011;
 
                 case UnitTestProviderType.Undefined:
                 default:

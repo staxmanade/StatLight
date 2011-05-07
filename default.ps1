@@ -252,7 +252,7 @@ echo $sourceFiles
 }
 
 function compile-StatLight-MSTestHostIntegrationTests {
-	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$microsoft_silverlight_testing_version_path, [string]$outAssemblyName)
+	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$microsoft_silverlight_testing_version_path, [string]$outAssemblyName, [string]$additionalDefines)
 
 	$resources = @(
 		"src\StatLight.IntegrationTests.Silverlight.MSTest\obj\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.g.resources"
@@ -281,7 +281,7 @@ echo $sourceFiles
 		'/errorreport:prompt',
 		'/platform:anycpu',
 		'/warn:4'
-		"/define:$buildConfigToUpper``;TRACE``;SILVERLIGHT``;$microsoft_Silverlight_Testing_Version_Name",
+		"/define:$buildConfigToUpper``;TRACE``;SILVERLIGHT``;$additionalDefines$microsoft_Silverlight_Testing_Version_Name",
 		'/debug-',
 		'/optimize+',
 		'/keyfile:src\StatLight.snk',
@@ -337,17 +337,25 @@ function Build-And-Package-StatLight-MSTest {
 	Create-Xap $zippedName $zipFiles
 }
 
-function Build-And-Package-StatLight-MSTest-IntegrationTests {
+function Build-And-Package-All-StatLight-MSTest-IntegrationTests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
+	Build-And-Package-StatLight-MSTest-IntegrationTests $microsoft_Silverlight_Testing_Version_Name "SILVERLIGHT3``;" "SL3" "-SL3"
+	Build-And-Package-StatLight-MSTest-IntegrationTests $microsoft_Silverlight_Testing_Version_Name "" "SL4" ""
+}
 
-	$dllName = 'StatLight.IntegrationTests.Silverlight.MSTest.dll'
+function Build-And-Package-StatLight-MSTest-IntegrationTests {
+	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$additionalDefines, [string]$silverlightVersion, [string]$dllPostfix)
+
+	$dllName = "StatLight.IntegrationTests.Silverlight.MSTest" + $dllPostfix + ".dll"
 	$dllPath = "$build_dir\$dllName"
 
 	Remove-If-Exists $dllPath
 
-	compile-StatLight-MSTestHostIntegrationTests $microsoft_Silverlight_Testing_Version_Name .\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name $dllPath
+	compile-StatLight-MSTestHostIntegrationTests $microsoft_Silverlight_Testing_Version_Name .\lib\Silverlight\Microsoft\$microsoft_Silverlight_Testing_Version_Name $dllPath $additionalDefines
 	
-	$zippedName = "$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.zip"
+	$zippedName = "$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration-" + $silverlightVersion + ".zip"
+	$sourceAppManifest = "src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\AppManifest-" + $silverlightVersion + ".xaml"
+	Copy-Item $sourceAppManifest "src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\AppManifest.xaml"
 	$zipFiles = StatLightIntegrationTestsReferences $microsoft_Silverlight_Testing_Version_Name `
 				| Where-Object { -not $_.Contains($silverlight_core_assemblies_location) } `
 				| foreach{ Get-Item $_}
@@ -415,20 +423,26 @@ function execStatLight()
 }
 
 
-function Execute-MSTest-Version-Acceptance-Tests {
+function Execute-MSTest-Version-Acceptance-Tests-AllSL {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
+	Execute-MSTest-Version-Acceptance-Tests $microsoft_Silverlight_Testing_Version_Name "SL3"
+	Execute-MSTest-Version-Acceptance-Tests $microsoft_Silverlight_Testing_Version_Name "SL4"
+}
+
+function Execute-MSTest-Version-Acceptance-Tests {
+	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$slVersion)
 	
 	$scriptFile = GetTemporaryXmlFile;
-	
-	execStatLight "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration.xap" "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
+	$xapDefinition = "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration-" + $slVersion + ".xap"
+	execStatLight $xapDefinition "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
 	
 	if($build_configuration -eq 'Debug')
 	{
-		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 7 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 8 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
 	else
 	{
-		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 7 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+		Assert-statlight-xml-report-results -message "Execute-MSTest-Version-Acceptance-Tests" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 8 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
 	
 	#added sleep to wait for file system to loose the lock on the file so we can delete it
@@ -636,7 +650,7 @@ Task compile-StatLight-MSTestHostVersionIntegrationTests {
 	
 	rename-file-extensions -itemsPath "$build_dir\*.xap" -fromExtension ".xap" -toExtension ".zip"
 
-	$microsoft_silverlight_testing_versions | foreach { Build-And-Package-StatLight-MSTest-IntegrationTests $_ }
+	$microsoft_silverlight_testing_versions | foreach { Build-And-Package-All-StatLight-MSTest-IntegrationTests $_ }
 
 	rename-file-extensions -itemsPath "$build_dir\*.zip" -fromExtension ".zip" -toExtension ".xap"
 }
@@ -654,6 +668,42 @@ Task compile-StatLIght-UnitDrivenHost {
 	
 	
 	$zippedName = "$build_dir\$statlight_xap_for_prefix.UnitDrivenDecember2009.zip"
+
+	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="4.0.50401.00">
+		<Deployment.Parts>'
+	
+	$referencedNames | foreach { 
+		$ass = $_
+		$extraStuff = "
+			<AssemblyPart x:Name=""$ass"" Source=""$ass.dll"" />"
+		$appManifestContent += $extraStuff	
+	}
+
+	$appManifestContent += '	</Deployment.Parts>
+	</Deployment>'
+
+	$newAppManifestFile = "$(($pwd).Path)\src\build\AppManifest.xaml"
+	Remove-If-Exists $newAppManifestFile
+	([xml]$appManifestContent).Save($newAppManifestFile);
+
+	$zipFiles = $references
+	$zipFiles += @(
+					Get-Item $newAppManifestFile
+				)
+
+	Remove-If-Exists $zippedName
+	#throw 'a'
+	$zipFiles | Zip-Files-From-Pipeline $zippedName | Out-Null
+	#Create-Xap $zippedName $zipFiles
+}
+
+Task compile-StatLIght-XUnitContribHost {
+	$xunitContribXapFile = ".\src\StatLight.Client.Harness.XUnit\Bin\$build_configuration\StatLight.Client.Harness.dll"
+	$references = (ls .\src\StatLight.Client.Harness.XUnit\Bin\$build_configuration\*.dll)
+	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
+	
+	
+	$zippedName = "$build_dir\$statlight_xap_for_prefix.XUnitContribApril2011.zip"
 
 	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="4.0.50401.00">
 		<Deployment.Parts>'
@@ -834,7 +884,7 @@ function Assert-statlight-xml-report-results
 }
 
 Task test-all-mstest-version-acceptance-tests {
-	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests $_ }
+	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
 }
 
 Task test-custom-test-provider {
@@ -938,6 +988,7 @@ Task package-release -depends clean-release {
 			'StatLight.Client.For.November2009.xap'
 			'StatLight.Client.For.October2009.xap'
 			'StatLight.Client.For.UnitDrivenDecember2009.xap'
+			'StatLight.Client.For.XUnitContribApril2011.xap'
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'
@@ -952,6 +1003,7 @@ Task package-release -depends clean-release {
 		#'StatLight.Client.Harness.dll'
 		'StatLight.IntegrationTests.dll'
 		'StatLight.IntegrationTests.Silverlight.MSTest.dll'
+		'StatLight.IntegrationTests.Silverlight.MSTest-SL3.dll'
 	)
 
 	$filesToCopyFromBuild = @(
@@ -1016,8 +1068,7 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning, test-multiple-xaps, test-multiple-one-xap-one-dll, test-multiple-two-dlls {
 }
 
-
-Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLight-MSTestHostVersionIntegrationTests {
+Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLIght-XUnitContribHost, compile-StatLight-MSTestHostVersionIntegrationTests {
 }
 
 Task test-single-assemblies -depends test-single-assembly-run {

@@ -4,7 +4,8 @@
     {
         Undefined,
         MSTest, // Default
-        XUnit,
+        XUnitLight,
+        Xunit,
         NUnit,
         UnitDriven,
         MSTestWithCustomProvider,

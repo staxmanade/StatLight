@@ -110,6 +110,6 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PostBuildEvent>copy $(ProjectDir)$(OutDir)$(ProjectName).xap $(ProjectDir)$(ProjectName).xap
-</PostBuildEvent>
+copy $(ProjectDir)$(OutDir)AppManifest.xaml $(ProjectDir)$(OutDir)AppManifest-SL4.xaml</PostBuildEvent>
   </PropertyGroup>
 </Project>
