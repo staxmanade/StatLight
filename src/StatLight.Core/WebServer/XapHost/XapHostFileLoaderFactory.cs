@@ -1,13 +1,12 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using StatLight.Core.Common;
-using System;
-using StatLight.Core.Configuration;
-using StatLight.Core.WebBrowser;
-
 namespace StatLight.Core.WebServer.XapHost
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Reflection;
+    using StatLight.Core.Common;
+    using StatLight.Core.Configuration;
+
     public class XapHostFileLoaderFactory
     {
         public static readonly string ClientXapNameFormat = "StatLight.Client.For.{0}.xap";
@@ -58,11 +57,9 @@ namespace StatLight.Core.WebServer.XapHost
             {
                 switch (unitTestProviderType)
                 {
-                    case UnitTestProviderType.NUnit:
-                    case UnitTestProviderType.XUnitLight:
                     case UnitTestProviderType.MSTest:
-                        if(microsoftTestingFrameworkVersion != null && microsoftTestingFrameworkVersion == MicrosoftTestingFrameworkVersion.May2010)
-                        return XapHostType.MSTestMay2010Phone;
+                        if (microsoftTestingFrameworkVersion != null && microsoftTestingFrameworkVersion == MicrosoftTestingFrameworkVersion.May2010)
+                            return XapHostType.MSTestMay2010Phone;
 
                         throwNotSupportedException();
                         break;
@@ -84,7 +81,7 @@ namespace StatLight.Core.WebServer.XapHost
                 switch (unitTestProviderType)
                 {
                     case UnitTestProviderType.NUnit:
-                    case UnitTestProviderType.XUnit:
+                    case UnitTestProviderType.XUnitLight:
                         return XapHostType.MSTestMay2010;
 
                     case UnitTestProviderType.MSTestWithCustomProvider:
@@ -101,12 +98,8 @@ namespace StatLight.Core.WebServer.XapHost
                         throwNotSupportedException();
                         break;
 
-                case UnitTestProviderType.UnitDriven:
-                    return XapHostType.UnitDrivenDecember2009;
-                case UnitTestProviderType.UnitDriven:
-                    return XapHostType.UnitDrivenDecember2009;
-                case UnitTestProviderType.Xunit:
-                    return XapHostType.XunitContribApril2011;
+                    case UnitTestProviderType.XUnit:
+                        return XapHostType.XunitContribApril2011;
                     case UnitTestProviderType.UnitDriven:
                         return XapHostType.UnitDrivenDecember2009;
 

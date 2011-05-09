@@ -1,6 +1,4 @@
 ﻿
-using System.Diagnostics;
-
 namespace StatLight.Core.Configuration
 {
     using System;
@@ -11,6 +9,7 @@ namespace StatLight.Core.Configuration
     using System.Reflection;
     using StatLight.Core.Common;
     using StatLight.Core.WebBrowser;
+    using StatLight.Core.WebServer.AssemblyResolution;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.WebServer.XapInspection;
 
@@ -110,9 +109,9 @@ namespace StatLight.Core.Configuration
 
                 var dllFileInfo = new FileInfo(dllPath);
 
-                var assemblyResolverFactory = new AssemblyResolverFactory(_logger);
-                var assemblyResolver = assemblyResolverFactory.Create(isPhoneRun, dllFileInfo.Directory);
-                var dependentAssemblies = assemblyResolver.ResolveAllDependentAssemblies(dllFileInfo.FullName);
+                var assemblyResolver = new AssemblyResolver();
+
+                IEnumerable<string> dependentAssemblies = assemblyResolver.ResolveAllDependentAssemblies(isPhoneRun, dllFileInfo.FullName);
 
                 var coreFileUnderTest = new TestFile(dllFileInfo.FullName);
                 var dependentFilesUnderTest = dependentAssemblies.Select(file => new TestFile(file)).ToList();

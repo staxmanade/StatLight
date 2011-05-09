@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using StatLight.Core.WebServer.XapInspection;
+using StatLight.Core.WebServer.AssemblyResolution;
 
 namespace StatLight.Core.Tests.WebServer.XapInspection
 {

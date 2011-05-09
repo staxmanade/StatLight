@@ -1,17 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using StatLight.Core.Common;
 
-namespace StatLight.Core.WebServer.XapInspection
+namespace StatLight.Core.WebServer.AssemblyResolution
 {
     public class PhoneAssemblyResolver : AssemblyResolverBase
     {
-        public PhoneAssemblyResolver(ILogger logger, FileSystemInfo assemblyDirectoryInfo)
-            : base(logger, assemblyDirectoryInfo)
-        {
-        }
-
         protected override string ResolveAssemblyPath(AssemblyName assemblyName)
         {
             if (assemblyName == null) throw new ArgumentNullException("assemblyName");
@@ -30,10 +24,11 @@ namespace StatLight.Core.WebServer.XapInspection
             if (TryPath(newTestPath))
                 return newTestPath;
 
-            throw new FileNotFoundException("Could not find assembly [{0}]. The following paths were searched:{1}{2}{1}Try setting the assembly to 'Copy Local=True' in your project so StatLight can attempt to find the assembly.".FormatWith(
-                assemblyName.FullName,
-                Environment.NewLine,
-                string.Join(Environment.NewLine, _pathsTriedAndFailed.ToArray())));
+            ThrowFileNotFound(assemblyName.FullName);
+
+            // Should not get here because the above throws.
+            throw new NotImplementedException();
         }
+
     }
 }
