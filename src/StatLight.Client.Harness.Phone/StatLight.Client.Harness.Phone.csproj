@@ -271,7 +271,6 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)StatLight.Client.Harness.Phone.xap $(SolutionDir)build\bin\$(ConfigurationName)\StatLight.Client.For.MSTestMay2010Phone.xap
-</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetDir)StatLight.Client.Harness.Phone.xap $(SolutionDir)build\bin\$(ConfigurationName)\StatLight.Client.For.MSTestMay2010Phone.xap</PostBuildEvent>
   </PropertyGroup>
 </Project>

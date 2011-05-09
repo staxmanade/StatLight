@@ -658,7 +658,9 @@ Task compile-StatLight-MSTestHostVersionIntegrationTests {
 Task compile-Solution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
 	$verbosity = "/verbosity:normal"
-	exec { . $msbuild $solutionFile /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo } 'msbuild failed on StatLight.sln'
+	$solutionFolder = (split-path (get-item $solutionFile))
+	
+	exec { . $msbuild $solutionFile /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo /p:CompileTimeSolutionDir="$solutionFolder" } 'msbuild failed on StatLight.sln'
 	
 	Copy-Item ".\src\StatLight.Client.Harness.Phone\Bin\$build_configuration\StatLight.Client.Harness.Phone.xap" "$build_dir\StatLight.Client.For.MSTestMay2010Phone.xap"
 }
