@@ -157,11 +157,11 @@
     <Compile Include="Runners\IPhoneEmulator.cs" />
     <Compile Include="Runners\IStatLightRunnerFactory.cs" />
     <Compile Include="ExternalComponentFactory.cs" />
-    <Compile Include="WebServer\XapInspection\AssemblyResolverFactory.cs" />
+    <Compile Include="WebServer\AssemblyResolution\AssemblyResolver.cs" />
     <Compile Include="Reporting\Providers\IXmlReport.cs" />
-    <Compile Include="WebServer\XapInspection\AssemblyResolverBase.cs" />
-    <Compile Include="WebServer\XapInspection\PhoneAssemblyResolver.cs" />
-    <Compile Include="WebServer\XapInspection\SilverlightAssemblyResolver.cs" />
+    <Compile Include="WebServer\AssemblyResolution\AssemblyResolverBase.cs" />
+    <Compile Include="WebServer\AssemblyResolution\PhoneAssemblyResolver.cs" />
+    <Compile Include="WebServer\AssemblyResolution\SilverlightAssemblyResolver.cs" />
     <Compile Include="WebServer\XapInspection\XapRewriter.cs" />
     <Compile Include="Events\Aggregation\EventAggregator.cs" />
     <Compile Include="Events\PayloadEvent.cs" />

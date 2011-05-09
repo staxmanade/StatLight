@@ -27,8 +27,8 @@
             NestedClassTestName = "XunitTests+XunitNestedClassTests";
 
             _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
-            		UnitTestProviderType.Xunit,
-            		new List<string>()
+                    UnitTestProviderType.XUnit,
+            		new List<string>
 	                	{
                 		    namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
                 		    namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",

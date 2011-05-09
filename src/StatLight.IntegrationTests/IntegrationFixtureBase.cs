@@ -74,7 +74,7 @@ namespace StatLight.IntegrationTests
                 false,
                 "", StatLight.Core.WebBrowser.WebBrowserType.SelfHosted,
                 forceBrowserStart:true,
-                showTestingBrowserHost:false,
+                showTestingBrowserHost:true,
                 isPhoneRun: false);
 
             //bool showTestingBrowserHost = statLightConfiguration.Server.XapHostType == XapHostType.MSTestApril2010;
