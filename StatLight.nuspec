@@ -3,8 +3,7 @@
   <metadata>
     <id>StatLight</id>
     <version>TODO - Build Script fills this in</version>
-    <authors>
-      <author>Jason Jarrett</author>
+    <authors>Jason Jarrett</author>
     </authors>
     <description>StatLight: Tool for executing Silverlight test xap packages locally during development and in a continuous integration environment.</description>
     <language>en-US</language>
