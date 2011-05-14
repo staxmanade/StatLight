@@ -75,12 +75,12 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     desktop CLR assemblies
     ================================================================
      -->
-<!--    <Target
+    <Target
         Name="GetFrameworkPaths"
         DependsOnTargets="$(GetFrameworkPathsDependsOn)"
      >
 
-        <GetSilverlightFrameworkPath 
+<!--        <GetSilverlightFrameworkPath 
             RegistryBase="$(FrameworkRegistryBaseWithVersion)"
             RuntimePathRegistryKey="$(RuntimePathRegistryKey)"
             RuntimeVersionRegistryKey="$(RuntimeVersionRegistryKey)"
