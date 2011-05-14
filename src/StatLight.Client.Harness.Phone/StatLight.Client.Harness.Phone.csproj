@@ -279,7 +279,7 @@
     <Resource Include="StatLight.logo.png" />
   </ItemGroup>
   <ItemGroup />
-  <Import Project="$(CompileTimeSolutionDir)..\..\tools\WP7_4.0\StatLight.WP7.4.0.targets" />
+  <Import Project="$(CompileTimeSolutionDir)..\..\lib\Phone\WP7_4.0\StatLight.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

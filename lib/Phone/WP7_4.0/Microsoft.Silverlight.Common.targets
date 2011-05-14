@@ -80,7 +80,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         DependsOnTargets="$(GetFrameworkPathsDependsOn)"
      >
 
-<!--        <GetSilverlightFrameworkPath 
+        <GetSilverlightFrameworkPath 
             RegistryBase="$(FrameworkRegistryBaseWithVersion)"
             RuntimePathRegistryKey="$(RuntimePathRegistryKey)"
             RuntimeVersionRegistryKey="$(RuntimeVersionRegistryKey)"
@@ -89,7 +89,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
             <Output TaskParameter="SilverlightSDKPaths" ItemName="_TargetFrameworkSDKDirectoryItem" Condition="'$(TargetFrameworkSDKDirectory)' == ''"/>
             <Output TaskParameter="SilverlightRuntimeVersion" PropertyName="SilverlightRuntimeVersion" Condition="'$(SilverlightRuntimeVersion)' == ''"/>
         </GetSilverlightFrameworkPath>
--->
+
         <!-- Reset some items from the above task. Will remove when we merge with SL build system -->
         <PropertyGroup>
             <_FullFrameworkReferenceAssemblyPaths>$([Microsoft.Build.Utilities.ToolLocationHelper]::GetPathToStandardLibraries($(TargetFrameworkIdentifier), $(TargetFrameworkVersion), ''))</_FullFrameworkReferenceAssemblyPaths>
