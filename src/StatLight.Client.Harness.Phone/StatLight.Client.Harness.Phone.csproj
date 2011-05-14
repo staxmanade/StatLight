@@ -48,20 +48,38 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Phone" />
-    <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Microsoft.Phone">
+      <HintPath>..\..\lib\Phone\Microsoft\Microsoft.Phone.dll</HintPath>
+	</Reference>
+    <Reference Include="Microsoft.Phone.Interop" >
+      <HintPath>..\..\lib\Phone\Microsoft\Microsoft.Phone.Interop.dll</HintPath>
+	</Reference>
     <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Servicemodel" />
-    <Reference Include="System.Windows" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System" >
+      <HintPath>..\..\lib\Phone\Microsoft\System.dll</HintPath>
+	</Reference>
+    <Reference Include="System.Net" >
+      <HintPath>..\..\lib\Phone\Microsoft\System.Net.dll</HintPath>
+	</Reference>
+    <Reference Include="System.Runtime.Serialization" >
+      <HintPath>..\..\lib\Phone\Microsoft\System.Runtime.Serialization.dll</HintPath>
+	</Reference>
+    <Reference Include="System.Servicemodel" >
+      <HintPath>..\..\lib\Phone\Microsoft\System.Servicemodel.dll</HintPath>
+	</Reference>
+    <Reference Include="System.Windows" >
+      <HintPath>..\..\lib\Phone\Microsoft\System.Windows.dll</HintPath>
+	</Reference>
+    <Reference Include="System.Xml" >
+      <HintPath>..\..\lib\Phone\Microsoft\System.Xml.dll</HintPath>
+	</Reference>
+    <Reference Include="System.Xml.Linq" >
+      <HintPath>..\..\lib\Phone\Microsoft\System.Xml.Linq.dll</HintPath>
+	</Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\statlight.client.harness.mstest\logmessagtranslation\ILogMessageToClientEventTranslation.cs">
