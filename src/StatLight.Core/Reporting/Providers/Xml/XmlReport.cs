@@ -1,4 +1,5 @@
-﻿using StatLight.Core.Events;
+﻿using System.Text;
+using StatLight.Core.Events;
 
 namespace StatLight.Core.Reporting.Providers.Xml
 {
@@ -36,16 +37,24 @@ namespace StatLight.Core.Reporting.Providers.Xml
 
         public string GetXmlReport()
         {
-            var root =
-                    new XElement("StatLightTestResults"
-                        , new XAttribute("total", _report.TotalResults)
-                        , new XAttribute("ignored", _report.TotalIgnored)
-                        , new XAttribute("failed", _report.TotalFailed)
-                        , new XAttribute("dateRun", _report.DateTimeRunCompleted.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture))
+            var root = new XDocument(
+                new XElement("StatLightTestResults"
+                    , new XAttribute("total", _report.TotalResults)
+                    , new XAttribute("ignored", _report.TotalIgnored)
+                    , new XAttribute("failed", _report.TotalFailed)
+                    , new XAttribute("dateRun", _report.DateTimeRunCompleted.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture))
 
-                        , GetTestsRuns(_report)
-                    );
-            return root.ToString();
+                    , GetTestsRuns(_report)
+                ))
+                {
+                    Declaration = new XDeclaration("1.0", "utf-8", "")
+                };
+			var sb = new StringBuilder();
+			using (var sw = new StringWriter(sb))
+			{
+				root.Save(sw);
+			}
+        	return sb.ToString();
         }
 
         private static List<XElement> GetTestsRuns(IEnumerable<TestReport> report)
