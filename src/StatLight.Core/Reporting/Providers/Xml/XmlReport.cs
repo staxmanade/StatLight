@@ -1,6 +1,4 @@
-﻿using System.Text;
-using StatLight.Core.Events;
-
+﻿
 namespace StatLight.Core.Reporting.Providers.Xml
 {
     using System;
@@ -8,10 +6,10 @@ namespace StatLight.Core.Reporting.Providers.Xml
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using System.Xml;
+    using System.Text;
     using System.Xml.Linq;
-    using System.Xml.Schema;
     using StatLight.Client.Harness.Events;
+    using StatLight.Core.Events;
     using StatLight.Core.Properties;
 
     public class XmlReport : IXmlReport
@@ -30,12 +28,14 @@ namespace StatLight.Core.Reporting.Providers.Xml
         {
             using (var writer = new StreamWriter(outputFilePath))
             {
-                writer.Write(GetXmlReport());
+                var xml = GetXmlReport();
+                xml.Save(writer);
+                //writer.Write(xml.ToString(options:SaveOptions.None));
                 writer.Close();
             }
         }
 
-        public string GetXmlReport()
+        public XDocument GetXmlReport()
         {
             var root = new XDocument(
                 new XElement("StatLightTestResults"
@@ -47,27 +47,22 @@ namespace StatLight.Core.Reporting.Providers.Xml
                     , GetTestsRuns(_report)
                 ))
                 {
-                    Declaration = new XDeclaration("1.0", "utf-8", "")
+                    Declaration = new XDeclaration("1.0", "", "")
                 };
-			var sb = new StringBuilder();
-			using (var sw = new StringWriter(sb))
-			{
-				root.Save(sw);
-			}
-        	return sb.ToString();
+            return root;
         }
 
         private static List<XElement> GetTestsRuns(IEnumerable<TestReport> report)
         {
-            return report.Select(item => 
-                    new XElement("tests", 
-                        new XAttribute("xapFileName", item.XapPath), 
+            return report.Select(item =>
+                    new XElement("tests",
+                        new XAttribute("xapFileName", item.XapPath),
                         item.TestResults.Select(GetResult))).ToList();
         }
 
         private static XElement GetResult(TestCaseResult result)
         {
-            Func<TestCaseResult, string> formatName = 
+            Func<TestCaseResult, string> formatName =
                 resultX => resultX.FullMethodName();
 
             XElement otherInfoElement = null;
