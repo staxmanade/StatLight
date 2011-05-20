@@ -43,7 +43,7 @@ namespace StatLight.Client.Model.Messaging
                 {
                     using (var writer = new StreamWriter(helper.Request.EndGetRequestStream(ar)))
                     {
-                        writer.Write(HttpUtility.UrlEncode(PostData));
+						writer.Write(PostData);
                     }
                 }
 

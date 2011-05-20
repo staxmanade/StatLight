@@ -146,8 +146,8 @@ namespace StatLight.Core.WebServer
             using (var reader = new StreamReader(stream))
             {
                 var rawString = reader.ReadToEnd();
-                message = HttpUtility.UrlDecode(rawString);
-            }
+				message = HttpUtility.HtmlDecode(rawString);
+			}
             return message;
         }
 
