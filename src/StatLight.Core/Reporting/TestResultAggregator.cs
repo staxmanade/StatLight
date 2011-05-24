@@ -269,7 +269,7 @@ namespace StatLight.Core.Reporting
             if (message == null) throw new ArgumentNullException("message");
             if (message.ExceptionInfo == null) return;
 
-            string messageValue = message.ExceptionInfo.FullMessage;
+			string messageValue = "Unhandled exception trapped in the Silverlight Client." + Environment.NewLine + Environment.NewLine + message.ExceptionInfo.FullMessage;
 
             ReportFailureMessage(messageValue);
         }
