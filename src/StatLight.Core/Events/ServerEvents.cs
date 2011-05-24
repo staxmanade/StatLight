@@ -8,6 +8,7 @@ namespace StatLight.Core.Events
 
     public enum DialogType
     {
+        None,
         Assert,
         MessageBox,
     }
