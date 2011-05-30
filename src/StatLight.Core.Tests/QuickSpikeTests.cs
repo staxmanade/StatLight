@@ -12,6 +12,7 @@ using NUnit.Framework;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
 using StatLight.Core.Reporting;
+using StatLight.Core.Serialization;
 
 namespace StatLight.Core.Tests
 {
@@ -21,6 +22,7 @@ namespace StatLight.Core.Tests
         [Test]
         public void Should_do_something()
         {
+
         }
     }
 }

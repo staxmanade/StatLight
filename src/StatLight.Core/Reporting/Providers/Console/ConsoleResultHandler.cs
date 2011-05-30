@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
 using StatLight.Core.Common;
@@ -81,6 +82,12 @@ namespace StatLight.Core.Reporting.Providers.Console
                     {
                         "Other Info: ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, false);
                         message.OtherInfo.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
+                    }
+
+                    foreach (var metaData in message.Metadata)
+                    {
+                        (metaData.Property + ": ").WrapConsoleMessageWithColor(_settings.ConsoleColorInformatoin, false);
+                        metaData.Value.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
                     }
 
                     WriteExceptionInfo(message.ExceptionInfo);

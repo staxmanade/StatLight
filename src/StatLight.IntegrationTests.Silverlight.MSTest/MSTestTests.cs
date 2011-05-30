@@ -23,6 +23,8 @@ namespace StatLight.IntegrationTests.Silverlight
         }
 
         [TestMethod]
+        [Description("Test description on failing test.")]
+        [Owner("SomeOwnerString")]
         public void this_should_be_a_passing_test()
         {
             Assert.IsTrue(true);
@@ -53,6 +55,8 @@ namespace StatLight.IntegrationTests.Silverlight
         #region Failing Tests
         [TestMethod]
         [Description("Test description on failing test.")]
+        [Owner("SomeOwnerString")]
+        [WorkItem(123)]
         public void this_should_be_a_Failing_test()
         {
             Exception ex1;

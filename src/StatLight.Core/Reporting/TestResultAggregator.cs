@@ -3,11 +3,11 @@
 namespace StatLight.Core.Reporting
 {
     using System;
+    using System.Collections.Generic;
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Common;
     using StatLight.Core.Events;
     using StatLight.Core.Events.Aggregation;
-    using System.Collections.Generic;
 
     public class TestResultAggregator : IDisposable,
         IListener<TestExecutionMethodPassedClientEvent>,
@@ -81,6 +81,7 @@ namespace StatLight.Core.Reporting
             result.ClassName = message.ClassName;
             result.NamespaceName = message.NamespaceName;
             result.MethodName = message.MethodName;
+            result.PopulateMetadata(message.Metadata);
         }
 
         public void Handle(TestExecutionMethodFailedClientEvent message)

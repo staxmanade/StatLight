@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -41,7 +42,6 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
                 .AddListener<TestExecutionMethodFailedClientEvent>(e => _testExecutionMethodFailedClientEvent.Add(e))
                 .AddListener<TestExecutionMethodPassedClientEvent>(e => _testExecutionMethodPassedClientEvent.Add(e))
                 ;
-
         }
 
 
@@ -159,14 +159,46 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         }
 
         [Test]
-        public void Should_have_pulled_the_DescriptionAttribute_information_out_of_a_test()
+        public void Should_have_pulled_the_DescriptionAttribute_information_out_of_a_failing_test()
         {
-            var nonEmptyOtherInfoResults = TestReport.TestResults.Where(w => !string.IsNullOrEmpty(w.OtherInfo));
-            var theOneWeWant = nonEmptyOtherInfoResults.Single(w => w.MethodName.Equals("this_should_be_a_Failing_test"));
-
-            theOneWeWant.ShouldNotBeNull()
-                .OtherInfo.ShouldEqual("Test description on failing test.");
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("this_should_be_a_Failing_test"))
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Description").ShouldEqual("Test description on failing test."));
         }
+
+
+        [Test]
+        public void Should_have_pulled_the_OwnerAttribute_information_out_of_a_failing_test()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("this_should_be_a_Failing_test"))
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Owner").ShouldEqual("SomeOwnerString"));
+
+        }
+
+
+        [Test]
+        public void Should_have_pulled_the_DescriptionAttribute_information_out_of_a_passing_test()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("this_should_be_a_passing_test") && w.ClassName.Equals("MSTestTests"))
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Description").ShouldEqual("Test description on failing test."));
+        }
+
+
+        [Test]
+        public void Should_have_pulled_the_OwnerAttribute_information_out_of_a_passing_test()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("this_should_be_a_passing_test") && w.ClassName.Equals("MSTestTests"))
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Owner").ShouldEqual("SomeOwnerString"));
+        }
+
+
     }
 
     internal static class AssertionExtensions

@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using StatLight.Client.Harness.Events;
-using StatLight.Core.Reporting;
 
 namespace StatLight.Core.Events
 {
     [DebuggerDisplay("Result=[{ResultType}], Method={NamespaceName}.{ClassName}.{MethodName}")]
     public class TestCaseResult
     {
+        private readonly List<MetaDataInfo> _metadata;
+
         public TestCaseResult(ResultType resultType)
         {
             ResultType = resultType;
+            _metadata = new List<MetaDataInfo>();
         }
 
         public string NamespaceName { get; set; }
@@ -19,6 +23,23 @@ namespace StatLight.Core.Events
         public DateTime Started { get; set; }
         public DateTime? Finished { get; set; }
         public string OtherInfo { get; set; }
+
+        public void PopulateMetadata(IEnumerable<MetaDataInfo> metadata)
+        {
+            if (metadata == null) throw new ArgumentNullException("metadata");
+            _metadata.AddRange(metadata);
+        }
+
+        public IEnumerable<MetaDataInfo> Metadata { get { return _metadata; } }
+        public string ReadMetadata(string property)
+        {
+            var data = _metadata.Where(w => w.Property == property).FirstOrDefault();
+            if(data != null)
+                return data.Value;
+
+            return null;
+        }
+
         public TimeSpan TimeToComplete
         {
             get
