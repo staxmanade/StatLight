@@ -31,14 +31,6 @@ namespace StatLight.Core.Events
         }
 
         public IEnumerable<MetaDataInfo> Metadata { get { return _metadata; } }
-        public string ReadMetadata(string property)
-        {
-            var data = _metadata.Where(w => w.Property == property).FirstOrDefault();
-            if(data != null)
-                return data.Value;
-
-            return null;
-        }
 
         public TimeSpan TimeToComplete
         {

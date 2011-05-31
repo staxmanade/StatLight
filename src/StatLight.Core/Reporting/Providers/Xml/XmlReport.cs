@@ -81,7 +81,10 @@ namespace StatLight.Core.Reporting.Providers.Xml
             if (result.Metadata.Any())
             {
                 metaData = new XElement("metaDataItems", from md in result.Metadata
-                                                         select new XElement("metaData", new XAttribute("property", md.Property), md.Value));
+                                                         select new XElement("metaData", 
+                                                                    new XAttribute("classification", md.Classification), 
+                                                                    new XAttribute("name", md.Name), 
+                                                                    md.Value));
             }
 
             return new XElement("test",

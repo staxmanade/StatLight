@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
@@ -19,24 +19,29 @@ namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
 
         public static void AssignMetadata(this TestExecutionMethod testExecutionMethod, MethodInfo methodInfo)
         {
-            ReadProperty(methodInfo, typeof(DescriptionAttribute), "Description", testExecutionMethod);
-            ReadProperty(methodInfo, typeof(OwnerAttribute), "Owner", testExecutionMethod);
-        }
-
-        private static void ReadProperty(MethodInfo methodInfo, Type attributeType, string propertyName, TestExecutionMethod testExecutionMethod)
-        {
-            var descriptionAttribute = methodInfo
-                .GetCustomAttributes(attributeType, true)
-                .FirstOrDefault();
-
-            if (descriptionAttribute == null)
+            var descriptionAttribute = methodInfo.GetAttribute<DescriptionAttribute>().FirstOrDefault();
+            if (descriptionAttribute != null)
             {
-                return;
+                testExecutionMethod.AddMetadata("Description", descriptionAttribute.Description, "Description");
             }
 
-            var value = (string)(attributeType.GetProperty(propertyName).GetValue(descriptionAttribute, new object[0]));
+            var ownerAttribute = methodInfo.GetAttribute<OwnerAttribute>().FirstOrDefault();
+            if (ownerAttribute != null)
+            {
+                testExecutionMethod.AddMetadata("Owner", ownerAttribute.Owner, "Owner");
+            }
 
-            testExecutionMethod.AddMetadata(propertyName, value);
+            foreach (var testPropertyAttribute in methodInfo.GetAttribute<TestPropertyAttribute>())
+            {
+                testExecutionMethod.AddMetadata("TestProperty", testPropertyAttribute.Name, testPropertyAttribute.Value);
+            }
+        }
+
+        private static IEnumerable<T> GetAttribute<T>(this MethodInfo methodInfo)
+        {
+            return methodInfo
+                .GetCustomAttributes(typeof (T), true)
+                .Cast<T>();
         }
     }
 }

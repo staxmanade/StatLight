@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -7,7 +6,6 @@ using StatLight.Client.Harness.Events;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events;
 using StatLight.Core.Tests;
-using StatLight.Core.Reporting;
 using StatLight.Core.Events.Aggregation;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
@@ -164,7 +162,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             TestReport
                 .TestResults
                 .Where(w => w.MethodName.Equals("this_should_be_a_Failing_test"))
-                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Description").ShouldEqual("Test description on failing test."));
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Description").Each(x => x.ShouldEqual("Test description on failing test.")));
         }
 
 
@@ -174,7 +172,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             TestReport
                 .TestResults
                 .Where(w => w.MethodName.Equals("this_should_be_a_Failing_test"))
-                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Owner").ShouldEqual("SomeOwnerString"));
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Owner").Each(x => x.ShouldEqual("SomeOwnerString")));
 
         }
 
@@ -185,7 +183,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             TestReport
                 .TestResults
                 .Where(w => w.MethodName.Equals("this_should_be_a_passing_test") && w.ClassName.Equals("MSTestTests"))
-                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Description").ShouldEqual("Test description on failing test."));
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Description").Each(x => x.ShouldEqual("Test description on failing test.")));
         }
 
 
@@ -195,9 +193,18 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             TestReport
                 .TestResults
                 .Where(w => w.MethodName.Equals("this_should_be_a_passing_test") && w.ClassName.Equals("MSTestTests"))
-                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Owner").ShouldEqual("SomeOwnerString"));
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Owner").Each(x => x.ShouldEqual("SomeOwnerString")));
         }
 
+
+        [Test]
+        public void Should_have_pulled_the_PropertyAttribute_information_out_of_a_passing_test()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("this_should_be_a_passing_test") && w.ClassName.Equals("MSTestTests"))
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("tpName").Each(x => x.ShouldEqual("tpValue")));
+        }
 
     }
 
@@ -206,6 +213,15 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         public static bool HasExceptionInfoWithCriteria(this TestCaseResult testt, Func<ExceptionInfo, bool> criteria)
         {
             return testt.ExceptionInfo == null ? false : criteria(testt.ExceptionInfo);
+        }
+
+        public static IEnumerable<string> ReadMetadata(this TestCaseResult testCaseResult, string property)
+        {
+            var data = testCaseResult.Metadata.Where(w => w.Name == property);
+            if (data.Any())
+                return data.Select(s => s.Value);
+
+            return null;
         }
     }
 }

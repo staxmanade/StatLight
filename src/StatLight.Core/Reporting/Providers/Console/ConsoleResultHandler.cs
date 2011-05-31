@@ -69,24 +69,25 @@ namespace StatLight.Core.Reporting.Providers.Console
                     "Failed".WrapConsoleMessageWithColor(_settings.ConsoleColorError, false);
                     " ------------------".WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
 
-                    "Test Namespace:  ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
+                    "Test Namespace:    ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
                     message.NamespaceName.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
 
-                    "Test Class:  ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
+                    "Test Class:        ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
                     message.ClassName.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
 
-                    "Test Method: ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
+                    "Test Method:       ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
                     message.MethodName.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
 
                     if (!string.IsNullOrEmpty(message.OtherInfo))
                     {
-                        "Other Info: ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
+                        "Other Info:        ".WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
                         message.OtherInfo.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
                     }
 
                     foreach (var metaData in message.Metadata)
                     {
-                        (metaData.Property + ": ").WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
+                        string.Format("{0,-19}", metaData.Classification + ": ").WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
+                        (metaData.Name + " - ").WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
                         metaData.Value.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
                     }
 

@@ -101,21 +101,22 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
                     sb.Append("Test Namespace:  ");
                     sb.AppendLine(message.NamespaceName);
 
-                    sb.Append("Test Class:  ");
+                    sb.Append("Test Class:      ");
                     sb.AppendLine(message.ClassName);
 
-                    sb.Append("Test Method: ");
+                    sb.Append("Test Method:     ");
                     sb.AppendLine(message.MethodName);
 
                     if (!string.IsNullOrEmpty(message.OtherInfo))
                     {
-                        sb.Append("Other Info: ");
+                        sb.Append("Other Info:      ");
                         sb.AppendLine(message.OtherInfo);
                     }
 
                     foreach (var metaData in message.Metadata)
                     {
-                        sb.Append(metaData.Property + ": ");
+                        sb.Append(string.Format("{0,-17}", metaData.Classification + ": "));
+                        sb.Append(metaData.Name + " - ");
                         sb.AppendLine(metaData.Value);
                     }
 

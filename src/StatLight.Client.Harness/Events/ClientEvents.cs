@@ -48,17 +48,21 @@ namespace StatLight.Client.Harness.Events
     public class TestExecutionClassCompletedClientEvent : TestExecutionClass
     { }
 
-    [DataContract]
     public class MetaDataInfo
     {
-        public MetaDataInfo(string propertyName, string value)
+        public MetaDataInfo()
         {
-            Property = propertyName;
+        }
+
+        public MetaDataInfo(string classification, string name, string value)
+        {
+            Classification = classification;
+            Name = name;
             Value = value;
         }
-        [DataMember]
-        public string Property { get; set; }
-        [DataMember]
+
+        public string Classification { get; set; }
+        public string Name { get; set; }
         public string Value { get; set; }
     }
 
@@ -78,9 +82,11 @@ namespace StatLight.Client.Harness.Events
             get { return _metadata; }
         }
 
-        public void AddMetadata(string property, string value)
+        public void AddMetadata(string classification, string name, string value)
         {
-            _metadata.Add(new MetaDataInfo(property, value));
+            _metadata.Add(new MetaDataInfo(classification: classification,
+                                            name: name,
+                                            value: value));
         }
 
         public string FullMethodName
