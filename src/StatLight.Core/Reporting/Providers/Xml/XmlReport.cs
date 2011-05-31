@@ -77,12 +77,20 @@ namespace StatLight.Core.Reporting.Providers.Xml
                 exceptionInfoElement = FormatExceptionInfoElement(result.ExceptionInfo);
             }
 
+            XElement metaData = null;
+            if (result.Metadata.Any())
+            {
+                metaData = new XElement("metaDataItems", from md in result.Metadata
+                                                         select new XElement("metaData", new XAttribute("property", md.Property), md.Value));
+            }
+
             return new XElement("test",
                         new XAttribute("name", formatName(result)),
                         new XAttribute("resulttype", result.ResultType),
                         new XAttribute("timeToComplete", result.TimeToComplete.ToString()),
                         exceptionInfoElement,
-                        otherInfoElement
+                        otherInfoElement,
+                        metaData
                         );
         }
 
