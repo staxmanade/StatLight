@@ -28,7 +28,7 @@ namespace StatLight.Core.Reporting.Providers.Console
 
             var ignoredMessage = "Ignored {0}".FormatWith(completeState.TotalIgnored);
             if (completeState.TotalIgnored > 0)
-                ignoredMessage.WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformatoin, false);
+                ignoredMessage.WrapConsoleMessageWithColor(Settings.Default.ConsoleColorWarning, false);
 
             writer.WriteLine("");
         }

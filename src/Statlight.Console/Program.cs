@@ -316,14 +316,14 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 xmlReport.WriteXmlReport(xmlReportOutputPath);
 
                 "*********************************"
-                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformatoin, true);
+                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
 
                 "Wrote XML report to:{0}{1}"
                     .FormatWith(Environment.NewLine, new FileInfo(xmlReportOutputPath).FullName)
                     .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorWarning, true);
 
                 "*********************************"
-                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformatoin, true);
+                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
             }
         }
 

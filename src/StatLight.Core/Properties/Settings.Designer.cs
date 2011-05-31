@@ -35,9 +35,9 @@ namespace StatLight.Core.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("White")]
-        public global::System.ConsoleColor ConsoleColorInformatoin {
+        public global::System.ConsoleColor ConsoleColorInformation {
             get {
-                return ((global::System.ConsoleColor)(this["ConsoleColorInformatoin"]));
+                return ((global::System.ConsoleColor)(this["ConsoleColorInformation"]));
             }
         }
         
