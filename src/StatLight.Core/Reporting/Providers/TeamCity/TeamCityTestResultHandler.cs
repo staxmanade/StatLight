@@ -115,7 +115,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
                     foreach (var metaData in message.Metadata)
                     {
-                        sb.Append(string.Format("{0,-17}", metaData.Classification + ": "));
+                        sb.Append("{0,-17}".FormatWith(metaData.Classification + ": "));
                         sb.Append(metaData.Name + " - ");
                         sb.AppendLine(metaData.Value);
                     }

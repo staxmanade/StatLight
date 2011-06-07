@@ -86,7 +86,7 @@ namespace StatLight.Core.Reporting.Providers.Console
 
                     foreach (var metaData in message.Metadata)
                     {
-                        string.Format("{0,-19}", metaData.Classification + ": ").WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
+                        "{0,-19}".FormatWith(metaData.Classification + ": ").WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
                         (metaData.Name + " - ").WrapConsoleMessageWithColor(_settings.ConsoleColorInformation, false);
                         metaData.Value.WrapConsoleMessageWithColor(_settings.ConsoleColorError, true);
                     }
