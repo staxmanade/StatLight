@@ -31,6 +31,7 @@ properties {
 	#  - 2. Add the version below 
 	#  - 3. Add the version to the MicrosoftTestingFrameworkVersion enum in the project
 	$microsoft_silverlight_testing_versions = @(
+			'June2011'
 			'Feb2011'
 			'March2010'
 			'April2010'
@@ -987,6 +988,7 @@ Task package-release -depends clean-release {
 			'StatLight.Client.For.May2010.xap'
 			'StatLight.Client.For.November2009.xap'
 			'StatLight.Client.For.October2009.xap'
+			'StatLight.Client.For.June2011.xap'
 			'StatLight.Client.For.UnitDrivenDecember2009.xap'
 			'StatLight.Client.For.XUnitContribApril2011.xap'
 			'StatLight.Core.dll'

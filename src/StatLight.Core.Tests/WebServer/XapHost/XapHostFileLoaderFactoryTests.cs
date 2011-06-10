@@ -40,19 +40,19 @@ namespace StatLight.Core.Tests.WebServer.XapHost
             _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.XUnitLight, null).ShouldEqual(DefaultXapHostType);
         }
 
-        [Test]
-        public void Should_return_the_default_MSTest_xap_host_for_MSTest_December2008_test_provider()
-        {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.December2008)
-                .ShouldEqual(XapHostType.MSTestDecember2008);
-        }
-
-        [Test]
-        public void Should_return_the_default_MSTest_xap_host_for_MSTest_March2009_test_provider()
-        {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.March2009)
-                .ShouldEqual(XapHostType.MSTestMarch2009);
-        }
+        // Depricated: [Test]
+        // Depricated: public void Should_return_the_default_MSTest_xap_host_for_MSTest_December2008_test_provider()
+        // Depricated: {
+        // Depricated:     _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.December2008)
+        // Depricated:         .ShouldEqual(XapHostType.MSTestDecember2008);
+        // Depricated: }
+        // Depricated: 
+        // Depricated: [Test]
+        // Depricated: public void Should_return_the_default_MSTest_xap_host_for_MSTest_March2009_test_provider()
+        // Depricated: {
+        // Depricated:     _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.March2009)
+        // Depricated:         .ShouldEqual(XapHostType.MSTestMarch2009);
+        // Depricated: }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_MSTest_July2009_test_provider()

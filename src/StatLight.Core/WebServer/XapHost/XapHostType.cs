@@ -11,6 +11,7 @@
         MSTestApril2010,
         MSTestMay2010,
         MSTestFeb2011,
+        MSTestJune2011,
 
         UnitDrivenDecember2009,
         XunitContribApril2011
@@ -19,8 +20,8 @@
     public enum MicrosoftTestingFrameworkVersion
     {
         //Obsolete versions
-        December2008 = 1,
-        March2009 = 2,
+        //December2008 = 1,
+        //March2009 = 2,
 
         //Supported versions
         July2009 = 3,
@@ -33,6 +34,7 @@
         May2010 = 8,
 
         Feb2011 = 9,
+        June2011 = 10,
 
         //FYI: go update StatLightClientXapNames.Default value when changing the default runner...
     }

@@ -112,8 +112,9 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 
         private UnitTestSettings ConfigureSettings()
         {
-#if March2010 || April2010 || May2010 || Feb2011
-
+#if July2009 || October2009 || November2009
+            var settings = UnitTestSystem.CreateDefaultSettings();
+#else
             var settings = new UnitTestSettings();
             settings.TestHarness = new UnitTestHarness();
 
@@ -137,12 +138,11 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 
                 settings.TestPanelType = typeof(StatLightTestPage);
             }
-            
+
             settings.StartRunImmediately = true;
             settings.ShowTagExpressionEditor = false;
             settings.TestService = null;
-#elif July2009 || October2009 || November2009
-            var settings = UnitTestSystem.CreateDefaultSettings();
+
 #endif
             // Below is the custom stuff...
             settings.TagExpression = _clientTestRunConfiguration.TagFilter;

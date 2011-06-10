@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
-using Microsoft.Silverlight.Testing.Harness;
+
 #if March2010 || April2010 || May2010
 using ITestHarness = Microsoft.Silverlight.Testing.Harness.UnitTestHarness;
-#elif Feb2011
-using ITestHarness = Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-#else
+#elif October2009 || November2009 || July2009
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
+#else
+using ITestHarness = Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 #endif
+
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
 namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
