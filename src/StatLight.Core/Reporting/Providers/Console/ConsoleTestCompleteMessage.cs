@@ -9,7 +9,7 @@ namespace StatLight.Core.Reporting.Providers.Console
         public static void WriteOutCompletionStatement(TestReport completeState, DateTime startOfRunTime)
         {
             if (completeState == null) throw new ArgumentNullException("completeState");
-            writer.Write("{1}{1}--- Completed Test Run at: {0}. Total Run Time: {2}{1}{1}"
+            writer.Write("{1}{1}-- Completed Test Run at: {0}. Total Run Time: {2}{1}{1}"
                 .FormatWith(DateTime.Now, Environment.NewLine, DateTime.Now.Subtract(startOfRunTime)));
 
             writer.Write("Test run results: Total {0}, ", completeState.TotalResults);
