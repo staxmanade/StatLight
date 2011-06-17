@@ -1,4 +1,6 @@
 using System;
+using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 using System.Threading;
 
 namespace StatLight.Client.Harness.Events
@@ -46,9 +48,46 @@ namespace StatLight.Client.Harness.Events
     public class TestExecutionClassCompletedClientEvent : TestExecutionClass
     { }
 
+    public class MetaDataInfo
+    {
+        public MetaDataInfo()
+        {
+        }
+
+        public MetaDataInfo(string classification, string name, string value)
+        {
+            Classification = classification;
+            Name = name;
+            Value = value;
+        }
+
+        public string Classification { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
+
     public abstract class TestExecutionMethod : TestExecutionClass
     {
+        private readonly Collection<MetaDataInfo> _metadata;
+
+        protected TestExecutionMethod()
+        {
+            _metadata = new Collection<MetaDataInfo>();
+        }
+
         public string MethodName { get; set; }
+
+        public Collection<MetaDataInfo> Metadata
+        {
+            get { return _metadata; }
+        }
+
+        public void AddMetadata(string classification, string name, string value)
+        {
+            _metadata.Add(new MetaDataInfo(classification: classification,
+                                            name: name,
+                                            value: value));
+        }
 
         public string FullMethodName
         {

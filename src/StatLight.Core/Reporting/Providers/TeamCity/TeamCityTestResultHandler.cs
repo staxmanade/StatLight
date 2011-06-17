@@ -1,4 +1,5 @@
 ﻿
+using System.Text;
 using StatLight.Core.Properties;
 
 namespace StatLight.Core.Reporting.Providers.TeamCity
@@ -91,15 +92,43 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
 
                     WrapTestWithStartAndEnd(() =>
                     {
-
                     }, name, durationMilliseconds);
                     break;
                 case ResultType.Failed:
+
+                    var sb = new StringBuilder();
+
+                    sb.Append("Test Namespace:  ");
+                    sb.AppendLine(message.NamespaceName);
+
+                    sb.Append("Test Class:      ");
+                    sb.AppendLine(message.ClassName);
+
+                    sb.Append("Test Method:     ");
+                    sb.AppendLine(message.MethodName);
+
+                    if (!string.IsNullOrEmpty(message.OtherInfo))
+                    {
+                        sb.Append("Other Info:      ");
+                        sb.AppendLine(message.OtherInfo);
+                    }
+
+                    foreach (var metaData in message.Metadata)
+                    {
+                        sb.Append("{0,-17}".FormatWith(metaData.Classification + ": "));
+                        sb.Append(metaData.Name + " - ");
+                        sb.AppendLine(metaData.Value);
+                    }
+
+                    sb.AppendLine(message.ExceptionInfo.FullMessage);
+
+                    var msg = sb.ToString();
+
                     WrapTestWithStartAndEnd(() => _messageWriter.Write(
                         CommandFactory.TestFailed(
                             name,
                             message.ExceptionInfo.FullMessage,
-                            message.ExceptionInfo.FullMessage)),
+                            msg)),
                         name,
                         durationMilliseconds);
                     break;

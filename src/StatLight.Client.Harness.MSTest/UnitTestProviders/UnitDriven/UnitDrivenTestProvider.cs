@@ -75,7 +75,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven
 		/// <returns>Returns the assembly metadata interface.</returns>
 #if March2010 || April2010 || May2010 || May2010 || July2009 || October2009 || November2009
         public IAssembly GetUnitTestAssembly(ITestHarness testHarness, Assembly assemblyReference)
-#elif Feb2011
+#else
         public IAssembly GetUnitTestAssembly(UnitTestHarness testHarness, Assembly assemblyReference)
 #endif
         {

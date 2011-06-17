@@ -18,10 +18,10 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
         protected UnitTestFrameworkAssemblyBase(IUnitTestProvider provider, object unitTestHarness, Assembly assembly)
         {
             Provider = provider;
-#if Feb2011 || WINDOWS_PHONE
-            TestHarness = unitTestHarness as UnitTestHarness;
-#else
+#if March2010 || April2010 || May2010 || July2009 || October2009 || November2009
             TestHarness = unitTestHarness as ITestHarness;
+#else
+            TestHarness = unitTestHarness as UnitTestHarness;
 #endif
             Assembly = assembly;
         }
@@ -34,11 +34,10 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
 
         protected Assembly Assembly { get; set; }
 
-
-#if Feb2011 || WINDOWS_PHONE
-        public UnitTestHarness TestHarness { get; set; }
-#else
+#if March2010 || April2010 || May2010 || July2009 || October2009 || November2009
         public ITestHarness TestHarness { get; set; }
+#else
+        public UnitTestHarness TestHarness { get; set; }
 #endif
 
         /// <summary>

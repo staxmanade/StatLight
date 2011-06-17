@@ -97,8 +97,8 @@ namespace StatLight.Core.WebServer.XapInspection
                  * Removed support because the [Timeout(?)] attribute didn't seem to work - 
                  * figured it was a good point to start deprecating some of these assemblies.
                  */
-                new { Version = MicrosoftTestingFrameworkVersion.December2008, Hash = "9ecc2326c15db40aa28afc466a683279380affec", Supported = false, },
-                new { Version = MicrosoftTestingFrameworkVersion.March2009, Hash = "8043c0da38fa18b224082e400189aca37ff0505f" , Supported = false, },
+                //new { Version = MicrosoftTestingFrameworkVersion.December2008, Hash = "9ecc2326c15db40aa28afc466a683279380affec", Supported = false, },
+                //new { Version = MicrosoftTestingFrameworkVersion.March2009, Hash = "8043c0da38fa18b224082e400189aca37ff0505f" , Supported = false, },
 
                 // Still supported
                 new { Version = MicrosoftTestingFrameworkVersion.July2009, Hash = "108d7c8a4f753f55433e1c195bb9e8f548bd627d", Supported = true, },
@@ -116,6 +116,11 @@ namespace StatLight.Core.WebServer.XapInspection
 
                 // Custom build of the framework - until and 'official' signed build is available
                 new { Version = MicrosoftTestingFrameworkVersion.Feb2011, Hash = "8962C4BF1FFE3A2E432BC5991E2B142AFE1167A8", Supported = true, },
+
+                // Released on Jeff's blog
+                // http://www.jeff.wilcox.name/2011/06/updated-ut-mango-bits/
+                new { Version = MicrosoftTestingFrameworkVersion.June2011, Hash = "b43f74adec6e911ce0e01d882fd2958a33f8c5fd", Supported = true, },
+                
             };
 
             var foundVersion = definedVersions.Where(w => w.Hash.Equals(incomingHash, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();

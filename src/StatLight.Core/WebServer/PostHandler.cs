@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Web;
 using StatLight.Client.Harness.Events;
@@ -47,13 +48,37 @@ namespace StatLight.Core.WebServer
 
 
         // Note: do not delete this method - it's used through reflection...
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         private void PublishIt<T>(string xmlMessage)
             where T : ClientEvent
         {
-            var result = xmlMessage.Deserialize<T>();
-            //DebugLogClientEvent(result);
-            _eventPublisher.SendMessage(result);
+            try
+            {
+                var result = xmlMessage.Deserialize<T>();
+                //DebugLogClientEvent(result);
+                _eventPublisher.SendMessage(result);
+            }
+            catch (Exception ex)
+            {
+            	var errMsg =
+            		@"
+********* An error happened Deserializing a type of event [{0}]
+The Xml Attempting to deserialize is
+-----
+{1}
+-----
+The Error from deserializing is
+-----
+{2}
+-----
+"
+            			.FormatWith(typeof (T).Name, xmlMessage, ex.ToString());
+                var @event = new FatalSilverlightExceptionServerEvent(DialogType.None)
+                {
+                    Message = errMsg,
+                };
+            	_eventPublisher.SendMessage(@event);
+            }
         }
 
         public virtual bool TryHandle(Stream messageStream, out string unknownPostData)
@@ -142,13 +167,11 @@ namespace StatLight.Core.WebServer
 
         public static string GetPostedMessage(Stream stream)
         {
-            string message;
-            using (var reader = new StreamReader(stream))
+            using (var reader = new StreamReader(stream, Encoding.UTF8))
             {
-                var rawString = reader.ReadToEnd();
-                message = HttpUtility.UrlDecode(rawString);
+                string message = reader.ReadToEnd();
+                return message;
             }
-            return message;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]

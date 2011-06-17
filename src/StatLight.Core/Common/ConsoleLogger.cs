@@ -27,7 +27,7 @@ namespace StatLight.Core.Common
         public override void Information(string message)
         {
             if (ShouldLog(LogChatterLevels.Information))
-                WrapMessageWithColor(message, _settings.ConsoleColorInformatoin, false);
+                WrapMessageWithColor(message, _settings.ConsoleColorInformation, false);
         }
 
         public override void Debug(string message)

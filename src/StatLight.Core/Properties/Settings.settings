@@ -5,7 +5,7 @@
     <Setting Name="ConsoleColorError" Type="System.ConsoleColor" Scope="Application">
       <Value Profile="(Default)">Red</Value>
     </Setting>
-    <Setting Name="ConsoleColorInformatoin" Type="System.ConsoleColor" Scope="Application">
+    <Setting Name="ConsoleColorInformation" Type="System.ConsoleColor" Scope="Application">
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="ConsoleColorDebug" Type="System.ConsoleColor" Scope="Application">

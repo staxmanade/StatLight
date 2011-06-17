@@ -158,14 +158,54 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
             theOneWeWant.ResultType.ShouldEqual(ResultType.SystemGeneratedFailure);
         }
 
-        [Test]
-        public void Should_have_pulled_the_DescriptionAttribute_information_out_of_a_test()
-        {
-            var nonEmptyOtherInfoResults = TestReport.TestResults.Where(w => !string.IsNullOrEmpty(w.OtherInfo));
-            var theOneWeWant = nonEmptyOtherInfoResults.Single(w => w.MethodName.Equals("this_should_be_a_Failing_test"));
 
-            theOneWeWant.ShouldNotBeNull()
-                .OtherInfo.ShouldEqual("Test description on failing test.");
+        [Test]
+        public void Should_have_pulled_the_DescriptionAttribute_information_out_of_a_failing_test()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("this_should_be_a_Failing_test"))
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Description").Each(x => x.ShouldEqual("Test description on failing test.")));
+        }
+
+
+        [Test]
+        public void Should_have_pulled_the_OwnerAttribute_information_out_of_a_failing_test()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("this_should_be_a_Failing_test"))
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Owner").Each(x => x.ShouldEqual("SomeOwnerString")));
+
+        }
+
+
+        [Test]
+        public void Should_have_pulled_the_DescriptionAttribute_information_out_of_a_passing_test()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("this_should_be_a_passing_test") && w.ClassName.Equals("MSTestTests"))
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Description").Each(x => x.ShouldEqual("Test description on failing test.")));
+        }
+
+
+        [Test]
+        public void Should_have_pulled_the_OwnerAttribute_information_out_of_a_passing_test()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("this_should_be_a_passing_test") && w.ClassName.Equals("MSTestTests"))
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("Owner").Each(x => x.ShouldEqual("SomeOwnerString")));
+        }
+
+        [Test]
+        public void Should_have_pulled_the_PropertyAttribute_information_out_of_a_passing_test()
+        {
+            TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("this_should_be_a_passing_test") && w.ClassName.Equals("MSTestTests"))
+                .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("tpName").Each(x => x.ShouldEqual("tpValue")));
         }
     }
 }

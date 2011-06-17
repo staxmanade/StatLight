@@ -5,7 +5,8 @@ using StatLight.Client.Harness.Messaging;
 
 namespace StatLight.Client.Harness.Hosts.MSTest
 {
-#if March2010 || April2010 || May2010 || Feb2011 || WINDOWS_PHONE
+#if July2009 || October2009 || November2009
+#else
     public class StatLightTestPage : UserControl, ITestPage, IMobileTestPage
     {
         public static bool IsBrowserHostShown = false;
