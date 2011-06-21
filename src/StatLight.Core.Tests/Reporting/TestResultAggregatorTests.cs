@@ -307,5 +307,45 @@ namespace StatLight.Core.Tests.Reporting
             }
 
         }
+
+
+
+        [TestFixture]
+        public class when_a_TestContextMessageClientEvent_arrives : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
+        {
+            [Test]
+            public void Should_have_attached_testContext_metadata_after_a_passed_event_has_gone_through()
+            {
+                TestResultAggregator.Handle(new TestContextMessageClientEvent { FullTestName = "n.c.m0", Message = "Sample WriteLine" });
+                TestResultAggregator.Handle(new TestExecutionMethodPassedClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m0" });
+                TestResultAggregator.CurrentReport.TotalPassed.ShouldEqual(0);
+                TestResultAggregator.Handle(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m0" });
+                TestResultAggregator.CurrentReport.TotalPassed.ShouldEqual(1);
+
+                TestResultAggregator.CurrentReport.TestResults.First().Metadata.Count().ShouldEqual(1, "Should have placed an item into the metadata collection");
+                TestResultAggregator.CurrentReport.TestResults.First().Metadata.First().Classification.ShouldEqual("TestContextWriteMethod");
+                TestResultAggregator.CurrentReport.TestResults.First().Metadata.First().Name.ShouldEqual("TestContextWriteMethod");
+                TestResultAggregator.CurrentReport.TestResults.First().Metadata.First().Value.ShouldEqual("Sample WriteLine");
+            }
+
+            [Test]
+            public void Should_have_attached_testContext_metadata_after_a_failed_event_has_gone_through()
+            {
+                TestResultAggregator.Handle(new TestContextMessageClientEvent { FullTestName = "n.c.m1", Message = "Sample WriteLine" });
+                TestResultAggregator.Handle(new TestExecutionMethodFailedClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m1" });
+                TestResultAggregator.CurrentReport.TotalPassed.ShouldEqual(0);
+                TestResultAggregator.Handle(new TestExecutionMethodBeginClientEvent { NamespaceName = "n", ClassName = "c", MethodName = "m1" });
+                TestResultAggregator.CurrentReport.TotalFailed.ShouldEqual(1);
+
+
+                var metadata = TestResultAggregator.CurrentReport.TestResults.First().Metadata;
+                metadata.Count().ShouldEqual(1, "Should have placed an item into the metadata collection");
+                metadata.First().Classification.ShouldEqual("TestContextWriteMethod");
+                metadata.First().Name.ShouldEqual("TestContextWriteMethod");
+                metadata.First().Value.ShouldEqual("Sample WriteLine");
+            }
+
+        }
+
     }
 }

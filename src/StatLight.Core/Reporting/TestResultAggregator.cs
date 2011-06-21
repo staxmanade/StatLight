@@ -1,5 +1,8 @@
 ﻿
 
+using System.Collections.Concurrent;
+using System.Linq;
+
 namespace StatLight.Core.Reporting
 {
     using System;
@@ -18,7 +21,8 @@ namespace StatLight.Core.Reporting
         IListener<BrowserHostCommunicationTimeoutServerEvent>,
         IListener<FatalSilverlightExceptionServerEvent>,
         IListener<TestExecutionMethodBeginClientEvent>,
-        IListener<UnhandledExceptionClientEvent>
+        IListener<UnhandledExceptionClientEvent>,
+        IListener<TestContextMessageClientEvent>
     {
         private readonly ILogger _logger;
         private readonly IEventPublisher _eventPublisher;
@@ -194,6 +198,7 @@ namespace StatLight.Core.Reporting
 
         private void ReportIt(TestCaseResult result)
         {
+            OnTestCaseResultCreated(result);
             _currentReport.AddResult(result);
             _eventPublisher.SendMessage(result);
         }
@@ -270,9 +275,38 @@ namespace StatLight.Core.Reporting
             if (message == null) throw new ArgumentNullException("message");
             if (message.ExceptionInfo == null) return;
 
-			string messageValue = "Unhandled exception trapped in the Silverlight Client." + Environment.NewLine + Environment.NewLine + message.ExceptionInfo.FullMessage;
+            string messageValue = "Unhandled exception trapped in the Silverlight Client." + Environment.NewLine + Environment.NewLine + message.ExceptionInfo.FullMessage;
 
             ReportFailureMessage(messageValue);
+        }
+
+        private readonly object _sync = new object();
+        public void Handle(TestContextMessageClientEvent message)
+        {
+            lock (_sync)
+            {
+                _unhandledMessages.Add(message);
+            }
+        }
+
+        private void OnTestCaseResultCreated(TestCaseResult result)
+        {
+            lock (_sync)
+            {
+                IEnumerable<TestContextMessageClientEvent> testContextMessageClientEvents = _unhandledMessages.Where(x => x.FullTestName == result.FullMethodName());
+                foreach (var message in testContextMessageClientEvents.OrderBy(x => x.ClientEventOrder))
+                {
+                    AppendTestContextMetadata(result, message);
+                }
+
+                _unhandledMessages.RemoveAll(x => x.FullTestName == result.FullMethodName());
+            }
+        }
+
+        private readonly List<TestContextMessageClientEvent> _unhandledMessages = new List<TestContextMessageClientEvent>();
+        private static void AppendTestContextMetadata(TestCaseResult result, TestContextMessageClientEvent message)
+        {
+            result.PopulateMetadata(new[] { new MetaDataInfo("TestContextWriteMethod", "TestContextWriteMethod", message.Message), });
         }
     }
 }

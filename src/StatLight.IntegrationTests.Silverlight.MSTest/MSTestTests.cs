@@ -147,6 +147,14 @@ namespace StatLight.IntegrationTests.Silverlight
             Assert.IsTrue(_assemblyInitializeWasCalled);
         }
 
+        [TestMethod]
+        public void Should_be_able_to_write_to_the_TestContext()
+        {
+            TestContext.WriteLine("Hello From a Test 1");
+            TestContext.WriteLine("Hello From a Test 2");
+            TestContext.WriteLine("Hello From a Test 3");
+        }
+
         [AssemblyInitialize]
         public void AssemblyInitialize_Method()
         {

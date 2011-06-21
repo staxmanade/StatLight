@@ -147,6 +147,12 @@ namespace StatLight.Client.Harness.Events
         public string Message { get; set; }
     }
 
+    public class TestContextMessageClientEvent : ClientEvent
+    {
+        public string FullTestName { get; set; }
+        public string Message { get; set; }
+    }
+
     public class DebugClientEvent : ClientEvent
     {
         public string Message { get; set; }
