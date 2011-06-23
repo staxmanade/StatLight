@@ -94,9 +94,9 @@ namespace StatLight.Core.Tests
             CollectionAssert.DoesNotContain(collection, expected);
         }
 
-        public static IComparable ShouldBeGreaterThan(this IComparable arg1, IComparable arg2)
+        public static IComparable ShouldBeGreaterThan(this IComparable arg1, IComparable arg2, string message = null)
         {
-            Assert.Greater(arg1, arg2);
+            Assert.Greater(arg1, arg2, message);
             return arg2;
         }
 

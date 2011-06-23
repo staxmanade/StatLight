@@ -1,22 +1,16 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
 using System.Threading;
 
 namespace StatLight.Client.Harness.Events
 {
     public abstract class ClientEvent
     {
-        internal static int _currentEventCreationOrder;
-
         protected ClientEvent()
         {
-            Interlocked.Increment(ref _currentEventCreationOrder);
-            ClientEventOrder = _currentEventCreationOrder;
             ClientEventCreatedTime = DateTime.Now;
         }
 
-        public int ClientEventOrder { get; private set; }
         public DateTime ClientEventCreatedTime { get; private set; }
     }
 
@@ -151,6 +145,7 @@ namespace StatLight.Client.Harness.Events
     {
         public string FullTestName { get; set; }
         public string Message { get; set; }
+        public int Order { get; set; }
     }
 
     public class DebugClientEvent : ClientEvent

@@ -63,12 +63,6 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
         /// <param name="s">String to WriteLine.</param>
         internal void OnWriteLine(string s)
         {
-            Server.PostMessage(new TestContextMessageClientEvent
-            {
-                FullTestName = _methodInfo.FullName(),
-                Message = s,
-            });
-
             var sea = new StringEventArgs(s);
             if (WriteLine != null)
             {
@@ -263,9 +257,26 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
             _testMethod = testMethod;
         }
 
+        private static int _newOrder = 0;
+        private static readonly object _sync = new object();
         public override void WriteLine(string format, params object[] args)
         {
+            int order;
+            lock (_sync)
+            {
+                order = ++_newOrder;
+            }
+
             string s = (args.Length == 0) ? format : string.Format(CultureInfo.InvariantCulture, format, args);
+
+            var newMsg = new TestContextMessageClientEvent
+                                                       {
+                                                           FullTestName = _testMethod.Method.FullName(),
+                                                           Message = s,
+                                                       };
+            newMsg.Order = order;
+            Server.PostMessage(newMsg);
+
             _testMethod.OnWriteLine(s);
         }
 

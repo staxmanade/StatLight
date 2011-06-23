@@ -294,7 +294,7 @@ namespace StatLight.Core.Reporting
             lock (_sync)
             {
                 IEnumerable<TestContextMessageClientEvent> testContextMessageClientEvents = _unhandledMessages.Where(x => x.FullTestName == result.FullMethodName());
-                foreach (var message in testContextMessageClientEvents.OrderBy(x => x.ClientEventOrder))
+                foreach (var message in testContextMessageClientEvents.OrderBy(x => x.Order))
                 {
                     AppendTestContextMetadata(result, message);
                 }
