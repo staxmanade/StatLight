@@ -4,7 +4,7 @@ using NUnit.Framework;
 using StatLight.Core.Common.Abstractions.Timing;
 using StatLight.Core.Events;
 using StatLight.Core.Monitoring;
-using StatLight.Core.Events.Aggregation;
+using EventAggregatorNet;
 
 namespace StatLight.Core.Tests.Monitoring
 {

@@ -9,12 +9,11 @@ namespace StatLight.Core.Runners
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using StatLight.Client.Harness.Events;
     using StatLight.Core.Common;
     using StatLight.Core.Common.Abstractions.Timing;
     using StatLight.Core.Configuration;
     using StatLight.Core.Events;
-    using StatLight.Core.Events.Aggregation;
+    using EventAggregatorNet;
     using StatLight.Core.Monitoring;
     using StatLight.Core.Reporting;
     using StatLight.Core.Reporting.Providers.Console;
@@ -31,7 +30,7 @@ namespace StatLight.Core.Runners
         private ConsoleResultHandler _consoleResultHandler;
 
         public StatLightRunnerFactory(ILogger logger)
-            : this(logger, new EventAggregator(logger))
+            : this(logger, EventAggregatorFactory.Create(logger))
         {
         }
 
@@ -46,15 +45,6 @@ namespace StatLight.Core.Runners
 
             var debugListener = new ConsoleDebugListener(logger);
             _eventSubscriptionManager.AddListener(debugListener);
-
-            var ea = eventSubscriptionManager as EventAggregator;
-            if (ea != null)
-            {
-                ea.IgnoreTracingEvent<InitializationOfUnitTestHarnessClientEvent>();
-                ea.IgnoreTracingEvent<TestExecutionClassCompletedClientEvent>();
-                ea.IgnoreTracingEvent<TestExecutionClassBeginClientEvent>();
-                ea.IgnoreTracingEvent<SignalTestCompleteClientEvent>();
-            }
 
             SetupExtensions(_eventSubscriptionManager);
         }
@@ -71,6 +61,7 @@ namespace StatLight.Core.Runners
         }
 
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void SetupExtensions(IEventSubscriptionManager eventSubscriptionManager)
         {
             try
@@ -84,7 +75,7 @@ namespace StatLight.Core.Runners
                 using (var directoryCatalog = new DirectoryCatalog(path))
                 using (var compositionContainer = new CompositionContainer(directoryCatalog))
                 {
-                    
+
                     var extensions = compositionContainer.GetExports<ITestingReportEvents>().ToList();
                     if (extensions.Any())
                     {

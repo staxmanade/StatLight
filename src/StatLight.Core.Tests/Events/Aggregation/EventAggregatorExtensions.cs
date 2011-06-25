@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StatLight.Core.Events.Aggregation
+namespace EventAggregatorNet
 {
     public static class EventAggregatorExtensions
     {

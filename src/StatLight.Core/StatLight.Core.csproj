@@ -143,6 +143,7 @@
     <Compile Include="Common\Resources.cs" />
     <Compile Include="CommonExtensions.Desktop.cs" />
     <Compile Include="Common\StatLightException.cs" />
+    <Compile Include="EventAggregator.Net\EventAggregator.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -152,6 +153,7 @@
     <Compile Include="Events\ResultType.cs" />
     <Compile Include="Reporting\TestReportCollection.cs" />
     <Compile Include="Reporting\ConsoleDebugListener.cs" />
+    <Compile Include="Runners\EventAggregatorFactory.cs" />
     <Compile Include="Runners\IStatLightRunnerFactory.cs" />
     <Compile Include="WebServer\XapInspection\AssemblyResolver.cs" />
     <Compile Include="Reporting\Providers\IXmlReport.cs" />
@@ -248,6 +250,7 @@
       <Link>CodeAnalysis.ruleset</Link>
     </None>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
