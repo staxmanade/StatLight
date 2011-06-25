@@ -24,6 +24,12 @@ namespace StatLight.Core.Reporting
 
         public IEnumerable<TestCaseResult> TestResults { get { return _testCaseResults; } }
 
+        internal bool TryFindByFullName(string fullName, out TestCaseResult testCaseResult)
+        {
+            testCaseResult = _testCaseResults.Where(w => w.FullMethodName() == fullName).SingleOrDefault();
+            return testCaseResult != null;
+        }
+
         public DateTime DateTimeRunCompleted { get; private set; }
 
         public RunCompletedState FinalResult

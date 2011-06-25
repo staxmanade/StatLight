@@ -148,9 +148,6 @@ The Error from deserializing is
             _browserInstancesComplete.Clear();
             _totalMessagesPostedCount = null;
             _currentMessagesPostedCount = 0;
-
-            //TODO: I think this is only necessary to support the unit tests
-            ClientEvent._currentEventCreationOrder = 0;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "TestRunCompletedServerEvent")]

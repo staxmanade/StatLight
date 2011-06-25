@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 using NUnit.Framework;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Configuration;
@@ -56,7 +57,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_have_correct_TotalPassed_count_except_theres_one_extra_passed_test_here_because_of_the_MessageBox_test()
         {
-            TestReport.TotalPassed.ShouldEqual(8);
+            TestReport.TotalPassed.ShouldEqual(9);
         }
 
         [Test]
@@ -108,9 +109,9 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         public void Should_receive_the_TestExecutionMethodPassedClientEvent()
         {
 #if DEBUG
-            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(9);
+            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(10);
 #else
-            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(8);
+            _testExecutionMethodPassedClientEvent.Count.ShouldEqual(9);
 #endif
         }
 
@@ -206,6 +207,39 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
                 .Each(theOneWeWant => theOneWeWant.ShouldNotBeNull().ReadMetadata("tpName").Each(x => x.ShouldEqual("tpValue")));
         }
 
+        [Test]
+        public void Should_have_pulled_the_TestContext_WriteLine_information_and_be_in_the_correct_order()
+        {
+            TestCaseResult testCaseResult = TestReport
+                .TestResults
+                .Where(w => w.MethodName.Equals("Should_be_able_to_write_to_the_TestContext") && w.ClassName.Equals("MSTestTests"))
+                .Single();
+
+            testCaseResult.Metadata.Count().ShouldBeGreaterThan(0, "Should have found some metadata");
+
+            var sb = new StringBuilder();
+            var allItems = testCaseResult.Metadata.ToList();
+            bool failed = false;
+            for (int i = 0; i < allItems.Count; i++)
+            {
+
+                var value = allItems[i].Value;
+                if (value != "Test {0}".FormatWith(i))
+                {
+                    sb.AppendLine("Expected: Test {0} But Was: {1}".FormatWith(i, value));
+                    failed = true;
+                }
+                else
+                {
+                    sb.AppendLine(value);
+                }
+            }
+
+            if(failed)
+            {
+                Assert.Fail(sb.ToString());
+            }
+        }
     }
 
     internal static class AssertionExtensions

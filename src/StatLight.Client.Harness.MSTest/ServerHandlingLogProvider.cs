@@ -45,7 +45,6 @@ namespace StatLight.Client.Harness.Hosts.MSTest
         public static TraceClientEvent TraceLogMessage(LogMessage message)
         {
             const string newLine = "\n";
-
             string msg = "";
             msg += "MessageType={0}".FormatWith(message.MessageType);
             msg += newLine;
