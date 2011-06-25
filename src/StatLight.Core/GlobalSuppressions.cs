@@ -70,3 +70,5 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Scope = "member", Target = "EventAggregatorNet.IEventPublisher.#SendMessage`1(System.Action`1<System.Action>)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1040:AvoidEmptyInterfaces", Scope = "type", Target = "EventAggregatorNet.IListener")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Scope = "type", Target = "EventAggregatorNet.EventAggregator+Config")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Scope = "member", Target = "EventAggregatorNet.EventAggregator.#AddListener(System.Object,System.Nullable`1<System.Boolean>)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Scope = "member", Target = "EventAggregatorNet.IEventSubscriptionManager.#AddListener(System.Object,System.Nullable`1<System.Boolean>)")]

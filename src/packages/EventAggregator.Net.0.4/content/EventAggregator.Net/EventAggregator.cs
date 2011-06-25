@@ -17,15 +17,10 @@ namespace EventAggregatorNet
 	 */
 
 	/// <summary>
-	/// Marker interface - TODO: find way to remove
-	/// </summary>
-	public interface IListener { }
-
-	/// <summary>
 	/// Specifies a class that would like to receive particular messages.
 	/// </summary>
 	/// <typeparam name="TMessage">The type of message object to subscribe to.</typeparam>
-	public interface IListener<in TMessage> : IListener
+	public interface IListener<in TMessage>
 	{
 		/// <summary>
 		/// This will be called every time a TMessage is published through the event aggregator
@@ -42,8 +37,9 @@ namespace EventAggregatorNet
 		/// Adds
 		/// </summary>
 		/// <param name="listener"></param>
+		/// <param name="holdStrongReference">determines if the EventAggregator should hold a weak or strong reference to the listener object. Use the Config level option unless overriden by the parameter.</param>
 		/// <returns>Returns the current instance of IEventSubscriptionManager to allow for easy additional</returns>
-		IEventSubscriptionManager AddListener(object listener);
+		IEventSubscriptionManager AddListener(object listener, bool? holdStrongReference = null);
 		IEventSubscriptionManager RemoveListener(object listener);
 	}
 
@@ -57,7 +53,7 @@ namespace EventAggregatorNet
 	public interface IEventAggregator : IEventPublisher, IEventSubscriptionManager { }
 	public class EventAggregator : IEventPublisher, IEventSubscriptionManager
 	{
-		private readonly ListenerWrapperCollection _listeners = new ListenerWrapperCollection();
+		private readonly ListenerWrapperCollection _listeners;
 		private readonly Config _config;
 
 		public EventAggregator()
@@ -68,6 +64,7 @@ namespace EventAggregatorNet
 		public EventAggregator(Config config)
 		{
 			_config = config;
+			_listeners = new ListenerWrapperCollection();
 		}
 
 		/// <summary>
@@ -126,9 +123,12 @@ namespace EventAggregatorNet
 		}
 
 
-		public IEventSubscriptionManager AddListener(object listener)
+		public IEventSubscriptionManager AddListener(object listener, bool? holdStrongReference = null)
 		{
-			_listeners.AddListener(listener);
+			bool holdRef = _config.HoldReferences;
+			if (holdStrongReference.HasValue)
+				holdRef = holdStrongReference.Value;
+			_listeners.AddListener(listener, holdRef);
 
 			return this;
 		}
@@ -189,7 +189,7 @@ namespace EventAggregatorNet
 				return listenerWrapper != null;
 			}
 
-			public void AddListener(object listener)
+			public void AddListener(object listener, bool holdStrongReference)
 			{
 				lock (_sync)
 				{
@@ -197,30 +197,87 @@ namespace EventAggregatorNet
 					if (ContainsListener(listener))
 						return;
 
-					var listenerWrapper = new ListenerWrapper(listener, RemoveListenerWrapper);
+					var listenerWrapper = new ListenerWrapper(listener, RemoveListenerWrapper, holdStrongReference);
 
 					_listeners.Add(listenerWrapper);
 				}
 			}
 		}
 
+		#region IReference
+
+		private interface IReference
+		{
+			object Target { get; }
+		}
+
+		private class WeakReferenceImpl : IReference
+		{
+			private readonly WeakReference _reference;
+
+			public WeakReferenceImpl(object listener)
+			{
+				_reference = new WeakReference(listener);
+			}
+
+			public object Target
+			{
+				get { return _reference.Target; }
+			}
+		}
+
+		private class StrongReferenceImpl : IReference
+		{
+			private readonly object _target;
+
+			public StrongReferenceImpl(object target)
+			{
+				_target = target;
+			}
+
+			public object Target
+			{
+				get { return _target; }
+			}
+		}
+		#endregion
+
 		class ListenerWrapper
 		{
 			private const string HandleMethodName = "Handle";
 			private readonly Dictionary<Type, MethodInfo> _supportedListeners = new Dictionary<Type, MethodInfo>();
 			private readonly Action<ListenerWrapper> _onRemoveCallback;
-			private readonly WeakReference _reference;
+			private readonly IReference _reference;
 
-			public ListenerWrapper(object listener, Action<ListenerWrapper> onRemoveCallback)
+			private static IEnumerable<Type> GetBaseInterfaceType(Type type)
+			{
+				if (type == null)
+					return new Type[0];
+
+				List<Type> interfaces = type.GetInterfaces().ToList();
+
+				foreach (var @interface in interfaces.ToArray())
+				{
+					interfaces.AddRange(GetBaseInterfaceType(@interface));
+				}
+
+				if (type.IsInterface)
+					interfaces.Add(type);
+
+				return interfaces.Distinct();
+			}
+
+			public ListenerWrapper(object listener, Action<ListenerWrapper> onRemoveCallback, bool holdReferences)
 			{
 				_onRemoveCallback = onRemoveCallback;
 
-				_reference = new WeakReference(listener);
+				if (holdReferences)
+					_reference = new StrongReferenceImpl(listener);
+				else
+					_reference = new WeakReferenceImpl(listener);
 
-				var listenerInterfaces = listener
-					.GetType()
-					.GetInterfaces()
-					.Where(x => typeof(IListener).IsAssignableFrom(x) && x.IsGenericType);
+				var listenerInterfaces = GetBaseInterfaceType(listener.GetType())
+					.Where(w => DirectlyClosesGeneric(w, typeof(IListener<>)));
 
 				foreach (var listenerInterface in listenerInterfaces)
 				{
@@ -260,6 +317,17 @@ namespace EventAggregatorNet
 				_supportedListeners[messageType].Invoke(target, new[] { message });
 				wasHandled = true;
 			}
+
+			private static bool DirectlyClosesGeneric(Type type, Type openType)
+			{
+				if (type == null)
+					return false;
+
+				if (type.IsGenericType && type.GetGenericTypeDefinition() == openType)
+					return true;
+
+				return false;
+			}
 		}
 
 
@@ -267,6 +335,12 @@ namespace EventAggregatorNet
 		{
 			public Action<object> OnMessageNotPublishedBecauseZeroListeners = msg => { /* TODO: possibly Trace message?*/ };
 			public Action<Action> ThreadMarshaler = action => action();
+
+			/// <summary>
+			/// If true instructs the EventAggregator to hold onto a reference to all listener objects. You will then have to explicitly remove them from the EventAggrator.
+			/// If false then a WeakReference is used and the garbage collector can remove the listener when not in scope any longer.
+			/// </summary>
+			public bool HoldReferences { get; set; }
 		}
 	}
 }
