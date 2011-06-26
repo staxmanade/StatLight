@@ -20,6 +20,7 @@ namespace StatLight.Core.Runners
 
             var config = new EventAggregator.Config
             {
+                HoldReferences = true,
                 OnMessageNotPublishedBecauseZeroListeners = msgNotHandled =>
                 {
                     var msgType = msgNotHandled.GetType();
