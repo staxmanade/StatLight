@@ -7,7 +7,7 @@ using StatLight.Core.Configuration;
 using StatLight.Core.Events;
 using StatLight.Core.Tests;
 using StatLight.Core.Reporting;
-using StatLight.Core.Events.Aggregation;
+using EventAggregatorNet;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
 {

@@ -2,6 +2,7 @@
 
 using System.Collections.Concurrent;
 using System.Linq;
+using EventAggregatorNet;
 
 namespace StatLight.Core.Reporting
 {
@@ -10,7 +11,7 @@ namespace StatLight.Core.Reporting
     using StatLight.Client.Harness.Events;
     using StatLight.Core.Common;
     using StatLight.Core.Events;
-    using StatLight.Core.Events.Aggregation;
+    using EventAggregatorNet;
 
     public class TestResultAggregator : IDisposable,
         IListener<TestExecutionMethodPassedClientEvent>,

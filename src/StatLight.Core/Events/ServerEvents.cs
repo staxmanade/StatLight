@@ -3,7 +3,7 @@
 namespace StatLight.Core.Events
 {
     using StatLight.Client.Harness.Events;
-    using StatLight.Core.Events.Aggregation;
+    using EventAggregatorNet;
     using StatLight.Core.Reporting;
 
     public enum DialogType

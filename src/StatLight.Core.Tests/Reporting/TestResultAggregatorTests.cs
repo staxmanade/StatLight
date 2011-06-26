@@ -5,7 +5,7 @@ using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
 using StatLight.Core.Reporting;
 using System.Collections.Generic;
-using StatLight.Core.Events.Aggregation;
+using EventAggregatorNet;
 
 namespace StatLight.Core.Tests.Reporting
 {
