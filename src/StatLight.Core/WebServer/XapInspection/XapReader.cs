@@ -25,7 +25,11 @@ namespace StatLight.Core.WebServer.XapInspection
         {
             var files = new List<ITestFile>();
             string testAssemblyFullName = null;
-            using (var archive = ZipFile.Read(archiveFileName))
+
+            // manually read in the file because the file lock used in ZipFile seems to fail on reading...
+            var fileStream = File.ReadAllBytes(archiveFileName);
+
+            using (var archive = ZipFile.Read(fileStream))
             {
                 var appManifest = LoadAppManifest(archive);
 
