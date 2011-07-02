@@ -67,20 +67,21 @@ namespace StatLight.Core.Reporting.Providers.NUnit
 
         }
 
-        private static XElement CreateTestCaseElement(TestCaseResult r)
+        private static XElement CreateTestCaseElement(TestCaseResult result)
         {
-            XElement element = new XElement("test-case",
-                                        new XAttribute("name", r.FullMethodName()),
-                                        new XAttribute("executed", r.ResultType == ResultType.Ignored ? "False" : "True"),
-                                        new XAttribute("time", r.TimeToComplete.ToString(@"hh\:mm\:ss\.ffff", CultureInfo.InvariantCulture)),
-                                        new XAttribute("result", r.ResultType == ResultType.Ignored ? "Ignored" : (r.ResultType == ResultType.Failed || r.ResultType == ResultType.SystemGeneratedFailure) ? "Failure" : "Success"));
-            if (r.ResultType != ResultType.Ignored)
-                element.Add(new XAttribute("success", r.ResultType == ResultType.Passed ? "True" : "False"));
+            var element = new XElement("test-case",
+                                new XAttribute("name", result.FullMethodName()),
+                                new XAttribute("executed", result.ResultType == ResultType.Ignored ? "False" : "True"),
+                                new XAttribute("time", result.TimeToComplete.ToString(@"hh\:mm\:ss\.ffff", CultureInfo.InvariantCulture)),
+                                new XAttribute("result", result.ResultType == ResultType.Ignored ? "Ignored" : (result.ResultType == ResultType.Failed || result.ResultType == ResultType.SystemGeneratedFailure) ? "Failure" : "Success"));
 
-            if (r.ResultType == ResultType.Failed || r.ResultType == ResultType.SystemGeneratedFailure)
+            if (result.ResultType != ResultType.Ignored)
+                element.Add(new XAttribute("success", result.ResultType == ResultType.Passed ? "True" : "False"));
+
+            if (result.ResultType == ResultType.Failed || result.ResultType == ResultType.SystemGeneratedFailure)
                 element.Add(new XElement("failure",
-                    new XElement("message", GetErrorMessage(r)),
-                    new XElement("stack-trace", new XCData(GetErrorStackTrace(r)))));
+                    new XElement("message", GetErrorMessage(result)),
+                    new XElement("stack-trace", new XCData(GetErrorStackTrace(result)))));
 
             return element;
         }
@@ -98,95 +99,6 @@ namespace StatLight.Core.Reporting.Providers.NUnit
                 return r.ExceptionInfo.FullMessage ?? "";
             return r.OtherInfo ?? "";
         }
-
-
-        //public string GetXmlReport()
-        //{
-        //    /*
-        //     name="C:\Users\jasonj\Documents\Visual Studio 2010\Projects\ClassLibrary1\ClassLibrary1\bin\Debug\ClassLibrary1.nunit" 
-        //     * total="4"
-        //     * errors="2"
-        //     * failures="0" 
-        //     * not-run="0" 
-        //     * inconclusive="0" 
-        //     * ignored="0" 
-        //     * skipped="0"
-        //     * invalid="0"
-        //     * date="2011-07-02" 
-        //     * time="10:45:44"
-        //     */
-        //    var root = 
-        //            new XElement("test-results"
-        //                , new XAttribute("name", "")
-        //                , new XAttribute("total", _report.TotalResults)
-        //                , new XAttribute("failures", _report.TotalFailed)
-        //                , new XAttribute("ignored", _report.TotalIgnored)
-        //                , new XAttribute("date", _report.DateTimeRunCompleted.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture))
-        //                , new XAttribute("time", _report.DateTimeRunCompleted.ToString("HH:mm:ss", CultureInfo.CurrentCulture))
-        //                , GetTestsRuns(_report)
-        //            );
-        //    return root.ToString();
-        //}
-
-        //private static List<XElement> GetTestsRuns(IEnumerable<TestReport> report)
-        //{
-        //    return report.Select(item =>
-        //            new XElement("tests",
-        //                new XAttribute("xapFileName", item.XapPath),
-        //                item.TestResults.Select(GetResult))).ToList();
-        //}
-
-        //private static XElement GetResult(TestCaseResult result)
-        //{
-        //    Func<TestCaseResult, string> formatName =
-        //        resultX => resultX.FullMethodName();
-
-        //    XElement otherInfoElement = null;
-        //    if (!string.IsNullOrEmpty(result.OtherInfo))
-        //    {
-        //        otherInfoElement = new XElement("otherInfo", result.OtherInfo);
-        //    }
-
-        //    XElement exceptionInfoElement = null;
-        //    if (result.ExceptionInfo != null)
-        //    {
-        //        exceptionInfoElement = FormatExceptionInfoElement(result.ExceptionInfo);
-        //    }
-
-        //    return new XElement("test",
-        //                new XAttribute("name", formatName(result)),
-        //                new XAttribute("resulttype", result.ResultType),
-        //                new XAttribute("timeToComplete", result.TimeToComplete.ToString()),
-        //                exceptionInfoElement,
-        //                otherInfoElement
-        //                );
-        //}
-
-        //private static XElement FormatExceptionInfoElement(ExceptionInfo exceptionInfo)
-        //{
-        //    if (exceptionInfo == null)
-        //        return null;
-
-        //    return FormatExceptionInfoElement(exceptionInfo, false);
-        //}
-
-        //private static XElement FormatExceptionInfoElement(ExceptionInfo exceptionInfo, bool isInnerException)
-        //{
-        //    if (exceptionInfo == null)
-        //        return null;
-
-        //    string elementName = "exceptionInfo";
-
-        //    if (isInnerException)
-        //        elementName = "innerExceptionInfo";
-
-        //    return new XElement(elementName
-        //                    , new XElement("message", exceptionInfo.Message)
-        //                    , new XElement("stackTrace", exceptionInfo.StackTrace)
-        //                    , FormatExceptionInfoElement(exceptionInfo.InnerException, true)
-        //                    );
-        //}
-
 
         public static bool ValidateSchema(string pathToXmlFileToValidate, out IList<string> validationErrors)
         {
