@@ -1,4 +1,4 @@
-﻿
+
 
 
 namespace StatLight.Core.Runners
@@ -124,7 +124,6 @@ namespace StatLight.Core.Runners
 
             BuildAndReturnWebServiceAndBrowser(
                 _logger,
-                statLightConfiguration.Server.ShowTestingBrowserHost,
                 statLightConfiguration,
                 out webServer,
                 out webBrowsers,
@@ -146,7 +145,6 @@ namespace StatLight.Core.Runners
 
             BuildAndReturnWebServiceAndBrowser(
                 logger,
-                false,
                 statLightConfiguration,
                 out webServer,
                 out webBrowsers,
@@ -167,7 +165,6 @@ namespace StatLight.Core.Runners
 
             BuildAndReturnWebServiceAndBrowser(
                 _logger,
-                statLightConfiguration.Server.ShowTestingBrowserHost,
                 statLightConfiguration,
                 out webServer,
                 out webBrowsers,
@@ -202,7 +199,6 @@ namespace StatLight.Core.Runners
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private void BuildAndReturnWebServiceAndBrowser(
             ILogger logger,
-            bool showTestingBrowserHost,
             StatLightConfiguration statLightConfiguration,
             out IWebServer webServer,
             out List<IWebBrowser> webBrowsers,
@@ -215,7 +211,7 @@ namespace StatLight.Core.Runners
             var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
             webServer = CreateWebServer(logger, statLightConfiguration, location);
 
-            webBrowsers = GetWebBrowsers(logger, location.TestPageUrl, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart);
+            webBrowsers = GetWebBrowsers(logger, location.TestPageUrl, clientTestRunConfiguration, serverTestRunConfiguration.ShowTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart);
 
             dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
 
