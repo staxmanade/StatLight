@@ -296,6 +296,9 @@ Try: (the following two steps that should allow StatLight to start a web server 
                     case ReportOutputFileType.StatLight:
                         xmlReport = new Core.Reporting.Providers.Xml.XmlReport(testReports);
                         break;
+                    case ReportOutputFileType.NUnit:
+                        xmlReport = new Core.Reporting.Providers.NUnit.NUnitXmlReport(testReports);
+                        break;
                     default:
                         throw new StatLightException("Unknown ReportOutputFileType chosen Name=[{0}], Value=[{1}]".FormatWith(reportOutputFileType.ToString(), (int)reportOutputFileType));
                 }
