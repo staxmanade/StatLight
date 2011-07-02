@@ -1,13 +1,16 @@
 
-using System.Collections.Generic;
+
 
 namespace StatLight.Core.WebServer.XapInspection
 {
     using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Text;
+    using System.Threading;
     using System.Xml.Linq;
     using Ionic.Zip;
     using StatLight.Core.Common;
@@ -26,8 +29,7 @@ namespace StatLight.Core.WebServer.XapInspection
             var files = new List<ITestFile>();
             string testAssemblyFullName = null;
 
-            // manually read in the file because the file lock used in ZipFile seems to fail on reading...
-            var fileStream = File.ReadAllBytes(archiveFileName);
+            var fileStream = FileReader.ReadAllBytes(archiveFileName);
 
             using (var archive = ZipFile.Read(fileStream))
             {
@@ -51,6 +53,7 @@ namespace StatLight.Core.WebServer.XapInspection
                 foreach (var item in files)
                     _logger.Debug("XapItems.FilesContainedWithinXap = {0}".FormatWith(item.FileName));
             }
+
 
             var xapItems = new TestFileCollection(_logger, testAssemblyFullName, files);
 
@@ -114,8 +117,8 @@ namespace StatLight.Core.WebServer.XapInspection
             using (var archive = ZipFile.Read(xapPath))
             {
                 ZipEntry appManifestEntry = archive["AppManifest.xaml"];
-                if (appManifestEntry == null) 
-                    return null; 
+                if (appManifestEntry == null)
+                    return null;
 
                 var xAppManifest = XElement.Load(appManifestEntry.OpenReader());
 
@@ -124,4 +127,40 @@ namespace StatLight.Core.WebServer.XapInspection
             }
         }
     }
+
+    public static class FileReader
+    {
+        public static byte[] ReadAllBytes(string path)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            while (true)
+            {
+                try
+                {
+                    return File.ReadAllBytes(path);
+                }
+                catch (IOException ex)
+                {
+                    if (ex.Message.Contains("because it is being used by another process"))
+                    {
+                        Thread.Sleep(500);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                // Don't wait on file forever... fail if it's locked for 15 seconds or more.
+                if (stopwatch.Elapsed > TimeSpan.FromSeconds(15))
+                {
+                    throw new StatLightException("Could not seem read the file [{0}] as it appears to be locked by another process.".FormatWith(path));
+                }
+
+            }
+        }
+    }
+
 }
+
