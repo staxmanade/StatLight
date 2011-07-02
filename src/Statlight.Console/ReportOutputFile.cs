@@ -4,6 +4,7 @@
     {
         StatLight,
         //TFS,
-        MSGenericTest
+        MSGenericTest,
+        NUnit
     }
 }
