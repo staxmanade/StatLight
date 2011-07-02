@@ -72,3 +72,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible", Scope = "type", Target = "EventAggregatorNet.EventAggregator+Config")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Scope = "member", Target = "EventAggregatorNet.EventAggregator.#AddListener(System.Object,System.Nullable`1<System.Boolean>)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Scope = "member", Target = "EventAggregatorNet.IEventSubscriptionManager.#AddListener(System.Object,System.Nullable`1<System.Boolean>)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Scope = "member", Target = "StatLight.Core.Reporting.Providers.TFS.TFS2010.MSGenericTestXmlReport.#GetXmlReport()")]

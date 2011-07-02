@@ -15,7 +15,6 @@ namespace StatLight.Console
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
     using StatLight.Core.Reporting;
-    using StatLight.Core.Reporting.Providers.Xml;
     using StatLight.Core.Runners;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer.XapHost;
@@ -266,13 +265,7 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 testReports.Add(testReport);
             }
 
-            string xmlReportOutputPath = _options.XmlReportOutputPath;
-            bool tfsGenericReport = _options.TFSGenericReport;
-            XmlReportType xmlReportType = XmlReportType.StatLight;
-            if (tfsGenericReport)
-                xmlReportType = XmlReportType.TFS;
-
-            WriteXmlReport(testReports, xmlReportOutputPath, xmlReportType);
+            WriteXmlReport(testReports, _options.XmlReportOutputPath, _options.ReportOutputFileType);
 
             return testReports;
         }
@@ -290,27 +283,21 @@ Try: (the following two steps that should allow StatLight to start a web server 
             }
         }
 
-        public enum XmlReportType
-        {
-            StatLight,
-            TFS,
-        }
-
-        private static void WriteXmlReport(TestReportCollection testReports, string xmlReportOutputPath, XmlReportType xmlReportType)
+        private static void WriteXmlReport(TestReportCollection testReports, string xmlReportOutputPath, ReportOutputFileType reportOutputFileType)
         {
             if (!string.IsNullOrEmpty(xmlReportOutputPath))
             {
-                IXmlReport xmlReport = null;
-                switch (xmlReportType)
+                IXmlReport xmlReport;
+                switch (reportOutputFileType)
                 {
-                    case XmlReportType.TFS:
-                        xmlReport = new Core.Reporting.Providers.TFS.TFS2010.XmlReport(testReports);
+                    case ReportOutputFileType.MSGenericTest:
+                        xmlReport = new Core.Reporting.Providers.TFS.TFS2010.MSGenericTestXmlReport(testReports);
                         break;
-                    case XmlReportType.StatLight:
-                        xmlReport = new XmlReport(testReports);
+                    case ReportOutputFileType.StatLight:
+                        xmlReport = new Core.Reporting.Providers.Xml.XmlReport(testReports);
                         break;
                     default:
-                        throw new StatLightException("Unknown XmlReportType chosen Name=[{0}], Value=[{1}]".FormatWith(xmlReportType.ToString(), (int)xmlReportType));
+                        throw new StatLightException("Unknown ReportOutputFileType chosen Name=[{0}], Value=[{1}]".FormatWith(reportOutputFileType.ToString(), (int)reportOutputFileType));
                 }
 
                 xmlReport.WriteXmlReport(xmlReportOutputPath);
@@ -377,5 +364,4 @@ Try: (the following two steps that should allow StatLight to start a web server 
         }
 
     }
-
 }
