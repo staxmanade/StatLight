@@ -173,7 +173,7 @@
     <Compile Include="Reporting\Providers\Console\ConsoleResultHandler.cs" />
     <Compile Include="Reporting\Providers\NUnit\NUnitXmlReport.cs" />
     <Compile Include="Reporting\Providers\TFS\TFS2010\TestResultType.cs" />
-    <Compile Include="Reporting\Providers\TFS\TFS2010\XmlReport.cs" />
+    <Compile Include="Reporting\Providers\TFS\TFS2010\MSGenericTestXmlReport.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlReport.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlSchemaValidator.cs" />
     <Compile Include="Runners\ContinuousConsoleRunner.cs" />

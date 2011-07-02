@@ -1,22 +1,19 @@
 ﻿
-
-using System.Text;
-using StatLight.Core.Events;
-using StatLight.Core.Reporting.Providers.Xml;
-
 namespace StatLight.Core.Reporting.Providers.TFS.TFS2010
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Xml.Linq;
+    using StatLight.Core.Events;
 
-    public class XmlReport : IXmlReport
+    public class MSGenericTestXmlReport : IXmlReport
     {
         private readonly TestReportCollection _report;
 
-        public XmlReport(TestReportCollection report)
+        public MSGenericTestXmlReport(TestReportCollection report)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
