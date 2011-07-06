@@ -51,14 +51,14 @@ namespace StatLight.Core.WebServer.XapInspection
             if (runtimeVersion != null)
                 xAppManifest.SetAttributeValue("RuntimeVersion", runtimeVersion);
             string manifestRewritten = xAppManifest.ToString().Replace("StatLightTempName", "x:Name").Replace(" xmlns=\"\"", string.Empty);
-            zipFile.AddEntry("AppManifest.xaml", "/", manifestRewritten);
+            AddFileInternal(zipFile, "AppManifest.xaml", manifestRewritten.ToByteArray());
 
             return zipFile;
         }
 
         private void AddFile(ZipFile zipFile, ITestFile file, XElement parts)
         {
-            AddFileToZip(zipFile, file.FileName, file.File);
+            AddFileInternal(zipFile, file.FileName, file.File);
 
             if ((Path.GetExtension(file.FileName) ?? string.Empty).Equals(".dll", StringComparison.OrdinalIgnoreCase))
             {
@@ -76,21 +76,16 @@ namespace StatLight.Core.WebServer.XapInspection
                 {
                     _logger.Debug("        Assembly not at root - not adding to AppManifest - {0}".FormatWith(name));
                 }
-
-
             }
         }
 
-        private static void AddFileToZip(ZipFile zipFile, string fileName, byte[] fileBytes)
+        internal static void AddFileInternal(ZipFile zipFile, string fileName, byte[] value)
         {
-            if (Path.IsPathRooted(fileName))
-            {
-                zipFile.AddEntry(fileName, "/", fileBytes);
-            }
-            else
-            {
-                zipFile.AddEntry(Path.GetFileName(fileName), Path.GetDirectoryName(fileName), fileBytes);
-            }
+            if (zipFile == null) throw new ArgumentNullException("zipFile");
+            if (fileName == null) throw new ArgumentNullException("fileName");
+            if (value == null) throw new ArgumentNullException("value");
+
+            zipFile.AddEntry(Path.GetFileName(fileName), Path.GetDirectoryName(fileName), value);
         }
     }
 }
