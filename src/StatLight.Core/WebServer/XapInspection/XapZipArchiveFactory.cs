@@ -74,13 +74,27 @@ namespace StatLight.Core.WebServer.XapInspection
             GC.SuppressFinalize(this);
         }
 
+        private bool TryGetEntry(string fileName, out ZipEntry zipEntry)
+        {
+            foreach (var entry in _zipFile)
+            {
+                if (entry.FileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
+                {
+                    zipEntry = entry;
+                    return true;
+                }
+            }
+            zipEntry = null;
+            return false;
+        }
+
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
         public byte[] this[string fileName]
         {
             get
             {
-                if (_zipFile.Any(zipFile => zipFile.FileName.Equals(fileName, StringComparison.OrdinalIgnoreCase)))
+                if (ContainsFile(fileName))
                 {
                     return ReadFileIntoBytes(fileName);
                 }
@@ -91,7 +105,12 @@ namespace StatLight.Core.WebServer.XapInspection
 
         public bool ContainsFile(string fileName)
         {
-            return _zipFile.Any(zipFile => zipFile.FileName.Equals(fileName, StringComparison.OrdinalIgnoreCase));
+            ZipEntry zipEntry;
+            if (TryGetEntry(fileName, out zipEntry))
+            {
+                return true;
+            }
+            return false;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
@@ -105,7 +124,7 @@ namespace StatLight.Core.WebServer.XapInspection
                 }
             }
 
-            _zipFile.AddEntry(Path.GetFileName(fileName), Path.GetDirectoryName(fileName), value);
+            _zipFile.AddEntry(Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileName(fileName)), value);
         }
 
         public byte[] ToByteArray()
@@ -119,15 +138,17 @@ namespace StatLight.Core.WebServer.XapInspection
 
         public byte[] ReadFileIntoBytes(string fileName)
         {
-            var file = _zipFile[fileName];
-            if (file == null)
-                return null;
-
-            using (var stream = new MemoryStream())
+            ZipEntry zipEntry;
+            if (TryGetEntry(fileName, out zipEntry))
             {
-                file.Extract(stream);
-                return stream.ToArray();
+                using (var stream = new MemoryStream())
+                {
+                    zipEntry.Extract(stream);
+                    return stream.ToArray();
+                }
             }
+
+            return null;
         }
 
         public void AddFile(string fileName)
