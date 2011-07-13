@@ -38,7 +38,7 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
 </Deployment>
 ";
 
-            var originalXapHost = new ZipArchive();
+            var originalXapHost = new XapZipArchive();
             originalXapHost.AddTempFile("AppManifest.xaml", appManifest.ToByteArray());
             originalXapHost.AddTempFile("StatLight.Client.Harness.dll");
             originalXapHost.AddTempFile("StatLight.Client.Harness.MSTest.dll");
@@ -58,7 +58,7 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
 </Deployment>
 ";
 
-            var originalXapUnderTest = new ZipArchive();
+            var originalXapUnderTest = new XapZipArchive();
             originalXapUnderTest.AddTempFile("/AppManifest.xaml", appManifest2.ToByteArray());
             originalXapUnderTest.AddTempFile("/StatLight.IntegrationTests.Silverlight.MSTest.dll");
             originalXapUnderTest.AddTempFile("/Microsoft.Silverlight.Testing.dll");
@@ -83,7 +83,7 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
   </Deployment.Parts>
 </Deployment>
 ";
-            var expectedXapHost = new ZipArchive();
+            var expectedXapHost = new XapZipArchive();
             expectedXapHost.AddTempFile("/StatLight.Client.Harness.dll");
             expectedXapHost.AddTempFile("/StatLight.Client.Harness.MSTest.dll");
             expectedXapHost.AddTempFile("/System.Windows.Controls.dll");
@@ -135,7 +135,7 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
         }
 
 
-        private static void AssertZipsEqual(IZipArchive expected, IZipArchive actual)
+        private static void AssertZipsEqual(IXapZipArchive expected, IXapZipArchive actual)
         {
             actual.Count().ShouldEqual(expected.Count(), "zip files contain different counts");
 
@@ -185,12 +185,12 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
 
     public static class Extensions
     {
-        public static void AddTempFile(this ZipArchive zipArchive, string fileName, byte[] value = null)
+        public static void AddTempFile(this XapZipArchive xapZipArchive, string fileName, byte[] value = null)
         {
             if (value == null)
                 value = new byte[] { 1, 2 };
 
-            XapRewriter.AddFileInternal(zipArchive, fileName, value);
+            XapRewriter.AddFileInternal(xapZipArchive, fileName, value);
         }
     }
 }

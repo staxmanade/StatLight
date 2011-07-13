@@ -70,7 +70,7 @@ namespace StatLight.IntegrationTests
 
 				_filesToCleanup.Add(_xapPath);
 
-				Action<ZipArchive> addTempFileToZip = (zipFile) =>
+				Action<XapZipArchive> addTempFileToZip = (zipFile) =>
 				{
 					var pathToTempFileToPlaceInXap = Path.GetTempFileName();
 					using (var writer = File.CreateText(pathToTempFileToPlaceInXap))
@@ -81,7 +81,7 @@ namespace StatLight.IntegrationTests
 					_filesToCleanup.Add(pathToTempFileToPlaceInXap);
 				};
 
-				using (var zipFile = new ZipArchive())
+				using (var zipFile = new XapZipArchive())
 				{
 					addTempFileToZip(zipFile);
 					addTempFileToZip(zipFile);

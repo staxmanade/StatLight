@@ -16,14 +16,14 @@ namespace StatLight.Core.WebServer.XapInspection
             _logger = logger;
         }
 
-        public IZipArchive RewriteZipHostWithFiles(byte[] hostXap, IEnumerable<ITestFile> filesToPlaceIntoHostXap, string runtimeVersion)
+        public IXapZipArchive RewriteZipHostWithFiles(byte[] hostXap, IEnumerable<ITestFile> filesToPlaceIntoHostXap, string runtimeVersion)
         {
             if (filesToPlaceIntoHostXap == null) throw new ArgumentNullException("filesToPlaceIntoHostXap");
 
             //TODO: Write better tests and clean up the below
             // It's adding assemblies and other content, and re-writing the AppManifest.xaml
 
-            var zipArchive = ZipArchiveFactory.Create(hostXap);
+            var zipArchive = XapZipArchiveFactory.Create(hostXap);
 
             var xAppManifest = zipArchive.GetAppManifest();
 
@@ -45,7 +45,7 @@ namespace StatLight.Core.WebServer.XapInspection
 
             //NOTE: the StatLightTempName is a crazy string hick because I couldn't figure out how to get the XAttribute to look like x:Name=...
 
-            //zipArchive.RemoveEntry("AppManifest.xaml");
+            //xapZipArchive.RemoveEntry("AppManifest.xaml");
             if (runtimeVersion != null)
                 xAppManifest.SetAttributeValue("RuntimeVersion", runtimeVersion);
             string manifestRewritten = xAppManifest.ToString().Replace("StatLightTempName", "x:Name").Replace(" xmlns=\"\"", string.Empty);
@@ -55,9 +55,9 @@ namespace StatLight.Core.WebServer.XapInspection
             return zipArchive;
         }
 
-        private void AddFile(IZipArchive zipArchive, ITestFile file, XElement parts)
+        private void AddFile(IXapZipArchive xapZipArchive, ITestFile file, XElement parts)
         {
-            AddFileInternal(zipArchive, file.FileName, file.File);
+            AddFileInternal(xapZipArchive, file.FileName, file.File);
 
             if ((Path.GetExtension(file.FileName) ?? string.Empty).Equals(".dll", StringComparison.OrdinalIgnoreCase))
             {
@@ -78,13 +78,13 @@ namespace StatLight.Core.WebServer.XapInspection
             }
         }
 
-        internal static void AddFileInternal(IZipArchive zipArchive, string fileName, byte[] value)
+        internal static void AddFileInternal(IXapZipArchive xapZipArchive, string fileName, byte[] value)
         {
-            if (zipArchive == null) throw new ArgumentNullException("zipArchive");
+            if (xapZipArchive == null) throw new ArgumentNullException("xapZipArchive");
             if (fileName == null) throw new ArgumentNullException("fileName");
             if (value == null) throw new ArgumentNullException("value");
 
-            zipArchive.AddFile(fileName, value);
+            xapZipArchive.AddFile(fileName, value);
         }
     }
 }
