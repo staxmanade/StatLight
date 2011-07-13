@@ -195,8 +195,9 @@ namespace StatLight.Core.Configuration
             {
                 var rewriter = new XapRewriter(_logger);
 
-                xapHost = rewriter.RewriteZipHostWithFiles(xapHost, files, runtimeVersion)
-                                .ToByteArray();
+                xapHost = rewriter
+                    .RewriteZipHostWithFiles(xapHost, files, runtimeVersion)
+                    .ToByteArray();
             }
 
             return xapHost;

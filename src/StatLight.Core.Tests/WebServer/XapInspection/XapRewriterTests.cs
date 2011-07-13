@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
-using Ionic.Zip;
 using NUnit.Framework;
 using StatLight.Core.WebServer.XapInspection;
 
@@ -13,9 +14,9 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
     public class XapRewriterTests : FixtureBase
     {
         private XapRewriter _xapRewriter;
-        private ZipFile _originalXapHost;
-        private ZipFile _originalXapUnderTest;
-        private ZipFile _expectedXapHost;
+        private byte[] _originalXapHost;
+        private byte[] _originalXapUnderTest;
+        private byte[] _expectedXapHost;
         private string _expectedAppManifest;
 
         protected override void Before_all_tests()
@@ -37,16 +38,16 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
 </Deployment>
 ";
 
-            _originalXapHost = new ZipFile();
-            _originalXapHost.AddTempFile("AppManifest.xaml", appManifest.ToByteArray());
-            _originalXapHost.AddTempFile("StatLight.Client.Harness.dll");
-            _originalXapHost.AddTempFile("StatLight.Client.Harness.MSTest.dll");
-            _originalXapHost.AddTempFile("System.Windows.Controls.dll");
-            _originalXapHost.AddTempFile("System.Xml.Linq.dll");
-            _originalXapHost.AddTempFile("System.Xml.Serialization.dll");
-            _originalXapHost.AddTempFile("Microsoft.Silverlight.Testing.dll");
-            _originalXapHost.AddTempFile("Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll");
-
+            var originalXapHost = new ZipArchive();
+            originalXapHost.AddTempFile("AppManifest.xaml", appManifest.ToByteArray());
+            originalXapHost.AddTempFile("StatLight.Client.Harness.dll");
+            originalXapHost.AddTempFile("StatLight.Client.Harness.MSTest.dll");
+            originalXapHost.AddTempFile("System.Windows.Controls.dll");
+            originalXapHost.AddTempFile("System.Xml.Linq.dll");
+            originalXapHost.AddTempFile("System.Xml.Serialization.dll");
+            originalXapHost.AddTempFile("Microsoft.Silverlight.Testing.dll");
+            originalXapHost.AddTempFile("Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll");
+            _originalXapHost = originalXapHost.ToByteArray();
 
             var appManifest2 = @"<Deployment xmlns=""http://schemas.microsoft.com/client/2007/deployment"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" EntryPointAssembly=""StatLight.IntegrationTests.Silverlight.MSTest"" EntryPointType=""StatLight.IntegrationTests.Silverlight.App"" RuntimeVersion=""4.0.50826.0"">
   <Deployment.Parts>
@@ -57,17 +58,18 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
 </Deployment>
 ";
 
-            _originalXapUnderTest = new ZipFile();
-            _originalXapUnderTest.AddTempFile("/AppManifest.xaml", appManifest2.ToByteArray());
-            _originalXapUnderTest.AddTempFile("/StatLight.IntegrationTests.Silverlight.MSTest.dll");
-            _originalXapUnderTest.AddTempFile("/Microsoft.Silverlight.Testing.dll");
-            _originalXapUnderTest.AddTempFile("/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll");
-            _originalXapUnderTest.AddTempFile("/Test/Test/Test.xml", "Hello".ToByteArray());
+            var originalXapUnderTest = new ZipArchive();
+            originalXapUnderTest.AddTempFile("/AppManifest.xaml", appManifest2.ToByteArray());
+            originalXapUnderTest.AddTempFile("/StatLight.IntegrationTests.Silverlight.MSTest.dll");
+            originalXapUnderTest.AddTempFile("/Microsoft.Silverlight.Testing.dll");
+            originalXapUnderTest.AddTempFile("/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll");
+            originalXapUnderTest.AddTempFile("/Test/Test/Test.xml", "Hello".ToByteArray());
 
             // This was a crazy case that the Sterling db project exposed to StatLight (They had duplicate test assemblies)
-            _originalXapUnderTest.AddTempFile("/Binaries/Microsoft.Silverlight.Testing.dll", new byte[] { 1, 2 });
-            _originalXapUnderTest.AddTempFile("/Binaries/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll", new byte[] { 1, 2 });
+            originalXapUnderTest.AddTempFile("/Binaries/Microsoft.Silverlight.Testing.dll", new byte[] { 1, 2 });
+            originalXapUnderTest.AddTempFile("/Binaries/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll", new byte[] { 1, 2 });
 
+            _originalXapUnderTest = originalXapUnderTest.ToByteArray();
 
             _expectedAppManifest = @"<Deployment xmlns=""http://schemas.microsoft.com/client/2007/deployment"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" EntryPointAssembly=""StatLight.Client.Harness"" EntryPointType=""StatLight.Client.Harness.App"" RuntimeVersion=""4.0.50826.0"">
   <Deployment.Parts>
@@ -81,56 +83,61 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
   </Deployment.Parts>
 </Deployment>
 ";
-            _expectedXapHost = new ZipFile();
-            _expectedXapHost.AddTempFile("/StatLight.Client.Harness.dll");
-            _expectedXapHost.AddTempFile("/StatLight.Client.Harness.MSTest.dll");
-            _expectedXapHost.AddTempFile("/System.Windows.Controls.dll");
-            _expectedXapHost.AddTempFile("/System.Xml.Linq.dll");
-            _expectedXapHost.AddTempFile("/System.Xml.Serialization.dll");
-            _expectedXapHost.AddTempFile("/Microsoft.Silverlight.Testing.dll");
-            _expectedXapHost.AddTempFile("/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll");
-            _expectedXapHost.AddTempFile("/StatLight.IntegrationTests.Silverlight.MSTest.dll");
-            _expectedXapHost.AddTempFile("/Test/Test/Test.xml", "Hello".ToByteArray());
-            _expectedXapHost.AddTempFile("/AppManifest.xaml", _expectedAppManifest.ToByteArray());
+            var expectedXapHost = new ZipArchive();
+            expectedXapHost.AddTempFile("/StatLight.Client.Harness.dll");
+            expectedXapHost.AddTempFile("/StatLight.Client.Harness.MSTest.dll");
+            expectedXapHost.AddTempFile("/System.Windows.Controls.dll");
+            expectedXapHost.AddTempFile("/System.Xml.Linq.dll");
+            expectedXapHost.AddTempFile("/System.Xml.Serialization.dll");
+            expectedXapHost.AddTempFile("/Microsoft.Silverlight.Testing.dll");
+            expectedXapHost.AddTempFile("/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll");
+            expectedXapHost.AddTempFile("/StatLight.IntegrationTests.Silverlight.MSTest.dll");
+            expectedXapHost.AddTempFile("/Test/Test/Test.xml", "Hello".ToByteArray());
+            expectedXapHost.AddTempFile("/AppManifest.xaml", _expectedAppManifest.ToByteArray());
 
             // This was a crazy case that the Sterling db project exposed to StatLight (They had duplicate test assemblies)
-            _expectedXapHost.AddTempFile("/Binaries/Microsoft.Silverlight.Testing.dll");
-            _expectedXapHost.AddTempFile("/Binaries/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll");
+            expectedXapHost.AddTempFile("/Binaries/Microsoft.Silverlight.Testing.dll");
+            expectedXapHost.AddTempFile("/Binaries/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll");
+
+            _expectedXapHost = expectedXapHost.ToByteArray();
         }
 
         [Test]
         public void Should_serialize_zip_bytes_correctly()
         {
-            _originalXapHost.ToByteArray().ShouldEqual(_originalXapHost.ToByteArray());
+            _originalXapHost.ShouldEqual(_originalXapHost);
         }
 
         [Test]
-        public void Should_rewrite_correctly()
+        public void Should_be_able_to_load_created_zip()
         {
-            var newFiles = new List<ITestFile>
-                               {
-                                   new TempTestFile("StatLight.IntegrationTests.Silverlight.MSTest.dll"),
-                                   new TempTestFile("Test/Test/Test.xml"),
-                                   new TempTestFile("Binaries/Microsoft.Silverlight.Testing.dll"),
-                                   new TempTestFile("Binaries/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll"),
-                               };
 
-            ZipFile actualXapHost = _xapRewriter.RewriteZipHostWithFiles(_originalXapHost.ToByteArray(), newFiles, null);
-            string actualXapHostFileName = Path.GetTempFileName();
-            actualXapHost.Save(actualXapHostFileName);
+            //var someFileToStore = new MemoryStream(Encoding.UTF8.GetBytes("Hello World!")); ;
+            //var zipStream = new MemoryStream();
+            //ZipStorer zip = ZipStorer.Create(zipStream, "test");
+            ////zip.EncodeUTF8 = true;
+            ////zip.AddStream(ZipStorer.Compression.Store, "/Hello.txt", someFileToStore, DateTime.Now.AddDays(-1), "Test");
+            //byte[] bytes = zipStream.ToArray();
 
+            //zip.Close();
 
-            //var expectedAM = XElement.Load(_expectedAppManifest);
-            //var actualAM = XElement.Load(actualXapHost["AppManifest.xaml"].OpenReader());
-            //expectedAM.ShouldEqual(actualAM);
+            ////Encoding.UTF8.GetString(bytes).ShouldEqual("Hello World!");
+            //Trace.WriteLine(bytes.Length);
+            //var fileAsStream = new MemoryStream(bytes);
 
-            AssertZipsEqual(_expectedXapHost, actualXapHost);
+            //var tempFileName = Path.GetTempFileName();
+            //File.WriteAllBytes(tempFileName, bytes);
+            //ZipStorer.Open(tempFileName, FileAccess.Read);
+            // Throws exception here...
+            //ZipStorer.Open(fileAsStream, FileAccess.Read);
 
+            //ZipStorer.Open(@"C:\Code\StatLight\src\build\bin\Debug\StatLight.Client.For.April2010.xap", FileAccess.Read);
         }
 
-        private static void AssertZipsEqual(ZipFile expected, ZipFile actual)
+
+        private static void AssertZipsEqual(IZipArchive expected, IZipArchive actual)
         {
-            actual.Count.ShouldEqual(expected.Count, "zip files contain different counts");
+            actual.Count().ShouldEqual(expected.Count(), "zip files contain different counts");
 
             var allFiles = actual.Select(s => s.FileName).ToArray();
 
@@ -178,12 +185,12 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
 
     public static class Extensions
     {
-        public static void AddTempFile(this ZipFile zipFile, string fileName, byte[] value = null)
+        public static void AddTempFile(this ZipArchive zipArchive, string fileName, byte[] value = null)
         {
             if (value == null)
                 value = new byte[] { 1, 2 };
 
-            XapRewriter.AddFileInternal(zipFile, fileName, value);
+            XapRewriter.AddFileInternal(zipArchive, fileName, value);
         }
     }
 }
