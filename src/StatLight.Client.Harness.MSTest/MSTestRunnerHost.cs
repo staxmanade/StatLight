@@ -114,9 +114,20 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 #if July2009 || October2009 || November2009
             var settings = UnitTestSystem.CreateDefaultSettings();
 #else
+            var isUITest = _clientTestRunConfiguration.ShowTestingBrowserHost;
+
             var settings = new UnitTestSettings();
-            //settings.TestHarness = new UnitTestHarness();
-        	settings.TestHarness = new StatLightTestHarness();
+
+            settings.TestHarness = isUITest ? new UnitTestHarness() : new StatLightUnitTestHarness();
+
+            if (!isUITest)
+            {
+                var statLightTestPage = new StatLightTestPage();
+                settings.TestHarness.TestPage = statLightTestPage;
+
+                settings.TestPanelType = typeof(StatLightTestPage);
+            }
+
 
             DebugOutputProvider item = new DebugOutputProvider();
             item.ShowAllFailures = true;
@@ -128,15 +139,6 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             }
             catch
             {
-            }
-
-            // Don't enable a U.I. when not specifying the U.I. Mode.
-            if (!_clientTestRunConfiguration.ShowTestingBrowserHost)
-            {
-                var statLightTestPage = new StatLightTestPage();
-                settings.TestHarness.TestPage = statLightTestPage;
-
-                settings.TestPanelType = typeof(StatLightTestPage);
             }
 
             settings.StartRunImmediately = true;

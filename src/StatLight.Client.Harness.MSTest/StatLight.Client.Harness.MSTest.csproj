@@ -85,7 +85,7 @@
     <Compile Include="MSTestRemotelyHostedTestRunnerHost.cs" />
     <Compile Include="MSTestRunnerHost.cs" />
     <Compile Include="ServerHandlingLogProvider.cs" />
-    <Compile Include="StatLightTestHarness.cs" />
+    <Compile Include="StatLightUnitTestHarness.cs" />
     <Compile Include="StatLightTestPage.cs" />
     <Compile Include="UnitTestProviders\DynamicAttributeHelper.cs" />
     <Compile Include="UnitTestProviders\LazyDynamicAssemblyMethodInfo.cs" />
