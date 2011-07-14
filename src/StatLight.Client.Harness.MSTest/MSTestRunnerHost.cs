@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Microsoft.Silverlight.Testing;
@@ -116,7 +115,8 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             var settings = UnitTestSystem.CreateDefaultSettings();
 #else
             var settings = new UnitTestSettings();
-            settings.TestHarness = new UnitTestHarness();
+            //settings.TestHarness = new UnitTestHarness();
+        	settings.TestHarness = new StatLightTestHarness();
 
             DebugOutputProvider item = new DebugOutputProvider();
             item.ShowAllFailures = true;
