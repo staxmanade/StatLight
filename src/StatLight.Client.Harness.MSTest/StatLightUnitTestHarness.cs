@@ -44,8 +44,16 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             if (this._harnessTasks == null)
                 this.CreateHarnessTasks();
 
+            //// Just tried it, not any diff than the "FastRunDispatcher"
             //this.RunDispatcher = new WebBrowserTick(RunNextStep);
+
+            // This is the original impl
             this.RunDispatcher = new FastRunDispatcher(this.RunNextStep, this.Dispatcher);
+
+            //// This just seems to hang
+            //RunDispatcher = new RunDispatcher(RunNextStep);
+
+
             this.RunDispatcher.Complete += this.RunDispatcherComplete;
             this.RunDispatcher.Run();
         }
