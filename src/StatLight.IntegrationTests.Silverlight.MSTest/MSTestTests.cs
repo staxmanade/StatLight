@@ -94,7 +94,11 @@ namespace StatLight.IntegrationTests.Silverlight
             EnqueueTestComplete();
         }
 
-
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void this_should_fail_because_it_didnt_raise_an_expected_exception()
+        {
+        }
 
 #if DEBUG
         [TestMethod]

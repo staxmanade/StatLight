@@ -48,9 +48,9 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         public void Should_have_correct_TotalFailed_count()
         {
 #if DEBUG
-            TestReport.TotalFailed.ShouldEqual(4);
+            TestReport.TotalFailed.ShouldEqual(5);
 #else
-            TestReport.TotalFailed.ShouldEqual(3);
+            TestReport.TotalFailed.ShouldEqual(4);
 #endif
         }
 
@@ -94,7 +94,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_receive_the_TestExecutionMethodFailedClientEvent()
         {
-            _testExecutionMethodFailedClientEvent.Count().ShouldEqual(2);
+            _testExecutionMethodFailedClientEvent.Count().ShouldEqual(3);
 
             var e = _testExecutionMethodFailedClientEvent.First();
 

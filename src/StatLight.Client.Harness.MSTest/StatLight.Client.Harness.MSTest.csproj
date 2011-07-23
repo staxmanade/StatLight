@@ -78,6 +78,7 @@
     <Compile Include="LogMessagTranslation\TestExecutionClassCompletedClientEventMap.cs" />
     <Compile Include="LogMessagTranslation\TestExecutionDoNotReportMessageMap.cs" />
     <Compile Include="LogMessagTranslation\TestExecutionMethodBeginClientEventMap.cs" />
+    <Compile Include="LogMessagTranslation\TestExecutionMethodExpectedExcaptionFailedClientEventMap.cs" />
     <Compile Include="LogMessagTranslation\TestExecutionMethodFailedClientEventMap.cs" />
     <Compile Include="LogMessagTranslation\TestExecutionMethodIgnoredClientEventMap.cs" />
     <Compile Include="LogMessagTranslation\TestExecutionMethodPassedClientEventMap.cs" />
