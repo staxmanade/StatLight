@@ -151,13 +151,23 @@ namespace StatLight.Core.WebServer.XapInspection
             if (silverlightVersion == null)
                 throw new StatLightException("Cannot determine the Silverlight version as the registry key lookup returned nothing");
 
-            string programFilesFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            string programFilesFolder = Getx86ProgramFilesFolder();
             string silverlightFolder = Path.Combine(programFilesFolder, "Microsoft Silverlight", silverlightVersion);
             if (!Directory.Exists(silverlightFolder))
             {
                 throw new DirectoryNotFoundException("Could not find directory " + silverlightFolder);
             }
             return silverlightFolder;
+        }
+
+        private static string Getx86ProgramFilesFolder()
+        {
+            // Copied from http://stackoverflow.com/questions/194157/c-how-to-get-program-files-x86-on-vista-x64
+            if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+            {
+                return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
+            }
+            return Environment.GetEnvironmentVariable("ProgramFiles");
         }
 
         private string ResolveAssemblyPath(AssemblyName assemblyName)
