@@ -24,8 +24,8 @@ namespace StatLight.Core.WebServer.XapInspection
             _logger.Debug("Creating new AppDomain to reflect over assembly - " + path);
             AppDomain tempDomain = AppDomain.CreateDomain("TemporaryAppDomain");
 
-            var instanceAndUnwrap = (AppDomainReflectionManager)tempDomain.CreateInstanceAndUnwrap(
-                GetType().Assembly.FullName,
+            var instanceAndUnwrap = (AppDomainReflectionManager)tempDomain.CreateInstanceFromAndUnwrap(
+                GetType().Assembly.CodeBase,
                 typeof (AppDomainReflectionManager).FullName);
 
             return instanceAndUnwrap.GetAllReferences(path);
