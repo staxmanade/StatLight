@@ -816,6 +816,17 @@ Task test-multiple-two-dlls {
 	}
 }
 
+Task test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-d=.\src\StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting.dll" "-r=$scriptFile" 
+	
+	if(Is-Release-Build){
+		Assert-statlight-xml-report-results -message "test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1 -expectedFailedCount 0 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
+	}
+	else {
+		Assert-statlight-xml-report-results -message "test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 1 -expectedFailedCount 0 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
+	}
+}
 
 Task test-remote-access-querystring {
 	$hostServieWebsitePath = (Get-Item .\src\StatLight.RemoteIntegration\StatLight.RemoteIntegration.Web);
@@ -1067,7 +1078,7 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 	Write-Documentation
 }
 
-Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning, test-multiple-xaps, test-multiple-one-xap-one-dll, test-multiple-two-dlls {
+Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning, test-multiple-xaps, test-multiple-one-xap-one-dll, test-multiple-two-dlls, test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll {
 }
 
 Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLIght-XUnitContribHost, compile-StatLight-MSTestHostVersionIntegrationTests {
