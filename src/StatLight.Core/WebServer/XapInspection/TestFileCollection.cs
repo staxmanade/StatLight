@@ -87,22 +87,14 @@ namespace StatLight.Core.WebServer.XapInspection
                 new { Version = MicrosoftTestingFrameworkVersion.June2011, MicrosoftSilverlightTestingHash = "b43f74adec6e911ce0e01d882fd2958a33f8c5fd", Supported = true, VisualStudioQualityHash = "303e7eb91b26dd6aad394dd4727351485068c8be", },
             };
 
-            var incomingHash = (from xapFile in files
-                                where xapFile.FileName.Equals("Microsoft.Silverlight.Testing.dll", StringComparison.OrdinalIgnoreCase)
-                                select xapFile.File.Hash()).SingleOrDefault();
+
+            var incomingHash = GetFileHashIfExists(files, "Microsoft.Silverlight.Testing.dll");
 
             var foundVersionMSSLTF = definedVersions.Where(w => w.MicrosoftSilverlightTestingHash.Equals(incomingHash, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
-            _logger.Debug("Incoming MSTest file's hash = {0}".FormatWith(incomingHash));
-
             if (foundVersionMSSLTF == null)
             {
-                var incomingHashVSQ = (from xapFile in files
-                                       where xapFile.FileName.Equals("Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll", StringComparison.OrdinalIgnoreCase)
-                                       select xapFile.File.Hash()).SingleOrDefault();
-
-                _logger.Debug("Incoming VisualStudio.QualityTools file's hash = {0}".FormatWith(incomingHashVSQ));
-
+                var incomingHashVSQ = GetFileHashIfExists(files, "Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll");
 
                 // the next scenario comes up if you're trying to run against a silverlight test project DLL only and the Microsoft.Silverlight.Testing is not included as a "reference" to the output assemblies.
                 // We fall back to the verson of Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll and map that to the correct Microsoft.Silverlight.Testing.
@@ -115,6 +107,7 @@ namespace StatLight.Core.WebServer.XapInspection
             {
                 _logger.Warning("Could not determine the Microsoft testing framework version with a SHA1 hash of '{0}'"
                     .FormatWith(incomingHash));
+
                 return null;
             }
 
@@ -122,6 +115,17 @@ namespace StatLight.Core.WebServer.XapInspection
                 throw new StatLightException("The Microsoft Silverlight Testing Framework from {0} is not supported in StatLight (anymore). Please look to upgrade to the latest version.".FormatWith(foundVersionMSSLTF.Version));
 
             return foundVersionMSSLTF.Version;
+        }
+
+        private string GetFileHashIfExists(IEnumerable<ITestFile> files, string fileName)
+        {
+            var hashFound = (from xapFile in files
+                             where xapFile.FileName.Equals(fileName, StringComparison.OrdinalIgnoreCase)
+                             select xapFile.File.Hash()).SingleOrDefault();
+
+            _logger.Debug("Incoming {0} file's hash = {1}".FormatWith(fileName, hashFound));
+
+            return hashFound;
         }
 
         private static UnitTestProviderType DetermineUnitTestProviderType(IEnumerable<ITestFile> files)
