@@ -5,7 +5,8 @@ using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
-using StatLight.Core.Events.Aggregation;
+using EventAggregatorNet;
+using StatLight.Core.Runners;
 using StatLight.Core.WebServer.XapHost;
 using System.Collections.Generic;
 
@@ -29,7 +30,7 @@ namespace StatLight.Core.Tests
         [TestFixtureSetUp]
         public void SetupContext()
         {
-            _eventSubscriptionManager = new EventAggregator(TestLogger);
+            _eventSubscriptionManager = EventAggregatorFactory.Create(TestLogger);
 
             Before_all_tests();
             Because();

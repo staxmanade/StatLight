@@ -1,5 +1,6 @@
 using NUnit.Framework;
-using StatLight.Core.Events.Aggregation;
+using EventAggregatorNet;
+using StatLight.Core.Runners;
 
 namespace StatLight.Core.Tests.Events.Aggregation
 {
@@ -19,7 +20,7 @@ namespace StatLight.Core.Tests.Events.Aggregation
             {
                 base.Before_all_tests();
 
-                var ea = new EventAggregator(TestLogger);
+                var ea = EventAggregatorFactory.Create(TestLogger);
                 _eventSubscriptionManager = ea;
                 _eventPublisher = ea;
                 _eventSubscriptionManager.AddListener(new MultiListener());

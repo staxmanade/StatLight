@@ -140,10 +140,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
                 {
                     if (ClientTestRunConfiguration.ContainsMethod(method))
                     {
-                        // Using the MSTest frameworks's TestMethod here because
-                        // 1. There is no specific StatLight logic in the original ITestMethod implemenation done by StatLight
-                        // 2. The UnitTestContext class in the SL Testing Framework is protected and therefore I can't create that instance
-                        _tests.Add(new Microsoft.Silverlight.Testing.UnitTesting.Metadata.VisualStudio.TestMethod(method));
+                        _tests.Add(new TestMethod(method));
                     }
                 }
                 _testsLoaded = true;

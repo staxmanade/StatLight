@@ -3,9 +3,9 @@ using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using EventAggregatorNet;
 using StatLight.Core.Common;
 using StatLight.Core.Events;
-using StatLight.Core.Events.Aggregation;
 using StatLight.Core.Runners;
 using StatLight.Core.WebBrowser;
 
@@ -43,6 +43,7 @@ namespace StatLight.Core
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public void LoadUpExtensionsForTestingReportEvents(IEventSubscriptionManager eventSubscriptionManager)
         {
             if (eventSubscriptionManager == null) throw new ArgumentNullException("eventSubscriptionManager");

@@ -34,6 +34,9 @@ namespace StatLight.Core.Configuration
             if (queryString == null)
                 throw new ArgumentNullException("queryString");
 
+            if(showTestingBrowserHost && !Environment.UserInteractive)
+                throw new StatLightException("You cannot use the -b option as your C.I. server's agent process is not running in desktop interactive mode.");
+
             Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string runtimeVersion = null;
             IEnumerable<string> testAssemblyFormalNames = new List<string>();
@@ -216,8 +219,9 @@ namespace StatLight.Core.Configuration
             {
                 var rewriter = new XapRewriter(_logger);
 
-                xapHost = rewriter.RewriteZipHostWithFiles(xapHost, files, runtimeVersion)
-                                .ToByteArray();
+                xapHost = rewriter
+                    .RewriteZipHostWithFiles(xapHost, files, runtimeVersion)
+                    .ToByteArray();
             }
 
             return xapHost;

@@ -66,7 +66,7 @@ namespace StatLight.Core.WebBrowser
         public void Stop()
         {
             _logger.Debug("webBrowser.Stop()");
-            _form.Close();
+            _form.Invoke(new Action(() => _form.Close()));
             _browserThread = null;
         }
 

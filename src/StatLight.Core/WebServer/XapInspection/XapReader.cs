@@ -1,14 +1,20 @@
 
+using System.Collections;
+using System.IO.Packaging;
+using System.Xml;
+using Ionic.Zip;
+
 namespace StatLight.Core.WebServer.XapInspection
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Text;
+    using System.Threading;
     using System.Xml.Linq;
-    using Ionic.Zip;
     using StatLight.Core.Common;
 
     public class XapReader
@@ -22,7 +28,10 @@ namespace StatLight.Core.WebServer.XapInspection
         {
             var files = new List<ITestFile>();
             string testAssemblyFullName = null;
-            using (var archive = ZipFile.Read(archiveFileName))
+
+            var fileStream = FileReader.ReadAllBytes(archiveFileName);
+
+            using (IXapZipArchive archive = XapZipArchiveFactory.Create(fileStream))
             {
                 var appManifest = LoadAppManifest(archive);
 
@@ -37,13 +46,12 @@ namespace StatLight.Core.WebServer.XapInspection
                     }
                 }
 
-                files.AddRange((from zipEntry in archive
-                                let fileBytes = ReadFileIntoBytes(archive, zipEntry.FileName)
-                                select new TestFile(zipEntry.FileName, fileBytes)).ToList());
+                files.AddRange(archive.ToList());
 
                 foreach (var item in files)
                     _logger.Debug("XapItems.FilesContainedWithinXap = {0}".FormatWith(item.FileName));
             }
+
 
             var xapItems = new TestFileCollection(_logger, testAssemblyFullName, files);
 
@@ -51,12 +59,10 @@ namespace StatLight.Core.WebServer.XapInspection
             return xapItems;
         }
 
-
-
-        private static AssemblyName GetAssemblyName(ZipFile zip1, string testAssemblyName)
+        private static AssemblyName GetAssemblyName(IXapZipArchive zip1, string testAssemblyName)
         {
             string tempFileName = Path.GetTempFileName();
-            var fileData = ReadFileIntoBytes(zip1, testAssemblyName);
+            var fileData = zip1.ReadFileIntoBytes(testAssemblyName);
             if (fileData != null)
             {
                 File.WriteAllBytes(tempFileName, fileData);
@@ -77,9 +83,9 @@ namespace StatLight.Core.WebServer.XapInspection
             return entryPointAssemblyNode.Value + ".dll";
         }
 
-        private static string LoadAppManifest(ZipFile zip1)
+        private static string LoadAppManifest(IXapZipArchive zip1)
         {
-            var fileData = ReadFileIntoBytes(zip1, "AppManifest.xaml");
+            var fileData = zip1.ReadFileIntoBytes("AppManifest.xaml");
             if (fileData != null)
             {
                 string xaml = Encoding.UTF8.GetString(fileData);
@@ -91,32 +97,54 @@ namespace StatLight.Core.WebServer.XapInspection
             return null;
         }
 
-        private static byte[] ReadFileIntoBytes(ZipFile zipFile, string fileName)
-        {
-            var file = zipFile[fileName];
-            if (file == null)
-                return null;
-
-            using (var stream = new MemoryStream())
-            {
-                file.Extract(stream);
-                return stream.ToArray();
-            }
-        }
-
         public static string GetRuntimeVersion(string xapPath)
         {
-            using (var archive = ZipFile.Read(xapPath))
+            using (var archive = XapZipArchiveFactory.Read(xapPath))
             {
-                ZipEntry appManifestEntry = archive["AppManifest.xaml"];
-                if (appManifestEntry == null) 
-                    return null; 
+                var appManifestEntry = archive["AppManifest.xaml"];
+                if (appManifestEntry == null)
+                    return null;
 
-                var xAppManifest = XElement.Load(appManifestEntry.OpenReader());
+                var xAppManifest = XElement.Load(appManifestEntry.ToStream());
 
                 var runtimeVersion = xAppManifest.Attribute("RuntimeVersion");
                 return runtimeVersion != null ? runtimeVersion.Value : null;
             }
         }
     }
+
+    public static class FileReader
+    {
+        public static byte[] ReadAllBytes(string path)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            while (true)
+            {
+                try
+                {
+                    return File.ReadAllBytes(path);
+                }
+                catch (IOException ex)
+                {
+                    if (ex.Message.Contains("because it is being used by another process"))
+                    {
+                        Thread.Sleep(500);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                // Don't wait on file forever... fail if it's locked for 15 seconds or more.
+                if (stopwatch.Elapsed > TimeSpan.FromSeconds(15))
+                {
+                    throw new StatLightException("Could not seem read the file [{0}] as it appears to be locked by another process.".FormatWith(path));
+                }
+
+            }
+        }
+    }
 }
+

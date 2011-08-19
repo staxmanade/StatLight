@@ -1,16 +1,16 @@
 ﻿
-using System.Collections.ObjectModel;
-using Mono.Options;
-using StatLight.Core.Configuration;
-using StatLight.Core.WebBrowser;
 
 namespace StatLight.Console
 {
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
-    using System.Collections.Generic;
+    using Mono.Options;
     using StatLight.Core.Common;
+    using StatLight.Core.Configuration;
+    using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer.XapHost;
 
     public class ArgOptions
@@ -24,8 +24,6 @@ namespace StatLight.Console
         {
             get { return _xapPaths; }
         }
-
-        public string XmlReportOutputPath { get; private set; }
 
         public string TagFilters { get; private set; }
 
@@ -63,7 +61,15 @@ namespace StatLight.Console
 
         public bool ForceBrowserStart { get; private set; }
 
-        public bool TFSGenericReport { get; set; }
+        #region XmlReport
+        public string XmlReportOutputPath { get; private set; }
+        private ReportOutputFileType _reportOutputFileType = ReportOutputFileType.StatLight;
+        public ReportOutputFileType ReportOutputFileType
+        {
+            get { return _reportOutputFileType; }
+            set { _reportOutputFileType = value; }
+        }
+        #endregion
 
         private readonly IList<string> _dlls = new List<string>();
         public IList<string> Dlls
@@ -106,7 +112,7 @@ namespace StatLight.Console
 
             return new OptionSet()
                 .Add("x|XapPath", "Path to test xap file. (Can specify multiple -x={path1} -x={path2})", v => _xapPaths.Add(v ?? string.Empty), OptionValueType.Required)
-                .Add("d|Dll", "Assembly to test.", v=>
+                .Add("d|Dll", "Assembly to test.", v =>
                     {
                         if (!string.IsNullOrEmpty(v))
                         {
@@ -164,13 +170,16 @@ namespace StatLight.Console
                         else
                             throw new DirectoryNotFoundException("Could not find directory in [{0}]".FormatWith(v));
                     })
-                //This is not something anyone is really using and just muddies up the console api
-                //.Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v => UseRemoteTestPage = true)
+                .Add("ReportOutputFileType", "Specify the type of report output when using the -r|--ReportOutputFile=[path]. Possible options [{0}]".FormatWith(typeof(ReportOutputFileType).FormatEnumString()), v => 
+                    {
+                        ReportOutputFileType = ParseEnum<ReportOutputFileType>(v);
+                    })
+                .Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v => UseRemoteTestPage = true)
                 .Add("WebBrowserType", "If you have other browser installed, you can have StatLight use any of the following web browsers [{0}]".FormatWith(typeof(WebBrowserType).FormatEnumString()), v =>
                     {
                         _webBrowserType = ParseEnum<WebBrowserType>(v);
                     })
-                .Add("ForceBrowserStart", "You may need use this option to give permission for StatLight to forcefully close external web browser processes before starting a test run.", v=>ForceBrowserStart = true)
+                .Add("ForceBrowserStart", "You may need use this option to give permission for StatLight to forcefully close external web browser processes before starting a test run.", v => ForceBrowserStart = true)
                 .Add("NumberOfBrowserHosts", "Default is 1. Allows you to specify the number of browser windows to spread work across.", v =>
                     {
                         int value;
@@ -187,7 +196,10 @@ namespace StatLight.Console
                 .Add<string>("UserPhoneEmulator", "If you have the windows phone SDK installed. Attempt this run with the emulator.", v => UserPhoneEmulator = true)
                 .Add("QueryString", "Specify some QueryString that will be appended to the browser test page request. This can be helpful to setup a remote web service and pass in the url, or a port used. You can then access the querystring within silverlight HtmlPage.Document.QueryString[..]", v => QueryString = v ?? String.Empty)
                 .Add<string>("teamcity", "Changes the console output to generate the teamcity message spec.", v => OutputForTeamCity = true)
-                .Add<string>("MSGenericTestFormat", "When specifying the -r|--ReportOutputFile=[FilePath] you can choose to format the xml report that conforms to the MSTest's generic test.", v => TFSGenericReport = true)
+                .Add<string>("MSGenericTestFormat", "This option has been replaced. Use the --ReportOutputFileType:MSGenericTestFormat", v =>
+                    {
+                        throw new StatLightException("THe --MSGenericTestFormat flag has been removed. You should now be using --ReportOutputFileType:{0}".FormatWith(ReportOutputFileType.MSGenericTest));
+                    })
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
                 .Add<string>("debug", "Prints a verbose spattering of internal logging information. Useful when trying to understand possible issues or when reporting issues back to StatLight.CodePlex.com", v => IsRequestingDebug = true)
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)

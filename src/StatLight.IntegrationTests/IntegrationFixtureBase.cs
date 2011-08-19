@@ -4,7 +4,7 @@ namespace StatLight.IntegrationTests
     using System.IO;
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
-    using StatLight.Core.Events.Aggregation;
+    using EventAggregatorNet;
     using StatLight.Core.Reporting;
     using StatLight.Core.Runners;
     using StatLight.Core.WebServer.XapHost;
@@ -54,7 +54,7 @@ namespace StatLight.IntegrationTests
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
-            _eventSubscriptionManager = new EventAggregator(_testLogger);
+            _eventSubscriptionManager = EventAggregatorFactory.Create(_testLogger);
             _statLightRunnerFactory = new StatLightRunnerFactory(_testLogger, _eventSubscriptionManager);
         }
 

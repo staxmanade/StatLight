@@ -84,8 +84,10 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip.Reduced, Version=1.8.4.28, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Accessibility">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Ionic.Zip.Reduced">
       <HintPath>..\..\lib\Desktop\DotNetZip\Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -119,6 +121,7 @@
     <Reference Include="UIAutomationTypes">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyInfo.cs">
@@ -145,6 +148,7 @@
     <Compile Include="Common\StatLightException.cs" />
     <Compile Include="Common\TraceLogger.cs" />
     <Compile Include="Configuration\IStatLightConfigurationFactory.cs" />
+    <Compile Include="EventAggregator.Net\EventAggregator.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -155,6 +159,7 @@
     <Compile Include="Reporting\TestReportCollection.cs" />
     <Compile Include="Reporting\ConsoleDebugListener.cs" />
     <Compile Include="Runners\IPhoneEmulator.cs" />
+    <Compile Include="Runners\EventAggregatorFactory.cs" />
     <Compile Include="Runners\IStatLightRunnerFactory.cs" />
     <Compile Include="ExternalComponentFactory.cs" />
     <Compile Include="WebServer\AssemblyResolution\AssemblyResolver.cs" />
@@ -178,7 +183,7 @@
     <Compile Include="Reporting\Providers\Console\ConsoleResultHandler.cs" />
     <Compile Include="Reporting\Providers\NUnit\NUnitXmlReport.cs" />
     <Compile Include="Reporting\Providers\TFS\TFS2010\TestResultType.cs" />
-    <Compile Include="Reporting\Providers\TFS\TFS2010\XmlReport.cs" />
+    <Compile Include="Reporting\Providers\TFS\TFS2010\MSGenericTestXmlReport.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlReport.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlSchemaValidator.cs" />
     <Compile Include="Runners\ContinuousConsoleRunner.cs" />
@@ -243,6 +248,7 @@
     <Compile Include="WebServer\XapInspection\TestFile.cs" />
     <Compile Include="WebServer\XapInspection\TestFileCollection.cs" />
     <Compile Include="WebServer\XapInspection\XapReader.cs" />
+    <Compile Include="WebServer\XapInspection\XapZipArchiveFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -255,6 +261,7 @@
       <Link>CodeAnalysis.ruleset</Link>
     </None>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
