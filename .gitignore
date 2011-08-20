@@ -17,3 +17,4 @@ obj/
 *.swp
 src/VersionInfo.cs
 temp_statlight-integration*
+*.user
