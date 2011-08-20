@@ -66,6 +66,7 @@ namespace StatLight.WindowsPhoneEmulator
             _logger.Debug("Loading into emulator: " + _tempFileName);
             Thread.Sleep(2000);
 
+            
             _remoteApplication = _wp7Device.InstallApplication(
                 _appGuid,
                 _phoneGuid,
@@ -86,9 +87,10 @@ namespace StatLight.WindowsPhoneEmulator
                 {
                     _logger.Debug("Uninstalling sample XAP to Windows Phone 7 Emulator/Device...");
 
+                    _remoteApplication = _wp7Device.GetApplication(_appGuid);
+
                     if (_remoteApplication != null)
                     {
-                        _remoteApplication = _wp7Device.GetApplication(_appGuid);
                         _remoteApplication.Uninstall();
                     }
 
