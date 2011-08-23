@@ -5,6 +5,7 @@
         StatLight,
         //TFS,
         MSGenericTest,
-        NUnit
+        NUnit,
+        TRX,
     }
 }
