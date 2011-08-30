@@ -149,7 +149,7 @@ Try: (the following two steps that should allow StatLight to start a web server 
 
             Write("");
             Write("StatLight - Version {0}.{1}.{2}", version.Major, version.Minor, version.Build);
-            Write("Copyright (C) 2009 Jason Jarrett");
+            Write("Copyright (C) 2009-2011 Jason Jarrett");
             Write("All Rights Reserved.");
             Write("");
         }
