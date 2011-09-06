@@ -7,6 +7,7 @@ namespace StatLight.Console
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using Mono.Options;
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
@@ -55,6 +56,8 @@ namespace StatLight.Console
         }
 
         public bool ForceBrowserStart { get; private set; }
+
+        public WindowGeometry WindowGeometry { get; private set; }
 
         #region XmlReport
         public string XmlReportOutputPath { get; private set; }
@@ -163,7 +166,7 @@ namespace StatLight.Console
                         else
                             throw new DirectoryNotFoundException("Could not find directory in [{0}]".FormatWith(v));
                     })
-                .Add("ReportOutputFileType", "Specify the type of report output when using the -r|--ReportOutputFile=[path]. Possible options [{0}]".FormatWith(typeof(ReportOutputFileType).FormatEnumString()), v => 
+                .Add("ReportOutputFileType", "Specify the type of report output when using the -r|--ReportOutputFile=[path]. Possible options [{0}]".FormatWith(typeof(ReportOutputFileType).FormatEnumString()), v =>
                     {
                         ReportOutputFileType = ParseEnum<ReportOutputFileType>(v);
                     })
@@ -195,6 +198,7 @@ namespace StatLight.Console
                     })
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)
+                .Add<string>("g|Geometry", "Sets the geometry of the Statlight Browser window.  Use 'm' for minimized, 'M' for Maximized, or 'WIDTHxHEIGHT' for a specific size", v => WindowGeometry =  ParseWindowGeometry(v));
                 ;
         }
 
@@ -208,6 +212,41 @@ namespace StatLight.Console
             {
                 throw new StatLightException("Could not find an WebBrowserType defined as [{0}]. Please specify one of the following [{1}].".FormatWith(value, typeof(T).FormatEnumString()));
             }
+        }
+
+        private static WindowGeometry ParseWindowGeometry(string input)
+        {
+            input = input.Trim();
+            WindowGeometry geometry = new WindowGeometry();
+            if (input == "m")
+            {
+                geometry.WindowState = BrowserWindowState.Minimized;
+                geometry.WindowSize = new StatLight.Core.Configuration.Size(0, 0);
+            }
+            else if (input == "M")
+            {
+                geometry.WindowState = BrowserWindowState.Maximized;
+                geometry.WindowSize = new StatLight.Core.Configuration.Size(0, 0);
+            }
+            else
+            {
+                geometry.WindowState = BrowserWindowState.Normal;
+                string pattern = "([0-9]+)x([0-9]+)";
+                var matches = Regex.Match(input, pattern);
+                if (matches.Groups.Count != 2)
+                {
+                    throw new Exception("Geometry must be 'm', 'M', or 'WIDTHxHEIGHT'");
+                }
+                int width;
+                int height;
+
+                if (!int.TryParse(matches.Groups[1].Value, out width) || !int.TryParse(matches.Groups[1].Value, out height) || width < 1 || height < 1)
+                {
+                    throw new Exception("Width and height in geometry must be numbers");
+                }
+                geometry.WindowSize = new StatLight.Core.Configuration.Size(width, height);
+            }
+            return geometry;
         }
 
         public static void ShowHelpMessage(TextWriter @out)
