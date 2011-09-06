@@ -15,7 +15,7 @@ namespace StatLight.Core.Tests.Runners
 
         private ContinuousTestRunner CreateContinuousTestRunner()
         {
-            var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty);
+            var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty, null);
             var runner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, clientTestRunConfiguration, "test");
             return runner;
         }
@@ -59,7 +59,7 @@ namespace StatLight.Core.Tests.Runners
 
             base.Before_all_tests();
 
-            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty);
+            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, false, string.Empty, null);
             _continuousTestRunner = new ContinuousTestRunner(TestLogger, TestEventSubscriptionManager, TestEventPublisher, _mockWebBrowser.Object, _clientTestRunConfiguration, "test");
 
             // Signal that the first test has already finished.

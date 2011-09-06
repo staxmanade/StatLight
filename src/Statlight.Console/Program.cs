@@ -18,6 +18,7 @@ namespace StatLight.Console
     using StatLight.Core.Runners;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer.XapHost;
+    using StatLight.Core;
 
     class Program
     {
@@ -26,6 +27,7 @@ namespace StatLight.Console
 
         static void Main(string[] args)
         {
+            System.Threading.Thread.Sleep(5000);
             AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
                                                               {
                                                                   Console.WriteLine(e.ExceptionObject);
@@ -202,6 +204,7 @@ Try: (the following two steps that should allow StatLight to start a web server 
         public TestReportCollection Run()
         {
             bool showTestingBrowserHost = _options.ShowTestingBrowserHost;
+            WindowGeometry windowGeometry = _options.WindowGeometry;
             bool useRemoteTestPage = _options.UseRemoteTestPage;
             Collection<string> methodsToTest = _options.MethodsToTest;
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = _options.MicrosoftTestingFrameworkVersion;
@@ -238,8 +241,8 @@ Try: (the following two steps that should allow StatLight to start a web server 
                         queryString,
                         webBrowserType,
                         forceBrowserStart,
-                        showTestingBrowserHost);
-
+                        showTestingBrowserHost,
+                        windowGeometry);
                 var testReport = DoTheRun(runnerType, statLightConfiguration);
                 testReports.Add(testReport);
             }
@@ -259,7 +262,8 @@ Try: (the following two steps that should allow StatLight to start a web server 
                         queryString,
                         webBrowserType,
                         forceBrowserStart,
-                        showTestingBrowserHost);
+                        showTestingBrowserHost,
+                        windowGeometry);
 
                 var testReport = DoTheRun(runnerType, statLightConfiguration);
                 testReports.Add(testReport);

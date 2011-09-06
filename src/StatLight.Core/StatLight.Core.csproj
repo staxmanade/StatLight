@@ -242,6 +242,7 @@
     <Compile Include="WebServer\XapInspection\TestFileCollection.cs" />
     <Compile Include="WebServer\XapInspection\XapReader.cs" />
     <Compile Include="WebServer\XapInspection\XapZipArchiveFactory.cs" />
+    <Compile Include="Configuration\WindowGeometry.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

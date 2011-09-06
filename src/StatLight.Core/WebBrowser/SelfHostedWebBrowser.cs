@@ -6,7 +6,7 @@ namespace StatLight.Core.WebBrowser
     using System.Threading;
     using System.Windows.Forms;
     using StatLight.Core.Common;
-    using StatLight.Core.Monitoring;
+    using StatLight.Core.Configuration;
 
     internal class SelfHostedWebBrowser : IWebBrowser, IDisposable
     {
@@ -14,12 +14,21 @@ namespace StatLight.Core.WebBrowser
         private readonly Uri _pageToHost;
         private readonly bool _browserVisible;
         private Thread _browserThread;
+        private readonly WindowGeometry _windowGeometry;
 
-        public SelfHostedWebBrowser(ILogger logger, Uri pageToHost, bool browserVisible)
+        public SelfHostedWebBrowser(ILogger logger, Uri pageToHost, bool browserVisible, WindowGeometry windowGeometry)
         {
             _logger = logger;
             _pageToHost = pageToHost;
             _browserVisible = browserVisible;
+            if (windowGeometry == null)
+            {
+                _windowGeometry = new WindowGeometry() { WindowSize = new StatLight.Core.Configuration.Size(800, 600), WindowState = BrowserWindowState.Normal };
+            }
+            else
+            {
+                _windowGeometry = windowGeometry;
+            }
         }
 
         private Form _form;
@@ -29,8 +38,8 @@ namespace StatLight.Core.WebBrowser
             {
                 _form = new Form
                             {
-                                Height = 600,
-                                Width = 800,
+                                Height = _windowGeometry.WindowSize.Height,
+                                Width = _windowGeometry.WindowSize.Width,
                                 WindowState = GetBrowserVisibilityState(_browserVisible),
                                 ShowInTaskbar = _browserVisible,
                                 Icon = Properties.Resources.FavIcon,
@@ -53,9 +62,27 @@ namespace StatLight.Core.WebBrowser
 
         }
 
-        private static FormWindowState GetBrowserVisibilityState(bool browserVisible)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:LiteralsShouldBeSpelledCorrectly", MessageId="BrowserWindowState")]
+        private FormWindowState GetBrowserVisibilityState(bool browserVisible)
         {
-            return browserVisible ? FormWindowState.Normal : FormWindowState.Minimized;
+            if(browserVisible)
+            {
+                switch (_windowGeometry.WindowState)
+                {
+                    case BrowserWindowState.Maximized:
+                        return FormWindowState.Maximized;
+                    case BrowserWindowState.Minimized:
+                        return FormWindowState.Minimized;
+                    case BrowserWindowState.Normal:
+                        return FormWindowState.Normal;
+                    default:
+                        throw new NotSupportedException("Cannot handle unknown BrowserWindowState");
+                }
+            }
+            else
+            {
+                return FormWindowState.Minimized;
+            }
         }
 
         ~SelfHostedWebBrowser()
