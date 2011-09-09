@@ -304,8 +304,6 @@
     </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Reporting\Providers\MSTestTRX\SampleTRX_GeneratedFromXMLSchema.xml" />
-    <None Include="Reporting\Providers\MSTestTRX\SampleTRX_GeneratedFromRealTest.xml" />
     <Content Include="Reporting\Providers\TFS\HowIGeneratedTheSummaryResults.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

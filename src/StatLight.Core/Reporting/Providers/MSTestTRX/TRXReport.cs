@@ -11,13 +11,22 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
     public class TRXReport : IXmlReport
     {
         private readonly TestReportCollection _report;
+        private readonly IGuidSequenceGenerator _guidSequenceGenerator;
+        private Guid TestListId;
 
         public TRXReport(TestReportCollection report)
+            : this(report, new GuidSequenceGenerator())
+        {
+        }
+
+        public TRXReport(TestReportCollection report, IGuidSequenceGenerator guidSequenceGenerator)
         {
             if (report == null)
                 throw new ArgumentNullException("report");
 
             _report = report;
+            _guidSequenceGenerator = guidSequenceGenerator;
+            TestListId = _guidSequenceGenerator.Next();
         }
 
 
@@ -25,21 +34,41 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
         {
             using (var writer = new StreamWriter(outputFilePath))
             {
-                writer.Write(GetXmlReport());
+                var xml = GetXmlReport();
+                xml.Save(writer);
+                writer.Close();
             }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public string GetXmlReport()
+        public XDocument GetXmlReport()
         {
             var results = _report;
 
-            return new XElement("TestRun",
-                GetTestSettingsNode(),
-                GetResultSummary(results),
-                GetTestDefinitions(results),
-                GetResults(results)
-                ).ToString();
+            var ns = XNamespace.Get(@"http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
+
+            var doc = new XDocument(
+                new XDeclaration("1.0", "UTF-8", "")
+                , new XElement(ns + "TestRun"
+                    , new XAttribute("id", _guidSequenceGenerator.Next().ToString())
+                    , new XAttribute("name", "StatLight TestRun")
+                //, GetTestSettingsNode()
+                //,new XElement(ns +"TestRunConfiguration", new XAttribute("name", "StatLight Test Run"), new XAttribute("id", _guidSequenceGenerator.Next().ToString()))
+                //,GetResultSummary(results)
+                //,GetTestDefinitions(results)
+                    , new XElement(ns + "TestEntries",
+                        new XElement(ns + "TestEntry"
+                            , new XAttribute("testId", "264ee2b2-3b8f-645c-d9ff-739a31f9c1e6")
+                            , new XAttribute("executionId", "e9d88bbd-1814-445e-84fb-876d083d02d9")
+                            , new XAttribute("testListId", TestListId)
+                            )
+                        )
+                    , GetResults(results, ns)
+                    )
+                );
+
+            //doc.Root.SetAttributeValue("xmlns", @"http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
+            return doc;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
@@ -88,13 +117,14 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                     from report in results
                     from test in report.TestResults
                     select new XElement("UnitTest",
+                        new XAttribute("id", _guidSequenceGenerator.Next().ToString()),
                         new XAttribute("name", test.FullMethodName()))
                 );
         }
 
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.TimeSpan.ToString(System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        private XElement GetResults(IEnumerable<TestReport> results)
+        private XElement GetResults(IEnumerable<TestReport> results, XNamespace ns)
         {
             Func<ResultType, string> getResult = r =>
             {
@@ -111,16 +141,25 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                 throw new NotImplementedException("Unknown result type [{0}]".FormatWith(r.ToString()));
             };
 
-            return new XElement("Results",
+            return new XElement(ns + "Results",
                 from report in results
                 from test in report.TestResults
-                select new XElement("UnitTestResult"
-                        ,new XAttribute("testName", test.FullMethodName())
-                        ,new XAttribute("duration", test.TimeToComplete) //TODO: format the milliseconds (EX: duration="00:00:00.0193753")
-                        ,new XAttribute("startTime", test.Started) //TODO: format like startTime="2011-08-23T12:34:52.4182565-07:00"
-                        ,new XAttribute("endTime", test.Finished ?? new DateTime()) //TODO: format like endTime="2011-08-23T12:34:52.7462753-07:00"
-                        ,new XAttribute("outcome", getResult(test.ResultType))
+                select new XElement(ns + "UnitTestResult"
+                    //, new XAttribute("executionId", "e9d88bbd-1814-445e-84fb-876d083d02d9")
+                        , new XAttribute("testId", _guidSequenceGenerator.Next().ToString())
+                        , new XAttribute("testName", test.FullMethodName())
+                        , new XAttribute("testType", "SilverlightTest")
+                        , new XAttribute("testListId", TestListId)
+                        , new XAttribute("computerName", Environment.MachineName)
+                    //, new XAttribute("duration", test.TimeToComplete.ToString()) //TODO: format the milliseconds (EX: duration="00:00:00.0193753")
+                    //, new XAttribute("startTime", test.Started) //TODO: format like startTime="2011-08-23T12:34:52.4182565-07:00"
+                    //, new XAttribute("endTime", test.Finished ?? new DateTime()) //TODO: format like endTime="2011-08-23T12:34:52.7462753-07:00"
+                    //, new XAttribute("outcome", getResult(test.ResultType))
                         )
+                //The required attribute 'testType' is missing.
+                //The required attribute 'testId' is missing.
+                //The required attribute 'testListId' is missing.
+                //The required attribute 'computerName' is missing.
                 );
         }
 
@@ -138,4 +177,18 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
         //    return r.OtherInfo ?? "";
         //}
     }
+
+    public class GuidSequenceGenerator : IGuidSequenceGenerator
+    {
+        public Guid Next()
+        {
+            return Guid.NewGuid();
+        }
+    }
+
+    public interface IGuidSequenceGenerator
+    {
+        Guid Next();
+    }
+
 }

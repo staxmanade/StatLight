@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <TestRun id="e83f94ca-b0fe-41dd-af9e-9f7adcefe7a0" name="UserName@UserName-LT3 2011-08-23 11:36:44" runUser="DOMAIN\UserName" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
     <TestSettings name="Local" id="184c7c57-d71a-480f-9de6-18ff3b15a7ff">
         <Description>These are default test settings for a local test run.</Description>
