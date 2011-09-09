@@ -61,12 +61,14 @@ namespace StatLight.Core.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-        ///&lt;TestRun id=&quot;e83f94ca-b0fe-41dd-af9e-9f7adcefe7a0&quot; name=&quot;UserName@UserName-LT3 2011-08-23 11:36:44&quot; runUser=&quot;DOMAIN\UserName&quot; xmlns=&quot;http://microsoft.com/schemas/VisualStudio/TeamTest/2010&quot;&gt;
-        ///    &lt;TestSettings name=&quot;Local&quot; id=&quot;184c7c57-d71a-480f-9de6-18ff3b15a7ff&quot;&gt;
-        ///        &lt;Description&gt;These are default test settings for a local test run.&lt;/Description&gt;
-        ///        &lt;Deployment enabled=&quot;false&quot; runDeploymentRoot=&quot;UserName_UserName-LT3 2011-08-23 11_36_44&quot; /&gt;
-        ///        &lt;Exec [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;TestRun id=&quot;e83f94ca-b0fe-41dd-af9e-9f7adcefe7a0&quot; name=&quot;StatLight TestRun&quot; runUser=&quot;DOMAIN\UserName&quot; xmlns=&quot;http://microsoft.com/schemas/VisualStudio/TeamTest/2010&quot;&gt;
+        ///  &lt;TestSettings name=&quot;Local&quot; id=&quot;184c7c57-d71a-480f-9de6-18ff3b15a7ff&quot;&gt;
+        ///    &lt;Description&gt;These are default test settings for a local test run.&lt;/Description&gt;
+        ///    &lt;Deployment enabled=&quot;false&quot; runDeploymentRoot=&quot;UserName_UserName-LT3 2011-08-23 11_36_44&quot; /&gt;
+        ///    &lt;Execution&gt;
+        ///      &lt;TestTypeSpecific /&gt;
+        ///   [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SampleTRX_GeneratedFromRealTest {
             get {

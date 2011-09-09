@@ -159,8 +159,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="NOTES.txt" />
-    <None Include="Reporting\Providers\MSTestTRX\SampleTRX_GeneratedFromXMLSchema.xml" />
-    <None Include="Reporting\Providers\MSTestTRX\SampleTRX_GeneratedFromRealTest.xml">
+    <Content Include="Reporting\Providers\MSTestTRX\SampleTRX_GeneratedFromXMLSchema.xml" />
+    <None Include="Reporting\Providers\MSTestTRX\SampleTRX_GeneratedFromRealTest.trx">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
