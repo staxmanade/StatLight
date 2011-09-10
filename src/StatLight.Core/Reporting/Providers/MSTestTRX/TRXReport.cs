@@ -45,6 +45,8 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
         {
             var results = _report;
 
+            var testListId = _guidSequenceGenerator.Next();
+
             var ns = XNamespace.Get(@"http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
 
             var doc = new XDocument(
@@ -58,9 +60,9 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                         , new XAttribute("id", _guidSequenceGenerator.Next())
                         , new XElement(ns + "Description", _testSettings.Description)
                         , new XElement(ns + "Deployment"
-                            ,new XAttribute("enabled", _testSettings.DeploymentEnabled)
+                            , new XAttribute("enabled", _testSettings.DeploymentEnabled)
                             , new XAttribute("runDeploymentRoot", _testSettings.DeploymentRunDeploymentRoot))
-                        //,new XElement("Deployment", new XAttribute("enabled", false))
+                //,new XElement("Deployment", new XAttribute("enabled", false))
                         , new XElement(ns + "Execution"
                             , new XElement(ns + "TestTypeSpecific")
                             , new XElement(ns + "AgentRule", new XAttribute("name", "Execution Agents"))
@@ -97,9 +99,9 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                         , from test in results.AllTests()
                           select new XElement(ns + "UnitTest"
                               , new XAttribute("name", test.MethodName)
-                              , new XAttribute("id", _guidSequenceGenerator.Next())
+                              , new XAttribute("id", GetTestId(test))
                               , new XElement(ns + "Execution"
-                                  , new XAttribute("id", _guidSequenceGenerator.Next())
+                                  , new XAttribute("id", GetExecutionId(test))
                                 )
                               , new XElement(ns + "TestMethod"
                                   , new XAttribute("codeBase", string.Empty)
@@ -115,12 +117,13 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                             , new XAttribute("id", _guidSequenceGenerator.Next())
                             )
                         )
-                    //,GetTestDefinitions(results)
+                //,GetTestDefinitions(results)
                     , new XElement(ns + "TestEntries"
-                        , new XElement(ns + "TestEntry"
-                            , new XAttribute("testId", "264ee2b2-3b8f-645c-d9ff-739a31f9c1e6")
-                            , new XAttribute("executionId", "e9d88bbd-1814-445e-84fb-876d083d02d9")
-                            , new XAttribute("testListId", _guidSequenceGenerator.Next())
+                        , from test in results.AllTests()
+                          select new XElement(ns + "TestEntry"
+                                , new XAttribute("testId", GetTestId(test))
+                                , new XAttribute("executionId", GetExecutionId(test))
+                                , new XAttribute("testListId", testListId)
                             )
                         )
                     , GetResults(results, ns)
@@ -165,13 +168,13 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
             return new XElement(ns + "Results",
                 from test in results.AllTests()
                 select new XElement(ns + "UnitTestResult"
-                    //, new XAttribute("executionId", "e9d88bbd-1814-445e-84fb-876d083d02d9")
-                        , new XAttribute("testId", _guidSequenceGenerator.Next().ToString())
-                        , new XAttribute("testName", test.FullMethodName())
+                        , new XAttribute("executionId", GetExecutionId(test))
+                        , new XAttribute("testId", GetTestId(test))
+                        , new XAttribute("testName", test.MethodName)
+                        , new XAttribute("computerName", _testSettings.ComputerName)
+                        , new XAttribute("duration", test.TimeToComplete.ToString()) //TODO: format the milliseconds (EX: duration="00:00:00.0193753")
                         , new XAttribute("testType", "SilverlightTest")
                         , new XAttribute("testListId", _guidSequenceGenerator.Next())
-                        , new XAttribute("computerName", Environment.MachineName)
-                    //, new XAttribute("duration", test.TimeToComplete.ToString()) //TODO: format the milliseconds (EX: duration="00:00:00.0193753")
                     //, new XAttribute("startTime", test.Started) //TODO: format like startTime="2011-08-23T12:34:52.4182565-07:00"
                     //, new XAttribute("endTime", test.Finished ?? new DateTime()) //TODO: format like endTime="2011-08-23T12:34:52.7462753-07:00"
                     //, new XAttribute("outcome", getResult(test.ResultType))
@@ -182,6 +185,52 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                 //The required attribute 'computerName' is missing.
                 );
         }
+
+
+        private static readonly Dictionary<TestCaseResult, Guid> _executionIdHash = new Dictionary<TestCaseResult, Guid>();
+        private Guid GetExecutionId(TestCaseResult testCaseResult)
+        {
+            return GetGuidForItem(testCaseResult, HashType.ExecutionId);
+        }
+
+        private static readonly Dictionary<TestCaseResult, Guid> _testIdHash = new Dictionary<TestCaseResult, Guid>();
+        private Guid GetTestId(TestCaseResult testCaseResult)
+        {
+            return GetGuidForItem(testCaseResult, HashType.TestId);
+        }
+
+        private enum HashType
+        {
+            ExecutionId,
+            TestId,
+        }
+
+        private Guid GetGuidForItem(TestCaseResult testCaseResult, HashType hashType)
+        {
+            IDictionary<TestCaseResult, Guid> hash;
+            switch (hashType)
+            {
+                case HashType.ExecutionId:
+                    hash = _executionIdHash;
+                    break;
+                case HashType.TestId:
+                    hash = _testIdHash;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            Guid newGuid;
+            if (hash.ContainsKey(testCaseResult))
+                newGuid = hash[testCaseResult];
+            else
+            {
+                newGuid = _guidSequenceGenerator.Next();
+                hash.Add(testCaseResult, newGuid);
+            }
+            return newGuid;
+        }
+
 
         //private static string GetErrorStackTrace(TestCaseResult testCaseResult)
         //{
@@ -208,6 +257,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
         public string TimesQueuing = "2011-08-23T11:36:45.2943065-07:00";
         public string TimesStart = "2011-08-23T11:36:45.3567066-07:00";
         public string TimesFinish = "2011-08-23T11:36:45.8715075-07:00";
+        public object ComputerName = Environment.MachineName;
     }
 
     public class GuidSequenceGenerator : IGuidSequenceGenerator
