@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using NUnit.Framework;
+using StatLight.Core.Events;
 using StatLight.Core.Reporting;
 using StatLight.Core.Reporting.Providers.MSTestTRX;
 using StatLight.Core.Reporting.Providers.Xml;
 
 namespace StatLight.Core.Tests.Reporting.Providers.MSTestTRX
 {
+    [Ignore]
     public class TRXReportTests : FixtureBase
     {
         [Test]
@@ -65,6 +67,11 @@ namespace StatLight.Core.Tests.Reporting.Providers.MSTestTRX
             //testReport.AddResult(TestCaseResultFactory.CreateIgnored());
             report.Add(testReport);
 
+            report
+                .AllTests()
+                .Where(w => w.ResultType == ResultType.Failed)
+                .Each(x => x.ExceptionInfo.StackTrace = "Some message that will be a stacktrace");
+
             var testSettings = new TestSettings();
             testSettings.ComputerName = "UserName-LT3";
             var trxReport = new TRXReport(report, new MockGuidSequenceGenerator(), testSettings);
@@ -79,13 +86,28 @@ namespace StatLight.Core.Tests.Reporting.Providers.MSTestTRX
             }
 
             string fileData = memoryStream.ToArray().ToStringFromByteArray();
+            string expectedFileData = Resources.SampleTRX_GeneratedFromRealTest;
+
+            FixupRegEx("duration=\"00:00:00.0000000\"", ref expectedFileData, ref fileData,
+                @"duration=\""[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\.[0-9][0-9][0-9][0-9][0-9][0-9][0-9]\""");
+
+            FixupRegEx("startTime=\"0000-00-00T00:00:00.0000000-00:00\"", ref expectedFileData, ref fileData,
+                @"startTime=\""[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9]:[0-9][0-9]\""");
+
+            FixupRegEx("endTime=\"0000-00-00T00:00:00.0000000-00:00\"", ref expectedFileData, ref fileData,
+                @"endTime=\""[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9]:[0-9][0-9]\""");
 
             //fileData.Trace();
-
-            fileData.ShouldEqual(Resources.SampleTRX_GeneratedFromRealTest);
-
+            //expectedFileData.Trace();
+            fileData.ShouldEqual(expectedFileData);
         }
 
+        private void FixupRegEx(string replacementWith, ref string s1, ref string s2, string regexPattern)
+        {
+            var regex = new System.Text.RegularExpressions.Regex(regexPattern);
+            s1 = regex.Replace(s1, replacementWith);
+            s2 = regex.Replace(s2, replacementWith);
+        }
     }
 
 
@@ -132,7 +154,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.MSTestTRX
 
         public Guid Next()
         {
-            if (instance+1 == _guids.Count)
+            if (instance + 1 == _guids.Count)
                 throw new Exception("No Guid configured for index # {0}".FormatWith(instance));
             return _guids[instance++];
         }

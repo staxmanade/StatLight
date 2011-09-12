@@ -40,7 +40,7 @@ namespace StatLight.Core.Tests.Reporting
                             NamespaceName = "N1",
                             ClassName = "C1",
                             MethodName = "MethodFailed",
-                            ExceptionInfo = new Exception(),
+                            ExceptionInfo = GetException(),
                             Started = started,
                             Finished = getEndTime(started),
                         };
@@ -57,6 +57,18 @@ namespace StatLight.Core.Tests.Reporting
                             Started = started,
                             Finished = getEndTime(started),
                         };
+        }
+
+        private static Exception GetException()
+        {
+            try
+            {
+                throw new Exception("Failed Test");
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
         }
     }
 

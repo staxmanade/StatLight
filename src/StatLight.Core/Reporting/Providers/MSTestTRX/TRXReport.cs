@@ -10,9 +10,12 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "TRX")]
     public class TRXReport : IXmlReport
     {
+        private static readonly Dictionary<TestCaseResult, Guid> _executionIdHash = new Dictionary<TestCaseResult, Guid>();
+        private static readonly Dictionary<TestCaseResult, Guid> _testIdHash = new Dictionary<TestCaseResult, Guid>();
         private readonly TestReportCollection _report;
         private readonly IGuidSequenceGenerator _guidSequenceGenerator;
         private readonly TestSettings _testSettings;
+        private Guid _testListId;
 
         public TRXReport(TestReportCollection report)
             : this(report, new GuidSequenceGenerator(), new TestSettings())
@@ -114,7 +117,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                     , new XElement(ns + "TestLists"
                         , new XElement(ns + "TestList"
                             , new XAttribute("name", "Results Not in a List")
-                            , new XAttribute("id", _guidSequenceGenerator.Next())
+                            , new XAttribute("id", (_testListId = _guidSequenceGenerator.Next()))
                             )
                         )
                 //,GetTestDefinitions(results)
@@ -133,19 +136,6 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
             //doc.Root.SetAttributeValue("xmlns", @"http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
             return doc;
         }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        private XElement GetTestDefinitions(IEnumerable<TestReport> results)
-        {
-            return new XElement("TestDefinitions",
-                    from report in results
-                    from test in report.TestResults
-                    select new XElement("UnitTest",
-                        new XAttribute("id", _guidSequenceGenerator.Next().ToString()),
-                        new XAttribute("name", test.FullMethodName()))
-                );
-        }
-
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.TimeSpan.ToString(System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         private XElement GetResults(TestReportCollection results, XNamespace ns)
@@ -167,33 +157,36 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
 
             return new XElement(ns + "Results",
                 from test in results.AllTests()
+                let output = (test.ResultType == ResultType.Failed ? new XElement(ns + "Output"
+                    , new XElement(ns + "ErrorInfo"
+                        , new XElement(ns + "Message"
+                            , test.ExceptionInfo.Message)
+                        , new XElement(ns + "StackTrace"
+                            , test.ExceptionInfo.StackTrace)
+                        )) : null)
                 select new XElement(ns + "UnitTestResult"
-                        , new XAttribute("executionId", GetExecutionId(test))
-                        , new XAttribute("testId", GetTestId(test))
-                        , new XAttribute("testName", test.MethodName)
-                        , new XAttribute("computerName", _testSettings.ComputerName)
-                        , new XAttribute("duration", test.TimeToComplete.ToString()) //TODO: format the milliseconds (EX: duration="00:00:00.0193753")
-                        , new XAttribute("testType", "SilverlightTest")
-                        , new XAttribute("testListId", _guidSequenceGenerator.Next())
-                    //, new XAttribute("startTime", test.Started) //TODO: format like startTime="2011-08-23T12:34:52.4182565-07:00"
-                    //, new XAttribute("endTime", test.Finished ?? new DateTime()) //TODO: format like endTime="2011-08-23T12:34:52.7462753-07:00"
-                    //, new XAttribute("outcome", getResult(test.ResultType))
-                        )
-                //The required attribute 'testType' is missing.
-                //The required attribute 'testId' is missing.
-                //The required attribute 'testListId' is missing.
-                //The required attribute 'computerName' is missing.
-                );
+                    , new XAttribute("executionId", GetExecutionId(test))
+                    , new XAttribute("testId", GetTestId(test))
+                    , new XAttribute("testName", test.MethodName)
+                    , new XAttribute("computerName", _testSettings.ComputerName)
+                    , new XAttribute("duration", test.TimeToComplete.ToString("hh\\:mm\\:ss\\.fffffff"))
+                    , new XAttribute("startTime", test.Started.ToString("yyyy-MM-ddThh:mm:ss.fffffffK"))
+                    , new XAttribute("endTime", (test.Finished ?? new DateTime()).ToString("yyyy-MM-ddThh:mm:ss.fffffffK"))
+                    , new XAttribute("testType", _testSettings.TestType)
+                    , new XAttribute("outcome", getResult(test.ResultType))
+                    , new XAttribute("testListId", _testListId)
+                    , new XAttribute("relativeResultsDirectory", GetExecutionId(test))
+                    ,output
+                )
+            );
         }
 
 
-        private static readonly Dictionary<TestCaseResult, Guid> _executionIdHash = new Dictionary<TestCaseResult, Guid>();
         private Guid GetExecutionId(TestCaseResult testCaseResult)
         {
             return GetGuidForItem(testCaseResult, HashType.ExecutionId);
         }
 
-        private static readonly Dictionary<TestCaseResult, Guid> _testIdHash = new Dictionary<TestCaseResult, Guid>();
         private Guid GetTestId(TestCaseResult testCaseResult)
         {
             return GetGuidForItem(testCaseResult, HashType.TestId);
@@ -257,7 +250,8 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
         public string TimesQueuing = "2011-08-23T11:36:45.2943065-07:00";
         public string TimesStart = "2011-08-23T11:36:45.3567066-07:00";
         public string TimesFinish = "2011-08-23T11:36:45.8715075-07:00";
-        public object ComputerName = Environment.MachineName;
+        public string ComputerName = Environment.MachineName;
+        public string TestType = "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b";
     }
 
     public class GuidSequenceGenerator : IGuidSequenceGenerator

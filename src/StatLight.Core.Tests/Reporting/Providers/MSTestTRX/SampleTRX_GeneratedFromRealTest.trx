@@ -30,15 +30,12 @@
     <TestEntry testId="264ee2b2-3b8f-645c-d9ff-739a31f9c1e6" executionId="e9d88bbd-1814-445e-84fb-876d083d02d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
   </TestEntries>
   <Results>
-    <UnitTestResult executionId="06e3924c-14f5-46e7-b640-77e77598e6c0" testId="becf20cb-74e3-3a4f-2d5f-8311683824ed" testName="MethodPassed" computerName="UserName-LT3" duration="00:00:00.0001374" startTime="2011-08-23T11:36:45.8403074-07:00" endTime="2011-08-23T11:36:45.8559075-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="06e3924c-14f5-46e7-b640-77e77598e6c0">
-    </UnitTestResult>
-    <UnitTestResult executionId="e9d88bbd-1814-445e-84fb-876d083d02d9" testId="264ee2b2-3b8f-645c-d9ff-739a31f9c1e6" testName="FailingTest" computerName="UserName-LT3" duration="00:00:00.0464235" startTime="2011-08-23T11:36:45.3723066-07:00" endTime="2011-08-23T11:36:45.8403074-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9d88bbd-1814-445e-84fb-876d083d02d9">
+    <UnitTestResult executionId="06e3924c-14f5-46e7-b640-77e77598e6c0" testId="becf20cb-74e3-3a4f-2d5f-8311683824ed" testName="MethodPassed" computerName="UserName-LT3" duration="00:00:00.0001374" startTime="2011-08-23T11:36:45.8403074-07:00" endTime="2011-08-23T11:36:45.8559075-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="06e3924c-14f5-46e7-b640-77e77598e6c0" />
+    <UnitTestResult executionId="e9d88bbd-1814-445e-84fb-876d083d02d9" testId="264ee2b2-3b8f-645c-d9ff-739a31f9c1e6" testName="MethodFailed" computerName="UserName-LT3" duration="00:00:00.0464235" startTime="2011-08-23T11:36:45.3723066-07:00" endTime="2011-08-23T11:36:45.8403074-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9d88bbd-1814-445e-84fb-876d083d02d9">
       <Output>
         <ErrorInfo>
-          <Message>Assert.IsTrue failed. </Message>
-          <StackTrace>
-            at TestProject1.UnitTest1.FailingTest() in D:\temp\TestProject1\TestProject1\UnitTest1.cs:line 16
-          </StackTrace>
+          <Message>Failed Test</Message>
+          <StackTrace>Some message that will be a stacktrace</StackTrace>
         </ErrorInfo>
       </Output>
     </UnitTestResult>
