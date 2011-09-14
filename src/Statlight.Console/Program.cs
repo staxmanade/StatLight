@@ -1,6 +1,7 @@
 ﻿
 using StatLight.Core.Properties;
 using StatLight.Core.Reporting.Providers;
+using StatLight.Core.Reporting.Providers.MSTestTRX;
 
 namespace StatLight.Console
 {
@@ -298,6 +299,9 @@ Try: (the following two steps that should allow StatLight to start a web server 
                         break;
                     case ReportOutputFileType.NUnit:
                         xmlReport = new Core.Reporting.Providers.NUnit.NUnitXmlReport(testReports);
+                        break;
+                    case ReportOutputFileType.TRX:
+                        xmlReport = new TRXReport(testReports);
                         break;
                     default:
                         throw new StatLightException("Unknown ReportOutputFileType chosen Name=[{0}], Value=[{1}]".FormatWith(reportOutputFileType.ToString(), (int)reportOutputFileType));

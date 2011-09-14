@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="id1" name="name1" runUser="runUser1" tcmPassId="1" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+    <TestRunConfiguration id="id1" name="name1" isExecutedRemotely="false" abortRunOnError="false" autoSaveResults="true" mapIPAddresses="false" traceExecutionSequence="false">
+        <Description>anyType</Description>
+        <CodeCoverage enabled="false" perTest="false" instrumentInPlace="true" keyFile="keyFile1">
+            <Regular>
+                <CodeCoverageItem binaryFile="binaryFile1" pdbFile="pdbFile1" outputDirectory="outputDirectory1" instrumentInPlace="false">
+                    <KeyFile path="path1" isPublicKey="false" />
+                    <KeyFile path="path2" isPublicKey="true" />
+                    <KeyFile path="path3" isPublicKey="false" />
+                </CodeCoverageItem>
+                <CodeCoverageItem binaryFile="binaryFile2" pdbFile="pdbFile2" outputDirectory="outputDirectory2" instrumentInPlace="true">
+                    <KeyFile path="path4" isPublicKey="true" />
+                    <KeyFile path="path5" isPublicKey="false" />
+                    <KeyFile path="path6" isPublicKey="true" />
+                </CodeCoverageItem>
+                <CodeCoverageItem binaryFile="binaryFile3" pdbFile="pdbFile3" outputDirectory="outputDirectory3" instrumentInPlace="false">
+                    <KeyFile path="path7" isPublicKey="false" />
+                    <KeyFile path="path8" isPublicKey="true" />
+                    <KeyFile path="path9" isPublicKey="false" />
+                </CodeCoverageItem>
+            </Regular>
+            <AspNet>
+                <AspNetCodeCoverageItem id="id1" name="name1" applicationRoot="applicationRoot1" url="url1" isIIS="true" />
+                <AspNetCodeCoverageItem id="id2" name="name2" applicationRoot="applicationRoot2" url="url2" isIIS="false" />
+                <AspNetCodeCoverageItem id="id3" name="name3" applicationRoot="applicationRoot3" url="url3" isIIS="true" />
+            </AspNet>
+        </CodeCoverage>
+        <Timeouts runTimeout="0" testTimeout="1800000" agentNotRespondingTimeout="300000" deploymentTimeout="300000" scriptTimeout="300000" />
+    </TestRunConfiguration>
+    <ResultSummary outcome="outcome1" isPartialRun="false">
+        <Counters total="1" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" executed="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" value="value1" />
+        <Output>
+            <TraceInfo>anyType</TraceInfo>
+            <DebugTrace>anyType</DebugTrace>
+            <StdErr>anyType</StdErr>
+            <StdOut>anyType</StdOut>
+        </Output>
+        <RunInfos>
+            <RunInfo computerName="computerName1" outcome="Error" timestamp="timestamp1">
+                <Text>anyType</Text>
+                <Exception>anyType</Exception>
+            </RunInfo>
+            <RunInfo computerName="computerName2" outcome="Failed" timestamp="timestamp2">
+                <Text>anyType</Text>
+                <Exception>anyType</Exception>
+            </RunInfo>
+            <RunInfo computerName="computerName3" outcome="Timeout" timestamp="timestamp3">
+                <Text>anyType</Text>
+                <Exception>anyType</Exception>
+            </RunInfo>
+        </RunInfos>
+        <ResultFiles>
+            <ResultFile path="path1" />
+            <ResultFile path="path2" />
+            <ResultFile path="path3" />
+        </ResultFiles>
+        <CollectorDataEntries>
+            <Collector agentName="agentName1" agentDisplayName="agentDisplayName1" collectorDisplayName="collectorDisplayName1" isFromRemoteAgent="false" uri="uri1">
+                <UriAttachments>
+                    <UriAttachment>
+                        <A href="href1">A1</A>
+                    </UriAttachment>
+                    <UriAttachment>
+                        <A href="href2">A2</A>
+                    </UriAttachment>
+                    <UriAttachment>
+                        <A href="href3">A3</A>
+                    </UriAttachment>
+                </UriAttachments>
+            </Collector>
+            <Collector agentName="agentName2" agentDisplayName="agentDisplayName2" collectorDisplayName="collectorDisplayName2" isFromRemoteAgent="true" uri="uri2">
+                <UriAttachments>
+                    <UriAttachment>
+                        <A href="href4">A4</A>
+                    </UriAttachment>
+                    <UriAttachment>
+                        <A href="href5">A5</A>
+                    </UriAttachment>
+                    <UriAttachment>
+                        <A href="href6">A6</A>
+                    </UriAttachment>
+                </UriAttachments>
+            </Collector>
+            <Collector agentName="agentName3" agentDisplayName="agentDisplayName3" collectorDisplayName="collectorDisplayName3" isFromRemoteAgent="false" uri="uri3">
+                <UriAttachments>
+                    <UriAttachment>
+                        <A href="href7">A7</A>
+                    </UriAttachment>
+                    <UriAttachment>
+                        <A href="href8">A8</A>
+                    </UriAttachment>
+                    <UriAttachment>
+                        <A href="href9">A9</A>
+                    </UriAttachment>
+                </UriAttachments>
+            </Collector>
+        </CollectorDataEntries>
+        <DataCollectorMessages>
+            <DataCollectorMessage level="Error" agentName="agentName1" timestamp="timestamp1" dataCollectorUri="dataCollectorUri1" dataCollectorFriendlyName="dataCollectorFriendlyName1">
+                <Text>Text1</Text>
+            </DataCollectorMessage>
+            <DataCollectorMessage level="Warning" agentName="agentName2" timestamp="timestamp2" dataCollectorUri="dataCollectorUri2" dataCollectorFriendlyName="dataCollectorFriendlyName2">
+                <Text>Text2</Text>
+            </DataCollectorMessage>
+            <DataCollectorMessage level="Error" agentName="agentName3" timestamp="timestamp3" dataCollectorUri="dataCollectorUri3" dataCollectorFriendlyName="dataCollectorFriendlyName3">
+                <Text>Text3</Text>
+            </DataCollectorMessage>
+            <DataCollectorExceptionMessage level="Error" agentName="agentName1" timestamp="timestamp1" dataCollectorUri="dataCollectorUri1" dataCollectorFriendlyName="dataCollectorFriendlyName1">
+                <Text>Text1</Text>
+                <ExceptionType>ExceptionType1</ExceptionType>
+                <ExceptionMessage>ExceptionMessage1</ExceptionMessage>
+                <StackTrace>StackTrace1</StackTrace>
+            </DataCollectorExceptionMessage>
+            <DataCollectorExceptionMessage level="Warning" agentName="agentName2" timestamp="timestamp2" dataCollectorUri="dataCollectorUri2" dataCollectorFriendlyName="dataCollectorFriendlyName2">
+                <Text>Text2</Text>
+                <ExceptionType>ExceptionType2</ExceptionType>
+                <ExceptionMessage>ExceptionMessage2</ExceptionMessage>
+                <StackTrace>StackTrace2</StackTrace>
+            </DataCollectorExceptionMessage>
+            <DataCollectorExceptionMessage level="Error" agentName="agentName3" timestamp="timestamp3" dataCollectorUri="dataCollectorUri3" dataCollectorFriendlyName="dataCollectorFriendlyName3">
+                <Text>Text3</Text>
+                <ExceptionType>ExceptionType3</ExceptionType>
+                <ExceptionMessage>ExceptionMessage3</ExceptionMessage>
+                <StackTrace>StackTrace3</StackTrace>
+            </DataCollectorExceptionMessage>
+            <DataCollectorMessage level="Warning" agentName="agentName4" timestamp="timestamp4" dataCollectorUri="dataCollectorUri4" dataCollectorFriendlyName="dataCollectorFriendlyName4">
+                <Text>Text4</Text>
+            </DataCollectorMessage>
+            <DataCollectorMessage level="Error" agentName="agentName5" timestamp="timestamp5" dataCollectorUri="dataCollectorUri5" dataCollectorFriendlyName="dataCollectorFriendlyName5">
+                <Text>Text5</Text>
+            </DataCollectorMessage>
+            <DataCollectorMessage level="Warning" agentName="agentName6" timestamp="timestamp6" dataCollectorUri="dataCollectorUri6" dataCollectorFriendlyName="dataCollectorFriendlyName6">
+                <Text>Text6</Text>
+            </DataCollectorMessage>
+        </DataCollectorMessages>
+    </ResultSummary>
+    <Times creation="creation1" queuing="queuing1" start="start1" finish="finish1" />
+</TestRun>

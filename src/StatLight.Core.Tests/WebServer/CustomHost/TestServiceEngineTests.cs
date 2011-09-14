@@ -62,20 +62,20 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
         public void Should_server_the_ClientAccessPolicy_file()
         {
             GetString(StatLightServiceRestApi.ClientAccessPolicy)
-                .ShouldEqual(Resources.ClientAccessPolicy);
+                .ShouldEqual(StatLight.Core.Properties.Resources.ClientAccessPolicy);
         }
 
         [Test]
         public void Should_server_the_CrossDomain_file()
         {
             GetString(StatLightServiceRestApi.CrossDomain)
-                .ShouldEqual(Resources.CrossDomain);
+                .ShouldEqual(StatLight.Core.Properties.Resources.CrossDomain);
         }
 
         [Test]
         public void Should_server_the_GetHtmlTestPage_file()
         {
-            var expectedFile = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", 0.ToString());
+            var expectedFile = StatLight.Core.Properties.Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", 0.ToString());
             GetString(StatLightServiceRestApi.GetHtmlTestPage)
                 .ShouldEqual(expectedFile);
         }

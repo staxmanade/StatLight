@@ -24,6 +24,9 @@ namespace StatLight.Core.Tests.Reporting
 
             return new TestCaseResult(ResultType.Passed)
                         {
+                            NamespaceName = "N1",
+                            ClassName = "C1",
+                            MethodName = "MethodPassed",
                             Started = started,
                             Finished = getEndTime(started),
                         };
@@ -34,7 +37,10 @@ namespace StatLight.Core.Tests.Reporting
             var started = getStartTime();
             return new TestCaseResult(ResultType.Failed)
                         {
-                            ExceptionInfo = new Exception(),
+                            NamespaceName = "N1",
+                            ClassName = "C1",
+                            MethodName = "MethodFailed",
+                            ExceptionInfo = GetException(),
                             Started = started,
                             Finished = getEndTime(started),
                         };
@@ -45,9 +51,24 @@ namespace StatLight.Core.Tests.Reporting
             var started = getStartTime();
             return new TestCaseResult(ResultType.Ignored)
                         {
+                            NamespaceName = "N1",
+                            ClassName = "C1",
+                            MethodName = "MethodIgnored",
                             Started = started,
                             Finished = getEndTime(started),
                         };
+        }
+
+        private static Exception GetException()
+        {
+            try
+            {
+                throw new Exception("Failed Test");
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
         }
     }
 

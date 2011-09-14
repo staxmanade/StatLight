@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using StatLight.Core.Events;
 
 namespace StatLight.Core.Reporting
 {
@@ -42,6 +43,11 @@ namespace StatLight.Core.Reporting
         public void Add(TestReport testReport)
         {
             _testReports.Add(testReport);
+        }
+
+        public IEnumerable<TestCaseResult> AllTests()
+        {
+            return this.SelectMany(s => s.TestResults);
         }
     }
 }

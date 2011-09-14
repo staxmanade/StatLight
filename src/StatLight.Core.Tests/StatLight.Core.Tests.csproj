@@ -102,11 +102,18 @@
     <Compile Include="Events\Aggregation\EventAggregatorExtensions.cs" />
     <Compile Include="Events\Aggregation\EventAggregatorTests.cs" />
     <Compile Include="Events\ExceptionInfoTests.cs" />
+    <Compile Include="GlobalExtensions.cs" />
     <Compile Include="QuickSpikeTests.cs" />
     <Compile Include="Reporting\DialogAssertionMessageMatchMakerTests.cs" />
+    <Compile Include="Reporting\Providers\MSTestTRX\TRXReportTests.cs" />
     <Compile Include="Reporting\Providers\NUnit\NUnitXmlReportTests.cs" />
     <Compile Include="Reporting\Providers\PublishedEventsToHandleBase.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlReportTests.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Runners\ContinuousXapMonitoringTests.cs" />
     <Compile Include="Monitoring\DebugAssertMonitorTests.cs" />
     <Compile Include="Reporting\Providers\Console\ConsoleTestResultHandlerTests.cs" />
@@ -145,16 +152,29 @@
     <None Include="..\StatLight.snk">
       <Link>StatLight.snk</Link>
     </None>
+    <None Include="Resources\vstst.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="StatLight.Core.Tests.nunit" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NOTES.txt" />
+    <Content Include="Reporting\Providers\MSTestTRX\SampleTRX_GeneratedFromXMLSchema.xml" />
+    <None Include="Reporting\Providers\MSTestTRX\SampleTRX_GeneratedFromRealTest.trx">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="_ProjectEnforcements\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
