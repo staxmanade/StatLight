@@ -198,7 +198,7 @@ namespace StatLight.Console
                     })
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)
-                .Add<string>("g|Geometry", "Sets the geometry of the Statlight Browser window.  Use 'm' for minimized, 'M' for Maximized, or 'WIDTHxHEIGHT' for a specific size", v => WindowGeometry =  ParseWindowGeometry(v));
+                .Add("g|Geometry", "Sets the geometry of the Statlight Browser window.  Use 'm' for minimized, 'M' for Maximized, or 'WIDTHxHEIGHT' for a specific size", v => WindowGeometry =  ParseWindowGeometry(v));
                 ;
         }
 
@@ -221,28 +221,28 @@ namespace StatLight.Console
             if (input == "m")
             {
                 geometry.WindowState = BrowserWindowState.Minimized;
-                geometry.WindowSize = new StatLight.Core.Configuration.Size(0, 0);
+                geometry.WindowSize = new StatLight.Core.Configuration.Size(600, 800);
             }
             else if (input == "M")
             {
                 geometry.WindowState = BrowserWindowState.Maximized;
-                geometry.WindowSize = new StatLight.Core.Configuration.Size(0, 0);
+                geometry.WindowSize = new StatLight.Core.Configuration.Size(600, 800);
             }
             else
             {
                 geometry.WindowState = BrowserWindowState.Normal;
                 string pattern = "([0-9]+)x([0-9]+)";
                 var matches = Regex.Match(input, pattern);
-                if (matches.Groups.Count != 2)
+                if (matches.Groups.Count != 3)
                 {
                     throw new Exception("Geometry must be 'm', 'M', or 'WIDTHxHEIGHT'");
                 }
                 int width;
                 int height;
 
-                if (!int.TryParse(matches.Groups[1].Value, out width) || !int.TryParse(matches.Groups[1].Value, out height) || width < 1 || height < 1)
+                if (!int.TryParse(matches.Groups[1].Value, out width) || !int.TryParse(matches.Groups[2].Value, out height) || width < 1 || height < 1)
                 {
-                    throw new Exception("Width and height in geometry must be numbers");
+                    throw new Exception("Width and height in geometry must be positive integers.");
                 }
                 geometry.WindowSize = new StatLight.Core.Configuration.Size(width, height);
             }
