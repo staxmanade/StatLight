@@ -75,7 +75,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
         [Test]
         public void Should_server_the_GetHtmlTestPage_file()
         {
-            var expectedFile = StatLight.Core.Properties.Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", 0.ToString());
+            var expectedFile = new TestPage(instanceId: 0, windowless:"false").ToString();
             GetString(StatLightServiceRestApi.GetHtmlTestPage)
                 .ShouldEqual(expectedFile);
         }

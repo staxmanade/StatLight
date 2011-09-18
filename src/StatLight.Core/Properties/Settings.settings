@@ -17,5 +17,8 @@
     <Setting Name="ConsoleColorSuccess" Type="System.ConsoleColor" Scope="Application">
       <Value Profile="(Default)">Green</Value>
     </Setting>
+    <Setting Name="Windowless" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">false</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

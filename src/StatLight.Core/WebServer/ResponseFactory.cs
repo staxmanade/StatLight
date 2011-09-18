@@ -67,7 +67,10 @@ namespace StatLight.Core.WebServer
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public ResponseFile GetTestHtmlPage()
         {
-            var page = Resources.TestPage.Replace("BB86D193-AD39-494A-AEB7-58F948BA5D93", _htmlPageInstanceId.ToString(CultureInfo.InvariantCulture));
+            string page = new TestPage(
+                    instanceId: _htmlPageInstanceId, 
+                    windowless: Settings.Default.Windowless
+                ).ToString();
 
             Interlocked.Increment(ref _htmlPageInstanceId);
 
