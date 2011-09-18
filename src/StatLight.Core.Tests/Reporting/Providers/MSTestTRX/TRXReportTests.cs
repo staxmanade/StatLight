@@ -12,7 +12,6 @@ using StatLight.Core.Reporting.Providers.Xml;
 
 namespace StatLight.Core.Tests.Reporting.Providers.MSTestTRX
 {
-    [Ignore]
     public class TRXReportTests : FixtureBase
     {
         [Test]

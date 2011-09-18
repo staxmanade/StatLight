@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Xml.Linq;
+using StatLight.Client.Harness.Events;
+using StatLight.Core.Common;
 using StatLight.Core.Events;
 
 namespace StatLight.Core.Reporting.Providers.MSTestTRX
@@ -99,7 +103,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                         )
                     )
                     , new XElement(ns + "TestDefinitions"
-                        , from test in results.AllTests()
+                        , from test in GetTRXTests(results)
                           select new XElement(ns + "UnitTest"
                               , new XAttribute("name", test.MethodName)
                               , new XAttribute("id", GetTestId(test))
@@ -122,7 +126,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                         )
                 //,GetTestDefinitions(results)
                     , new XElement(ns + "TestEntries"
-                        , from test in results.AllTests()
+                        , from test in GetTRXTests(results)
                           select new XElement(ns + "TestEntry"
                                 , new XAttribute("testId", GetTestId(test))
                                 , new XAttribute("executionId", GetExecutionId(test))
@@ -135,6 +139,13 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
 
             //doc.Root.SetAttributeValue("xmlns", @"http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
             return doc;
+        }
+
+        private IEnumerable<TestCaseResult> GetTRXTests(TestReportCollection testReportCollection)
+        {
+            return testReportCollection
+                .AllTests()
+                .Where(w => w.ResultType != ResultType.Ignored);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.TimeSpan.ToString(System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
@@ -150,20 +161,46 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                     return "Passed";
 
                 if (r == ResultType.Ignored)
-                    return "Ignored";
+                    throw new StatLightException("TRX doesn't have an Ignored type - this test should have not come up and should be - haha 'Ignored'.");
 
                 throw new NotImplementedException("Unknown result type [{0}]".FormatWith(r.ToString()));
             };
 
+
+            Func<TestCaseResult, XElement> getOutput = test =>
+            {
+                Func<Func<ExceptionInfo, string>, string> getExceptionInfo = (getter) =>
+                {
+                    if (test.ExceptionInfo == null)
+                        return "";
+
+                    return getter(test.ExceptionInfo) ?? "";
+                };
+
+                Func<string> getOtherInfo = () =>
+                {
+                    if (string.IsNullOrEmpty(test.OtherInfo))
+                        return "";
+
+                    return Environment.NewLine + "Other Info: " + test.OtherInfo;
+                };
+
+                if (test.ResultType == ResultType.Failed || test.ResultType == ResultType.SystemGeneratedFailure)
+                {
+                    return new XElement(ns + "Output"
+                                        , new XElement(ns + "ErrorInfo"
+                                                       , new XElement(ns + "Message"
+                                                                      ,
+                                                                      getExceptionInfo(x => x.Message) + getOtherInfo())
+                                                       , new XElement(ns + "StackTrace"
+                                                                      , getExceptionInfo(x => x.StackTrace))
+                                              ));
+                }
+                return null;
+            };
+
             return new XElement(ns + "Results",
-                from test in results.AllTests()
-                let output = (test.ResultType == ResultType.Failed ? new XElement(ns + "Output"
-                    , new XElement(ns + "ErrorInfo"
-                        , new XElement(ns + "Message"
-                            , test.ExceptionInfo.Message)
-                        , new XElement(ns + "StackTrace"
-                            , test.ExceptionInfo.StackTrace)
-                        )) : null)
+                from test in GetTRXTests(results)
                 select new XElement(ns + "UnitTestResult"
                     , new XAttribute("executionId", GetExecutionId(test))
                     , new XAttribute("testId", GetTestId(test))
@@ -176,12 +213,10 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                     , new XAttribute("outcome", getResult(test.ResultType))
                     , new XAttribute("testListId", _testListId)
                     , new XAttribute("relativeResultsDirectory", GetExecutionId(test))
-                    ,output
+                    , getOutput(test)
                 )
             );
         }
-
-
         private Guid GetExecutionId(TestCaseResult testCaseResult)
         {
             return GetGuidForItem(testCaseResult, HashType.ExecutionId);
