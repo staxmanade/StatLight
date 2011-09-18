@@ -151,7 +151,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.MSTestTRX
             });
         }
 
-        public Guid Next()
+        public Guid GetNext()
         {
             if (instance + 1 == _guids.Count)
                 throw new Exception("No Guid configured for index # {0}".FormatWith(instance));

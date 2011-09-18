@@ -43,7 +43,6 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
             {
                 var xml = GetXmlReport();
                 xml.Save(writer);
-                writer.Close();
             }
         }
 
@@ -52,19 +51,19 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
         {
             var results = _report;
 
-            var testListId = _guidSequenceGenerator.Next();
+            var testListId = _guidSequenceGenerator.GetNext();
 
             var ns = XNamespace.Get(@"http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
 
             var doc = new XDocument(
                 new XDeclaration("1.0", "UTF-8", "")
                 , new XElement(ns + "TestRun"
-                    , new XAttribute("id", _guidSequenceGenerator.Next().ToString())
+                    , new XAttribute("id", _guidSequenceGenerator.GetNext().ToString())
                     , new XAttribute("name", "StatLight TestRun")
                     , new XAttribute("runUser", @"DOMAIN\UserName")
                     , new XElement(ns + "TestSettings",
                         new XAttribute("name", _testSettings.Name)
-                        , new XAttribute("id", _guidSequenceGenerator.Next())
+                        , new XAttribute("id", _guidSequenceGenerator.GetNext())
                         , new XElement(ns + "Description", _testSettings.Description)
                         , new XElement(ns + "Deployment"
                             , new XAttribute("enabled", _testSettings.DeploymentEnabled)
@@ -121,7 +120,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                     , new XElement(ns + "TestLists"
                         , new XElement(ns + "TestList"
                             , new XAttribute("name", "Results Not in a List")
-                            , new XAttribute("id", (_testListId = _guidSequenceGenerator.Next()))
+                            , new XAttribute("id", (_testListId = _guidSequenceGenerator.GetNext()))
                             )
                         )
                 //,GetTestDefinitions(results)
@@ -141,14 +140,14 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
             return doc;
         }
 
-        private IEnumerable<TestCaseResult> GetTRXTests(TestReportCollection testReportCollection)
+        private static IEnumerable<TestCaseResult> GetTRXTests(TestReportCollection testReportCollection)
         {
             return testReportCollection
                 .AllTests()
                 .Where(w => w.ResultType != ResultType.Ignored);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.TimeSpan.ToString(System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "haha"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.DateTime.ToString(System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.TimeSpan.ToString(System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         private XElement GetResults(TestReportCollection results, XNamespace ns)
         {
             Func<ResultType, string> getResult = r =>
@@ -253,7 +252,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                 newGuid = hash[testCaseResult];
             else
             {
-                newGuid = _guidSequenceGenerator.Next();
+                newGuid = _guidSequenceGenerator.GetNext();
                 hash.Add(testCaseResult, newGuid);
             }
             return newGuid;
@@ -277,21 +276,31 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
 
     public class TestSettings
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public string Name = "Local";
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public string Description = "These are default test settings for a local test run.";
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public bool DeploymentEnabled = false;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public string DeploymentRunDeploymentRoot = "UserName_UserName-LT3 2011-08-23 11_36_44";
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public string TimesCreation = "2011-08-23T11:36:44.4831051-07:00";
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public string TimesQueuing = "2011-08-23T11:36:45.2943065-07:00";
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public string TimesStart = "2011-08-23T11:36:45.3567066-07:00";
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public string TimesFinish = "2011-08-23T11:36:45.8715075-07:00";
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public string ComputerName = Environment.MachineName;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
         public string TestType = "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b";
     }
 
     public class GuidSequenceGenerator : IGuidSequenceGenerator
     {
-        public Guid Next()
+        public Guid GetNext()
         {
             return Guid.NewGuid();
         }
@@ -299,7 +308,8 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
 
     public interface IGuidSequenceGenerator
     {
-        Guid Next();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        Guid GetNext();
     }
 
 }
