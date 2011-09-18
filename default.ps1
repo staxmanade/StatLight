@@ -1005,6 +1005,7 @@ Task package-release -depends clean-release {
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'
+			'StatLight.exe.config'
 			#'StatLight.Sources.v*'
 		)
 
@@ -1021,7 +1022,7 @@ Task package-release -depends clean-release {
 
 	$filesToCopyFromBuild = @(
 		Get-ChildItem "$build_dir\*.xap" | where{ -not $_.FullName.Contains("Integration") }
-		Get-ChildItem $build_dir\* -Include *.dll, *.txt, StatLight.exe #-exclude nunit.framework.dll, StatLight.Client.Harness.dll, Microsoft.Silverlight.Testing.dll, Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll, StatLight.IntegrationTests.dll, StatLight.IntegrationTests.Silverlight.MSTest.dll
+		Get-ChildItem $build_dir\* -Include *.dll, *.txt, StatLight.exe, StatLight.exe.config #-exclude nunit.framework.dll, StatLight.Client.Harness.dll, Microsoft.Silverlight.Testing.dll, Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll, StatLight.IntegrationTests.dll, StatLight.IntegrationTests.Silverlight.MSTest.dll
 		Get-ChildItem ".\StatLight.EULA.txt"
 	)
 
