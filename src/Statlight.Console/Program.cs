@@ -28,7 +28,6 @@ namespace StatLight.Console
 
         static void Main(string[] args)
         {
-            System.Threading.Thread.Sleep(5000);
             AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
                                                               {
                                                                   Console.WriteLine(e.ExceptionObject);
