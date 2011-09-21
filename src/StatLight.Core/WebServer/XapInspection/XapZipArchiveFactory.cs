@@ -26,8 +26,18 @@ namespace StatLight.Core.WebServer.XapInspection
 
         public static XElement GetAppManifest(this IXapZipArchive xapZipArchive)
         {
+            return ReadXmlFileFromZip(xapZipArchive, "AppManifest.xaml");
+        }
+
+        public static XElement GetAppXaml(this IXapZipArchive xapZipArchive)
+        {
+            return ReadXmlFileFromZip(xapZipArchive, "App.xaml");
+        }
+
+        private static XElement ReadXmlFileFromZip(IXapZipArchive xapZipArchive, string fileName)
+        {
             if (xapZipArchive == null) throw new ArgumentNullException("xapZipArchive");
-            byte[] appManifestEntry = xapZipArchive["AppManifest.xaml"];
+            byte[] appManifestEntry = xapZipArchive[fileName];
             string stringFromByteArray = appManifestEntry.ToStringFromByteArray();
             return XElement.Load(stringFromByteArray.ToStream());
         }
