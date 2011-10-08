@@ -6,8 +6,8 @@ properties {
 	$build_dir = ".\src\build\bin\$build_configuration"
 	$program_files_dir = Get-x86-ProgramFiles-Location
 
-	$silverlight_core_assemblies_location = "$program_files_dir\Reference Assemblies\Microsoft\Framework\Silverlight\v4.0"
-	$silverlight_libraries_client_assemblies = "$program_files_dir\Microsoft SDKs\Silverlight\v4.0\Libraries\Client"
+	$silverlight_core_assemblies_location = "$program_files_dir\Reference Assemblies\Microsoft\Framework\Silverlight\v5.0"
+	$silverlight_libraries_client_assemblies = "$program_files_dir\Microsoft SDKs\Silverlight\v5.0\Libraries\Client"
 
 	$statlight_xap_for_prefix = "StatLight.Client.For" 
 	$release_dir = 'Release'
