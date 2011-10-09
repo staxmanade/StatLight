@@ -438,7 +438,7 @@ function Execute-MSTest-Version-Acceptance-Tests {
 	
 	$scriptFile = GetTemporaryXmlFile;
 	$xapDefinition = "-x=$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration-" + $slVersion + ".xap"
-	execStatLight $xapDefinition "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile"
+	execStatLight $xapDefinition "-v=$microsoft_Silverlight_Testing_Version_Name" "-r=$scriptFile" --debug
 	
 	if($build_configuration -eq 'Debug')
 	{
@@ -898,7 +898,9 @@ function Assert-statlight-xml-report-results
 }
 
 Task test-all-mstest-version-acceptance-tests {
-	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
+#	@( 'October2011' ) | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
+	@( 'October2011' ) | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
+#	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
 }
 
 Task test-custom-test-provider {
@@ -995,15 +997,16 @@ Task package-release -depends clean-release {
 	$expectedFilesToInclude = @(
 			'Ionic.Zip.Reduced.dll'
 			'Microsoft.Silverlight.Testing.License.txt'
-			'StatLight.Client.For.MSTest2009July.xap'
-			'StatLight.Client.For.MSTest2010March.xap'
-			'StatLight.Client.For.MSTest2010April.xap'
-			'StatLight.Client.For.MSTest2010May.xap'
-			'StatLight.Client.For.MSTest2009November.xap'
-			'StatLight.Client.For.MSTest2009October.xap'
-			'StatLight.Client.For.MSTest2011June.xap'
-			'StatLight.Client.For.UnitDriven2009December.xap'
-			'StatLight.Client.For.XUnitContrib2011April.xap'
+			'StatLight.Client.For.July2009.xap'
+			'StatLight.Client.For.March2010.xap'
+			'StatLight.Client.For.April2010.xap'
+			'StatLight.Client.For.May2010.xap'
+			'StatLight.Client.For.November2009.xap'
+			'StatLight.Client.For.October2009.xap'
+			'StatLight.Client.For.June2011.xap'
+			'StatLight.Client.For.October2011.xap'
+			'StatLight.Client.For.UnitDrivenDecember2009.xap'
+			'StatLight.Client.For.XUnitContribApril2011.xap'
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'
