@@ -8,7 +8,7 @@ namespace StatLight.IntegrationTests.Silverlight.OtherTestAssembly
         /*
          * The purpose of this test is to prove that the 
          * StatLight dll runner can detect and pull in 
-         * the FSharep.Core dependent Assembly
+         * a non system dependent Assembly
          * 
          */
 
@@ -16,7 +16,7 @@ namespace StatLight.IntegrationTests.Silverlight.OtherTestAssembly
         [TestMethod]
         public void Should_have_pulled_in_crazy_dependency()
         {
-            var type = typeof (System.Threading.Tasks.Task);
+            var type = typeof (Raven.Tests.Silverlight.UnitTestProvider.AsynchronousTaskTest);
             Assert.IsNotNull(type);
         }
     }

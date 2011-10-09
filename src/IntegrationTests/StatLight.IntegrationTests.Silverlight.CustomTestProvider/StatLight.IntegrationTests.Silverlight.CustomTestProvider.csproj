@@ -29,6 +29,7 @@
     <UsePlatformExtensions>false</UsePlatformExtensions>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
     <LinkedServerProject />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <!--
   //

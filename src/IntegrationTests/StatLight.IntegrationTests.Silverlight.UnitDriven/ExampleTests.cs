@@ -64,9 +64,9 @@ namespace StatLight.IntegrationTests.Silverlight.UnitDriven
 
 #if !SILVERLIGHT3
         [TestMethod]
-        public void ShouldBeSL4()
+        public void ShouldBeSL5()
         {
-            Assert.AreEqual('4', System.Windows.Deployment.Current.RuntimeVersion[0]);
+            Assert.AreEqual('5', System.Windows.Deployment.Current.RuntimeVersion[0]);
         }
 #else
         [TestMethod]

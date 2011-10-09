@@ -119,18 +119,26 @@ namespace StatLight.IntegrationTests.Silverlight
         }
         #endregion
 
-#if !SILVERLIGHT3
-        [TestMethod]
-        public void ShouldBeSL4()
-        {
-            Assert.AreEqual('4', System.Windows.Deployment.Current.RuntimeVersion[0]);
-        }
-#else
+#if SILVERLIGHT3
         [TestMethod]
         public void ShouldBeSL3()
         {
             Assert.AreEqual('3', System.Windows.Deployment.Current.RuntimeVersion[0]);
         }
+#elif SILVERLIGHT4
+        [TestMethod]
+        public void ShouldBeSL4()
+        {
+            Assert.AreEqual('4', System.Windows.Deployment.Current.RuntimeVersion[0]);
+        }
+#elif SILVERLIGHT5
+        [TestMethod]
+        public void ShouldBeSL5()
+        {
+            Assert.AreEqual('5', System.Windows.Deployment.Current.RuntimeVersion[0]);
+        }
+#else
+#error the SILVERLIGHTX verion was not defined
 #endif
 
         [TestMethod]

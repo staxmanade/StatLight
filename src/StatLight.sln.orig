@@ -39,7 +39,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitLight.Silverlight.Samp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.NUnit", "IntegrationTests\StatLight.IntegrationTests.Silverlight.NUnit\StatLight.IntegrationTests.Silverlight.NUnit.csproj", "{AF84F8F6-7089-4B49-8176-2A35FAA928BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest-SL4", "IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\StatLight.IntegrationTests.Silverlight.MSTest-SL4.csproj", "{BA085B1C-F2B7-46C5-9AF7-8A242E56D90F}"
+<<<<<<< HEAD
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest", "IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\StatLight.IntegrationTests.Silverlight.MSTest.csproj", "{BA085B1C-F2B7-46C5-9AF7-8A242E56D90F}"
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest-SL4", "StatLight.IntegrationTests.Silverlight.MSTest\StatLight.IntegrationTests.Silverlight.MSTest-SL4.csproj", "{BA085B1C-F2B7-46C5-9AF7-8A242E56D90F}"
+>>>>>>> Updates to build against SilverLight 5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.UnitDriven", "IntegrationTests\StatLight.IntegrationTests.Silverlight.UnitDriven\StatLight.IntegrationTests.Silverlight.UnitDriven.csproj", "{6DC93A95-7B8E-4D2E-BFB7-E2D3BCE089C8}"
 EndProject

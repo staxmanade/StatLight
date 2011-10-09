@@ -8,19 +8,19 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4F977BD5-0E15-4871-A24E-E42CDEFDDCB4}</ProjectGuid>
+    <ProjectGuid>{D563A469-E386-42AF-A66E-99AC16B3C494}</ProjectGuid>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>StatLight.IntegrationTests.Silverlight</RootNamespace>
-    <AssemblyName>StatLight.IntegrationTests.Silverlight</AssemblyName>
+    <AssemblyName>StatLight.IntegrationTests.Silverlight.MSTest-SL5</AssemblyName>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <SilverlightApplication>true</SilverlightApplication>
     <SupportedCultures>
     </SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
-    <XapFilename>StatLight.IntegrationTests.Silverlight.xap</XapFilename>
+    <XapFilename>StatLight.IntegrationTests.Silverlight.MSTest-SL5.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
     <SilverlightAppEntry>StatLight.IntegrationTests.Silverlight.App</SilverlightAppEntry>
     <TestPageFileName>TestPage.html</TestPageFileName>
@@ -35,13 +35,14 @@
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <TargetFrameworkProfile />
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;SILVERLIGHT5</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -52,7 +53,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>Bin\Release\</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;SILVERLIGHT SILVERLIGHT5</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -73,23 +74,14 @@
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
-    <Reference Include="System.Xml.Linq, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files (x86)\Microsoft SDKs\Silverlight\v5.0\Libraries\Client\System.Xml.Linq.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DebugAssertTests.cs" />
-    <Compile Include="NestedClassInheritanceTests.cs" />
+    <Compile Include="MSTestTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleResourceFileTests.cs" />
-    <Compile Include="TeamCityTests.cs" />
-    <Compile Include="MessageBoxTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -101,20 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
-    <Compile Include="ServiceReference.ClientConfigTests.cs" />
-    <Content Include="NestedFolder1\NestedFolder2\SampleXmlFile.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SampleXmlFile.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ServiceReferences.ClientConfig" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.csproj">
-      <Project>{E99066B4-F2FC-469D-B427-CA1793BB0B23}</Project>
-      <Name>StatLight.IntegrationTests.Silverlight.OtherTestAssembly</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -133,6 +111,6 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PostBuildEvent>copy $(ProjectDir)$(OutDir)$(ProjectName).xap $(ProjectDir)$(ProjectName).xap
-</PostBuildEvent>
+copy /Y $(ProjectDir)$(OutDir)AppManifest.xaml $(ProjectDir)$(OutDir)AppManifest-SL5.xaml</PostBuildEvent>
   </PropertyGroup>
 </Project>

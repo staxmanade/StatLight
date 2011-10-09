@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>StatLight.IntegrationTests.Silverlight.OtherTestAssembly</RootNamespace>
     <AssemblyName>StatLight.IntegrationTests.Silverlight.OtherTestAssembly</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
@@ -50,9 +50,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncCtpLibrary_Silverlight">
-      <HintPath>..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\AsyncCtpLibrary_Silverlight.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.Silverlight.Testing.dll</HintPath>
@@ -60,6 +57,9 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Tests.Silverlight.UnitTestProvider">
+      <HintPath>..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\Raven.Tests.Silverlight.UnitTestProvider.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />

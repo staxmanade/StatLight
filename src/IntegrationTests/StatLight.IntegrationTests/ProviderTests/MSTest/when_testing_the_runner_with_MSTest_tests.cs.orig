@@ -24,7 +24,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
         protected override string GetTestXapPath()
         {
-            return TestXapFileLocations.MSTestSL4;
+            return TestXapFileLocations.MSTest;
         }
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
@@ -36,6 +36,11 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         {
             base.Before_all_tests();
 
+<<<<<<< HEAD:src/IntegrationTests/StatLight.IntegrationTests/ProviderTests/MSTest/when_testing_the_runner_with_MSTest_tests.cs
+=======
+            PathToIntegrationTestXap = TestXapFileLocations.MSTestSL4;
+            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration();
+>>>>>>> Updates to build against SilverLight 5:src/StatLight.IntegrationTests/ProviderTests/MSTest/when_testing_the_runner_with_MSTest_tests.cs
             EventSubscriptionManager.AddListenerAction<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e);
             EventSubscriptionManager.AddListenerAction<TestExecutionClassCompletedClientEvent>(e => _testExecutionClassCompletedClientEvent.Add(e));
             EventSubscriptionManager.AddListenerAction<TestExecutionMethodIgnoredClientEvent>(e => _testExecutionMethodIgnoredClientEvent.Add(e));

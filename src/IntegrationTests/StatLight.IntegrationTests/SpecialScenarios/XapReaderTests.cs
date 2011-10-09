@@ -126,7 +126,7 @@ namespace StatLight.IntegrationTests.SpecialScenarios
 			[Test]
 			public void Should_detect_MSTest()
 			{
-				ShouldLoadCorrectType(TestXapFileLocations.MSTest, UnitTestProviderType.MSTest);
+				ShouldLoadCorrectType(TestXapFileLocations.MSTestSL4, UnitTestProviderType.MSTest);
 			}
 
 			[Test]

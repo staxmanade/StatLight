@@ -31,7 +31,6 @@ properties {
 	#  - 2. Add the version below 
 	#  - 3. Add the version to the MicrosoftTestingFrameworkVersion enum in the project
 	$microsoft_silverlight_testing_versions = @(
-			'MSTest2011December'
 			'MSTest2011June'
 			'MSTest2011Feb'
 			'MSTest2010March'
@@ -257,7 +256,11 @@ function compile-StatLight-MSTestHostIntegrationTests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$outAssemblyName, [string]$additionalDefines)
 
 	$resources = @(
-		#"src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\obj\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.g.resources"
+<<<<<<< HEAD
+		"src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\obj\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.g.resources"
+=======
+		#"src\StatLight.IntegrationTests.Silverlight.MSTest\obj\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.g.resources"
+>>>>>>> Updates to build against SilverLight 5
 	)
 
 	$references = StatLightIntegrationTestsReferences $microsoft_Silverlight_Testing_Version_Name
@@ -785,7 +788,12 @@ Task test-auto-detects-xunit-contrib {
 
 Task test-multiple-xaps {
 	$scriptFile = GetTemporaryXmlFile;
-	execStatLight "-x=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.xap" "-x=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.UITests.xap" "-r=$scriptFile" -b
+<<<<<<< HEAD
+	execStatLight "-x=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-x=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.UITests.xap" "-r=$scriptFile" -b
+
+=======
+	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.xap" "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.UITests.xap" "-r=$scriptFile" -b
+>>>>>>> Updates to build against SilverLight 5
 	if(Is-Release-Build){
 		Assert-statlight-xml-report-results -message "test-multiple-xaps" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 11 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
@@ -796,7 +804,11 @@ Task test-multiple-xaps {
 
 Task test-multiple-one-xap-one-dll {
 	$scriptFile = GetTemporaryXmlFile;
-	execStatLight "-x=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.xap" "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-r=$scriptFile" 
+<<<<<<< HEAD
+	execStatLight "-x=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.xap" "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-r=$scriptFile" 
+=======
+	execStatLight "-x=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.xap" "-d=.\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-r=$scriptFile" 
+>>>>>>> Updates to build against SilverLight 5
 
 	if(Is-Release-Build){
 		Assert-statlight-xml-report-results -message "test-multiple-one-xap-one-dll" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 12 -expectedFailedCount 4 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 1
@@ -808,7 +820,11 @@ Task test-multiple-one-xap-one-dll {
 
 Task test-multiple-two-dlls {
 	$scriptFile = GetTemporaryXmlFile;
-	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.dll" "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-v=April2010" "-r=$scriptFile" 
+<<<<<<< HEAD
+	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.dll" "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-v=MSTest2010April" "-r=$scriptFile" 
+=======
+	execStatLight "-d=.\src\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.dll" "-d=.\src\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-v=April2010" "-r=$scriptFile" 
+>>>>>>> Updates to build against SilverLight 5
 
 	if(Is-Release-Build){
 		Assert-statlight-xml-report-results -message "test-multiple-two-dlls" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 12 -expectedFailedCount 4 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 1

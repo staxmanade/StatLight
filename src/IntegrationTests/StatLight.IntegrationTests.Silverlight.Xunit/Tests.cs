@@ -34,9 +34,9 @@
 
 #if !SILVERLIGHT3
         [Fact]
-        public void ShouldBeSL4()
+        public void ShouldBeSL5()
         {
-            Assert.Equal('4', System.Windows.Deployment.Current.RuntimeVersion[0]);
+            Assert.Equal('5', System.Windows.Deployment.Current.RuntimeVersion[0]);
         }
 #else
         [Fact]
