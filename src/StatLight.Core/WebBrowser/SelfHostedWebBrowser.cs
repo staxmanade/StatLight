@@ -18,17 +18,14 @@ namespace StatLight.Core.WebBrowser
 
         public SelfHostedWebBrowser(ILogger logger, Uri pageToHost, bool browserVisible, WindowGeometry windowGeometry)
         {
+            if (logger == null) throw new ArgumentNullException("logger");
+            if (pageToHost == null) throw new ArgumentNullException("pageToHost");
+            if (windowGeometry == null) throw new ArgumentNullException("windowGeometry");
+
             _logger = logger;
             _pageToHost = pageToHost;
             _browserVisible = browserVisible;
-            if (windowGeometry == null)
-            {
-                _windowGeometry = new WindowGeometry() { WindowSize = new StatLight.Core.Configuration.Size(800, 600), WindowState = BrowserWindowState.Normal };
-            }
-            else
-            {
-                _windowGeometry = windowGeometry;
-            }
+            _windowGeometry = windowGeometry;
         }
 
         private Form _form;
@@ -38,8 +35,8 @@ namespace StatLight.Core.WebBrowser
             {
                 _form = new Form
                             {
-                                Height = _windowGeometry.WindowSize.Height,
-                                Width = _windowGeometry.WindowSize.Width,
+                                Height = _windowGeometry.Size.Height,
+                                Width = _windowGeometry.Size.Width,
                                 WindowState = GetBrowserVisibilityState(_browserVisible),
                                 ShowInTaskbar = _browserVisible,
                                 Icon = Properties.Resources.FavIcon,
@@ -55,19 +52,19 @@ namespace StatLight.Core.WebBrowser
                 _form.Controls.Add(browser);
 
                 Application.Run(_form);
-                
+
             });
             _browserThread.SetApartmentState(ApartmentState.STA);
             _browserThread.Start();
 
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:LiteralsShouldBeSpelledCorrectly", MessageId="BrowserWindowState")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:LiteralsShouldBeSpelledCorrectly", MessageId = "BrowserWindowState")]
         private FormWindowState GetBrowserVisibilityState(bool browserVisible)
         {
-            if(browserVisible)
+            if (browserVisible)
             {
-                switch (_windowGeometry.WindowState)
+                switch (_windowGeometry.State)
                 {
                     case BrowserWindowState.Maximized:
                         return FormWindowState.Maximized;

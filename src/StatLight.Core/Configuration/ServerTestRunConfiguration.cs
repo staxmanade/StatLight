@@ -5,7 +5,7 @@ namespace StatLight.Core.Configuration
 {
     public class ServerTestRunConfiguration
     {
-        public ServerTestRunConfiguration(Func<byte[]> xapHost, long dialogSmackDownElapseMilliseconds, string xapToTest, XapHostType xapHostType, string queryString, bool forceBrowserStart, bool showTestingBrowserHost)
+        public ServerTestRunConfiguration(Func<byte[]> xapHost, long dialogSmackDownElapseMilliseconds, string xapToTest, XapHostType xapHostType, string queryString, bool forceBrowserStart, WindowGeometry windowGeometry)
         {
             if (xapHost == null) throw new ArgumentNullException("xapHost");
             if (xapToTest == null) throw new ArgumentNullException("xapToTest");
@@ -16,7 +16,7 @@ namespace StatLight.Core.Configuration
             XapHostType = xapHostType;
             QueryString = queryString;
             ForceBrowserStart = forceBrowserStart;
-            ShowTestingBrowserHost = showTestingBrowserHost;
+            WindowGeometry = windowGeometry;
         }
 
         public long DialogSmackDownElapseMilliseconds { get; private set; }
@@ -27,7 +27,6 @@ namespace StatLight.Core.Configuration
         public string QueryString { get; private set; }
 
         public bool ForceBrowserStart { get; private set; }
-
-        public bool ShowTestingBrowserHost { get; private set; }
+        public WindowGeometry WindowGeometry { get; set; }
     }
 }

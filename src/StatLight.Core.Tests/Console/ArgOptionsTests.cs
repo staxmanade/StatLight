@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using StatLight.Console;
+using StatLight.Core.Configuration;
 
 namespace StatLight.Core.Tests.Console
 {
@@ -98,6 +99,50 @@ namespace StatLight.Core.Tests.Console
                 command.Dlls.Count.ShouldEqual(1);
                 command.Dlls.First().ShouldEqual("somePath.dll");
             }
+        }
+
+        public class when_specifying_the_BrowserWindow_flag
+        {
+            [Test]
+            public void when_nothing_specified_should_return_default_instance()
+            {
+                WindowGeometry windowGeometry = ArgOptions.ParseWindowGeometry("");
+                windowGeometry.ShouldNotBeNull();
+
+                windowGeometry = ArgOptions.ParseWindowGeometry(null);
+                windowGeometry.ShouldNotBeNull();
+            }
+
+            [Test]
+            public void geometry_sepcified()
+            {
+                WindowGeometry windowGeometry = ArgOptions.ParseWindowGeometry("800x600");
+                windowGeometry.ShouldNotBeNull();
+
+                windowGeometry.Size.Width = 800;
+                windowGeometry.Size.Height = 600;
+            }
+
+            [Test]
+            public void geometry_sepcified_with_single_quotes()
+            {
+                WindowGeometry windowGeometry = ArgOptions.ParseWindowGeometry("'800x600'");
+                windowGeometry.ShouldNotBeNull();
+
+                windowGeometry.Size.Width = 800;
+                windowGeometry.Size.Height = 600;
+            }
+
+            [Test]
+            public void geometry_sepcified_with_double_quotes()
+            {
+                WindowGeometry windowGeometry = ArgOptions.ParseWindowGeometry("\"800x600\"");
+                windowGeometry.ShouldNotBeNull();
+
+                windowGeometry.Size.Width = 800;
+                windowGeometry.Size.Height = 600;
+            }
+
         }
     }
 }

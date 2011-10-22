@@ -32,8 +32,6 @@ namespace StatLight.Console
 
         public bool ShowHelp { get; private set; }
 
-        public bool ShowTestingBrowserHost { get; private set; }
-
         public bool OutputForTeamCity { get; private set; }
 
         public bool StartWebServerOnly { get; private set; }
@@ -86,6 +84,7 @@ namespace StatLight.Console
             _optionSet = GetOptions();
             NumberOfBrowserHosts = 1;
             _args = args;
+            WindowGeometry = new WindowGeometry();
             List<string> extra;
 
             try
@@ -117,7 +116,8 @@ namespace StatLight.Console
                     })
                 .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, OptionValueType.Optional)
                 .Add<string>("c|Continuous", "Runs a single test run, and then monitors the xap for build changes and re-runs the tests automatically.", v => ContinuousIntegrationMode = true)
-                .Add<string>("b|ShowTestingBrowserHost", "Show the browser that is running the tests - necessary to run UI specific tests (hidden by default)", v => ShowTestingBrowserHost = true)
+                .Add("b|BrowserWindow", "Sets the display visibility and/or size of the Statlight browser window. Leave blank to keep browser window hidden. Specify this flag to have the browser window shown with the default height/width. Or use the flag and give an alternative 'WIDTHxHEIGHT' for a specific size EX: -b:800x600",
+                    v => WindowGeometry = ParseWindowGeometry(v))
                 .Add("MethodsToTest", "Semicolon seperated list of full method names to execute. EX: --methodsToTest=\"RootNamespace.ChildNamespace.ClassName.MethodUnderTest;RootNamespace.ChildNamespace.ClassName.Method2UnderTest;\"", v =>
                     {
                         v = v ?? string.Empty;
@@ -198,7 +198,6 @@ namespace StatLight.Console
                     })
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)
-                .Add("g|Geometry", "Sets the geometry of the Statlight Browser window.  Use 'm' for minimized, 'M' for Maximized, or 'WIDTHxHEIGHT' for a specific size", v => WindowGeometry =  ParseWindowGeometry(v));
                 ;
         }
 
@@ -214,38 +213,34 @@ namespace StatLight.Console
             }
         }
 
-        private static WindowGeometry ParseWindowGeometry(string input)
+        internal static WindowGeometry ParseWindowGeometry(string input)
         {
-            input = input.Trim();
-            WindowGeometry geometry = new WindowGeometry();
-            if (input == "m")
-            {
-                geometry.WindowState = BrowserWindowState.Minimized;
-                geometry.WindowSize = new StatLight.Core.Configuration.Size(600, 800);
-            }
-            else if (input == "M")
-            {
-                geometry.WindowState = BrowserWindowState.Maximized;
-                geometry.WindowSize = new StatLight.Core.Configuration.Size(600, 800);
-            }
-            else
-            {
-                geometry.WindowState = BrowserWindowState.Normal;
-                string pattern = "([0-9]+)x([0-9]+)";
-                var matches = Regex.Match(input, pattern);
-                if (matches.Groups.Count != 3)
-                {
-                    throw new Exception("Geometry must be 'm', 'M', or 'WIDTHxHEIGHT'");
-                }
-                int width;
-                int height;
+            if (string.IsNullOrEmpty(input))
+                return new WindowGeometry { State = BrowserWindowState.Normal };
 
-                if (!int.TryParse(matches.Groups[1].Value, out width) || !int.TryParse(matches.Groups[2].Value, out height) || width < 1 || height < 1)
-                {
-                    throw new Exception("Width and height in geometry must be positive integers.");
-                }
-                geometry.WindowSize = new StatLight.Core.Configuration.Size(width, height);
+            input = input.Trim();
+
+            var geometry = new WindowGeometry
+            {
+                State = BrowserWindowState.Normal
+            };
+
+            const string pattern = "([0-9]+)x([0-9]+)";
+            var matches = Regex.Match(input, pattern);
+            if (matches.Groups.Count != 3)
+            {
+                throw new StatLightException("If specifying the geometry it must be 'WIDTHxHEIGHT'");
             }
+            int width;
+            int height;
+
+            if (!int.TryParse(matches.Groups[1].Value, out width) || !int.TryParse(matches.Groups[2].Value, out height) || width < 1 || height < 1)
+            {
+                throw new Exception("Width and height in geometry must be positive integers.");
+            }
+
+            geometry.Size = new WindowSize(width, height);
+
             return geometry;
         }
 

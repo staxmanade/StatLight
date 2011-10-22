@@ -86,7 +86,7 @@ namespace StatLight.Core.Tests
             mockXapHostFileLoaderFactory
                 .Setup(s => s.LoadXapHostFor(It.IsAny<XapHostType>()))
                 .Returns(new byte[] { 0, 1, 1, 2, 3, 1, });
-            _mockServerTestRunConfiguration = new ServerTestRunConfiguration(() => new byte[] { 1, 2 }, 500, _pathToTempXapFile, XapHostType.MSTestNovember2009, "", true, false);
+            _mockServerTestRunConfiguration = new ServerTestRunConfiguration(() => new byte[] { 1, 2 }, 500, _pathToTempXapFile, XapHostType.MSTestNovember2009, "", true, new WindowGeometry());
 
             Assert.IsTrue(File.Exists(_pathToTempXapFile));
         }
@@ -112,7 +112,7 @@ namespace StatLight.Core.Tests
         protected ClientTestRunConfiguration CreateTestDefaultClinetTestRunConfiguraiton()
         {
             return new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new Collection<string>(),
-                                                                         string.Empty, 1, StatLight.Core.WebBrowser.WebBrowserType.SelfHosted, false, string.Empty, null);
+                                                                         string.Empty, 1, StatLight.Core.WebBrowser.WebBrowserType.SelfHosted, string.Empty, new WindowGeometry());
         }
     }
 

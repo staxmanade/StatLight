@@ -211,7 +211,7 @@ namespace StatLight.Core.Runners
             var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
             webServer = CreateWebServer(logger, statLightConfiguration, location);
 
-            webBrowsers = GetWebBrowsers(logger, location.TestPageUrl, clientTestRunConfiguration, serverTestRunConfiguration.ShowTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart, clientTestRunConfiguration.WindowGeometry);
+            webBrowsers = GetWebBrowsers(logger, location.TestPageUrl, clientTestRunConfiguration, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart, clientTestRunConfiguration.WindowGeometry);
 
             dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
 
@@ -219,7 +219,7 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "testPageUrlWithQueryString")]
-        private static List<IWebBrowser> GetWebBrowsers(ILogger logger, Uri testPageUrl, ClientTestRunConfiguration clientTestRunConfiguration, bool showTestingBrowserHost, string queryString, bool forceBrowserStart, WindowGeometry windowGeometry)
+        private static List<IWebBrowser> GetWebBrowsers(ILogger logger, Uri testPageUrl, ClientTestRunConfiguration clientTestRunConfiguration, string queryString, bool forceBrowserStart, WindowGeometry windowGeometry)
         {
             var webBrowserType = clientTestRunConfiguration.WebBrowserType;
             var webBrowserFactory = new WebBrowserFactory(logger);
@@ -227,7 +227,7 @@ namespace StatLight.Core.Runners
             logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);
             List<IWebBrowser> webBrowsers = Enumerable
                 .Range(1, clientTestRunConfiguration.NumberOfBrowserHosts)
-                .Select(browserI => webBrowserFactory.Create(webBrowserType, testPageUrlWithQueryString, showTestingBrowserHost, forceBrowserStart, clientTestRunConfiguration.NumberOfBrowserHosts > 1, windowGeometry))
+                .Select(browserI => webBrowserFactory.Create(webBrowserType, testPageUrlWithQueryString, forceBrowserStart, clientTestRunConfiguration.NumberOfBrowserHosts > 1, windowGeometry))
                 .ToList();
             return webBrowsers;
         }

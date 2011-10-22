@@ -13,12 +13,12 @@ namespace StatLight.Core.WebBrowser
             _logger = logger;
         }
 
-        public IWebBrowser Create(WebBrowserType browserType, Uri pageToHost, bool browserVisible, bool forceBrowserStart, bool isStartingMultipleInstances, WindowGeometry windowGeometry)
+        public IWebBrowser Create(WebBrowserType browserType, Uri pageToHost, bool forceBrowserStart, bool isStartingMultipleInstances, WindowGeometry windowGeometry)
         {
             switch (browserType)
             {
                 case WebBrowserType.SelfHosted:
-                    return new SelfHostedWebBrowser(_logger, pageToHost, browserVisible, windowGeometry);
+                    return new SelfHostedWebBrowser(_logger, pageToHost, windowGeometry.ShouldShowWindow, windowGeometry);
                 case WebBrowserType.Firefox:
                     return new FirefoxWebBrowser(_logger, pageToHost, forceBrowserStart, isStartingMultipleInstances);
                 case WebBrowserType.Chrome:

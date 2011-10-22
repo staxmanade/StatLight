@@ -4,11 +4,21 @@ namespace StatLight.Core.Configuration
     [DataContract]
     public class WindowGeometry
     {
+        public WindowGeometry()
+        {
+            State = BrowserWindowState.Minimized;
+            Size = new WindowSize(800, 600);
+        }
         [DataMember]
-        public BrowserWindowState WindowState { get; set; }
+        public BrowserWindowState State { get; set; }
 
         [DataMember]
-        public Size WindowSize { get; set; }
+        public WindowSize Size { get; set; }
+
+        public bool ShouldShowWindow
+        {
+            get { return State != BrowserWindowState.Minimized; }
+        }
     }
 
     public enum BrowserWindowState
@@ -19,9 +29,9 @@ namespace StatLight.Core.Configuration
     }
 
     [DataContract]
-    public class Size
+    public class WindowSize
     {
-        public Size(int width, int height)
+        public WindowSize(int width, int height)
         {
             Width = width;
             Height = height;

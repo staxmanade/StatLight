@@ -203,7 +203,6 @@ Try: (the following two steps that should allow StatLight to start a web server 
 
         public TestReportCollection Run()
         {
-            bool showTestingBrowserHost = _options.ShowTestingBrowserHost;
             WindowGeometry windowGeometry = _options.WindowGeometry;
             bool useRemoteTestPage = _options.UseRemoteTestPage;
             Collection<string> methodsToTest = _options.MethodsToTest;
@@ -241,7 +240,6 @@ Try: (the following two steps that should allow StatLight to start a web server 
                         queryString,
                         webBrowserType,
                         forceBrowserStart,
-                        showTestingBrowserHost,
                         windowGeometry);
                 var testReport = DoTheRun(runnerType, statLightConfiguration);
                 testReports.Add(testReport);
@@ -262,7 +260,6 @@ Try: (the following two steps that should allow StatLight to start a web server 
                         queryString,
                         webBrowserType,
                         forceBrowserStart,
-                        showTestingBrowserHost,
                         windowGeometry);
 
                 var testReport = DoTheRun(runnerType, statLightConfiguration);
