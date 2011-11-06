@@ -116,7 +116,7 @@ namespace StatLight.Console
                     })
                 .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, OptionValueType.Optional)
                 .Add<string>("c|Continuous", "Runs a single test run, and then monitors the xap for build changes and re-runs the tests automatically.", v => ContinuousIntegrationMode = true)
-                .Add("b|BrowserWindow", "Sets the display visibility and/or size of the Statlight browser window. Leave blank to keep browser window hidden. Specify this flag to have the browser window shown with the default height/width. Or use the flag and give an alternative 'WIDTHxHEIGHT' for a specific size EX: -b:800x600",
+                .Add("b|BrowserWindow", "Sets the display visibility and/or size of the Statlight browser window. Leave blank to keep browser window hidden. Specify this flag to have the browser window shown with the default height/width. Or using the following pattern [M|m|n][HEIGHTxWIDTH] you can specify the window state [M|Maximized|m|Minimized|N|Normal][{HEIGHT}x{WIDTH}] to be able to specify a specific size. EX: -b:N800x600 a normal window with a width of 800 and height of 600.",
                     v => WindowGeometry = ParseWindowGeometry(v))
                 .Add("MethodsToTest", "Semicolon seperated list of full method names to execute. EX: --methodsToTest=\"RootNamespace.ChildNamespace.ClassName.MethodUnderTest;RootNamespace.ChildNamespace.ClassName.Method2UnderTest;\"", v =>
                     {
@@ -218,25 +218,51 @@ namespace StatLight.Console
             if (string.IsNullOrEmpty(input))
                 return new WindowGeometry { State = BrowserWindowState.Normal };
 
-            input = input.Trim();
+            input = input.Trim().Replace("'", string.Empty).Replace("\"", string.Empty);
 
             var geometry = new WindowGeometry
             {
                 State = BrowserWindowState.Normal
             };
 
-            const string pattern = "([0-9]+)x([0-9]+)";
+            const string pattern = "(Maximized|Minimized|maximized|minimized|Normal|normal|M|m|N)?(([0-9]+)x([0-9]+))?";
             var matches = Regex.Match(input, pattern);
-            if (matches.Groups.Count != 3)
+            if (matches.Groups.Count != 5)
             {
                 throw new StatLightException("If specifying the geometry it must be 'WIDTHxHEIGHT'");
             }
+
+            var stateFlag = matches.Groups[1].Value;
+            switch (stateFlag)
+            {
+                case "":
+                    break; // leave the default
+                case "M":
+                case "Maximized":
+                case "maximized":
+                    geometry.State = BrowserWindowState.Maximized;
+                    break;
+                case "m":
+                case "Minimized":
+                case "minimized":
+                    geometry.State = BrowserWindowState.Minimized;
+                    break;
+                case "N":
+                case "Normal":
+                case "normal":
+                    geometry.State = BrowserWindowState.Normal;
+                    break;
+                default:
+                    throw new StatLightException("Unknown browser state flag [{0}]. Try specifying either [M|m|N] for [Maximized|minimized|Normal]".FormatWith(stateFlag));
+            }
+
+            var widthString = matches.Groups[3].Value;
+            var heightString = matches.Groups[4].Value;
             int width;
             int height;
-
-            if (!int.TryParse(matches.Groups[1].Value, out width) || !int.TryParse(matches.Groups[2].Value, out height) || width < 1 || height < 1)
+            if (!int.TryParse(widthString, out width) || !int.TryParse(heightString, out height) || width < 1 || height < 1)
             {
-                throw new Exception("Width and height in geometry must be positive integers.");
+                throw new Exception("Width and height in geometry must be positive integers. (We parsed width[{0}] and height[{1}])".FormatWith(widthString, heightString));
             }
 
             geometry.Size = new WindowSize(width, height);

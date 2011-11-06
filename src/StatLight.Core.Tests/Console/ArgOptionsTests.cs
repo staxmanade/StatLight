@@ -103,44 +103,48 @@ namespace StatLight.Core.Tests.Console
 
         public class when_specifying_the_BrowserWindow_flag
         {
-            [Test]
-            public void when_nothing_specified_should_return_default_instance()
+            [TestCase("", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("800x600", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("M800x600", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("Maximized800x600", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("maximized800x600", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("m800x600", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("Minimized800x600", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("minimized800x600", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("N800x600", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("Normal80x600", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("normal80x600", BrowserWindowState.Normal, 800, 600)]
+
+            [TestCase("\"800x600\"", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("\"M800x600\"", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("\"Maximized800x600\"", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("\"maximized800x600\"", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("\"m800x600\"", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("\"Minimized800x600\"", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("\"minimized800x600\"", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("\"N800x600\"", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("\"Normal80x600\"", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("\"normal80x600\"", BrowserWindowState.Normal, 800, 600)]
+
+            [TestCase("'800x600'", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("'M800x600'", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("'Maximized800x600'", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("'maximized800x600'", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("'m800x600'", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("'Minimized800x600'", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("'minimized800x600'", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("'N800x600'", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("'Normal80x600'", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("'normal80x600'", BrowserWindowState.Normal, 800, 600)]
+
+            public void geometry_specified(string option, BrowserWindowState expectedBrowserWindowState, int expectedWidth, int expectedHeight)
             {
-                WindowGeometry windowGeometry = ArgOptions.ParseWindowGeometry("");
+                WindowGeometry windowGeometry = ArgOptions.ParseWindowGeometry(option);
                 windowGeometry.ShouldNotBeNull();
 
-                windowGeometry = ArgOptions.ParseWindowGeometry(null);
-                windowGeometry.ShouldNotBeNull();
-            }
-
-            [Test]
-            public void geometry_sepcified()
-            {
-                WindowGeometry windowGeometry = ArgOptions.ParseWindowGeometry("800x600");
-                windowGeometry.ShouldNotBeNull();
-
-                windowGeometry.Size.Width = 800;
-                windowGeometry.Size.Height = 600;
-            }
-
-            [Test]
-            public void geometry_sepcified_with_single_quotes()
-            {
-                WindowGeometry windowGeometry = ArgOptions.ParseWindowGeometry("'800x600'");
-                windowGeometry.ShouldNotBeNull();
-
-                windowGeometry.Size.Width = 800;
-                windowGeometry.Size.Height = 600;
-            }
-
-            [Test]
-            public void geometry_sepcified_with_double_quotes()
-            {
-                WindowGeometry windowGeometry = ArgOptions.ParseWindowGeometry("\"800x600\"");
-                windowGeometry.ShouldNotBeNull();
-
-                windowGeometry.Size.Width = 800;
-                windowGeometry.Size.Height = 600;
+                windowGeometry.State.ShouldEqual(expectedBrowserWindowState);
+                windowGeometry.Size.Width = expectedWidth;
+                windowGeometry.Size.Height = expectedHeight;
             }
 
         }
