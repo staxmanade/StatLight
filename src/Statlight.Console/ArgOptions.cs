@@ -222,7 +222,7 @@ namespace StatLight.Console
 
             var geometry = new WindowGeometry
             {
-                State = BrowserWindowState.Normal
+                State = BrowserWindowState.Normal,
             };
 
             const string pattern = "(Maximized|Minimized|maximized|minimized|Normal|normal|M|m|N)?(([0-9]+)x([0-9]+))?";
@@ -258,14 +258,17 @@ namespace StatLight.Console
 
             var widthString = matches.Groups[3].Value;
             var heightString = matches.Groups[4].Value;
-            int width;
-            int height;
-            if (!int.TryParse(widthString, out width) || !int.TryParse(heightString, out height) || width < 1 || height < 1)
+            if (!string.IsNullOrEmpty(widthString) || !string.IsNullOrEmpty(heightString))
             {
-                throw new Exception("Width and height in geometry must be positive integers. (We parsed width[{0}] and height[{1}])".FormatWith(widthString, heightString));
-            }
+                int width;
+                int height;
+                if (!int.TryParse(widthString, out width) || !int.TryParse(heightString, out height) || width < 1 || height < 1)
+                {
+                    throw new Exception("Width and height in geometry must be positive integers. (We parsed width[{0}] and height[{1}])".FormatWith(widthString, heightString));
+                }
 
-            geometry.Size = new WindowSize(width, height);
+                geometry.Size = new WindowSize(width, height);
+            }
 
             return geometry;
         }

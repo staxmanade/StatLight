@@ -104,6 +104,15 @@ namespace StatLight.Core.Tests.Console
         public class when_specifying_the_BrowserWindow_flag
         {
             [TestCase("", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("Maximized", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("Minimized", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("maximized", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("minimized", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("Normal", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("normal", BrowserWindowState.Normal, 800, 600)]
+            [TestCase("M", BrowserWindowState.Maximized, 800, 600)]
+            [TestCase("m", BrowserWindowState.Minimized, 800, 600)]
+            [TestCase("N", BrowserWindowState.Normal, 800, 600)]
             [TestCase("800x600", BrowserWindowState.Normal, 800, 600)]
             [TestCase("M800x600", BrowserWindowState.Maximized, 800, 600)]
             [TestCase("Maximized800x600", BrowserWindowState.Maximized, 800, 600)]
