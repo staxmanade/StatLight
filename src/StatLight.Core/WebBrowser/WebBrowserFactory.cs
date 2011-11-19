@@ -1,5 +1,6 @@
 ﻿using System;
 using StatLight.Core.Common;
+using StatLight.Core.Configuration;
 
 namespace StatLight.Core.WebBrowser
 {
@@ -12,12 +13,12 @@ namespace StatLight.Core.WebBrowser
             _logger = logger;
         }
 
-        public IWebBrowser Create(WebBrowserType browserType, Uri pageToHost, bool browserVisible, bool forceBrowserStart, bool isStartingMultipleInstances)
+        public IWebBrowser Create(WebBrowserType browserType, Uri pageToHost, bool browserVisible, bool forceBrowserStart, bool isStartingMultipleInstances, WindowGeometry windowGeometry)
         {
             switch (browserType)
             {
                 case WebBrowserType.SelfHosted:
-                    return new SelfHostedWebBrowser(_logger, pageToHost, browserVisible);
+                    return new SelfHostedWebBrowser(_logger, pageToHost, browserVisible, windowGeometry);
                 case WebBrowserType.Firefox:
                     return new FirefoxWebBrowser(_logger, pageToHost, forceBrowserStart, isStartingMultipleInstances);
                 case WebBrowserType.Chrome:

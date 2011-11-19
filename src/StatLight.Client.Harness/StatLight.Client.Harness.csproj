@@ -95,6 +95,9 @@
     <Compile Include="..\StatLight.Core\Configuration\ClientTestRunConfiguration.cs">
       <Link>Core\Configuration\ClientTestRunConfiguration.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Core\Configuration\WindowGeometry.cs">
+      <Link>Core\Configuration\WindowGeometry.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Core\Configuration\UnitTestProviderTypes.cs">
       <Link>Core\Common\UnitTestProviderTypes.cs</Link>
     </Compile>
