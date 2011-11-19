@@ -7,6 +7,7 @@ namespace StatLight.Console
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using Mono.Options;
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
@@ -31,8 +32,6 @@ namespace StatLight.Console
 
         public bool ShowHelp { get; private set; }
 
-        public bool ShowTestingBrowserHost { get; private set; }
-
         public bool OutputForTeamCity { get; private set; }
 
         public bool StartWebServerOnly { get; private set; }
@@ -55,6 +54,8 @@ namespace StatLight.Console
         }
 
         public bool ForceBrowserStart { get; private set; }
+
+        public WindowGeometry WindowGeometry { get; private set; }
 
         #region XmlReport
         public string XmlReportOutputPath { get; private set; }
@@ -83,6 +84,7 @@ namespace StatLight.Console
             _optionSet = GetOptions();
             NumberOfBrowserHosts = 1;
             _args = args;
+            WindowGeometry = new WindowGeometry();
             List<string> extra;
 
             try
@@ -114,7 +116,8 @@ namespace StatLight.Console
                     })
                 .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, OptionValueType.Optional)
                 .Add<string>("c|Continuous", "Runs a single test run, and then monitors the xap for build changes and re-runs the tests automatically.", v => ContinuousIntegrationMode = true)
-                .Add<string>("b|ShowTestingBrowserHost", "Show the browser that is running the tests - necessary to run UI specific tests (hidden by default)", v => ShowTestingBrowserHost = true)
+                .Add("b|BrowserWindow", "Sets the display visibility and/or size of the Statlight browser window. Leave blank to keep browser window hidden. Specify this flag to have the browser window shown with the default height/width. Or using the following pattern [M|m|n][HEIGHTxWIDTH] you can specify the window state [M|Maximized|m|Minimized|N|Normal][{HEIGHT}x{WIDTH}] to be able to specify a specific size. EX: -b:N800x600 a normal window with a width of 800 and height of 600.",
+                    v => WindowGeometry = ParseWindowGeometry(v))
                 .Add("MethodsToTest", "Semicolon seperated list of full method names to execute. EX: --methodsToTest=\"RootNamespace.ChildNamespace.ClassName.MethodUnderTest;RootNamespace.ChildNamespace.ClassName.Method2UnderTest;\"", v =>
                     {
                         v = v ?? string.Empty;
@@ -163,7 +166,7 @@ namespace StatLight.Console
                         else
                             throw new DirectoryNotFoundException("Could not find directory in [{0}]".FormatWith(v));
                     })
-                .Add("ReportOutputFileType", "Specify the type of report output when using the -r|--ReportOutputFile=[path]. Possible options [{0}]".FormatWith(typeof(ReportOutputFileType).FormatEnumString()), v => 
+                .Add("ReportOutputFileType", "Specify the type of report output when using the -r|--ReportOutputFile=[path]. Possible options [{0}]".FormatWith(typeof(ReportOutputFileType).FormatEnumString()), v =>
                     {
                         ReportOutputFileType = ParseEnum<ReportOutputFileType>(v);
                     })
@@ -208,6 +211,66 @@ namespace StatLight.Console
             {
                 throw new StatLightException("Could not find an WebBrowserType defined as [{0}]. Please specify one of the following [{1}].".FormatWith(value, typeof(T).FormatEnumString()));
             }
+        }
+
+        internal static WindowGeometry ParseWindowGeometry(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return new WindowGeometry { State = BrowserWindowState.Normal };
+
+            input = input.Trim().Replace("'", string.Empty).Replace("\"", string.Empty);
+
+            var geometry = new WindowGeometry
+            {
+                State = BrowserWindowState.Normal,
+            };
+
+            const string pattern = "(Maximized|Minimized|maximized|minimized|Normal|normal|M|m|N)?(([0-9]+)x([0-9]+))?";
+            var matches = Regex.Match(input, pattern);
+            if (matches.Groups.Count != 5)
+            {
+                throw new StatLightException("If specifying the geometry it must be 'WIDTHxHEIGHT'");
+            }
+
+            var stateFlag = matches.Groups[1].Value;
+            switch (stateFlag)
+            {
+                case "":
+                    break; // leave the default
+                case "M":
+                case "Maximized":
+                case "maximized":
+                    geometry.State = BrowserWindowState.Maximized;
+                    break;
+                case "m":
+                case "Minimized":
+                case "minimized":
+                    geometry.State = BrowserWindowState.Minimized;
+                    break;
+                case "N":
+                case "Normal":
+                case "normal":
+                    geometry.State = BrowserWindowState.Normal;
+                    break;
+                default:
+                    throw new StatLightException("Unknown browser state flag [{0}]. Try specifying either [M|m|N] for [Maximized|minimized|Normal]".FormatWith(stateFlag));
+            }
+
+            var widthString = matches.Groups[3].Value;
+            var heightString = matches.Groups[4].Value;
+            if (!string.IsNullOrEmpty(widthString) || !string.IsNullOrEmpty(heightString))
+            {
+                int width;
+                int height;
+                if (!int.TryParse(widthString, out width) || !int.TryParse(heightString, out height) || width < 1 || height < 1)
+                {
+                    throw new Exception("Width and height in geometry must be positive integers. (We parsed width[{0}] and height[{1}])".FormatWith(widthString, heightString));
+                }
+
+                geometry.Size = new WindowSize(width, height);
+            }
+
+            return geometry;
         }
 
         public static void ShowHelpMessage(TextWriter @out)

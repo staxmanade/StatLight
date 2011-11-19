@@ -6,7 +6,7 @@ namespace StatLight.Core.WebBrowser
     using System.Threading;
     using System.Windows.Forms;
     using StatLight.Core.Common;
-    using StatLight.Core.Monitoring;
+    using StatLight.Core.Configuration;
 
     internal class SelfHostedWebBrowser : IWebBrowser, IDisposable
     {
@@ -14,12 +14,18 @@ namespace StatLight.Core.WebBrowser
         private readonly Uri _pageToHost;
         private readonly bool _browserVisible;
         private Thread _browserThread;
+        private readonly WindowGeometry _windowGeometry;
 
-        public SelfHostedWebBrowser(ILogger logger, Uri pageToHost, bool browserVisible)
+        public SelfHostedWebBrowser(ILogger logger, Uri pageToHost, bool browserVisible, WindowGeometry windowGeometry)
         {
+            if (logger == null) throw new ArgumentNullException("logger");
+            if (pageToHost == null) throw new ArgumentNullException("pageToHost");
+            if (windowGeometry == null) throw new ArgumentNullException("windowGeometry");
+
             _logger = logger;
             _pageToHost = pageToHost;
             _browserVisible = browserVisible;
+            _windowGeometry = windowGeometry;
         }
 
         private Form _form;
@@ -29,8 +35,8 @@ namespace StatLight.Core.WebBrowser
             {
                 _form = new Form
                             {
-                                Height = 600,
-                                Width = 800,
+                                Height = _windowGeometry.Size.Height,
+                                Width = _windowGeometry.Size.Width,
                                 WindowState = GetBrowserVisibilityState(_browserVisible),
                                 ShowInTaskbar = _browserVisible,
                                 Icon = Properties.Resources.FavIcon,
@@ -46,16 +52,34 @@ namespace StatLight.Core.WebBrowser
                 _form.Controls.Add(browser);
 
                 Application.Run(_form);
-                
+
             });
             _browserThread.SetApartmentState(ApartmentState.STA);
             _browserThread.Start();
 
         }
 
-        private static FormWindowState GetBrowserVisibilityState(bool browserVisible)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:LiteralsShouldBeSpelledCorrectly", MessageId = "BrowserWindowState")]
+        private FormWindowState GetBrowserVisibilityState(bool browserVisible)
         {
-            return browserVisible ? FormWindowState.Normal : FormWindowState.Minimized;
+            if (browserVisible)
+            {
+                switch (_windowGeometry.State)
+                {
+                    case BrowserWindowState.Maximized:
+                        return FormWindowState.Maximized;
+                    case BrowserWindowState.Minimized:
+                        return FormWindowState.Minimized;
+                    case BrowserWindowState.Normal:
+                        return FormWindowState.Normal;
+                    default:
+                        throw new NotSupportedException("Cannot handle unknown BrowserWindowState");
+                }
+            }
+            else
+            {
+                return FormWindowState.Minimized;
+            }
         }
 
         ~SelfHostedWebBrowser()

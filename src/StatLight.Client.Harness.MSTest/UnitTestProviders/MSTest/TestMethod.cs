@@ -239,10 +239,14 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
         {
             get
             {
-                foreach (var testProperty in _testMethod.Properties)
+                if (_testMethod.Properties != null)
                 {
-                    _propertyCache.Add(testProperty.Name, testProperty.Value);
+                    foreach (var testProperty in _testMethod.Properties)
+                    {
+                        _propertyCache.Add(testProperty.Name, testProperty.Value);
+                    }
                 }
+
                 return _propertyCache;
             }
         }

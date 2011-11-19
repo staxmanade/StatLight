@@ -95,6 +95,7 @@
   <ItemGroup>
     <Compile Include="CommonExtensionTests.cs" />
     <Compile Include="Common\LoggerBaseTests.cs" />
+    <Compile Include="Configuration\WindowGeometryTests.cs" />
     <Compile Include="Console\ArgExtensions.cs" />
     <Compile Include="Console\ArgOptionsTests.cs" />
     <Compile Include="Console\ConsoleMainTests.cs" />
