@@ -17,7 +17,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.MSTestTRX
         [Test]
         public void Should_conform_to_xml_schema()
         {
-            string tempFileName = @"C:\Users\jasonj\AppData\Local\Temp\tmp8699.trx"; //Path.GetTempFileName();
+            string tempFileName = Path.GetTempFileName();
             try
             {
                 var report = new TestReportCollection();
