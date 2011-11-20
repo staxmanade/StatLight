@@ -76,9 +76,7 @@ namespace StatLight.Core.Reporting
         {
             get
             {
-                var failures = _testCaseResults
-                    .Where(w => w.ResultType == ResultType.Failed || w.ResultType == ResultType.SystemGeneratedFailure);
-                return failures.Count();
+                return Failures.Count();
             }
         }
 
@@ -89,6 +87,14 @@ namespace StatLight.Core.Reporting
                 var failures = _testCaseResults
                     .Where(w => w.ResultType == ResultType.Passed);
                 return failures.Count();
+            }
+        }
+
+        public IEnumerable<TestCaseResult> Failures
+        {
+            get
+            {
+                return _testCaseResults.Where(w => w.ResultType == ResultType.Failed || w.ResultType == ResultType.SystemGeneratedFailure);
             }
         }
 

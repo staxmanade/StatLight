@@ -1,6 +1,4 @@
 ﻿
-using StatLight.Core.Properties;
-
 namespace StatLight.Console
 {
     using System;
@@ -13,11 +11,13 @@ namespace StatLight.Console
     using StatLight.Console.Tools;
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
+    using StatLight.Core.Events;
+    using StatLight.Core.Properties;
     using StatLight.Core.Reporting;
+    using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.Runners;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer.XapHost;
-    using StatLight.Core;
 
     class Program
     {
@@ -27,12 +27,11 @@ namespace StatLight.Console
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-                                                              {
-                                                                  Console.WriteLine(e.ExceptionObject);
-                                                              };
-            PrintNameVersionAndCopyright();
+            {
+                Console.WriteLine(e.ExceptionObject);
+            };
 
-            ArgOptions options;
+            PrintNameVersionAndCopyright();
 
             using (var consoleIconSwapper = new ConsoleIconSwapper())
             {
@@ -40,7 +39,7 @@ namespace StatLight.Console
 
                 try
                 {
-                    options = new ArgOptions(args);
+                    var options = new ArgOptions(args);
 
                     if (options.ShowHelp)
                     {
@@ -130,6 +129,11 @@ namespace StatLight.Console
                         options.XmlReportOutputPath,
                         options.ReportOutputFileType);
 
+                    if(!options.OutputForTeamCity)
+                    {
+                        PrintFinalTestSummary(testReports);
+                    }
+
                     if (testReports.FinalResult == RunCompletedState.Failure)
                         Environment.ExitCode = ExitFailed;
                     else
@@ -165,6 +169,25 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 catch (Exception exception)
                 {
                     HandleUnknownError(exception);
+                }
+            }
+        }
+
+        private static void PrintFinalTestSummary(IEnumerable<TestReport> testReports)
+        {
+            foreach (var testReport in testReports)
+            {
+                if (testReport.Failures.Any())
+                {
+                    "********************************************"
+                        .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
+                    ("Test Result Summary for: " + testReport.XapPath)
+                        .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
+
+                    testReport.Failures.Each(ConsoleResultHandler.WriteOutError);
+
+                    "********************************************"
+                        .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
                 }
             }
         }
