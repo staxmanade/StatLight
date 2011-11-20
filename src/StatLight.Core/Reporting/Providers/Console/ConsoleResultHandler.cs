@@ -81,6 +81,9 @@
 
         public static void WriteOutError(TestCaseResult message)
         {
+            if (message == null)
+                throw new ArgumentNullException("message");
+
             System.Console.WriteLine("");
             "------------------ ".WrapConsoleMessageWithColor(Settings.ConsoleColorError, false);
             "Test ".WrapConsoleMessageWithColor(Settings.ConsoleColorError, false);
