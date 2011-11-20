@@ -1,10 +1,9 @@
-﻿using System;
-using System.Reflection;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
+﻿namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 {
+    using System.Reflection;
+    using System.Text;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     public class TestCaseMethod : TestMethod
     {
         private readonly string _testName;
@@ -21,7 +20,8 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 
         public override void Invoke(object instance)
         {
-            var actualResult = Method.Invoke(instance, _testCaseArguments);
+            var actualResult = InvokeInternal(instance, _testCaseArguments);
+
             if (Method.ReturnType != typeof(void))
             {
                 Assert.AreEqual(_expectedResult, actualResult);
