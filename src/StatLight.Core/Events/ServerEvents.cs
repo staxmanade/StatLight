@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.Composition;
-
+﻿
 namespace StatLight.Core.Events
 {
+    using System.ComponentModel.Composition;
     using StatLight.Client.Harness.Events;
     using EventAggregatorNet;
     using StatLight.Core.Reporting;
@@ -46,10 +46,30 @@ namespace StatLight.Core.Events
             XapPath = xapPath;
         }
     }
+
     public sealed class TestRunCompletedServerEvent { }
+
     public sealed class BrowserHostCommunicationTimeoutServerEvent
     {
         public string Message { get; set; }
+    }
+
+    public sealed class TestReportGeneratedServerEvent
+    {
+        public TestReportGeneratedServerEvent(TestReport testReport)
+        {
+            TestReport = testReport;
+        }
+        public TestReport TestReport { get; set; }
+    }
+
+    public sealed class TestReportCollectionGeneratedServerEvent
+    {
+        public TestReportCollectionGeneratedServerEvent(TestReportCollection testReportCollection)
+        {
+            this.TestReportCollection = testReportCollection;
+        }
+        public TestReportCollection TestReportCollection { get; set; }
     }
 
     public class MessageReceivedFromClientServerEvent { }

@@ -137,6 +137,7 @@
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.Core.cs" />
+    <Compile Include="CommandLineExecutionEngine.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="Common\ConsoleLogger.cs" />
     <Compile Include="Common\NullLogger.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Reporting\Providers\MSTestTRX\TRXReport.cs" />
     <Compile Include="Reporting\TestReportCollection.cs" />
     <Compile Include="Reporting\ConsoleDebugListener.cs" />
+    <Compile Include="Reporting\ReportOutputFileType.cs" />
     <Compile Include="Runners\EventAggregatorFactory.cs" />
     <Compile Include="Runners\IStatLightRunnerFactory.cs" />
     <Compile Include="WebServer\TestPage.cs" />

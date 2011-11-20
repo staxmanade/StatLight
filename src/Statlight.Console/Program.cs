@@ -1,7 +1,5 @@
 ﻿
 using StatLight.Core.Properties;
-using StatLight.Core.Reporting.Providers;
-using StatLight.Core.Reporting.Providers.MSTestTRX;
 
 namespace StatLight.Console
 {
@@ -57,8 +55,80 @@ namespace StatLight.Console
 
                     ILogger logger = GetLogger(options.IsRequestingDebug);
 
-                    var commandLineExecutionEngine = new CommandLineExecutionEngine(logger, options);
-                    TestReportCollection testReports = commandLineExecutionEngine.Run();
+                    WindowGeometry windowGeometry = options.WindowGeometry;
+                    bool useRemoteTestPage = options.UseRemoteTestPage;
+                    Collection<string> methodsToTest = options.MethodsToTest;
+                    MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = options.MicrosoftTestingFrameworkVersion;
+                    string tagFilters = options.TagFilters;
+                    UnitTestProviderType unitTestProviderType = options.UnitTestProviderType;
+                    int numberOfBrowserHosts = options.NumberOfBrowserHosts;
+                    string queryString = options.QueryString;
+                    WebBrowserType webBrowserType = options.WebBrowserType;
+                    bool forceBrowserStart = options.ForceBrowserStart;
+
+                    IEnumerable<string> xapPaths = options.XapPaths;
+                    IEnumerable<string> testDlls = options.Dlls;
+
+                    options.DumpValuesForDebug(logger);
+
+                    var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
+                    var configurations = new List<StatLightConfiguration>();
+
+                    foreach (var xapPath in xapPaths)
+                    {
+                        logger.Debug("Starting configuration for: {0}".FormatWith(xapPath));
+                        StatLightConfiguration statLightConfiguration = statLightConfigurationFactory
+                            .GetStatLightConfigurationForXap(
+                                unitTestProviderType,
+                                xapPath,
+                                microsoftTestingFrameworkVersion,
+                                methodsToTest,
+                                tagFilters,
+                                numberOfBrowserHosts,
+                                useRemoteTestPage,
+                                queryString,
+                                webBrowserType,
+                                forceBrowserStart,
+                                windowGeometry);
+
+                        configurations.Add(statLightConfiguration);
+                    }
+
+                    foreach (var dllPath in testDlls)
+                    {
+                        logger.Debug("Starting configuration for: {0}".FormatWith(dllPath));
+                        StatLightConfiguration statLightConfiguration = statLightConfigurationFactory
+                            .GetStatLightConfigurationForDll(
+                                unitTestProviderType,
+                                dllPath,
+                                microsoftTestingFrameworkVersion,
+                                methodsToTest,
+                                tagFilters,
+                                numberOfBrowserHosts,
+                                useRemoteTestPage,
+                                queryString,
+                                webBrowserType,
+                                forceBrowserStart,
+                                windowGeometry);
+
+                        configurations.Add(statLightConfiguration);
+                    }
+
+                    var eventAggregator = EventAggregatorFactory.Create(logger);
+                    var statLightRunnerFactory = new StatLightRunnerFactory(logger, eventAggregator);
+                    var commandLineExecutionEngine = new CommandLineExecutionEngine(logger, statLightRunnerFactory, eventAggregator);
+
+                    RunnerType runnerType = commandLineExecutionEngine.GetRunnerType(
+                        options.ContinuousIntegrationMode,
+                        options.OutputForTeamCity,
+                        options.StartWebServerOnly,
+                        options.UseRemoteTestPage);
+
+                    TestReportCollection testReports = commandLineExecutionEngine.Run(
+                        configurations,
+                        runnerType,
+                        options.XmlReportOutputPath,
+                        options.ReportOutputFileType);
 
                     if (testReports.FinalResult == RunCompletedState.Failure)
                         Environment.ExitCode = ExitFailed;
@@ -159,216 +229,5 @@ Try: (the following two steps that should allow StatLight to start a web server 
         {
             Console.WriteLine(msg, args);
         }
-    }
-
-
-    public class CommandLineExecutionEngine
-    {
-        private readonly ILogger _logger;
-        private readonly ArgOptions _options;
-
-        public CommandLineExecutionEngine(ILogger logger, ArgOptions args)
-            : this(logger, args,
-                new StatLightConfigurationFactory(logger),
-                runner => runner.Run(),
-                new StatLightRunnerFactory(logger))
-        {
-        }
-
-        internal CommandLineExecutionEngine(ILogger logger, ArgOptions args, IStatLightConfigurationFactory statLightConfigurationFactory, Func<IRunner, TestReport> runnerFunc, IStatLightRunnerFactory statLightRunnerFactory)
-        {
-            _logger = logger;
-            _statLightRunnerFactory = statLightRunnerFactory;
-            _options = args;
-            _statLightConfigurationFactory = statLightConfigurationFactory;
-            _runnerFunc = runnerFunc;
-        }
-
-
-        private readonly IStatLightConfigurationFactory _statLightConfigurationFactory;
-        private readonly Func<IRunner, TestReport> _runnerFunc;
-        private readonly IStatLightRunnerFactory _statLightRunnerFactory;
-
-        private RunnerType GetRunnerType()
-        {
-            bool continuousIntegrationMode = _options.ContinuousIntegrationMode;
-            bool useTeamCity = _options.OutputForTeamCity;
-            bool startWebServerOnly = _options.StartWebServerOnly;
-            bool useRemoteTestPage = _options.UseRemoteTestPage;
-
-            RunnerType runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly, useRemoteTestPage);
-
-            return runnerType;
-        }
-
-        public TestReportCollection Run()
-        {
-            WindowGeometry windowGeometry = _options.WindowGeometry;
-            bool useRemoteTestPage = _options.UseRemoteTestPage;
-            Collection<string> methodsToTest = _options.MethodsToTest;
-            MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = _options.MicrosoftTestingFrameworkVersion;
-            string tagFilters = _options.TagFilters;
-            UnitTestProviderType unitTestProviderType = _options.UnitTestProviderType;
-            int numberOfBrowserHosts = _options.NumberOfBrowserHosts;
-            string queryString = _options.QueryString;
-            WebBrowserType webBrowserType = _options.WebBrowserType;
-            bool forceBrowserStart = _options.ForceBrowserStart;
-
-            IEnumerable<string> xapPaths = _options.XapPaths;
-            IEnumerable<string> testDlls = _options.Dlls;
-
-            _options.DumpValuesForDebug(_logger);
-
-            var runnerType = GetRunnerType();
-
-            _logger.Debug("RunnerType = {0}".FormatWith(runnerType));
-
-            var testReports = new TestReportCollection();
-
-            foreach (var xapPath in xapPaths)
-            {
-                _logger.Debug("Starting configuration for: {0}".FormatWith(xapPath));
-                StatLightConfiguration statLightConfiguration = _statLightConfigurationFactory
-                    .GetStatLightConfigurationForXap(
-                        unitTestProviderType,
-                        xapPath,
-                        microsoftTestingFrameworkVersion,
-                        methodsToTest,
-                        tagFilters,
-                        numberOfBrowserHosts,
-                        useRemoteTestPage,
-                        queryString,
-                        webBrowserType,
-                        forceBrowserStart,
-                        windowGeometry);
-                var testReport = DoTheRun(runnerType, statLightConfiguration);
-                testReports.Add(testReport);
-            }
-
-            foreach (var dllPath in testDlls)
-            {
-                _logger.Debug("Starting configuration for: {0}".FormatWith(dllPath));
-                StatLightConfiguration statLightConfiguration = _statLightConfigurationFactory
-                    .GetStatLightConfigurationForDll(
-                        unitTestProviderType,
-                        dllPath,
-                        microsoftTestingFrameworkVersion,
-                        methodsToTest,
-                        tagFilters,
-                        numberOfBrowserHosts,
-                        useRemoteTestPage,
-                        queryString,
-                        webBrowserType,
-                        forceBrowserStart,
-                        windowGeometry);
-
-                var testReport = DoTheRun(runnerType, statLightConfiguration);
-                testReports.Add(testReport);
-            }
-
-            WriteXmlReport(testReports, _options.XmlReportOutputPath, _options.ReportOutputFileType);
-
-            return testReports;
-        }
-
-        private TestReport DoTheRun(RunnerType runnerType, StatLightConfiguration statLightConfiguration)
-        {
-            using (IRunner runner = GetRunner(
-                _logger,
-                runnerType,
-                statLightConfiguration,
-                _statLightRunnerFactory))
-            {
-                _logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
-                return _runnerFunc(runner);
-            }
-        }
-
-        private static void WriteXmlReport(TestReportCollection testReports, string xmlReportOutputPath, ReportOutputFileType reportOutputFileType)
-        {
-            if (!string.IsNullOrEmpty(xmlReportOutputPath))
-            {
-                IXmlReport xmlReport;
-                switch (reportOutputFileType)
-                {
-                    case ReportOutputFileType.MSGenericTest:
-                        xmlReport = new Core.Reporting.Providers.TFS.TFS2010.MSGenericTestXmlReport(testReports);
-                        break;
-                    case ReportOutputFileType.StatLight:
-                        xmlReport = new Core.Reporting.Providers.Xml.XmlReport(testReports);
-                        break;
-                    case ReportOutputFileType.NUnit:
-                        xmlReport = new Core.Reporting.Providers.NUnit.NUnitXmlReport(testReports);
-                        break;
-                    case ReportOutputFileType.TRX:
-                        xmlReport = new TRXReport(testReports);
-                        break;
-                    default:
-                        throw new StatLightException("Unknown ReportOutputFileType chosen Name=[{0}], Value=[{1}]".FormatWith(reportOutputFileType.ToString(), (int)reportOutputFileType));
-                }
-
-                xmlReport.WriteXmlReport(xmlReportOutputPath);
-
-                "*********************************"
-                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
-
-                "Wrote XML report to:{0}{1}"
-                    .FormatWith(Environment.NewLine, new FileInfo(xmlReportOutputPath).FullName)
-                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorWarning, true);
-
-                "*********************************"
-                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
-            }
-        }
-
-
-        private static IRunner GetRunner(ILogger logger, RunnerType runnerType,
-            StatLightConfiguration statLightConfiguration, IStatLightRunnerFactory statLightRunnerFactory)
-        {
-            switch (runnerType)
-            {
-                case RunnerType.TeamCity:
-                    logger.LogChatterLevel = LogChatterLevels.None;
-                    return statLightRunnerFactory.CreateTeamCityRunner(statLightConfiguration);
-
-                case RunnerType.ContinuousTest:
-                    return statLightRunnerFactory.CreateContinuousTestRunner(statLightConfiguration);
-
-                case RunnerType.WebServerOnly:
-                    return statLightRunnerFactory.CreateWebServerOnlyRunner(statLightConfiguration);
-
-                case RunnerType.RemoteRun:
-                    return statLightRunnerFactory.CreateRemotelyHostedRunner(statLightConfiguration);
-
-                default:
-                    return statLightRunnerFactory.CreateOnetimeConsoleRunner(statLightConfiguration);
-            }
-        }
-
-        private static RunnerType DetermineRunnerType(bool continuousIntegrationMode, bool useTeamCity, bool startWebServerOnly, bool isRemoteRun)
-        {
-            if (useTeamCity)
-            {
-                return RunnerType.TeamCity;
-            }
-
-            if (isRemoteRun)
-            {
-                return RunnerType.RemoteRun;
-            }
-
-            if (startWebServerOnly)
-            {
-                return RunnerType.WebServerOnly;
-            }
-
-            if (continuousIntegrationMode)
-            {
-                return RunnerType.ContinuousTest;
-            }
-
-            return RunnerType.OneTimeConsole;
-        }
-
     }
 }

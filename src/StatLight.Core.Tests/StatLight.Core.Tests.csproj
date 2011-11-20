@@ -99,7 +99,6 @@
     <Compile Include="Console\ArgExtensions.cs" />
     <Compile Include="Console\ArgOptionsTests.cs" />
     <Compile Include="Console\ConsoleMainTests.cs" />
-    <Compile Include="Console\CommandLineExecutionEngineTests.cs" />
     <Compile Include="Events\Aggregation\EventAggregatorExtensions.cs" />
     <Compile Include="Events\Aggregation\EventAggregatorTests.cs" />
     <Compile Include="Events\ExceptionInfoTests.cs" />

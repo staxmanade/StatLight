@@ -1,6 +1,4 @@
-﻿
-
-namespace StatLight.Console
+﻿namespace StatLight.Console
 {
     using System;
     using System.Collections.Generic;
@@ -11,6 +9,7 @@ namespace StatLight.Console
     using Mono.Options;
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
+    using StatLight.Core.Reporting;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer.XapHost;
 

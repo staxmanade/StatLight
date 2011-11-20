@@ -1,4 +1,4 @@
-﻿namespace StatLight.Console
+namespace StatLight.Core.Reporting
 {
     public enum ReportOutputFileType
     {

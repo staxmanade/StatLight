@@ -29,12 +29,9 @@ namespace StatLight.Core.Runners
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
         private ConsoleResultHandler _consoleResultHandler;
 
-        public StatLightRunnerFactory(ILogger logger)
-            : this(logger, EventAggregatorFactory.Create(logger))
-        {
-        }
-
-        internal StatLightRunnerFactory(ILogger logger, EventAggregator eventAggregator) : this(logger, eventAggregator, eventAggregator) { }
+        public StatLightRunnerFactory(ILogger logger, EventAggregator eventAggregator)
+            : this(logger, eventAggregator, eventAggregator)
+        { }
 
         public StatLightRunnerFactory(ILogger logger, IEventSubscriptionManager eventSubscriptionManager, IEventPublisher eventPublisher)
         {
@@ -49,6 +46,15 @@ namespace StatLight.Core.Runners
             SetupExtensions(_eventSubscriptionManager);
         }
 
+        public IEventPublisher EventPublisher
+        {
+            get { return _eventPublisher; }
+        }
+
+        public IEventSubscriptionManager EventSubscriptionManager
+        {
+            get { return _eventSubscriptionManager; }
+        }
 
         private static string GetFullPath(string path)
         {

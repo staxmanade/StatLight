@@ -105,7 +105,6 @@
     <Compile Include="Tools\Mono.Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Tools\NativeMethods.cs" />
-    <Compile Include="ReportOutputFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StatLight.Core\StatLight.Core.csproj">
