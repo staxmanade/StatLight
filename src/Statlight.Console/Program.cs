@@ -123,6 +123,7 @@ namespace StatLight.Console
                         options.StartWebServerOnly,
                         options.UseRemoteTestPage);
 
+                    DateTime startOfRunTime = DateTime.Now;
                     TestReportCollection testReports = commandLineExecutionEngine.Run(
                         configurations,
                         runnerType,
@@ -131,7 +132,7 @@ namespace StatLight.Console
 
                     if(!options.OutputForTeamCity)
                     {
-                        PrintFinalTestSummary(testReports);
+                        ConsoleTestCompleteMessage.PrintFinalTestSummary(testReports, startOfRunTime);
                     }
 
                     if (testReports.FinalResult == RunCompletedState.Failure)
@@ -169,25 +170,6 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 catch (Exception exception)
                 {
                     HandleUnknownError(exception);
-                }
-            }
-        }
-
-        private static void PrintFinalTestSummary(IEnumerable<TestReport> testReports)
-        {
-            foreach (var testReport in testReports)
-            {
-                if (testReport.Failures.Any())
-                {
-                    "********************************************"
-                        .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
-                    ("Test Result Summary for: " + testReport.XapPath)
-                        .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
-
-                    testReport.Failures.Each(ConsoleResultHandler.WriteOutError);
-
-                    "********************************************"
-                        .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
                 }
             }
         }
