@@ -32,3 +32,13 @@ StatLight build infrastructure is put together with a number of psake tasks [htt
 
 Build NOTE:
 The unit/integration tests throw up quite a few assertion dialogs, and message boxes (Don't close them yourself, unless it hangs for more than 15 seconds). (They _should_ close automatically during the build, however sometimes the integration tests leave one behind. If it does you can close it and everything should be fine.)
+
+Contributors
+--
+Thanks for contributions from:
+
+[Christopher Bennage](https://github.com/bennage)
+[Johannes Rudolph](https://github.com/JohannesRudolph)
+[Mike Benza](https://github.com/MikeBenza)
+[Remo Gloor](https://github.com/remogloor)
+[Steven De Kock](https://github.com/sdekock)
