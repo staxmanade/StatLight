@@ -7,7 +7,7 @@ using StatLight.Client.Harness.Events;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events;
 using StatLight.Core.Tests;
-using EventAggregatorNet;
+using StatLight.Core.Events;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
 {
@@ -34,13 +34,11 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
             PathToIntegrationTestXap = TestXapFileLocations.MSTest;
             _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration();
-            EventSubscriptionManager
-                .AddListener<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e)
-                .AddListener<TestExecutionClassCompletedClientEvent>(e => _testExecutionClassCompletedClientEvent.Add(e))
-                .AddListener<TestExecutionMethodIgnoredClientEvent>(e => _testExecutionMethodIgnoredClientEvent.Add(e))
-                .AddListener<TestExecutionMethodFailedClientEvent>(e => _testExecutionMethodFailedClientEvent.Add(e))
-                .AddListener<TestExecutionMethodPassedClientEvent>(e => _testExecutionMethodPassedClientEvent.Add(e))
-                ;
+            EventSubscriptionManager.AddListenerAction<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e);
+            EventSubscriptionManager.AddListenerAction<TestExecutionClassCompletedClientEvent>(e => _testExecutionClassCompletedClientEvent.Add(e));
+            EventSubscriptionManager.AddListenerAction<TestExecutionMethodIgnoredClientEvent>(e => _testExecutionMethodIgnoredClientEvent.Add(e));
+            EventSubscriptionManager.AddListenerAction<TestExecutionMethodFailedClientEvent>(e => _testExecutionMethodFailedClientEvent.Add(e));
+            EventSubscriptionManager.AddListenerAction<TestExecutionMethodPassedClientEvent>(e => _testExecutionMethodPassedClientEvent.Add(e));
         }
 
 
@@ -235,7 +233,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
                 }
             }
 
-            if(failed)
+            if (failed)
             {
                 Assert.Fail(sb.ToString());
             }

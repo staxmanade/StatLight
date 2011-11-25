@@ -6,7 +6,7 @@ namespace StatLight.Core.Monitoring
     using System.Collections.Generic;
     using StatLight.Core.Common;
     using StatLight.Core.Events;
-    using EventAggregatorNet;
+    using StatLight.Core.Events;
 
     internal class DialogMonitorRunner : IDialogMonitorRunner
     {

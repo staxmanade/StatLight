@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using EventAggregatorNet;
+using StatLight.Core.Events;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Common;
 

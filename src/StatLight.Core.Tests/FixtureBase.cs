@@ -5,7 +5,7 @@ using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
-using EventAggregatorNet;
+using StatLight.Core.Events;
 using StatLight.Core.Runners;
 using StatLight.Core.WebServer.XapHost;
 

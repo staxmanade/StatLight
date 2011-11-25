@@ -13,7 +13,7 @@ namespace StatLight.Core.Runners
     using StatLight.Core.Common.Abstractions.Timing;
     using StatLight.Core.Configuration;
     using StatLight.Core.Events;
-    using EventAggregatorNet;
+    using StatLight.Core.Events;
     using StatLight.Core.Monitoring;
     using StatLight.Core.Reporting;
     using StatLight.Core.Reporting.Providers.Console;

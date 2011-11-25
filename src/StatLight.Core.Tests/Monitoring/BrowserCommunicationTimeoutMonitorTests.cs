@@ -4,7 +4,7 @@ using NUnit.Framework;
 using StatLight.Core.Common.Abstractions.Timing;
 using StatLight.Core.Events;
 using StatLight.Core.Monitoring;
-using EventAggregatorNet;
+using StatLight.Core.Events;
 
 namespace StatLight.Core.Tests.Monitoring
 {
@@ -36,7 +36,7 @@ namespace StatLight.Core.Tests.Monitoring
             public void SetupEventToSeeIfPublished()
             {
                 TestEventSubscriptionManager
-                    .AddListener<BrowserHostCommunicationTimeoutServerEvent>(e => EventPublished = true);
+                    .AddListenerAction<BrowserHostCommunicationTimeoutServerEvent>(e => EventPublished = true);
             }
         }
 
@@ -116,7 +116,7 @@ namespace StatLight.Core.Tests.Monitoring
                 base.Before_all_tests();
 
                 TestEventSubscriptionManager
-                    .AddListener<BrowserHostCommunicationTimeoutServerEvent>(o => _publishedEventsCount++);
+                    .AddListenerAction<BrowserHostCommunicationTimeoutServerEvent>(o => _publishedEventsCount++);
             }
 
             protected override void Because()

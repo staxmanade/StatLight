@@ -1,41 +1,49 @@
 ﻿using System;
 
-namespace EventAggregatorNet
+namespace StatLight.Core.Events
 {
     public static class EventAggregatorExtensions
     {
-        public static IEventSubscriptionManager AddListener<T>(this IEventSubscriptionManager eventAggregator, Action<T> listener)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public static IDisposable AddListenerAction<T>(this IEventSubscriptionManager eventAggregator, Action<T> listener)
         {
-            var delegateListener = new DelegateListener<T>(listener);
+            if (eventAggregator == null) throw new ArgumentNullException("eventAggregator");
+            if (listener == null) throw new ArgumentNullException("listener");
+
+            var delegateListener = new DelegateListener<T>(listener, eventAggregator);
             eventAggregator.AddListener(delegateListener);
-            return eventAggregator;
+
+            return delegateListener;
+        }
+    }
+
+    public class DelegateListener<T> : IListener<T>, IDisposable
+    {
+        private readonly Action<T> _listener;
+        private readonly IEventSubscriptionManager _eventSubscriptionManager;
+
+        public DelegateListener(Action<T> listener, IEventSubscriptionManager eventSubscriptionManager)
+        {
+            _listener = listener;
+            _eventSubscriptionManager = eventSubscriptionManager;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public static IEventSubscriptionManager AddListener<T>(this IEventSubscriptionManager eventAggregator, Action listener)
+        public void Handle(T message)
         {
-            var delegateListener = new DelegateListener<T>(msg => listener());
-            eventAggregator.AddListener(delegateListener);
-            return eventAggregator;
+            _listener(message);
         }
 
-        public static IEventSubscriptionManager AddListener(this IEventSubscriptionManager eventAggregator, Action listener, Predicate<object> filter)
+        public void Dispose()
         {
-            return eventAggregator.AddListener(listener, filter);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        private class DelegateListener<T> : IListener<T>
+        protected virtual void Dispose(bool disposing)
         {
-            private readonly Action<T> _listener;
-
-            public DelegateListener(Action<T> listener)
+            if (disposing)
             {
-                _listener = listener;
-            }
-
-            public void Handle(T message)
-            {
-                _listener(message);
+                _eventSubscriptionManager.RemoveListener(this);
             }
         }
     }

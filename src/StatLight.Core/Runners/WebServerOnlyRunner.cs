@@ -6,7 +6,7 @@ namespace StatLight.Core.Runners
     using System.Globalization;
     using System.Threading;
     using StatLight.Core.Common;
-    using EventAggregatorNet;
+    using StatLight.Core.Events;
     using StatLight.Core.Reporting;
     using StatLight.Core.WebServer;
 

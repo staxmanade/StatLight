@@ -5,7 +5,7 @@ using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
 using StatLight.Core.Reporting;
 using System.Collections.Generic;
-using EventAggregatorNet;
+using StatLight.Core.Events;
 
 namespace StatLight.Core.Tests.Reporting
 {
@@ -251,7 +251,7 @@ namespace StatLight.Core.Tests.Reporting
                 base.Before_all_tests();
 
                 TestEventSubscriptionManager
-                    .AddListener<TestCaseResult>(e =>
+                    .AddListenerAction<TestCaseResult>(e =>
                     {
                         if (e.ResultType == ResultType.SystemGeneratedFailure)
                         {

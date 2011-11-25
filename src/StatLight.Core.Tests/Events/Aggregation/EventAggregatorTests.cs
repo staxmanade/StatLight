@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using EventAggregatorNet;
+using StatLight.Core.Events;
 using StatLight.Core.Runners;
 
 namespace StatLight.Core.Tests.Events.Aggregation

@@ -147,7 +147,7 @@
     <Compile Include="Common\Resources.cs" />
     <Compile Include="CommonExtensions.Desktop.cs" />
     <Compile Include="Common\StatLightException.cs" />
-    <Compile Include="EventAggregator.Net\EventAggregator.cs" />
+    <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

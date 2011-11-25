@@ -4,7 +4,7 @@ namespace StatLight.IntegrationTests
     using System.IO;
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
-    using EventAggregatorNet;
+    using StatLight.Core.Events;
     using StatLight.Core.Reporting;
     using StatLight.Core.Runners;
     using StatLight.Core.WebServer.XapHost;

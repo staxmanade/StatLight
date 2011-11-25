@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using NUnit.Framework;
 using StatLight.Core.Events;
-using EventAggregatorNet;
+using StatLight.Core.Events;
 using StatLight.Core.Monitoring;
 
 namespace StatLight.Core.Tests.Monitoring.XapFileMonitoring
@@ -47,7 +47,7 @@ namespace StatLight.Core.Tests.Monitoring.XapFileMonitoring
             {
                 bool wasXapFileRefreshed = false;
 
-                TestEventSubscriptionManager.AddListener<XapFileBuildChangedServerEvent>(e => wasXapFileRefreshed = true);
+                TestEventSubscriptionManager.AddListenerAction<XapFileBuildChangedServerEvent>(e => wasXapFileRefreshed = true);
 
                 base.replace_test_file();
 
@@ -67,7 +67,7 @@ namespace StatLight.Core.Tests.Monitoring.XapFileMonitoring
             {
 
                 int raisedCount = 0;
-                TestEventSubscriptionManager.AddListener<XapFileBuildChangedServerEvent>(e =>
+                TestEventSubscriptionManager.AddListenerAction<XapFileBuildChangedServerEvent>(e =>
                 {
                     raisedCount++;
                 });

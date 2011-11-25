@@ -3,7 +3,7 @@ namespace StatLight.Console
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using EventAggregatorNet;
+    using StatLight.Core.Events;
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
     using StatLight.Core.Events;

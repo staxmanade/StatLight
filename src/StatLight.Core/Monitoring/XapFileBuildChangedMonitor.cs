@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using StatLight.Core.Events;
-using EventAggregatorNet;
+using StatLight.Core.Events;
 
 namespace StatLight.Core.Monitoring
 {
