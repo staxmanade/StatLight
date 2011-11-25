@@ -81,7 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\StatLight.Core.Tests\Events\Aggregation\EventAggregatorExtensions.cs">
+    <Compile Include="..\StatLight.Core.Tests\Events\EventAggregatorExtensions.cs">
       <Link>ProviderTests\MSTest\EventAggregatorExtensions.cs</Link>
     </Compile>
     <Compile Include="..\StatLight.Core.Tests\SpecificationExtensions.cs">

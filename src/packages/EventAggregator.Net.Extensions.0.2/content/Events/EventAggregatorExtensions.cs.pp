@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 
-namespace StatLight.Core.Events
+// ReSharper disable InconsistentNaming
+namespace $rootnamespace$.Events
 {
     public static class EventAggregatorExtensions
     {
@@ -48,3 +49,4 @@ namespace StatLight.Core.Events
         }
     }
 }
+// ReSharper enable InconsistentNaming
