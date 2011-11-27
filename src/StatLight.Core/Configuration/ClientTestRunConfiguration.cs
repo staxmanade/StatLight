@@ -57,10 +57,7 @@ namespace StatLight.Core.Configuration
             }
             set
             {
-                if (value == null)
-                    _tagFilters = string.Empty;
-                else
-                    _tagFilters = value;
+                _tagFilters = (value ?? string.Empty);
             }
         }
 

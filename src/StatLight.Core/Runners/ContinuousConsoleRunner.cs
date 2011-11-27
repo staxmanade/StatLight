@@ -12,6 +12,7 @@ namespace StatLight.Core.Runners
     using StatLight.Core.Configuration;
     using StatLight.Core.Events;
     using StatLight.Core.Monitoring;
+    using StatLight.Core.Properties;
     using StatLight.Core.Reporting;
     using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.WebBrowser;
@@ -32,7 +33,8 @@ namespace StatLight.Core.Runners
         private readonly Dictionary<string, StatLightConfiguration> _statLightConfigurations;
         private readonly IDialogMonitorRunner _dialogMonitorRunner;
         private readonly Thread _runnerTask;
-
+        private readonly List<XapFileBuildChangedServerEvent> _initialXaps = new List<XapFileBuildChangedServerEvent>();
+        private string _currentFilterString;
         private bool _isRunning = false;
 
         internal ContinuousConsoleRunner(
@@ -59,21 +61,79 @@ namespace StatLight.Core.Runners
             var xapFiles = statLightConfigurations.Select(x => getFullXapPath(x.Server.XapToTestPath));
             _statLightConfigurations = statLightConfigurations.ToDictionary(x => getFullXapPath(x.Server.XapToTestPath), x => x);
             _xapFileBuildChangedMonitor = new XapFileBuildChangedMonitor(eventPublisher, xapFiles);
-
-            xapFiles.Each(e => _queuedRuns.Enqueue(new XapFileBuildChangedServerEvent(e)));
-
+            xapFiles.Each(e => _initialXaps.Add(new XapFileBuildChangedServerEvent(e)));
+            _currentFilterString = statLightConfigurations.First().Client.TagFilter;
+            QueueInitialXaps();
 
             _runnerTask = new Thread(() =>
             {
                 TryRun();
 
-                string line;
-                while (!(line = System.Console.ReadLine()).Equals("exit", StringComparison.OrdinalIgnoreCase))
+                while (!ShouldExitFromInput())
                 {
-                    TryRun(line);
-                    //runner.ForceFilteredTest(line);
+                    TryRun();
                 }
             });
+        }
+
+        private void QueueInitialXaps()
+        {
+            foreach (var item in _initialXaps)
+            {
+                _queuedRuns.Enqueue(item);
+            }
+        }
+
+        private bool ShouldExitFromInput()
+        {
+            "*** Type [?] for more info***".WrapConsoleMessageWithColor(Settings.Default.ConsoleColorWarning, true);
+            "Current Filter <{0}>: ".FormatWith(_currentFilterString).WrapConsoleMessageWithColor(Settings.Default.ConsoleColorWarning, false);
+            var input = Console.ReadLine() ?? string.Empty;
+
+            if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (input.Equals("?", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintHelp();
+                return ShouldExitFromInput();
+            }
+
+            if (input.Equals("cf", StringComparison.OrdinalIgnoreCase) ||
+                input.Equals("clearfilter", StringComparison.OrdinalIgnoreCase))
+            {
+                input = string.Empty;
+            }
+            else if (string.IsNullOrEmpty(input))
+            {
+                input = _currentFilterString;
+            }
+
+            _currentFilterString = input;
+
+            QueueInitialXaps();
+
+            return false;
+        }
+
+        private static void PrintHelp()
+        {
+            Action<string> w = msg => "* {0}"
+                .FormatWith(msg)
+                .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
+
+            w("************************ StatLight Continuous Mode Help **************************");
+            w(" ");
+            w(" Commands:");
+            w("   - exit - Quits stops running the continuous mode and exits the application.");
+            w("   - [cf|clearfilter] - Clears any set filter.");
+            w("   - {Any Other Input} - The input is passed to the client for 'TagFilter'.");
+            w("                         This allows you to specify a filter to narrow down");
+            w("                         a set of tests to run.");
+            w("");
+            w("**********************************************************************************");
         }
 
         public TestReport Run()
@@ -85,7 +145,7 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "line")]
-        private void TryRun(string line = null)
+        private void TryRun()
         {
             _isRunning = true;
             var testReportCollection = new TestReportCollection();
@@ -94,19 +154,25 @@ namespace StatLight.Core.Runners
             while (_queuedRuns.Count > 0)
             {
                 XapFileBuildChangedServerEvent buildEvent;
+
                 lock (_sync)
                 {
                     buildEvent = _queuedRuns.Dequeue();
                 }
 
-                _logger.Debug("buildEvent:{0}".FormatWith(buildEvent.XapPath));
-                _statLightConfigurations.Each(e => _logger.Debug("loaded Config:{0}".FormatWith(e.Key)));
                 StatLightConfiguration statLightConfiguration = _statLightConfigurations[buildEvent.XapPath];
+                statLightConfiguration.Client.TagFilter = _currentFilterString;
 
                 _responseFactory.ReplaceCurrentItems(statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
 
-                using (var onetimeRunner = new OnetimeRunner(_logger, _eventSubscriptionManager, _eventPublisher, _webServer, _webBrowsers,
-                                                      buildEvent.XapPath, _dialogMonitorRunner))
+                using (var onetimeRunner = new OnetimeRunner(
+                    logger: _logger,
+                    eventSubscriptionManager: _eventSubscriptionManager,
+                    eventPublisher: _eventPublisher,
+                    webServer: _webServer,
+                    webBrowsers: _webBrowsers,
+                    xapPath: buildEvent.XapPath,
+                    dialogMonitorRunner: _dialogMonitorRunner))
                 {
                     TestReport testReport = onetimeRunner.Run();
                     testReportCollection.Add(testReport);
