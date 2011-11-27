@@ -24,8 +24,7 @@ namespace StatLight.Core.Tests.Runners
         [Test]
         public void should_be_able_to_get_a_StatLight_ContinuousConsoleRunner_runner()
         {
-            IRunner runner = (new StatLightRunnerFactory(TestLogger, EventAggregatorFactory.Create(TestLogger))).CreateContinuousTestRunner(_statLightConfiguration);
-            runner.ShouldBeOfType(typeof(ContinuousConsoleRunner));
+            (new StatLightRunnerFactory(TestLogger, EventAggregatorFactory.Create(TestLogger))).CreateContinuousTestRunner(new[] { _statLightConfiguration });
         }
 
         [Test]

@@ -55,22 +55,30 @@ namespace StatLight.Console
         {
             var testReports = new TestReportCollection();
 
-            foreach (var statLightConfiguration in statLightConfigurations)
+            if (runnerType == RunnerType.ContinuousTest)
             {
-                using (IRunner runner = GetRunner(
-                    _logger,
-                    runnerType,
-                    statLightConfiguration,
-                    _statLightRunnerFactory))
-                {
-                    _logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
-                    TestReport testReport = _runnerFunc(runner);
-                    testReports.Add(testReport);
-                    _eventPublisher.SendMessage(new TestReportGeneratedServerEvent(testReport));
-                }
+                IRunner continuousTestRunner = _statLightRunnerFactory.CreateContinuousTestRunner(statLightConfigurations);
+                continuousTestRunner.Run();
             }
+            else
+            {
+                foreach (var statLightConfiguration in statLightConfigurations)
+                {
+                    using (IRunner runner = GetRunner(
+                        _logger,
+                        runnerType,
+                        statLightConfiguration,
+                        _statLightRunnerFactory))
+                    {
+                        _logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
+                        TestReport testReport = _runnerFunc(runner);
+                        testReports.Add(testReport);
+                        _eventPublisher.SendMessage(new TestReportGeneratedServerEvent(testReport));
+                    }
+                }
 
-            _eventPublisher.SendMessage(new TestReportCollectionGeneratedServerEvent(testReports));
+                _eventPublisher.SendMessage(new TestReportCollectionGeneratedServerEvent(testReports));
+            }
 
             return testReports;
         }
@@ -123,7 +131,7 @@ namespace StatLight.Console
                     return statLightRunnerFactory.CreateTeamCityRunner(statLightConfiguration);
 
                 case RunnerType.ContinuousTest:
-                    return statLightRunnerFactory.CreateContinuousTestRunner(statLightConfiguration);
+                    throw new NotSupportedException();
 
                 case RunnerType.WebServerOnly:
                     return statLightRunnerFactory.CreateWebServerOnlyRunner(statLightConfiguration);

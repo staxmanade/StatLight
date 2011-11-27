@@ -184,7 +184,6 @@
     <Compile Include="Reporting\Providers\Xml\XmlReport.cs" />
     <Compile Include="Reporting\Providers\Xml\XmlSchemaValidator.cs" />
     <Compile Include="Runners\ContinuousConsoleRunner.cs" />
-    <Compile Include="Runners\ContinuousTestRunner.cs" />
     <Compile Include="Monitoring\MessageBoxMonitor.cs" />
     <Compile Include="Monitoring\DebugAssertMonitor.cs">
     </Compile>

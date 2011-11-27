@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Threading;
 using StatLight.Core.Configuration;
 using StatLight.Core.Properties;
@@ -9,8 +8,9 @@ namespace StatLight.Core.WebServer
 {
     public class ResponseFactory
     {
-        private readonly Func<byte[]> _hostXapFactory;
-        private readonly string _serializedConfiguration;
+        private Func<byte[]> _hostXapFactory;
+        private string _serializedConfiguration;
+        private int _htmlPageInstanceId;
 
         public ResponseFactory(Func<byte[]> hostXapFactory, ClientTestRunConfiguration clientTestRunConfiguration)
         {
@@ -18,7 +18,11 @@ namespace StatLight.Core.WebServer
             _serializedConfiguration = clientTestRunConfiguration.Serialize();
         }
 
-        private int _htmlPageInstanceId = 0;
+        public void ReplaceCurrentItems(Func<byte[]> hostXapFactory, ClientTestRunConfiguration clientTestRunConfiguration)
+        {
+            _hostXapFactory = hostXapFactory;
+            _serializedConfiguration = clientTestRunConfiguration.Serialize();
+        }
 
         public ResponseFile Get(string localPath)
         {

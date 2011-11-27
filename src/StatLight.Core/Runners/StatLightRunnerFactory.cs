@@ -1,6 +1,8 @@
 
 
 
+using StatLight.Core.Properties;
+
 namespace StatLight.Core.Runners
 {
     using System;
@@ -121,24 +123,39 @@ namespace StatLight.Core.Runners
             }
         }
 
-        public IRunner CreateContinuousTestRunner(StatLightConfiguration statLightConfiguration)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public IRunner CreateContinuousTestRunner(IEnumerable<StatLightConfiguration> statLightConfigurations)
         {
-            if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
-            IWebServer webServer;
-            List<IWebBrowser> webBrowsers;
-            IDialogMonitorRunner dialogMonitorRunner;
+            if (statLightConfigurations == null)
+                throw new ArgumentNullException("statLightConfigurations");
 
-            BuildAndReturnWebServiceAndBrowser(
-                _logger,
-                statLightConfiguration,
-                out webServer,
-                out webBrowsers,
-                out dialogMonitorRunner);
+            var firstStatLightConfig = statLightConfigurations.First();
+
+            var webServerLocation = new WebServerLocation(_logger);
+            var debugAssertMonitorTimer = new TimerWrapper(Settings.Default.DialogSmackDownElapseMilliseconds);
+            var responseFactory = new ResponseFactory(firstStatLightConfig.Server.HostXap, firstStatLightConfig.Client);
+            var postHandler = new PostHandler(_logger, _eventPublisher, firstStatLightConfig.Client, responseFactory);
+
+            var webServer = new InMemoryWebServer(_logger, webServerLocation, responseFactory, postHandler);
+
+            List<IWebBrowser> webBrowsers = GetWebBrowsers(
+                logger: _logger,
+                testPageUrl: webServerLocation.TestPageUrl,
+                webBrowserType: firstStatLightConfig.Client.WebBrowserType,
+                queryString: firstStatLightConfig.Server.QueryString,
+                forceBrowserStart: firstStatLightConfig.Server.ForceBrowserStart,
+                windowGeometry: firstStatLightConfig.Client.WindowGeometry,
+                numberOfBrowserHosts: firstStatLightConfig.Client.NumberOfBrowserHosts);
+
+            IDialogMonitorRunner dialogMonitorRunner = SetupDialogMonitorRunner(_logger, webBrowsers, debugAssertMonitorTimer);
+
+            StartupBrowserCommunicationTimeoutMonitor();
 
             CreateAndAddConsoleResultHandlerToEventAggregator(_logger);
 
-            IRunner runner = new ContinuousConsoleRunner(_logger, _eventSubscriptionManager, _eventPublisher, statLightConfiguration.Server.XapToTestPath, statLightConfiguration.Client, webServer, webBrowsers.First());
-            return runner;
+            return new ContinuousConsoleRunner(_logger, _eventSubscriptionManager, _eventPublisher, statLightConfigurations,
+                                        webServer, webBrowsers, responseFactory, dialogMonitorRunner);
+
         }
 
         public IRunner CreateTeamCityRunner(StatLightConfiguration statLightConfiguration)
@@ -214,10 +231,17 @@ namespace StatLight.Core.Runners
             ServerTestRunConfiguration serverTestRunConfiguration = statLightConfiguration.Server;
 
             var location = new WebServerLocation(logger);
-            var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
+            var debugAssertMonitorTimer = new TimerWrapper(Settings.Default.DialogSmackDownElapseMilliseconds);
             webServer = CreateWebServer(logger, statLightConfiguration, location);
 
-            webBrowsers = GetWebBrowsers(logger, location.TestPageUrl, clientTestRunConfiguration, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart, clientTestRunConfiguration.WindowGeometry);
+            webBrowsers = GetWebBrowsers(
+                logger: logger,
+                testPageUrl: location.TestPageUrl,
+                webBrowserType: clientTestRunConfiguration.WebBrowserType,
+                queryString: serverTestRunConfiguration.QueryString,
+                forceBrowserStart: serverTestRunConfiguration.ForceBrowserStart,
+                windowGeometry: clientTestRunConfiguration.WindowGeometry,
+                numberOfBrowserHosts: clientTestRunConfiguration.NumberOfBrowserHosts);
 
             dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
 
@@ -225,15 +249,14 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "testPageUrlWithQueryString")]
-        private static List<IWebBrowser> GetWebBrowsers(ILogger logger, Uri testPageUrl, ClientTestRunConfiguration clientTestRunConfiguration, string queryString, bool forceBrowserStart, WindowGeometry windowGeometry)
+        private static List<IWebBrowser> GetWebBrowsers(ILogger logger, Uri testPageUrl, WebBrowserType webBrowserType, string queryString, bool forceBrowserStart, WindowGeometry windowGeometry, int numberOfBrowserHosts)
         {
-            var webBrowserType = clientTestRunConfiguration.WebBrowserType;
             var webBrowserFactory = new WebBrowserFactory(logger);
             var testPageUrlWithQueryString = new Uri(testPageUrl + "?" + queryString);
             logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);
             List<IWebBrowser> webBrowsers = Enumerable
-                .Range(1, clientTestRunConfiguration.NumberOfBrowserHosts)
-                .Select(browserI => webBrowserFactory.Create(webBrowserType, testPageUrlWithQueryString, forceBrowserStart, clientTestRunConfiguration.NumberOfBrowserHosts > 1, windowGeometry))
+                .Range(1, numberOfBrowserHosts)
+                .Select(browserI => webBrowserFactory.Create(webBrowserType, testPageUrlWithQueryString, forceBrowserStart, numberOfBrowserHosts > 1, windowGeometry))
                 .ToList();
             return webBrowsers;
         }

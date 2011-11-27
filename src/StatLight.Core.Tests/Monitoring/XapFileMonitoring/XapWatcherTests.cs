@@ -1,6 +1,6 @@
 ﻿using System.IO;
+using System.Linq;
 using NUnit.Framework;
-using StatLight.Core.Events;
 using StatLight.Core.Events;
 using StatLight.Core.Monitoring;
 
@@ -21,7 +21,7 @@ namespace StatLight.Core.Tests.Monitoring.XapFileMonitoring
             [Test]
             public void Should_throw_a_FileNotFoundException_if_the_given_file_does_not_exist()
             {
-                typeof(FileNotFoundException).ShouldBeThrownBy(() => new XapFileBuildChangedMonitor(base.TestEventPublisher, PathToTempXapFile + "badpath"));
+                typeof(FileNotFoundException).ShouldBeThrownBy(() => new XapFileBuildChangedMonitor(base.TestEventPublisher, PathToTempXapFile.Select(s => s + "badpath")));
             }
 
         }
