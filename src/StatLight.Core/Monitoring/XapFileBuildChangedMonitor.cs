@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using StatLight.Core.Events;
 using StatLight.Core.Events;
 
 namespace StatLight.Core.Monitoring
@@ -8,43 +8,53 @@ namespace StatLight.Core.Monitoring
     public class XapFileBuildChangedMonitor : IDisposable
     {
         private readonly IEventPublisher _eventPublisher;
-        FileSystemWatcher _fileSystemWatcher = new FileSystemWatcher();
-        private FileInfo _file;
+        private readonly Dictionary<string, SystemWatcherData> _fileSystemWatcher = new Dictionary<string, SystemWatcherData>();
+        private readonly List<FileInfo> _files = new List<FileInfo>();
+        private static readonly TimeSpan DiffTime = new TimeSpan(0, 0, 5);
 
-        public XapFileBuildChangedMonitor(IEventPublisher eventPublisher, string filePath)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public XapFileBuildChangedMonitor(IEventPublisher eventPublisher, IEnumerable<string> files)
         {
+            if (eventPublisher == null)
+                throw new ArgumentNullException("eventPublisher");
+
+            if (files == null)
+                throw new ArgumentNullException("files");
+
             _eventPublisher = eventPublisher;
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException(filePath);
 
-            _file = new FileInfo(filePath);
+            foreach (var file in files)
+            {
+                if (!File.Exists(file))
+                    throw new FileNotFoundException(file);
 
-            BeginFileWatching();
+                var fileInfo = new FileInfo(file);
+
+                var fileSystemWatcher = new FileSystemWatcher(fileInfo.Directory.FullName)
+                {
+                    Filter = fileInfo.Name,
+                    EnableRaisingEvents = true,
+                };
+                // Only watch the single file.
+
+                fileSystemWatcher.Changed += _watcher_TakeFileAction;
+                fileSystemWatcher.Created += _watcher_TakeFileAction;
+
+                _fileSystemWatcher.Add(fileInfo.FullName, new SystemWatcherData { Watcher = fileSystemWatcher });
+
+                _files.Add(fileInfo);
+            }
+
         }
-
-        private void BeginFileWatching()
-        {
-            _fileSystemWatcher.Path = _file.Directory.FullName;
-
-            // Only watch the single file.
-            _fileSystemWatcher.Filter = _file.Name;
-
-            _fileSystemWatcher.Changed += _watcher_TakeFileAction;
-            _fileSystemWatcher.Created += _watcher_TakeFileAction;
-
-            // Begin watching.
-            _fileSystemWatcher.EnableRaisingEvents = true;
-        }
-
-        private DateTime startTime = DateTime.MinValue;
-        private static TimeSpan diffTime = new TimeSpan(0, 0, 5);
 
         void _watcher_TakeFileAction(object sender, FileSystemEventArgs e)
         {
-            if ((DateTime.Now - startTime) > diffTime)
+            SystemWatcherData item = _fileSystemWatcher[e.FullPath];
+
+            if ((DateTime.Now - item.StartTime) > DiffTime)
             {
-                startTime = DateTime.Now;
-                _eventPublisher.SendMessage(new XapFileBuildChangedServerEvent(_file.FullName));
+                item.StartTime = DateTime.Now;
+                _eventPublisher.SendMessage(new XapFileBuildChangedServerEvent(e.FullPath));
             }
         }
 
@@ -52,7 +62,7 @@ namespace StatLight.Core.Monitoring
         {
             if (disposing)
             {
-                _fileSystemWatcher.Dispose();
+                _fileSystemWatcher.Each(x => x.Value.Watcher.Dispose());
             }
         }
 
@@ -60,6 +70,16 @@ namespace StatLight.Core.Monitoring
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        private class SystemWatcherData
+        {
+            public SystemWatcherData()
+            {
+                StartTime = DateTime.MinValue;
+            }
+            public FileSystemWatcher Watcher { get; set; }
+            public DateTime StartTime { get; set; }
         }
     }
 }

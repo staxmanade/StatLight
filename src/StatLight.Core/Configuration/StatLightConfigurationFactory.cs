@@ -69,7 +69,6 @@ namespace StatLight.Core.Configuration
                 clientConfig.UnitTestProviderType,
                 microsoftTestingFrameworkVersion,
                 filesToCopyIntoHostXap,
-                DefaultDialogSmackDownElapseMilliseconds,
                 queryString,
                 forceBrowserStart,
                 windowGeometry,
@@ -124,7 +123,6 @@ namespace StatLight.Core.Configuration
                 clientConfig.UnitTestProviderType,
                 microsoftTestingFrameworkVersion,
                 filesToCopyIntoHostXap,
-                DefaultDialogSmackDownElapseMilliseconds,
                 queryString,
                 forceBrowserStart,
                 windowGeometry,
@@ -172,7 +170,6 @@ namespace StatLight.Core.Configuration
             UnitTestProviderType unitTestProviderType,
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion,
             Func<IEnumerable<ITestFile>> filesToCopyIntoHostXapFunc,
-            long dialogSmackDownElapseMilliseconds,
             string queryString,
             bool forceBrowserStart,
             WindowGeometry windowGeometry,
@@ -187,7 +184,7 @@ namespace StatLight.Core.Configuration
                 return hostXap;
             };
 
-            return new ServerTestRunConfiguration(hostXapFactory, dialogSmackDownElapseMilliseconds, xapPath, xapHostType, queryString, forceBrowserStart, windowGeometry);
+            return new ServerTestRunConfiguration(hostXapFactory, xapPath, xapHostType, queryString, forceBrowserStart, windowGeometry);
         }
 
         private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, Func<IEnumerable<ITestFile>> filesToCopyIntoHostXapFunc, string runtimeVersion)

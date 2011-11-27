@@ -7,7 +7,6 @@ using StatLight.Client.Harness.Events;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events;
 using StatLight.Core.Tests;
-using StatLight.Core.Events;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
 {

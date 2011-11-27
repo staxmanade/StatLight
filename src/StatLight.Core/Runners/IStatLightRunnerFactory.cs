@@ -1,10 +1,11 @@
-﻿using StatLight.Core.Configuration;
+﻿using System.Collections.Generic;
+using StatLight.Core.Configuration;
 
 namespace StatLight.Core.Runners
 {
     public interface IStatLightRunnerFactory
     {
-        IRunner CreateContinuousTestRunner(StatLightConfiguration statLightConfiguration);
+        IRunner CreateContinuousTestRunner(IEnumerable<StatLightConfiguration> statLightConfigurations);
         IRunner CreateTeamCityRunner(StatLightConfiguration statLightConfiguration);
         IRunner CreateOnetimeConsoleRunner(StatLightConfiguration statLightConfiguration);
         IRunner CreateWebServerOnlyRunner(StatLightConfiguration statLightConfiguration);

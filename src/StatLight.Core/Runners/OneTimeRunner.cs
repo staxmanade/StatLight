@@ -1,4 +1,6 @@
 ﻿
+using System.Linq;
+
 namespace StatLight.Core.Runners
 {
     using System;
@@ -30,14 +32,14 @@ namespace StatLight.Core.Runners
             IEventSubscriptionManager eventSubscriptionManager,
             IEventPublisher eventPublisher,
             IWebServer webServer,
-            List<IWebBrowser> webBrowsers,
+            IEnumerable<IWebBrowser> webBrowsers,
             string xapPath,
             IDialogMonitorRunner dialogMonitorRunner)
         {
             _logger = logger;
             _eventSubscriptionManager = eventSubscriptionManager;
             _webServer = webServer;
-            _webBrowsers = webBrowsers;
+            _webBrowsers = webBrowsers.ToList();
             _xapPath = xapPath;
             _dialogMonitorRunner = dialogMonitorRunner;
 
