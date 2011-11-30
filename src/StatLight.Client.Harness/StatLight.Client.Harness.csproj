@@ -104,9 +104,6 @@
     <Compile Include="..\StatLight.Core\Reporting\Messages\LogMessageType.cs">
       <Link>Core\Reporting\Messages\LogMessageType.cs</Link>
     </Compile>
-    <Compile Include="..\StatLight.Core\Reporting\Messages\MobilScenarioResult.cs">
-      <Link>Core\Reporting\Messages\MobilScenarioResult.cs</Link>
-    </Compile>
     <Compile Include="..\StatLight.Core\Reporting\Messages\TestOutcome.cs">
       <Link>Core\Reporting\Messages\TestOutcome.cs</Link>
     </Compile>

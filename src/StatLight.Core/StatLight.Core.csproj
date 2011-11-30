@@ -203,7 +203,6 @@
     <Compile Include="WebBrowser\OutOfProcessWebBrowserBase.cs" />
     <Compile Include="WebBrowser\WebBrowserFactory.cs" />
     <Compile Include="WebBrowser\WebBrowserType.cs" />
-    <Compile Include="Reporting\Messages\MobilOtherMessageType.cs" />
     <Compile Include="Reporting\Providers\TeamCity\ConsoleMessageWriter.cs" />
     <Compile Include="Reporting\TestReport.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -227,7 +226,6 @@
     <Compile Include="Common\Abstractions\Timing\TimingWrapper.cs" />
     <Compile Include="Configuration\UnitTestProviderTypes.cs" />
     <Compile Include="WebBrowser\SelfHostedWebBrowser.cs" />
-    <Compile Include="Reporting\Messages\MobilScenarioResult.cs" />
     <Compile Include="WebBrowser\IWebBrowser.cs" />
     <Compile Include="WebServer\IWebServer.cs" />
     <Compile Include="Configuration\ServerTestRunConfiguration.cs" />

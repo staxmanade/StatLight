@@ -20,7 +20,7 @@ namespace StatLight.Core.Tests.Events
 
                 try
                 {
-                    throw new Exception("Hello");
+                    throw new Exception("Expected:&lt;1&gt;. Actual:&lt;2&gt;.");
                 }
                 catch (Exception ex2)
                 {
@@ -55,6 +55,18 @@ namespace StatLight.Core.Tests.Events
             public void Should_have_StackTrace()
             {
                 afterExceptionInfo.StackTrace.ShouldEqual(beforeExceptionInfo.StackTrace);
+            }
+
+            [Test]
+            public void Should_have_translated_wonky_html_asci_codes_out_of_assertion_message()
+            {
+                afterExceptionInfo.Message.ShouldEqual("Expected:<1>. Actual:<2>.");
+            }
+
+            [Test]
+            public void Should_have_translated_wonky_html_asci_codes_out_of_assertion_fullmessage()
+            {
+                afterExceptionInfo.FullMessage.ShouldContain("Expected:<1>. Actual:<2>.");
             }
         }
     }

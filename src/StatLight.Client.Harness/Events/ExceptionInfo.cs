@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace StatLight.Client.Harness.Events
 {
@@ -24,9 +25,9 @@ namespace StatLight.Client.Harness.Events
 
             if (exception.InnerException != null)
                 InnerException = new ExceptionInfo(exception.InnerException);
-            Message = exception.Message;
+            Message = FixupErrorMessage(exception.Message);
             StackTrace = exception.StackTrace;
-            FullMessage = exception.ToString();
+            FullMessage = FixupErrorMessage(exception.ToString());
         }
 
         public override string ToString()
@@ -38,5 +39,17 @@ namespace StatLight.Client.Harness.Events
         {
             return new ExceptionInfo(ex);
         }
+
+        // The MSTest assertion messages can get a little funny looking. So we're going to try to pretty them up a bit
+        private static readonly Regex CleanupSearchRegex = new Regex("Expected:&lt;(.*)&gt;. Actual:&lt;(.*)&gt;.");
+
+        private static string FixupErrorMessage(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+                return message;
+
+            return CleanupSearchRegex.Replace(message, "Expected:<$1>. Actual:<$2>.");
+        }
+
     }
 }
