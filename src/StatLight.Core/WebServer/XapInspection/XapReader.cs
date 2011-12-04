@@ -65,12 +65,16 @@ namespace StatLight.Core.WebServer.XapInspection
         {
             string tempFileName = Path.GetTempFileName();
             var fileData = zip1.ReadFileIntoBytes(testAssemblyName);
+            AssemblyName assemblyName = null;
             if (fileData != null)
             {
                 File.WriteAllBytes(tempFileName, fileData);
-                return AssemblyName.GetAssemblyName(tempFileName);
+                assemblyName = AssemblyName.GetAssemblyName(tempFileName);
             }
-            return null;
+
+            File.Delete(tempFileName);
+
+            return assemblyName;
         }
 
         private static string GetTestAssemblyNameFromAppManifest(string appManifest)
