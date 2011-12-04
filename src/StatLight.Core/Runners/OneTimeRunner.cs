@@ -50,7 +50,6 @@ namespace StatLight.Core.Runners
 
         public virtual TestReport Run()
         {
-            DateTime startOfRun = DateTime.Now;
             _logger.Information("{1}{1}Starting Test Run: {0}{1}{1}"
                 .FormatWith(DateTime.Now, Environment.NewLine));
 
@@ -67,7 +66,6 @@ namespace StatLight.Core.Runners
             _webServer.Stop();
 
             var testReport = _testResultAggregator.CurrentReport;
-            ConsoleTestCompleteMessage.WriteOutCompletionStatement(testReport, startOfRun);
             return testReport;
         }
 

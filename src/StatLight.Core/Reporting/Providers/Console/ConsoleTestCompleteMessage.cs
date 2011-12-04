@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using StatLight.Core.Properties;
 using writer = System.Console;
@@ -8,7 +10,7 @@ namespace StatLight.Core.Reporting.Providers.Console
 {
     public static class ConsoleTestCompleteMessage
     {
-        public static void WriteOutCompletionStatement(TestReport completeState, DateTime startOfRunTime)
+        public static void WriteOutCompletionStatement(TestReport completeState, TimeSpan totalTimeOfRun)
         {
             if (completeState == null) throw new ArgumentNullException("completeState");
             WriteOutSummary(
@@ -16,36 +18,44 @@ namespace StatLight.Core.Reporting.Providers.Console
                 completeState.TotalPassed,
                 completeState.TotalFailed,
                 completeState.TotalIgnored,
-                startOfRunTime);
+                totalTimeOfRun,
+                Path.GetFileName(completeState.XapPath));
         }
 
-        private static void WriteOutSummary(int totalResults, int totalPassed, int totalFailed, int totalIgnored, DateTime startOfRunTime)
+        private static void WriteOutSummary(int totalResults, int totalPassed, int totalFailed, int totalIgnored, TimeSpan startOfRunTime, string fileName)
         {
-            writer.Write("{1}{1}-- Completed Test Run at: {0}. Total Run Time: {2}{1}{1}"
-                .FormatWith(DateTime.Now, Environment.NewLine, DateTime.Now.Subtract(startOfRunTime)));
-
-            writer.Write("Test run results: Total {0}, ", totalResults);
-
-            var successfulMessage = "Successful {0}, ".FormatWith(totalPassed);
-            if (totalPassed > 0)
-                successfulMessage.WrapConsoleMessageWithColor(Settings.Default.ConsoleColorSuccess, false);
+            if (string.IsNullOrEmpty(fileName))
+            {
+                "*************** Summary ********************"
+                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
+            }
             else
-                writer.Write(successfulMessage);
+            {
+                "*************** Summary for : {0}"
+                    .FormatWith(fileName)
+                    .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
+            }
+            "********************************************"
+                .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
 
-            var failedMessage = "Failed {0}, ".FormatWith(totalFailed);
-            if (totalFailed > 0)
-                failedMessage.WrapConsoleMessageWithColor(Settings.Default.ConsoleColorError, false);
-            else
-                writer.Write(failedMessage);
+            var settings = Settings.Default;
 
-            var ignoredMessage = "Ignored {0}".FormatWith(totalIgnored);
-            if (totalIgnored > 0)
-                ignoredMessage.WrapConsoleMessageWithColor(Settings.Default.ConsoleColorWarning, false);
+            Action<string, string, ConsoleColor> w = (name, value, color) => 
+                "{0,-15}: {1}"
+                    .FormatWith(name, value)
+                    .WrapConsoleMessageWithColor(color, true);
 
-            writer.WriteLine("");
+            w("Total", totalResults.ToString(CultureInfo.CurrentCulture), settings.ConsoleColorInformation);
+            w("Successful", totalPassed.ToString(CultureInfo.CurrentCulture), totalPassed > 0 ? Settings.Default.ConsoleColorSuccess : Settings.Default.ConsoleColorInformation);
+            w("Failed", totalFailed.ToString(CultureInfo.CurrentCulture), totalFailed > 0 ? Settings.Default.ConsoleColorError : Settings.Default.ConsoleColorInformation);
+            w("Ignored", totalIgnored.ToString(CultureInfo.CurrentCulture), totalIgnored > 0 ? Settings.Default.ConsoleColorWarning : Settings.Default.ConsoleColorInformation);
+            w("Completion End", DateTime.Now.ToString(CultureInfo.CurrentCulture), settings.ConsoleColorInformation);
+            w("Duration", startOfRunTime.ToString(), settings.ConsoleColorInformation);
+            "********************************************"
+                .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
         }
 
-        public static void PrintFinalTestSummary(IEnumerable<TestReport> testReports, DateTime startOfRunTime)
+        public static void PrintFinalTestSummary(IEnumerable<TestReport> testReports, TimeSpan totalTimeOfRun)
         {
             if (testReports == null)
                 throw new ArgumentNullException("testReports");
@@ -66,7 +76,7 @@ namespace StatLight.Core.Reporting.Providers.Console
                 {
                     "********************************************"
                         .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
-                    ("Test Result Summary for: " + testReport.XapPath)
+                    ("Error Summary for: " + testReport.XapPath)
                         .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
 
                     testReport.Failures.Each(ConsoleResultHandler.WriteOutError);
@@ -81,7 +91,8 @@ namespace StatLight.Core.Reporting.Providers.Console
                 totalPassed,
                 totalFailed,
                 totalIgnored,
-                startOfRunTime);
+                totalTimeOfRun,
+                "");
         }
     }
 }

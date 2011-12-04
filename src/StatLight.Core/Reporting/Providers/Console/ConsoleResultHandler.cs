@@ -6,7 +6,9 @@
     using StatLight.Core.Common;
     using StatLight.Core.Properties;
 
-    public class ConsoleResultHandler : ITestingReportEvents
+    public class ConsoleResultHandler : ITestingReportEvents,
+        IListener<TestReportGeneratedServerEvent>,
+        IListener<TestReportCollectionGeneratedServerEvent>
     {
         private readonly ILogger _logger;
         private static Settings _settings;
@@ -139,6 +141,23 @@
         {
             if (message == null) throw new ArgumentNullException("message");
             WriteExceptionInfo(message.ExceptionInfo);
+        }
+
+        public void Handle(TestReportGeneratedServerEvent message)
+        {
+            if (message == null) throw new ArgumentNullException("message");
+
+            if (message.ShouldPrintSummary)
+            {
+                ConsoleTestCompleteMessage.WriteOutCompletionStatement(message.TestReport, message.ElapsedTimeOfRun);
+            }
+        }
+
+        public void Handle(TestReportCollectionGeneratedServerEvent message)
+        {
+            if (message == null) throw new ArgumentNullException("message");
+
+            ConsoleTestCompleteMessage.PrintFinalTestSummary(message.TestReportCollection, message.TotalTime);
         }
     }
 }

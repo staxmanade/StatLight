@@ -1,3 +1,7 @@
+using System.Diagnostics;
+using System.Linq;
+using StatLight.Core.Reporting.Providers.Console;
+
 namespace StatLight.Console
 {
     using System;
@@ -62,7 +66,10 @@ namespace StatLight.Console
             }
             else
             {
-                foreach (var statLightConfiguration in statLightConfigurations)
+
+                Stopwatch totalTime = Stopwatch.StartNew();
+
+                foreach(var statLightConfiguration in statLightConfigurations)
                 {
                     using (IRunner runner = GetRunner(
                         _logger,
@@ -71,13 +78,17 @@ namespace StatLight.Console
                         _statLightRunnerFactory))
                     {
                         _logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
+                        Stopwatch stopwatch = Stopwatch.StartNew();
                         TestReport testReport = _runnerFunc(runner);
+                        stopwatch.Stop();
                         testReports.Add(testReport);
-                        _eventPublisher.SendMessage(new TestReportGeneratedServerEvent(testReport));
+                        _eventPublisher.SendMessage(new TestReportGeneratedServerEvent(testReport, stopwatch.Elapsed, statLightConfigurations.Count() > 1));
                     }
                 }
 
-                _eventPublisher.SendMessage(new TestReportCollectionGeneratedServerEvent(testReports));
+                totalTime.Stop();
+
+                _eventPublisher.SendMessage(new TestReportCollectionGeneratedServerEvent(testReports, totalTime.Elapsed));
             }
 
             return testReports;

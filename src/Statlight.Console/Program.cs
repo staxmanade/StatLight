@@ -130,12 +130,6 @@ namespace StatLight.Console
                         options.XmlReportOutputPath,
                         options.ReportOutputFileType);
 
-                    if(!options.OutputForTeamCity &&
-                       !options.ContinuousIntegrationMode)
-                    {
-                        ConsoleTestCompleteMessage.PrintFinalTestSummary(testReports, startOfRunTime);
-                    }
-
                     if (testReports.FinalResult == RunCompletedState.Failure)
                         Environment.ExitCode = ExitFailed;
                     else

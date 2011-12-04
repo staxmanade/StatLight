@@ -1,6 +1,8 @@
 ﻿
 
 
+using System.Diagnostics;
+
 namespace StatLight.Core.Runners
 {
     using System;
@@ -149,7 +151,7 @@ namespace StatLight.Core.Runners
         {
             _isRunning = true;
             var testReportCollection = new TestReportCollection();
-            DateTime startOfRunTime = DateTime.Now;
+            Stopwatch multiRunStopwatch = Stopwatch.StartNew();
 
             while (_queuedRuns.Count > 0)
             {
@@ -174,15 +176,21 @@ namespace StatLight.Core.Runners
                     xapPath: buildEvent.XapPath,
                     dialogMonitorRunner: _dialogMonitorRunner))
                 {
+                    Stopwatch singleRunStopwatch = Stopwatch.StartNew();
                     TestReport testReport = onetimeRunner.Run();
+                    singleRunStopwatch.Stop();
                     testReportCollection.Add(testReport);
+                    _eventPublisher.SendMessage(new TestReportGeneratedServerEvent(testReport, singleRunStopwatch.Elapsed, shouldPrintSummary: _statLightConfigurations.Count > 1));
                 }
             }
 
+            multiRunStopwatch.Stop();
             _isRunning = false;
 
             if (testReportCollection.Any())
-                ConsoleTestCompleteMessage.PrintFinalTestSummary(testReportCollection, startOfRunTime);
+            {
+                _eventPublisher.SendMessage(new TestReportCollectionGeneratedServerEvent(testReportCollection, multiRunStopwatch.Elapsed));
+            }
         }
 
         protected virtual void Dispose(bool disposing)

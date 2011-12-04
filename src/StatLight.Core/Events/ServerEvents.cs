@@ -1,4 +1,7 @@
 ﻿
+using System;
+using System.Diagnostics;
+
 namespace StatLight.Core.Events
 {
     using System.ComponentModel.Composition;
@@ -56,20 +59,29 @@ namespace StatLight.Core.Events
 
     public sealed class TestReportGeneratedServerEvent
     {
-        public TestReportGeneratedServerEvent(TestReport testReport)
+        public TestReportGeneratedServerEvent(TestReport testReport, TimeSpan elapsedTimeOfRun, bool shouldPrintSummary)
         {
             TestReport = testReport;
+            ElapsedTimeOfRun = elapsedTimeOfRun;
+            ShouldPrintSummary = shouldPrintSummary;
         }
+
         public TestReport TestReport { get; set; }
+        public TimeSpan ElapsedTimeOfRun { get; set; }
+
+        public bool ShouldPrintSummary { get; private set; }
     }
 
     public sealed class TestReportCollectionGeneratedServerEvent
     {
-        public TestReportCollectionGeneratedServerEvent(TestReportCollection testReportCollection)
+        public TestReportCollectionGeneratedServerEvent(TestReportCollection testReportCollection, TimeSpan totalTime)
         {
-            this.TestReportCollection = testReportCollection;
+            TestReportCollection = testReportCollection;
+            TotalTime = totalTime;
         }
+
         public TestReportCollection TestReportCollection { get; set; }
+        public TimeSpan TotalTime { get; set; }
     }
 
     public class MessageReceivedFromClientServerEvent { }
