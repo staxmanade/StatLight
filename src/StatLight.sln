@@ -80,7 +80,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.CustomTestProvider", "StatLight.IntegrationTests.Silverlight.CustomTestProvider\StatLight.IntegrationTests.Silverlight.CustomTestProvider.csproj", "{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statlight.Client.Harness.XUnit", "Statlight.Client.Harness.XUnit\Statlight.Client.Harness.XUnit.csproj", "{DD59BD02-C78A-4BBB-A67C-CE3999692282}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Harness.XUnit", "Statlight.Client.Harness.XUnit\StatLight.Client.Harness.XUnit.csproj", "{DD59BD02-C78A-4BBB-A67C-CE3999692282}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.XunitLight", "StatLight.IntegrationTests.Silverlight.XunitLight\StatLight.IntegrationTests.Silverlight.XunitLight.csproj", "{6FBC8BF8-9DDF-4D25-8937-601A29ECA11B}"
 EndProject
