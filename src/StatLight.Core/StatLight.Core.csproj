@@ -161,6 +161,8 @@
     <Compile Include="Reporting\ReportOutputFileType.cs" />
     <Compile Include="Runners\EventAggregatorFactory.cs" />
     <Compile Include="Runners\IStatLightRunnerFactory.cs" />
+    <Compile Include="TinyIoC.cs" />
+    <Compile Include="TinyIoCGlobalSupressions.cs" />
     <Compile Include="WebServer\TestPage.cs" />
     <Compile Include="WebServer\XapInspection\AssemblyResolver.cs" />
     <Compile Include="Reporting\Providers\IXmlReport.cs" />
