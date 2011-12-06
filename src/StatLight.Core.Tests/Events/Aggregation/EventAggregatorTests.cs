@@ -20,7 +20,7 @@ namespace StatLight.Core.Tests.Events.Aggregation
             {
                 base.Before_all_tests();
 
-                var ea = EventAggregatorFactory.Create(TestLogger);
+                var ea = (new EventAggregatorFactory(TestLogger)).Create();
                 _eventSubscriptionManager = ea;
                 _eventPublisher = ea;
                 _eventSubscriptionManager.AddListener(new MultiListener());

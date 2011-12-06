@@ -10,7 +10,12 @@ namespace StatLight.Core.WebServer
         private readonly int _defaultPortToTry;
         private readonly Lazy<int> _port;
 
-        public WebServerLocation(ILogger logger, int defaultPortToTry = 8887)
+        public WebServerLocation(ILogger logger)
+            :this(logger, 8887)
+        {
+        }
+
+        public WebServerLocation(ILogger logger, int defaultPortToTry)
         {
             _logger = logger;
             _defaultPortToTry = defaultPortToTry;

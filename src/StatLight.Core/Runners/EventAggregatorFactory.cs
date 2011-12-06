@@ -6,9 +6,16 @@ using StatLight.Core.Common;
 
 namespace StatLight.Core.Runners
 {
-    public static class EventAggregatorFactory
+    public class EventAggregatorFactory
     {
-        public static EventAggregator Create(ILogger logger)
+        private readonly ILogger _logger;
+
+        public EventAggregatorFactory(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        public EventAggregator Create()
         {
             var msgsToIgnoreTraceOn = new List<Type>
             {
@@ -28,7 +35,7 @@ namespace StatLight.Core.Runners
                     if (msgsToIgnoreTraceOn.Contains(msgType))
                         return;
 
-                    logger.Debug("No event listener objects were defined to listen to message of type({0})".FormatWith(msgType.FullName));
+                    _logger.Debug("No event listener objects were defined to listen to message of type({0})".FormatWith(msgType.FullName));
                 }
             };
 

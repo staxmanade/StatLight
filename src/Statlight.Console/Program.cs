@@ -1,23 +1,20 @@
 ﻿
+
 namespace StatLight.Console
 {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.ServiceModel;
     using StatLight.Console.Tools;
+    using StatLight.Core;
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
-    using StatLight.Core.Events;
     using StatLight.Core.Properties;
     using StatLight.Core.Reporting;
-    using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.Runners;
-    using StatLight.Core.WebBrowser;
-    using StatLight.Core.WebServer.XapHost;
+    using TinyIoC;
 
     class Program
     {
@@ -52,83 +49,35 @@ namespace StatLight.Console
                         throw new StatLightException("No xap or silverlight dll's specified.");
                     }
 
-                    ILogger logger = GetLogger(options.IsRequestingDebug);
+                    TinyIoCContainer ioc = BootStrapper.Initialize(options.IsRequestingDebug);
 
-                    WindowGeometry windowGeometry = options.WindowGeometry;
-                    bool useRemoteTestPage = options.UseRemoteTestPage;
-                    Collection<string> methodsToTest = options.MethodsToTest;
-                    MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = options.MicrosoftTestingFrameworkVersion;
-                    string tagFilters = options.TagFilters;
-                    UnitTestProviderType unitTestProviderType = options.UnitTestProviderType;
-                    int numberOfBrowserHosts = options.NumberOfBrowserHosts;
-                    string queryString = options.QueryString;
-                    WebBrowserType webBrowserType = options.WebBrowserType;
-                    bool forceBrowserStart = options.ForceBrowserStart;
+                    var inputOptions = new InputOptions()
+                        .SetWindowGeometry(options.WindowGeometry)
+                        .SetUseRemoteTestPage(options.UseRemoteTestPage)
+                        .SetMethodsToTest(options.MethodsToTest)
+                        .SetMicrosoftTestingFrameworkVersion(options.MicrosoftTestingFrameworkVersion)
+                        .SetTagFilters(options.TagFilters)
+                        .SetUnitTestProviderType(options.UnitTestProviderType)
+                        .SetNumberOfBrowserHosts(options.NumberOfBrowserHosts)
+                        .SetQueryString(options.QueryString)
+                        .SetWebBrowserType(options.WebBrowserType)
+                        .SetForceBrowserStart(options.ForceBrowserStart)
+                        .SetXapPaths(options.XapPaths)
+                        .SetDllPaths(options.Dlls)
+                        .SetReportOutputPath(options.XmlReportOutputPath)
+                        .SetReportOutputFileType(options.ReportOutputFileType)
+                        .SetContinuousIntegrationMode(options.ContinuousIntegrationMode)
+                        .SetOutputForTeamCity(options.OutputForTeamCity)
+                        .SetStartWebServerOnly(options.StartWebServerOnly)
+                        ;
 
-                    IEnumerable<string> xapPaths = options.XapPaths;
-                    IEnumerable<string> testDlls = options.Dlls;
+                    inputOptions.DumpValuesForDebug(ioc.Resolve<ILogger>());
 
-                    options.DumpValuesForDebug(logger);
+                    ioc.Register(inputOptions);
 
-                    var statLightConfigurationFactory = new StatLightConfigurationFactory(logger);
-                    var configurations = new List<StatLightConfiguration>();
+                    var commandLineExecutionEngine = ioc.Resolve<RunnerExecutionEngine>();
 
-                    foreach (var xapPath in xapPaths)
-                    {
-                        logger.Debug("Starting configuration for: {0}".FormatWith(xapPath));
-                        StatLightConfiguration statLightConfiguration = statLightConfigurationFactory
-                            .GetStatLightConfigurationForXap(
-                                unitTestProviderType,
-                                xapPath,
-                                microsoftTestingFrameworkVersion,
-                                methodsToTest,
-                                tagFilters,
-                                numberOfBrowserHosts,
-                                useRemoteTestPage,
-                                queryString,
-                                webBrowserType,
-                                forceBrowserStart,
-                                windowGeometry);
-
-                        configurations.Add(statLightConfiguration);
-                    }
-
-                    foreach (var dllPath in testDlls)
-                    {
-                        logger.Debug("Starting configuration for: {0}".FormatWith(dllPath));
-                        StatLightConfiguration statLightConfiguration = statLightConfigurationFactory
-                            .GetStatLightConfigurationForDll(
-                                unitTestProviderType,
-                                dllPath,
-                                microsoftTestingFrameworkVersion,
-                                methodsToTest,
-                                tagFilters,
-                                numberOfBrowserHosts,
-                                useRemoteTestPage,
-                                queryString,
-                                webBrowserType,
-                                forceBrowserStart,
-                                windowGeometry);
-
-                        configurations.Add(statLightConfiguration);
-                    }
-
-                    var eventAggregator = EventAggregatorFactory.Create(logger);
-                    var statLightRunnerFactory = new StatLightRunnerFactory(logger, eventAggregator);
-                    var commandLineExecutionEngine = new CommandLineExecutionEngine(logger, statLightRunnerFactory, eventAggregator);
-
-                    RunnerType runnerType = commandLineExecutionEngine.GetRunnerType(
-                        options.ContinuousIntegrationMode,
-                        options.OutputForTeamCity,
-                        options.StartWebServerOnly,
-                        options.UseRemoteTestPage);
-
-                    DateTime startOfRunTime = DateTime.Now;
-                    TestReportCollection testReports = commandLineExecutionEngine.Run(
-                        configurations,
-                        runnerType,
-                        options.XmlReportOutputPath,
-                        options.ReportOutputFileType);
+                    TestReportCollection testReports = commandLineExecutionEngine.Run();
 
                     if (testReports.FinalResult == RunCompletedState.Failure)
                         Environment.ExitCode = ExitFailed;
@@ -167,24 +116,6 @@ Try: (the following two steps that should allow StatLight to start a web server 
                     HandleUnknownError(exception);
                 }
             }
-        }
-
-        private static ILogger GetLogger(bool isRequestingDebug)
-        {
-            ILogger logger;
-            if (isRequestingDebug)
-            {
-                logger = new ConsoleLogger(LogChatterLevels.Full);
-            }
-            else
-            {
-#if DEBUG
-                logger = new ConsoleLogger(LogChatterLevels.Full);
-#else
-                logger = new ConsoleLogger(LogChatterLevels.Error | LogChatterLevels.Warning | LogChatterLevels.Information);
-#endif
-            }
-            return logger;
         }
 
         private static void HandleUnknownError(Exception exception)
