@@ -25,7 +25,7 @@ namespace StatLight.IntegrationTests
         {
             _testLogger = new ConsoleLogger(LogChatterLevels.Full);
             _pathToIntegrationTestXap = TestXapFileLocations.SilverlightIntegrationTests;
-            _ioc = BootStrapper.Initialize(isRequestingDebug:false);
+            _ioc = BootStrapper.Initialize(new InputOptions(), _testLogger);
         }
 
         public string PathToIntegrationTestXap

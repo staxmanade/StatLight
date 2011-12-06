@@ -15,7 +15,7 @@ namespace StatLight.Core.Tests.Runners
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
-            container = BootStrapper.Initialize(isRequestingDebug: false);
+            container = BootStrapper.Initialize(new InputOptions(), TestLogger);
         }
 
         protected override void Because()

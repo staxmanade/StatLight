@@ -1,4 +1,6 @@
-﻿using StatLight.Core.Common;
+﻿using System;
+using StatLight.Core.Common;
+using StatLight.Core.Configuration;
 using StatLight.Core.Events;
 using StatLight.Core.Runners;
 using StatLight.Core.WebServer;
@@ -8,18 +10,27 @@ namespace StatLight.Core
 {
     public static class BootStrapper
     {
-        public static TinyIoCContainer Initialize(bool isRequestingDebug)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public static TinyIoCContainer Initialize(InputOptions inputOptions,
+            ILogger overrideLogger = null)
         {
+            if (inputOptions == null) throw new ArgumentNullException("inputOptions");
             var ioc = new TinyIoCContainer();
+
+            ILogger logger = overrideLogger ?? GetLogger(inputOptions.IsRequestingDebug);
+
+            inputOptions.DumpValuesForDebug(logger);
+
             ioc.Register(ioc);
-            ioc.Register(GetLogger(isRequestingDebug));
+            ioc.Register(inputOptions);
+            ioc.Register(logger);
             ioc.Register<WebServerLocation>().AsSingleton();
+            ioc.Register<IStatLightRunnerFactory, StatLightRunnerFactory>();
 
             var eventAggregator = ioc.Resolve<EventAggregatorFactory>().Create();
             ioc.Register(eventAggregator);
             ioc.Register<IEventPublisher>(eventAggregator);
             ioc.Register<IEventSubscriptionManager>(eventAggregator);
-            ioc.Register<IStatLightRunnerFactory, StatLightRunnerFactory>();
 
             return ioc;
         }

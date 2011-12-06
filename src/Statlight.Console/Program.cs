@@ -49,8 +49,6 @@ namespace StatLight.Console
                         throw new StatLightException("No xap or silverlight dll's specified.");
                     }
 
-                    TinyIoCContainer ioc = BootStrapper.Initialize(options.IsRequestingDebug);
-
                     var inputOptions = new InputOptions()
                         .SetWindowGeometry(options.WindowGeometry)
                         .SetUseRemoteTestPage(options.UseRemoteTestPage)
@@ -69,11 +67,10 @@ namespace StatLight.Console
                         .SetContinuousIntegrationMode(options.ContinuousIntegrationMode)
                         .SetOutputForTeamCity(options.OutputForTeamCity)
                         .SetStartWebServerOnly(options.StartWebServerOnly)
+                        .SetIsRequestingDebug(options.IsRequestingDebug)
                         ;
 
-                    inputOptions.DumpValuesForDebug(ioc.Resolve<ILogger>());
-
-                    ioc.Register(inputOptions);
+                    TinyIoCContainer ioc = BootStrapper.Initialize(inputOptions);
 
                     var commandLineExecutionEngine = ioc.Resolve<RunnerExecutionEngine>();
 

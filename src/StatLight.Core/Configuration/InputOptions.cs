@@ -30,6 +30,7 @@ namespace StatLight.Core.Configuration
             ContinuousIntegrationMode = false;
             OutputForTeamCity = false;
             StartWebServerOnly = false;
+            IsRequestingDebug = false;
         }
 
         public WindowGeometry WindowGeometry { get; private set; }
@@ -49,6 +50,37 @@ namespace StatLight.Core.Configuration
         public bool ContinuousIntegrationMode { get; private set; }
         public bool OutputForTeamCity { get; private set; }
         public bool StartWebServerOnly { get; private set; }
+        public bool IsRequestingDebug { get; set; }
+
+        public InputOptions DumpValuesForDebug(ILogger logger)
+        {
+            if (logger == null) throw new ArgumentNullException("logger");
+            var properties = GetType().GetProperties().OrderBy(o => o.Name);
+            const string stringFormat = "{0,-35}: {1}";
+
+            logger.Debug("****************** Input options as configured ******************");
+            foreach (var propertyInfo in properties)
+            {
+                var propertyValue = propertyInfo.GetValue(this, new object[0]);
+                var enumerablePropertyValue = propertyValue as IEnumerable<string>;
+                if (enumerablePropertyValue != null)
+                {
+                    logger.Debug(stringFormat.FormatWith(propertyInfo.Name, "IEnumerable<string>"));
+                    logger.Debug("{0,-35}  {{".FormatWith(""));
+                    foreach (var itemValue in enumerablePropertyValue)
+                    {
+                        logger.Debug("{0,-35}    '{1}'".FormatWith("", itemValue));
+                    }
+                    logger.Debug("{0,-35}  }}".FormatWith(""));
+                }
+                else
+                {
+                    logger.Debug(stringFormat.FormatWith(propertyInfo.Name, propertyValue));
+                }
+            }
+            logger.Debug("*****************************************************************");
+            return this;
+        }
 
         public InputOptions SetWindowGeometry(WindowGeometry windowGeometry)
         {
@@ -163,33 +195,9 @@ namespace StatLight.Core.Configuration
             return this;
         }
 
-        public InputOptions DumpValuesForDebug(ILogger logger)
+        public InputOptions SetIsRequestingDebug(bool isRequestingDebug)
         {
-            if (logger == null) throw new ArgumentNullException("logger");
-            var properties = this.GetType().GetProperties().OrderBy(o => o.Name);
-            const string stringFormat = "{0,-35}: {1}";
-
-            logger.Debug("****************** Input options as configured ******************");
-            foreach (var propertyInfo in properties)
-            {
-                var propertyValue = propertyInfo.GetValue(this, new object[0]);
-                var enumerablePropertyValue = propertyValue as IEnumerable<string>;
-                if (enumerablePropertyValue != null)
-                {
-                    logger.Debug(stringFormat.FormatWith(propertyInfo.Name, "IEnumerable<string>"));
-                    logger.Debug("{0,-35}  {{".FormatWith(""));
-                    foreach (var itemValue in enumerablePropertyValue)
-                    {
-                        logger.Debug("{0,-35}    '{1}'".FormatWith("", itemValue));
-                    }
-                    logger.Debug("{0,-35}  }}".FormatWith(""));
-                }
-                else
-                {
-                    logger.Debug(stringFormat.FormatWith(propertyInfo.Name, propertyValue));
-                }
-            }
-            logger.Debug("*****************************************************************");
+            IsRequestingDebug = isRequestingDebug;
             return this;
         }
 
