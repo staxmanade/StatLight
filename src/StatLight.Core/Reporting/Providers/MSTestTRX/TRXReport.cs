@@ -115,6 +115,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                                   , new XAttribute("className", test.NamespaceName + "." + test.ClassName)
                                   , new XAttribute("name", test.MethodName)
                                 )
+                              , GetTestOwner(test, ns)
                             )
                         )
                     , new XElement(ns + "TestLists"
@@ -216,6 +217,22 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                 )
             );
         }
+
+        private static XElement GetTestOwner(TestCaseResult test, XNamespace ns)
+        {
+            var owners = test.Metadata.Where(i => i.Value == "Owner");
+            var items = new List<XElement>();
+            foreach (var owner in owners)
+            {
+                items.Add(new XElement(ns + "Owner",
+                    new XAttribute("name", owner.Name)));
+            }
+            if (items.Count > 0)
+                return new XElement(ns + "Owners", items);
+
+            return null;
+        }
+
         private Guid GetExecutionId(TestCaseResult testCaseResult)
         {
             return GetGuidForItem(testCaseResult, HashType.ExecutionId);

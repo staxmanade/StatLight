@@ -50,8 +50,8 @@ namespace StatLight.Core.Tests.Reporting.Providers.MSTestTRX
             }
             catch (Exception)
             {
-                //if(File.Exists(tempFileName))
-                //    File.Delete(tempFileName);
+                if(File.Exists(tempFileName))
+                    File.Delete(tempFileName);
                 throw;
             }
         }
