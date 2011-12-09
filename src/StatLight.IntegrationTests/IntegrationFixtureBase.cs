@@ -59,11 +59,12 @@ namespace StatLight.IntegrationTests
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
-            _eventSubscriptionManager = (new EventAggregatorFactory(_testLogger).Create());
-            _statLightRunnerFactory = new StatLightRunnerFactory(_testLogger, _eventSubscriptionManager, _ioc);
+            _eventSubscriptionManager = IoC.Resolve<EventAggregator>();
+
+            _statLightRunnerFactory = new StatLightRunnerFactory(_testLogger, _ioc);
         }
 
-        protected TinyIoC.TinyIoCContainer IoC { get { return _ioc; } }
+        protected TinyIoCContainer IoC { get { return _ioc; } }
 
         protected override void Because()
         {

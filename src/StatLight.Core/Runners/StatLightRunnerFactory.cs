@@ -31,18 +31,16 @@ namespace StatLight.Core.Runners
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
         private ConsoleResultHandler _consoleResultHandler;
 
-        public StatLightRunnerFactory(ILogger logger, EventAggregator eventAggregator, TinyIoCContainer ioc)
-            : this(logger, eventAggregator, eventAggregator)
-        {
-            _ioc = ioc;
-        }
-
-        public StatLightRunnerFactory(ILogger logger, IEventSubscriptionManager eventSubscriptionManager, IEventPublisher eventPublisher)
+        public StatLightRunnerFactory(ILogger logger, TinyIoCContainer ioc)
         {
             if (logger == null) throw new ArgumentNullException("logger");
+            if (ioc == null) throw new ArgumentNullException("ioc");
+
+            _ioc = ioc;
             _logger = logger;
-            _eventSubscriptionManager = eventSubscriptionManager;
-            _eventPublisher = eventPublisher;
+
+            _eventSubscriptionManager = ioc.Resolve<IEventSubscriptionManager>();
+            _eventPublisher = ioc.Resolve<IEventPublisher>();
 
             var debugListener = new ConsoleDebugListener(logger);
             _eventSubscriptionManager.AddListener(debugListener);

@@ -29,13 +29,13 @@ namespace StatLight.Core.Tests.Runners
         [Test]
         public void should_be_able_to_get_a_StatLight_ContinuousConsoleRunner_runner()
         {
-            (new StatLightRunnerFactory(TestLogger, (new EventAggregatorFactory(TestLogger)).Create(), container)).CreateContinuousTestRunner(new[] { _statLightConfiguration });
+            (new StatLightRunnerFactory(TestLogger, container)).CreateContinuousTestRunner(new[] { _statLightConfiguration });
         }
 
         [Test]
         public void should_be_able_to_create_the_StatLight_TeamCity_runner()
         {
-            IRunner runner = (new StatLightRunnerFactory(TestLogger, (new EventAggregatorFactory(TestLogger)).Create(), container)).CreateTeamCityRunner(_statLightConfiguration);
+            IRunner runner = (new StatLightRunnerFactory(TestLogger, container)).CreateTeamCityRunner(_statLightConfiguration);
             runner.ShouldBeOfType(typeof(TeamCityRunner));
         }
     }
