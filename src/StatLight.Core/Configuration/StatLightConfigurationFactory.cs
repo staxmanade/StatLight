@@ -1,11 +1,8 @@
 ﻿
-using System.Diagnostics;
-
 namespace StatLight.Core.Configuration
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -14,125 +11,122 @@ namespace StatLight.Core.Configuration
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.WebServer.XapInspection;
 
-    public class StatLightConfigurationFactory : IStatLightConfigurationFactory
+    public class StatLightConfigurationFactory
     {
         public const int DefaultDialogSmackDownElapseMilliseconds = 5000;
         private readonly ILogger _logger;
+        private readonly InputOptions _options;
         private readonly XapHostFileLoaderFactory _xapHostFileLoaderFactory;
 
-        public StatLightConfigurationFactory(ILogger logger)
+        public StatLightConfigurationFactory(ILogger logger, InputOptions options)
         {
             _logger = logger;
+            _options = options;
             _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
         }
 
-        public StatLightConfiguration GetStatLightConfigurationForXap(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, WindowGeometry windowGeometry)
+        public IEnumerable<StatLightConfiguration> GetConfigurations()
         {
-            if (queryString == null)
-                throw new ArgumentNullException("queryString");
-            if (windowGeometry == null)
-                throw new ArgumentNullException("windowGeometry");
+            foreach (var xapPath in _options.XapPaths)
+            {
+                _logger.Debug("Starting configuration for: {0}".FormatWith(xapPath));
+                yield return GetStatLightConfigurationForXap(xapPath);
+            }
 
-            if(windowGeometry.ShouldShowWindow && !Environment.UserInteractive)
-                throw new StatLightException("You cannot use the -b option as your C.I. server's agent process is not running in desktop interactive mode.");
+            foreach (var dllPath in _options.DllPaths)
+            {
+                _logger.Debug("Starting configuration for: {0}".FormatWith(dllPath));
+                yield return GetStatLightConfigurationForDll(dllPath);
+            }
+        }
+
+        private StatLightConfiguration GetStatLightConfigurationForXap(string xapPath)
+        {
 
             Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string runtimeVersion = null;
             string entryPointAssembly = string.Empty;
-            if (isRemoteRun)
+            AssertFileExists(xapPath);
+
+            var xapReader = new XapReader(_logger);
+
+            TestFileCollection testFileCollection = xapReader.LoadXapUnderTest(xapPath);
+            runtimeVersion = XapReader.GetRuntimeVersion(xapPath);
+
+            UnitTestProviderType unitTestProviderType = _options.UnitTestProviderType;
+            MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = _options.MicrosoftTestingFrameworkVersion;
+
+            SetupUnitTestProviderType(testFileCollection, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
+
+            entryPointAssembly = testFileCollection.TestAssemblyFullName;
+
+            filesToCopyIntoHostXap = () =>
             {
-            }
-            else
-            {
-                AssertFileExists(xapPath);
+                return xapReader.LoadXapUnderTest(xapPath).FilesContainedWithinXap;
+            };
 
-                var xapReader = new XapReader(_logger);
-
-                TestFileCollection testFileCollection = xapReader.LoadXapUnderTest(xapPath);
-                runtimeVersion = XapReader.GetRuntimeVersion(xapPath);
-
-                SetupUnitTestProviderType(testFileCollection, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
-
-                entryPointAssembly = testFileCollection.TestAssemblyFullName;
-
-                filesToCopyIntoHostXap = () =>
-                {
-                    return xapReader.LoadXapUnderTest(xapPath).FilesContainedWithinXap;
-                };
-
-            }
-
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, entryPointAssembly, windowGeometry);
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, _options.MethodsToTest, _options.TagFilters, _options.NumberOfBrowserHosts, _options.WebBrowserType, entryPointAssembly, _options.WindowGeometry);
 
             var serverConfig = CreateServerConfiguration(
                 xapPath,
                 clientConfig.UnitTestProviderType,
                 microsoftTestingFrameworkVersion,
                 filesToCopyIntoHostXap,
-                queryString,
-                forceBrowserStart,
-                windowGeometry,
+                _options.QueryString,
+                _options.ForceBrowserStart,
+                _options.WindowGeometry,
                 runtimeVersion);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
 
-        public StatLightConfiguration GetStatLightConfigurationForDll(UnitTestProviderType unitTestProviderType, string dllPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, WindowGeometry windowGeometry)
+        private StatLightConfiguration GetStatLightConfigurationForDll(string dllPath)
         {
-            if (queryString == null)
-                throw new ArgumentNullException("queryString");
-
             Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string entryPointAssembly = string.Empty;
             string runtimeVersion = null;
-            if (isRemoteRun)
-            {
-            }
-            else
-            {
-                AssertFileExists(dllPath);
+            AssertFileExists(dllPath);
 
-                var dllFileInfo = new FileInfo(dllPath);
-                var assemblyResolver = new AssemblyResolver(_logger);
-                var dependentAssemblies = assemblyResolver.ResolveAllDependentAssemblies(dllFileInfo.FullName);
+            var dllFileInfo = new FileInfo(dllPath);
+            var assemblyResolver = new AssemblyResolver(_logger);
+            var dependentAssemblies = assemblyResolver.ResolveAllDependentAssemblies(dllFileInfo.FullName);
 
-                var coreFileUnderTest = new TestFile(dllFileInfo.FullName);
-                var dependentFilesUnderTest = dependentAssemblies.Select(file => new TestFile(file)).ToList();
-                dependentFilesUnderTest.Add(coreFileUnderTest);
-                var xapReadItems = new TestFileCollection(_logger,
-                                                          AssemblyName.GetAssemblyName(dllFileInfo.FullName).ToString(),
-                                                          dependentFilesUnderTest);
+            var coreFileUnderTest = new TestFile(dllFileInfo.FullName);
+            var dependentFilesUnderTest = dependentAssemblies.Select(file => new TestFile(file)).ToList();
+            dependentFilesUnderTest.Add(coreFileUnderTest);
+            var xapReadItems = new TestFileCollection(_logger,
+                                                        AssemblyName.GetAssemblyName(dllFileInfo.FullName).ToString(),
+                                                        dependentFilesUnderTest);
 
-                SetupUnitTestProviderType(xapReadItems, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
+            UnitTestProviderType unitTestProviderType = _options.UnitTestProviderType;
+            MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = _options.MicrosoftTestingFrameworkVersion;
 
-                entryPointAssembly = xapReadItems.TestAssemblyFullName;
+            SetupUnitTestProviderType(xapReadItems, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
 
-                filesToCopyIntoHostXap =()=>
-                                            {
-                                                return new TestFileCollection(_logger,
-                                                                       AssemblyName.GetAssemblyName(dllFileInfo.FullName)
-                                                                           .ToString(),
-                                                                       dependentFilesUnderTest).FilesContainedWithinXap;
-                                            };
-            }
+            entryPointAssembly = xapReadItems.TestAssemblyFullName;
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, methodsToTest, tagFilters, numberOfBrowserHosts, webBrowserType, entryPointAssembly, windowGeometry);
+            filesToCopyIntoHostXap = () =>
+                                        {
+                                            return new TestFileCollection(_logger,
+                                                                    AssemblyName.GetAssemblyName(dllFileInfo.FullName)
+                                                                        .ToString(),
+                                                                    dependentFilesUnderTest).FilesContainedWithinXap;
+                                        };
+
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, _options.MethodsToTest, _options.TagFilters, _options.NumberOfBrowserHosts, _options.WebBrowserType, entryPointAssembly, _options.WindowGeometry);
 
             var serverConfig = CreateServerConfiguration(
                 dllPath,
                 clientConfig.UnitTestProviderType,
                 microsoftTestingFrameworkVersion,
                 filesToCopyIntoHostXap,
-                queryString,
-                forceBrowserStart,
-                windowGeometry,
+                _options.QueryString,
+                _options.ForceBrowserStart,
+                _options.WindowGeometry,
                 runtimeVersion);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
-
-
-
 
         private static void SetupUnitTestProviderType(TestFileCollection testFileCollection, ref UnitTestProviderType unitTestProviderType, ref MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion)
         {
@@ -203,12 +197,5 @@ namespace StatLight.Core.Configuration
         }
 
 
-    }
-
-    public interface IStatLightConfigurationFactory
-    {
-        StatLightConfiguration GetStatLightConfigurationForXap(UnitTestProviderType unitTestProviderType, string xapPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, WindowGeometry windowGeometry);
-
-        StatLightConfiguration GetStatLightConfigurationForDll(UnitTestProviderType unitTestProviderType, string dllPath, MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion, Collection<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, bool isRemoteRun, string queryString, WebBrowserType webBrowserType, bool forceBrowserStart, WindowGeometry windowGeometry);
     }
 }

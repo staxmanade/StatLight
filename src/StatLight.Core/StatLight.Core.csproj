@@ -137,7 +137,8 @@
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.Core.cs" />
-    <Compile Include="CommandLineExecutionEngine.cs" />
+    <Compile Include="BootStrapper.cs" />
+    <Compile Include="RunnerExecutionEngine.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="Common\ConsoleLogger.cs" />
     <Compile Include="Common\NullLogger.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="Common\Resources.cs" />
     <Compile Include="CommonExtensions.Desktop.cs" />
     <Compile Include="Common\StatLightException.cs" />
+    <Compile Include="Configuration\InputOptions.cs" />
     <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -161,6 +163,8 @@
     <Compile Include="Reporting\ReportOutputFileType.cs" />
     <Compile Include="Runners\EventAggregatorFactory.cs" />
     <Compile Include="Runners\IStatLightRunnerFactory.cs" />
+    <Compile Include="TinyIoC.cs" />
+    <Compile Include="TinyIoCGlobalSupressions.cs" />
     <Compile Include="WebServer\TestPage.cs" />
     <Compile Include="WebServer\XapInspection\AssemblyResolver.cs" />
     <Compile Include="Reporting\Providers\IXmlReport.cs" />

@@ -1,63 +1,53 @@
+
+using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using StatLight.Core.Reporting.Providers.Console;
+using StatLight.Core.Events;
+using StatLight.Core.Common;
+using StatLight.Core.Configuration;
+using StatLight.Core.Properties;
+using StatLight.Core.Reporting;
+using StatLight.Core.Reporting.Providers;
+using StatLight.Core.Reporting.Providers.MSTestTRX;
+using StatLight.Core.Runners;
 
-namespace StatLight.Console
+namespace StatLight.Core
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using StatLight.Core.Events;
-    using StatLight.Core.Common;
-    using StatLight.Core.Configuration;
-    using StatLight.Core.Events;
-    using StatLight.Core.Properties;
-    using StatLight.Core.Reporting;
-    using StatLight.Core.Reporting.Providers;
-    using StatLight.Core.Reporting.Providers.MSTestTRX;
-    using StatLight.Core.Runners;
-
-    public class CommandLineExecutionEngine
+    public class RunnerExecutionEngine
     {
         private readonly ILogger _logger;
-        private readonly Func<IRunner, TestReport> _runnerFunc;
         private readonly IStatLightRunnerFactory _statLightRunnerFactory;
         private readonly IEventPublisher _eventPublisher;
+        private readonly InputOptions _inputOptions;
+        private readonly StatLightConfigurationFactory _statLightConfigurationFactory;
 
-        public CommandLineExecutionEngine(ILogger logger, IStatLightRunnerFactory runnerFactory, IEventPublisher eventPublisher)
-            : this(logger, runner => runner.Run(), runnerFactory, eventPublisher)
-        {
-        }
-
-        internal CommandLineExecutionEngine(ILogger logger, Func<IRunner, TestReport> runnerFunc, IStatLightRunnerFactory statLightRunnerFactory, IEventPublisher eventPublisher)
+        public RunnerExecutionEngine(ILogger logger, IStatLightRunnerFactory statLightRunnerFactory, IEventPublisher eventPublisher, InputOptions inputOptions, StatLightConfigurationFactory statLightConfigurationFactory)
         {
             _logger = logger;
             _statLightRunnerFactory = statLightRunnerFactory;
             _eventPublisher = eventPublisher;
-            _runnerFunc = runnerFunc;
+            _inputOptions = inputOptions;
+            _statLightConfigurationFactory = statLightConfigurationFactory;
         }
 
-        public RunnerType GetRunnerType(bool continuousIntegrationMode, bool useTeamCity, bool startWebServerOnly, bool useRemoteTestPage)
+        public TestReportCollection Run()
         {
-            RunnerType runnerType = DetermineRunnerType(continuousIntegrationMode, useTeamCity, startWebServerOnly, useRemoteTestPage);
-
+            RunnerType runnerType = DetermineRunnerType(_inputOptions.ContinuousIntegrationMode, _inputOptions.OutputForTeamCity, _inputOptions.StartWebServerOnly, _inputOptions.UseRemoteTestPage);
             _logger.Debug("RunnerType = {0}".FormatWith(runnerType));
 
-            return runnerType;
-        }
+            TestReportCollection testReports = GetTestReports(runnerType);
 
-        public TestReportCollection Run(IEnumerable<StatLightConfiguration> configurations, RunnerType runnerType, string xmlReportOutputPath, ReportOutputFileType reportOutputFileType)
-        {
-            TestReportCollection testReports = GetTestReports(configurations, runnerType);
-
-            WriteXmlReport(testReports, xmlReportOutputPath, reportOutputFileType);
+            WriteXmlReport(testReports, _inputOptions.ReportOutputPath, _inputOptions.ReportOutputFileType);
 
             return testReports;
         }
 
-        private TestReportCollection GetTestReports(IEnumerable<StatLightConfiguration> statLightConfigurations, RunnerType runnerType)
+        private TestReportCollection GetTestReports(RunnerType runnerType)
         {
             var testReports = new TestReportCollection();
+
+            var statLightConfigurations = _statLightConfigurationFactory.GetConfigurations().ToList();
 
             if (runnerType == RunnerType.ContinuousTest)
             {
@@ -79,7 +69,7 @@ namespace StatLight.Console
                     {
                         _logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
                         Stopwatch stopwatch = Stopwatch.StartNew();
-                        TestReport testReport = _runnerFunc(runner);
+                        TestReport testReport = runner.Run();
                         stopwatch.Stop();
                         testReports.Add(testReport);
                         _eventPublisher.SendMessage(new TestReportGeneratedServerEvent(testReport, stopwatch.Elapsed, statLightConfigurations.Count() > 1));
