@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using StatLight.Core.Common;
 using StatLight.Core.Reporting;
@@ -17,15 +18,15 @@ namespace StatLight.Core.Configuration
             UseRemoteTestPage = false;
             MethodsToTest = new List<string>();
             MicrosoftTestingFrameworkVersion = null;
-            TagFilters = string.Empty;
+            TagFilters = String.Empty;
             UnitTestProviderType = UnitTestProviderType.Undefined;
             NumberOfBrowserHosts = 1;
-            QueryString = string.Empty;
+            QueryString = String.Empty;
             WebBrowserType = WebBrowserType.SelfHosted;
             ForceBrowserStart = true;
             XapPaths = new List<string>();
             DllPaths = new List<string>();
-            ReportOutputPath = string.Empty;
+            ReportOutputPath = String.Empty;
             ReportOutputFileType = ReportOutputFileType.StatLight;
             ContinuousIntegrationMode = false;
             OutputForTeamCity = false;
@@ -82,6 +83,18 @@ namespace StatLight.Core.Configuration
             return this;
         }
 
+        private static void AssertFileExists(IEnumerable<string> xapPaths)
+        {
+            foreach (var xapPath in xapPaths)
+            {
+                if (!File.Exists(xapPath))
+                {
+                    throw new FileNotFoundException("File could not be found. [{0}]".FormatWith(xapPath));
+                }
+            }
+        }
+
+
         public InputOptions SetWindowGeometry(WindowGeometry windowGeometry)
         {
             if (windowGeometry == null) throw new ArgumentNullException("windowGeometry");
@@ -128,7 +141,7 @@ namespace StatLight.Core.Configuration
         {
             if (numberOfBrowserHosts <= 0) throw new ArgumentException("value must be greater than 0", "numberOfBrowserHosts");
 
-            NumberOfBrowserHosts =numberOfBrowserHosts;
+            NumberOfBrowserHosts = numberOfBrowserHosts;
             return this;
         }
 
@@ -154,6 +167,7 @@ namespace StatLight.Core.Configuration
         public InputOptions SetXapPaths(IEnumerable<string> xapPaths)
         {
             if (xapPaths == null) throw new ArgumentNullException("xapPaths");
+            AssertFileExists(xapPaths);
             XapPaths = xapPaths;
             return this;
         }
@@ -161,6 +175,7 @@ namespace StatLight.Core.Configuration
         public InputOptions SetDllPaths(IEnumerable<string> dllPaths)
         {
             if (dllPaths == null) throw new ArgumentNullException("dllPaths");
+            AssertFileExists(dllPaths);
             DllPaths = dllPaths;
             return this;
         }
@@ -200,6 +215,5 @@ namespace StatLight.Core.Configuration
             IsRequestingDebug = isRequestingDebug;
             return this;
         }
-
     }
 }

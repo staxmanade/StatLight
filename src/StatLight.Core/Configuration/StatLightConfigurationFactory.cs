@@ -46,7 +46,6 @@ namespace StatLight.Core.Configuration
             Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string runtimeVersion = null;
             string entryPointAssembly = string.Empty;
-            AssertFileExists(xapPath);
 
             var xapReader = new XapReader(_logger);
 
@@ -85,7 +84,6 @@ namespace StatLight.Core.Configuration
             Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string entryPointAssembly = string.Empty;
             string runtimeVersion = null;
-            AssertFileExists(dllPath);
 
             var dllFileInfo = new FileInfo(dllPath);
             var assemblyResolver = new AssemblyResolver(_logger);
@@ -151,14 +149,6 @@ namespace StatLight.Core.Configuration
             }
         }
 
-        private static void AssertFileExists(string xapPath)
-        {
-            if (!File.Exists(xapPath))
-            {
-                throw new FileNotFoundException("File could not be found. [{0}]".FormatWith(xapPath));
-            }
-        }
-
         private ServerTestRunConfiguration CreateServerConfiguration(
             string xapPath,
             UnitTestProviderType unitTestProviderType,
@@ -195,7 +185,5 @@ namespace StatLight.Core.Configuration
 
             return xapHost;
         }
-
-
     }
 }
