@@ -32,6 +32,11 @@ namespace StatLight.Core
             ioc.Register<IEventPublisher>(eventAggregator);
             ioc.Register<IEventSubscriptionManager>(eventAggregator);
 
+
+            ioc.Register<ResponseFactory>().AsSingleton();
+
+            ioc.Register<IPostHandler, PostHandler>().AsSingleton();
+
             return ioc;
         }
 

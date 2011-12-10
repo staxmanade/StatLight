@@ -138,6 +138,7 @@
     </Compile>
     <Compile Include="AssemblyInfo.Core.cs" />
     <Compile Include="BootStrapper.cs" />
+    <Compile Include="CurrentStatLightConfiguration.cs" />
     <Compile Include="RunnerExecutionEngine.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="Common\ConsoleLogger.cs" />

@@ -5,11 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Web;
 using StatLight.Client.Harness.Events;
 using StatLight.Core.Common;
-using StatLight.Core.Configuration;
-using StatLight.Core.Events;
 using StatLight.Core.Events;
 using StatLight.Core.Serialization;
 
@@ -19,19 +16,19 @@ namespace StatLight.Core.WebServer
     {
         private readonly ILogger _logger;
         private readonly IEventPublisher _eventPublisher;
-        private readonly ClientTestRunConfiguration _clientTestRunConfiguration;
+        private readonly ICurrentStatLightConfiguration _currentStatLightConfiguration;
         private readonly ResponseFactory _responseFactory;
         private readonly IDictionary<Type, MethodInfo> _publishMethods;
 
-        public PostHandler(ILogger logger, IEventPublisher eventPublisher, ClientTestRunConfiguration clientTestRunConfiguration, ResponseFactory responseFactory)
+        public PostHandler(ILogger logger, IEventPublisher eventPublisher, ICurrentStatLightConfiguration currentStatLightConfiguration, ResponseFactory responseFactory)
         {
             if (logger == null) throw new ArgumentNullException("logger");
             if (eventPublisher == null) throw new ArgumentNullException("eventPublisher");
-            if (clientTestRunConfiguration == null) throw new ArgumentNullException("clientTestRunConfiguration");
+            if (currentStatLightConfiguration == null) throw new ArgumentNullException("currentStatLightConfiguration");
 
             _logger = logger;
             _eventPublisher = eventPublisher;
-            _clientTestRunConfiguration = clientTestRunConfiguration;
+            _currentStatLightConfiguration = currentStatLightConfiguration;
             _responseFactory = responseFactory;
 
 
@@ -108,7 +105,7 @@ The Error from deserializing is
                 if (!_browserInstancesComplete.ContainsKey(result.BrowserInstanceId))
                     _browserInstancesComplete.Add(result.BrowserInstanceId, totalMessagsPostedCount);
 
-                if (_browserInstancesComplete.Count == _clientTestRunConfiguration.NumberOfBrowserHosts)
+                if (_browserInstancesComplete.Count == _currentStatLightConfiguration.Current.Client.NumberOfBrowserHosts)
                 {
                     _totalMessagesPostedCount = _browserInstancesComplete.Sum(s => s.Value);
                     _logger.Debug("Awaiting a total of {0} messages - currently have {1}".FormatWith(_totalMessagesPostedCount, _currentMessagesPostedCount));

@@ -1,22 +1,21 @@
-using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
-using StatLight.Core.Properties;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
-using System.Collections.Generic;
+using StatLight.Core.WebServer.XapHost;
 
 namespace StatLight.Core.Tests.WebServer.CustomHost
 {
     [TestFixture]
     public class TestServiceEngineTests : FixtureBase
     {
-        private Core.WebServer.InMemoryWebServer _inMemoryWebServer;
+        private InMemoryWebServer _inMemoryWebServer;
 
         private string _baseUrl;
         private WebClient _webClient;
@@ -34,15 +33,31 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
             _hostXap = new byte[] { 5, 4, 2, 1, 4 };
             var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, string.Empty, null);
             _serializedConfiguration = clientConfig.Serialize();
-            _responseFactory = new ResponseFactory(() => _hostXap, clientConfig);
 
+            var dummyServerTestRunConfiguration = GetDummyServerTestRunConfiguration();
+            var statLightConfiguration = new StatLightConfiguration(clientConfig, dummyServerTestRunConfiguration);
+            var currentStatLightConfiguration = new CurrentStatLightConfiguration(new[] { statLightConfiguration });
+
+            _responseFactory = new ResponseFactory(currentStatLightConfiguration);
             _mockPostHandler = new Mock<IPostHandler>();
-            _inMemoryWebServer = new Core.WebServer.InMemoryWebServer(consoleLogger, webServerLocation, _responseFactory, _mockPostHandler.Object);
+            _inMemoryWebServer = new InMemoryWebServer(consoleLogger, webServerLocation, _responseFactory, _mockPostHandler.Object);
             _webClient = new WebClient();
 
             _baseUrl = webServerLocation.BaseUrl.ToString();
 
             _inMemoryWebServer.Start();
+        }
+
+        private ServerTestRunConfiguration GetDummyServerTestRunConfiguration()
+        {
+            var config = new ServerTestRunConfiguration(xapHost: () => _hostXap,
+                                                                   xapToTest: "",
+                                                                   xapHostType: XapHostType.MSTestApril2010,
+                                                                   queryString: "foo",
+                                                                   forceBrowserStart: false,
+                                                                   windowGeometry: new WindowGeometry()
+                                                                   );
+            return config;
         }
 
         [SetUp]
@@ -75,7 +90,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
         [Test]
         public void Should_server_the_GetHtmlTestPage_file()
         {
-            var expectedFile = new TestPage(instanceId: 0, windowless:"false").ToString();
+            var expectedFile = new TestPage(instanceId: 0, windowless: "false").ToString();
             GetString(StatLightServiceRestApi.GetHtmlTestPage)
                 .ShouldEqual(expectedFile);
         }

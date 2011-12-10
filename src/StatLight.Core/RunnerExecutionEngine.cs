@@ -1,5 +1,7 @@
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,6 +13,7 @@ using StatLight.Core.Reporting;
 using StatLight.Core.Reporting.Providers;
 using StatLight.Core.Reporting.Providers.MSTestTRX;
 using StatLight.Core.Runners;
+using TinyIoC;
 
 namespace StatLight.Core
 {
@@ -20,15 +23,27 @@ namespace StatLight.Core
         private readonly IStatLightRunnerFactory _statLightRunnerFactory;
         private readonly IEventPublisher _eventPublisher;
         private readonly InputOptions _inputOptions;
-        private readonly StatLightConfigurationFactory _statLightConfigurationFactory;
+        private readonly TinyIoCContainer _ioc;
+        private readonly ICurrentStatLightConfiguration _currentStatLightConfiguration;
 
-        public RunnerExecutionEngine(ILogger logger, IStatLightRunnerFactory statLightRunnerFactory, IEventPublisher eventPublisher, InputOptions inputOptions, StatLightConfigurationFactory statLightConfigurationFactory)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public RunnerExecutionEngine(ILogger logger, IStatLightRunnerFactory statLightRunnerFactory, IEventPublisher eventPublisher, InputOptions inputOptions, TinyIoCContainer ioc)
         {
+            if (ioc == null) throw new ArgumentNullException("ioc");
+
             _logger = logger;
             _statLightRunnerFactory = statLightRunnerFactory;
             _eventPublisher = eventPublisher;
             _inputOptions = inputOptions;
-            _statLightConfigurationFactory = statLightConfigurationFactory;
+            _ioc = ioc;
+
+            var lightConfigurationFactory = _ioc.Resolve<StatLightConfigurationFactory>();
+
+            IEnumerable<StatLightConfiguration> statLightConfigurations = lightConfigurationFactory.GetConfigurations();
+            var currentStatLightConfiguration = new CurrentStatLightConfiguration(statLightConfigurations);
+
+            ioc.Register<ICurrentStatLightConfiguration>(currentStatLightConfiguration);
+            _currentStatLightConfiguration = ioc.Resolve<ICurrentStatLightConfiguration>();
         }
 
         public TestReportCollection Run()
@@ -47,7 +62,7 @@ namespace StatLight.Core
         {
             var testReports = new TestReportCollection();
 
-            var statLightConfigurations = _statLightConfigurationFactory.GetConfigurations().ToList();
+            IEnumerable<StatLightConfiguration> statLightConfigurations = _currentStatLightConfiguration.ToList();
 
             if (runnerType == RunnerType.ContinuousTest)
             {
@@ -59,12 +74,12 @@ namespace StatLight.Core
 
                 Stopwatch totalTime = Stopwatch.StartNew();
 
-                foreach(var statLightConfiguration in statLightConfigurations)
+                do
                 {
                     using (IRunner runner = GetRunner(
                         _logger,
                         runnerType,
-                        statLightConfiguration,
+                        _currentStatLightConfiguration.Current,
                         _statLightRunnerFactory))
                     {
                         _logger.Debug("IRunner typeof({0})".FormatWith(runner.GetType().Name));
@@ -72,9 +87,12 @@ namespace StatLight.Core
                         TestReport testReport = runner.Run();
                         stopwatch.Stop();
                         testReports.Add(testReport);
-                        _eventPublisher.SendMessage(new TestReportGeneratedServerEvent(testReport, stopwatch.Elapsed, statLightConfigurations.Count() > 1));
+                        _eventPublisher.SendMessage(new TestReportGeneratedServerEvent(testReport, stopwatch.Elapsed,
+                                                                                       statLightConfigurations.Count() >
+                                                                                       1));
                     }
-                }
+
+                } while (_currentStatLightConfiguration.MoveNext());
 
                 totalTime.Stop();
 
@@ -92,13 +110,13 @@ namespace StatLight.Core
                 switch (reportOutputFileType)
                 {
                     case ReportOutputFileType.MSGenericTest:
-                        xmlReport = new Core.Reporting.Providers.TFS.TFS2010.MSGenericTestXmlReport(testReports);
+                        xmlReport = new Reporting.Providers.TFS.TFS2010.MSGenericTestXmlReport(testReports);
                         break;
                     case ReportOutputFileType.StatLight:
-                        xmlReport = new Core.Reporting.Providers.Xml.XmlReport(testReports);
+                        xmlReport = new Reporting.Providers.Xml.XmlReport(testReports);
                         break;
                     case ReportOutputFileType.NUnit:
-                        xmlReport = new Core.Reporting.Providers.NUnit.NUnitXmlReport(testReports);
+                        xmlReport = new Reporting.Providers.NUnit.NUnitXmlReport(testReports);
                         break;
                     case ReportOutputFileType.TRX:
                         xmlReport = new TRXReport(testReports);

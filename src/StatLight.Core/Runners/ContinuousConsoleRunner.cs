@@ -29,11 +29,11 @@ namespace StatLight.Core.Runners
         private readonly IEventPublisher _eventPublisher;
         private readonly IWebServer _webServer;
         private readonly IEnumerable<IWebBrowser> _webBrowsers;
-        private readonly ResponseFactory _responseFactory;
         private readonly XapFileBuildChangedMonitor _xapFileBuildChangedMonitor;
         private readonly Queue<XapFileBuildChangedServerEvent> _queuedRuns = new Queue<XapFileBuildChangedServerEvent>();
         private readonly Dictionary<string, StatLightConfiguration> _statLightConfigurations;
         private readonly IDialogMonitorRunner _dialogMonitorRunner;
+        private readonly ICurrentStatLightConfiguration _currentStatLightConfiguration;
         private readonly Thread _runnerTask;
         private readonly List<XapFileBuildChangedServerEvent> _initialXaps = new List<XapFileBuildChangedServerEvent>();
         private string _currentFilterString;
@@ -43,28 +43,25 @@ namespace StatLight.Core.Runners
             ILogger logger,
             IEventSubscriptionManager eventSubscriptionManager,
             IEventPublisher eventPublisher,
-            IEnumerable<StatLightConfiguration> statLightConfigurations,
             IWebServer webServer,
             IEnumerable<IWebBrowser> webBrowsers,
-            ResponseFactory responseFactory,
-            IDialogMonitorRunner dialogMonitorRunner)
+            IDialogMonitorRunner dialogMonitorRunner,
+            ICurrentStatLightConfiguration currentStatLightConfiguration)
         {
-            if (statLightConfigurations == null) throw new ArgumentNullException("statLightConfigurations");
-
             eventSubscriptionManager.AddListener(this);
             _logger = logger;
             _eventSubscriptionManager = eventSubscriptionManager;
             _eventPublisher = eventPublisher;
             _webServer = webServer;
             _webBrowsers = webBrowsers;
-            _responseFactory = responseFactory;
             _dialogMonitorRunner = dialogMonitorRunner;
+            _currentStatLightConfiguration = currentStatLightConfiguration;
             Func<string, string> getFullXapPath = path => new FileInfo(path).FullName;
-            var xapFiles = statLightConfigurations.Select(x => getFullXapPath(x.Server.XapToTestPath));
-            _statLightConfigurations = statLightConfigurations.ToDictionary(x => getFullXapPath(x.Server.XapToTestPath), x => x);
+            var xapFiles = currentStatLightConfiguration.Select(x => getFullXapPath(x.Server.XapToTestPath));
+            _statLightConfigurations = currentStatLightConfiguration.ToDictionary(x => getFullXapPath(x.Server.XapToTestPath), x => x);
             _xapFileBuildChangedMonitor = new XapFileBuildChangedMonitor(eventPublisher, xapFiles);
             xapFiles.Each(e => _initialXaps.Add(new XapFileBuildChangedServerEvent(e)));
-            _currentFilterString = statLightConfigurations.First().Client.TagFilter;
+            _currentFilterString = currentStatLightConfiguration.First().Client.TagFilter;
             QueueInitialXaps();
 
             _runnerTask = new Thread(() =>
@@ -162,10 +159,9 @@ namespace StatLight.Core.Runners
                     buildEvent = _queuedRuns.Dequeue();
                 }
 
-                StatLightConfiguration statLightConfiguration = _statLightConfigurations[buildEvent.XapPath];
-                statLightConfiguration.Client.TagFilter = _currentFilterString;
+                _currentStatLightConfiguration.SetCurrentTo(buildEvent.XapPath);
 
-                _responseFactory.ReplaceCurrentItems(statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
+                _currentStatLightConfiguration.Current.Client.TagFilter = _currentFilterString;
 
                 using (var onetimeRunner = new OnetimeRunner(
                     logger: _logger,

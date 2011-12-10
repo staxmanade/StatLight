@@ -19,7 +19,7 @@ namespace StatLight.IntegrationTests
         private string _pathToIntegrationTestXap;
         private readonly ILogger _testLogger;
         private EventAggregator _eventSubscriptionManager;
-        private TinyIoCContainer _ioc;
+        private readonly TinyIoCContainer _ioc;
 
         protected IntegrationFixtureBase()
         {
@@ -72,17 +72,19 @@ namespace StatLight.IntegrationTests
 
             var options = new InputOptions()
                 .SetUnitTestProviderType(ClientTestRunConfiguration.UnitTestProviderType)
-                .SetXapPaths(new[] {_pathToIntegrationTestXap})
+                .SetXapPaths(new[] { _pathToIntegrationTestXap })
                 .SetMicrosoftTestingFrameworkVersion(MSTestVersion)
                 .SetMethodsToTest(ClientTestRunConfiguration.MethodsToTest)
                 .SetTagFilters(ClientTestRunConfiguration.TagFilter)
             ;
 
-
             var statLightConfigurationFactory = new StatLightConfigurationFactory(_testLogger, options);
 
             StatLightConfiguration statLightConfiguration = statLightConfigurationFactory.GetConfigurations().Single();
             _testLogger.Debug("Setting up xaphost {0}".FormatWith(statLightConfiguration.Server.XapHostType));
+
+            _ioc.Register<ICurrentStatLightConfiguration>(new CurrentStatLightConfiguration(new[] { statLightConfiguration }));
+
             Runner = _statLightRunnerFactory.CreateOnetimeConsoleRunner(statLightConfiguration);
 
             TestReport = Runner.Run();

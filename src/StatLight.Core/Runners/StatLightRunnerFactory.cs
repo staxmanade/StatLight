@@ -47,27 +47,18 @@ namespace StatLight.Core.Runners
             if (statLightConfigurations == null)
                 throw new ArgumentNullException("statLightConfigurations");
 
-            var firstStatLightConfig = statLightConfigurations.First();
+            var webServer = _ioc.Resolve<InMemoryWebServer>();
 
-            var webServer = CreateWebServer(_logger, firstStatLightConfig);
-            var responseFactory = _ioc.Resolve<ResponseFactory>();
-
-            List<IWebBrowser> webBrowsers = GetWebBrowsers(
-                logger: _logger,
-                webBrowserType: firstStatLightConfig.Client.WebBrowserType,
-                queryString: firstStatLightConfig.Server.QueryString,
-                forceBrowserStart: firstStatLightConfig.Server.ForceBrowserStart,
-                windowGeometry: firstStatLightConfig.Client.WindowGeometry,
-                numberOfBrowserHosts: firstStatLightConfig.Client.NumberOfBrowserHosts);
+            IEnumerable<IWebBrowser> webBrowsers = GetWebBrowsers().ToList();
 
             IDialogMonitorRunner dialogMonitorRunner = SetupDialogMonitorRunner(_logger, webBrowsers);
-            
+
             StartupBrowserCommunicationTimeoutMonitor();
 
             CreateAndAddConsoleResultHandlerToEventAggregator();
 
-            return new ContinuousConsoleRunner(_logger, _eventSubscriptionManager, _eventPublisher, statLightConfigurations,
-                                        webServer, webBrowsers, responseFactory, dialogMonitorRunner);
+            return new ContinuousConsoleRunner(_logger, _eventSubscriptionManager, _eventPublisher, 
+                                        webServer, webBrowsers, dialogMonitorRunner, _ioc.Resolve<ICurrentStatLightConfiguration>());
         }
 
         public IRunner CreateTeamCityRunner(StatLightConfiguration statLightConfiguration)
@@ -75,18 +66,17 @@ namespace StatLight.Core.Runners
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             ILogger logger = new NullLogger();
             IWebServer webServer;
-            List<IWebBrowser> webBrowsers;
+            IEnumerable<IWebBrowser> webBrowsers;
             IDialogMonitorRunner dialogMonitorRunner;
 
             BuildAndReturnWebServiceAndBrowser(
                 logger,
-                statLightConfiguration,
                 out webServer,
                 out webBrowsers,
                 out dialogMonitorRunner);
 
             var teamCityTestResultHandler = new TeamCityTestResultHandler(new ConsoleCommandWriter(), statLightConfiguration.Server.XapToTestPath);
-            IRunner runner = new TeamCityRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, teamCityTestResultHandler, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
+            IRunner runner = new TeamCityRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers.ToList(), teamCityTestResultHandler, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
 
             return runner;
         }
@@ -95,12 +85,11 @@ namespace StatLight.Core.Runners
         {
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             IWebServer webServer;
-            List<IWebBrowser> webBrowsers;
+            IEnumerable<IWebBrowser> webBrowsers;
             IDialogMonitorRunner dialogMonitorRunner;
 
             BuildAndReturnWebServiceAndBrowser(
                 _logger,
-                statLightConfiguration,
                 out webServer,
                 out webBrowsers,
                 out dialogMonitorRunner);
@@ -115,7 +104,7 @@ namespace StatLight.Core.Runners
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
             var location = new WebServerLocation(_logger);
 
-            var webServer = CreateWebServer(_logger, statLightConfiguration);
+            var webServer = _ioc.Resolve<InMemoryWebServer>();
             CreateAndAddConsoleResultHandlerToEventAggregator();
             IRunner runner = new WebServerOnlyRunner(_logger, _eventSubscriptionManager, _eventPublisher, webServer, location.TestPageUrl, statLightConfiguration.Server.XapToTestPath);
 
@@ -123,37 +112,15 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        private IWebServer CreateWebServer(ILogger logger, StatLightConfiguration statLightConfiguration)
-        {
-            var responseFactory = new ResponseFactory(statLightConfiguration.Server.HostXap, statLightConfiguration.Client);
-            var postHandler = new PostHandler(logger, _eventPublisher, statLightConfiguration.Client, responseFactory);
-
-            _ioc.Register(responseFactory);
-            _ioc.Register<IPostHandler>(postHandler);
-
-            return _ioc.Resolve<InMemoryWebServer>();
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private void BuildAndReturnWebServiceAndBrowser(
             ILogger logger,
-            StatLightConfiguration statLightConfiguration,
             out IWebServer webServer,
-            out List<IWebBrowser> webBrowsers,
+            out IEnumerable<IWebBrowser> webBrowsers,
             out IDialogMonitorRunner dialogMonitorRunner)
         {
-            ClientTestRunConfiguration clientTestRunConfiguration = statLightConfiguration.Client;
-            ServerTestRunConfiguration serverTestRunConfiguration = statLightConfiguration.Server;
+            webServer = _ioc.Resolve<InMemoryWebServer>();
 
-            webServer = CreateWebServer(logger, statLightConfiguration);
-
-            webBrowsers = GetWebBrowsers(
-                logger: logger,
-                webBrowserType: clientTestRunConfiguration.WebBrowserType,
-                queryString: serverTestRunConfiguration.QueryString,
-                forceBrowserStart: serverTestRunConfiguration.ForceBrowserStart,
-                windowGeometry: clientTestRunConfiguration.WindowGeometry,
-                numberOfBrowserHosts: clientTestRunConfiguration.NumberOfBrowserHosts);
+            webBrowsers = GetWebBrowsers();
 
             dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers);
 
@@ -161,19 +128,10 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "testPageUrlWithQueryString")]
-        private List<IWebBrowser> GetWebBrowsers(ILogger logger, WebBrowserType webBrowserType, string queryString, bool forceBrowserStart, WindowGeometry windowGeometry, int numberOfBrowserHosts)
+        private IEnumerable<IWebBrowser> GetWebBrowsers()
         {
-            var webServerLocation = _ioc.Resolve<WebServerLocation>();
-            Uri testPageUrl = webServerLocation.TestPageUrl;
-
             var webBrowserFactory = _ioc.Resolve<WebBrowserFactory>();
-            var testPageUrlWithQueryString = new Uri(testPageUrl + "?" + queryString);
-            logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);
-            List<IWebBrowser> webBrowsers = Enumerable
-                .Range(1, numberOfBrowserHosts)
-                .Select(browserI => webBrowserFactory.Create(webBrowserType, testPageUrlWithQueryString, forceBrowserStart, numberOfBrowserHosts > 1, windowGeometry))
-                .ToList();
-            return webBrowsers;
+            return webBrowserFactory.CreateWebBrowsers();
         }
 
         private void StartupBrowserCommunicationTimeoutMonitor()
@@ -200,8 +158,8 @@ namespace StatLight.Core.Runners
         {
             if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
 
-            ClientTestRunConfiguration clientTestRunConfiguration = statLightConfiguration.Client;
-            ServerTestRunConfiguration serverTestRunConfiguration = statLightConfiguration.Server;
+            //ClientTestRunConfiguration clientTestRunConfiguration = statLightConfiguration.Client;
+            //ServerTestRunConfiguration serverTestRunConfiguration = statLightConfiguration.Server;
 
             throw new NotImplementedException();
             //var urlToTestPage = statLightConfiguration.Client.XapToTestUrl.ToUri();

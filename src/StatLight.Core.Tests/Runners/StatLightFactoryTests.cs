@@ -24,6 +24,8 @@ namespace StatLight.Core.Tests.Runners
             var clientTestRunConfiguration = base.CreateTestDefaultClinetTestRunConfiguraiton();
             _statLightConfiguration = new StatLightConfiguration(clientTestRunConfiguration,
                                                                  MockServerTestRunConfiguration);
+            var currentStatLightConfiguration = new CurrentStatLightConfiguration(new[] {_statLightConfiguration});
+            container.Register<ICurrentStatLightConfiguration>(currentStatLightConfiguration);
         }
 
         [Test]

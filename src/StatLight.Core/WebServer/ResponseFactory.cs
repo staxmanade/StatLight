@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using StatLight.Core.Configuration;
 using StatLight.Core.Properties;
 using StatLight.Core.Serialization;
 
@@ -8,20 +7,12 @@ namespace StatLight.Core.WebServer
 {
     public class ResponseFactory
     {
-        private Func<byte[]> _hostXapFactory;
-        private string _serializedConfiguration;
+        private readonly ICurrentStatLightConfiguration _currentStatLightConfiguration;
         private int _htmlPageInstanceId;
 
-        public ResponseFactory(Func<byte[]> hostXapFactory, ClientTestRunConfiguration clientTestRunConfiguration)
+        public ResponseFactory(ICurrentStatLightConfiguration currentStatLightConfiguration)
         {
-            _hostXapFactory = hostXapFactory;
-            _serializedConfiguration = clientTestRunConfiguration.Serialize();
-        }
-
-        public void ReplaceCurrentItems(Func<byte[]> hostXapFactory, ClientTestRunConfiguration clientTestRunConfiguration)
-        {
-            _hostXapFactory = hostXapFactory;
-            _serializedConfiguration = clientTestRunConfiguration.Serialize();
+            _currentStatLightConfiguration = currentStatLightConfiguration;
         }
 
         public ResponseFile Get(string localPath)
@@ -38,10 +29,10 @@ namespace StatLight.Core.WebServer
             }
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetTestPageHostXap))
-                return new ResponseFile { FileData = _hostXapFactory(), ContentType = "application/x-silverlight-app" };
+                return new ResponseFile { FileData = _currentStatLightConfiguration.Current.Server.HostXap(), ContentType = "application/x-silverlight-app" };
 
             if (IsKnown(localPath, StatLightServiceRestApi.GetTestRunConfiguration))
-                return new ResponseFile { FileData = _serializedConfiguration.ToByteArray(), ContentType = "text/xml" };
+                return new ResponseFile { FileData = _currentStatLightConfiguration.Current.Client.Serialize().ToByteArray(), ContentType = "text/xml" };
 
             throw new NotImplementedException();
         }
