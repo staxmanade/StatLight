@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Console", "Statli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Tests", "StatLight.Client.Tests\StatLight.Client.Tests.csproj", "{CDC6A5B3-5AED-489A-9CD2-4B8C528301B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests", "StatLight.IntegrationTests\StatLight.IntegrationTests.csproj", "{B4460341-8AA6-4D93-8166-92865623D86C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests", "IntegrationTests\StatLight.IntegrationTests\StatLight.IntegrationTests.csproj", "{B4460341-8AA6-4D93-8166-92865623D86C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F94F3D14-83A1-4031-8A36-C9E82BF5EC2F} = {F94F3D14-83A1-4031-8A36-C9E82BF5EC2F}
 		{C3AB121A-CCE6-4CE8-AD23-BA1ED7046E8D} = {C3AB121A-CCE6-4CE8-AD23-BA1ED7046E8D}
@@ -31,19 +31,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests"
 		{6FBC8BF8-9DDF-4D25-8937-601A29ECA11B} = {6FBC8BF8-9DDF-4D25-8937-601A29ECA11B}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight", "StatLight.IntegrationTests.Silverlight\StatLight.IntegrationTests.Silverlight.csproj", "{4F977BD5-0E15-4871-A24E-E42CDEFDDCB4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight", "IntegrationTests\StatLight.IntegrationTests.Silverlight\StatLight.IntegrationTests.Silverlight.csproj", "{4F977BD5-0E15-4871-A24E-E42CDEFDDCB4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitLight.Silverlight", "TestingFrameworkAdapters\XunitLight.Silverlight\XunitLight\XunitLight.Silverlight.csproj", "{9D2235D5-17C0-49F8-A3F8-FE3FBFA06564}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XunitLight.Silverlight.Sample", "TestingFrameworkAdapters\XunitLight.Silverlight\TestSample\XunitLight.Silverlight.Sample.csproj", "{1FFD7EF2-0F8E-41FF-89DF-8D884D80F510}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.NUnit", "StatLight.IntegrationTests.Silverlight.NUnit\StatLight.IntegrationTests.Silverlight.NUnit.csproj", "{AF84F8F6-7089-4B49-8176-2A35FAA928BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.NUnit", "IntegrationTests\StatLight.IntegrationTests.Silverlight.NUnit\StatLight.IntegrationTests.Silverlight.NUnit.csproj", "{AF84F8F6-7089-4B49-8176-2A35FAA928BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest", "StatLight.IntegrationTests.Silverlight.MSTest\StatLight.IntegrationTests.Silverlight.MSTest.csproj", "{BA085B1C-F2B7-46C5-9AF7-8A242E56D90F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest", "IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\StatLight.IntegrationTests.Silverlight.MSTest.csproj", "{BA085B1C-F2B7-46C5-9AF7-8A242E56D90F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.UnitDriven", "StatLight.IntegrationTests.Silverlight.UnitDriven\StatLight.IntegrationTests.Silverlight.UnitDriven.csproj", "{6DC93A95-7B8E-4D2E-BFB7-E2D3BCE089C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.UnitDriven", "IntegrationTests\StatLight.IntegrationTests.Silverlight.UnitDriven\StatLight.IntegrationTests.Silverlight.UnitDriven.csproj", "{6DC93A95-7B8E-4D2E-BFB7-E2D3BCE089C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.OtherTestAssembly", "StatLight.IntegrationTests.Silverlight.OtherTestAssembly\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.csproj", "{E99066B4-F2FC-469D-B427-CA1793BB0B23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.OtherTestAssembly", "IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.csproj", "{E99066B4-F2FC-469D-B427-CA1793BB0B23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Harness.MSTest", "StatLight.Client.Harness.MSTest\StatLight.Client.Harness.MSTest.csproj", "{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}"
 EndProject
@@ -52,15 +52,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Harness.Un
 		{AA6F387F-BB41-4FA8-B38A-7037A7C59716} = {AA6F387F-BB41-4FA8-B38A-7037A7C59716}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.LotsOfTests", "StatLight.IntegrationTests.Silverlight.LotsOfTests\StatLight.IntegrationTests.Silverlight.LotsOfTests.csproj", "{6454A8DE-C1E8-4A34-86B0-89E364861BAC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.LotsOfTests", "IntegrationTests\StatLight.IntegrationTests.Silverlight.LotsOfTests\StatLight.IntegrationTests.Silverlight.LotsOfTests.csproj", "{6454A8DE-C1E8-4A34-86B0-89E364861BAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.OutOfBrowser", "StatLight.IntegrationTests.OutOfBrowser\StatLight.IntegrationTests.OutOfBrowser.csproj", "{CB2B6883-2461-4115-848C-DA79D20A3E0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.OutOfBrowser", "IntegrationTests\StatLight.IntegrationTests.OutOfBrowser\StatLight.IntegrationTests.OutOfBrowser.csproj", "{CB2B6883-2461-4115-848C-DA79D20A3E0A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RemoteIntegration", "RemoteIntegration", "{0FB6602A-EF21-4A26-8A65-E1C9A01F206E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.RemoteIntegration.Web", "StatLight.RemoteIntegration\StatLight.RemoteIntegration.Web\StatLight.RemoteIntegration.Web.csproj", "{A07358D6-3088-45D6-98E9-A1E17A95A8B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.RemoteIntegration.Web", "IntegrationTests\StatLight.RemoteIntegration\StatLight.RemoteIntegration.Web\StatLight.RemoteIntegration.Web.csproj", "{A07358D6-3088-45D6-98E9-A1E17A95A8B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.ExternalWebTest", "StatLight.RemoteIntegration\StatLight.ExternalWebTest\StatLight.ExternalWebTest.csproj", "{8281421C-D572-4817-BBD2-796A8DB2B2E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.ExternalWebTest", "IntegrationTests\StatLight.RemoteIntegration\StatLight.ExternalWebTest\StatLight.ExternalWebTest.csproj", "{8281421C-D572-4817-BBD2-796A8DB2B2E0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A07358D6-3088-45D6-98E9-A1E17A95A8B3} = {A07358D6-3088-45D6-98E9-A1E17A95A8B3}
 	EndProjectSection
@@ -72,27 +72,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleExtension", "Samples\
 		{AA6F387F-BB41-4FA8-B38A-7037A7C59716} = {AA6F387F-BB41-4FA8-B38A-7037A7C59716}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.RemoteIntegration", "StatLight.RemoteIntegration\StatLight.RemoteIntegration\StatLight.RemoteIntegration.csproj", "{348760C9-0276-4574-9BBD-EAE8F20E4AD3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.RemoteIntegration", "IntegrationTests\StatLight.RemoteIntegration\StatLight.RemoteIntegration\StatLight.RemoteIntegration.csproj", "{348760C9-0276-4574-9BBD-EAE8F20E4AD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.xUnitContrib", "StatLight.IntegrationTests.Silverlight.xUnitContrib\StatLight.IntegrationTests.Silverlight.xUnitContrib.csproj", "{40538134-161C-43F3-95E5-19F65D785E5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.xUnitContrib", "IntegrationTests\StatLight.IntegrationTests.Silverlight.xUnitContrib\StatLight.IntegrationTests.Silverlight.xUnitContrib.csproj", "{40538134-161C-43F3-95E5-19F65D785E5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest.UITests", "StatLight.IntegrationTests.Silverlight.MSTest.UITests\StatLight.IntegrationTests.Silverlight.MSTest.UITests.csproj", "{AA0B1C80-97AE-49F5-8310-5A7683BE47BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest.UITests", "IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest.UITests\StatLight.IntegrationTests.Silverlight.MSTest.UITests.csproj", "{AA0B1C80-97AE-49F5-8310-5A7683BE47BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.CustomTestProvider", "StatLight.IntegrationTests.Silverlight.CustomTestProvider\StatLight.IntegrationTests.Silverlight.CustomTestProvider.csproj", "{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.CustomTestProvider", "IntegrationTests\StatLight.IntegrationTests.Silverlight.CustomTestProvider\StatLight.IntegrationTests.Silverlight.CustomTestProvider.csproj", "{36D8CEA4-99BE-47E1-9687-3D4271CEA1DD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.Client.Harness.XUnit", "Statlight.Client.Harness.XUnit\StatLight.Client.Harness.XUnit.csproj", "{DD59BD02-C78A-4BBB-A67C-CE3999692282}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.XunitLight", "StatLight.IntegrationTests.Silverlight.XunitLight\StatLight.IntegrationTests.Silverlight.XunitLight.csproj", "{6FBC8BF8-9DDF-4D25-8937-601A29ECA11B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.XunitLight", "IntegrationTests\StatLight.IntegrationTests.Silverlight.XunitLight\StatLight.IntegrationTests.Silverlight.XunitLight.csproj", "{6FBC8BF8-9DDF-4D25-8937-601A29ECA11B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.Xunit", "StatLight.IntegrationTests.Silverlight.Xunit\StatLight.IntegrationTests.Silverlight.Xunit.csproj", "{C3AB121A-CCE6-4CE8-AD23-BA1ED7046E8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.Xunit", "IntegrationTests\StatLight.IntegrationTests.Silverlight.Xunit\StatLight.IntegrationTests.Silverlight.Xunit.csproj", "{C3AB121A-CCE6-4CE8-AD23-BA1ED7046E8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.Xunit-SL3", "StatLight.IntegrationTests.Silverlight.Xunit\StatLight.IntegrationTests.Silverlight.Xunit-SL3.csproj", "{38CB392B-B6F3-42AD-9393-26D4843830CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.Xunit-SL3", "IntegrationTests\StatLight.IntegrationTests.Silverlight.Xunit\StatLight.IntegrationTests.Silverlight.Xunit-SL3.csproj", "{38CB392B-B6F3-42AD-9393-26D4843830CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.UnitDriven-SL3", "StatLight.IntegrationTests.Silverlight.UnitDriven\StatLight.IntegrationTests.Silverlight.UnitDriven-SL3.csproj", "{F94F3D14-83A1-4031-8A36-C9E82BF5EC2F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.UnitDriven-SL3", "IntegrationTests\StatLight.IntegrationTests.Silverlight.UnitDriven\StatLight.IntegrationTests.Silverlight.UnitDriven-SL3.csproj", "{F94F3D14-83A1-4031-8A36-C9E82BF5EC2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest-SL3", "StatLight.IntegrationTests.Silverlight.MSTest\StatLight.IntegrationTests.Silverlight.MSTest-SL3.csproj", "{5E3C80DC-00B7-40D3-93DE-C1F56E5673F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest-SL3", "IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\StatLight.IntegrationTests.Silverlight.MSTest-SL3.csproj", "{5E3C80DC-00B7-40D3-93DE-C1F56E5673F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting", "StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting\StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting.csproj", "{406BE1DE-C4D3-4CDD-9E1A-AD425F81AB9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting", "IntegrationTests\StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting\StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting.csproj", "{406BE1DE-C4D3-4CDD-9E1A-AD425F81AB9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,48 +3,35 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{348760C9-0276-4574-9BBD-EAE8F20E4AD3}</ProjectGuid>
+    <ProjectGuid>{8281421C-D572-4817-BBD2-796A8DB2B2E0}</ProjectGuid>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>StatLight.RemoteIntegration</RootNamespace>
-    <AssemblyName>StatLight.RemoteIntegration</AssemblyName>
+    <RootNamespace>StatLight.ExternalWebTest</RootNamespace>
+    <AssemblyName>StatLight.ExternalWebTest</AssemblyName>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <SilverlightApplication>true</SilverlightApplication>
-    <SupportedCultures />
+    <SupportedCultures>
+    </SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
-    <XapFilename>StatLight.RemoteIntegration.xap</XapFilename>
+    <XapFilename>StatLight.ExternalWebTest.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
-    <SilverlightAppEntry>StatLight.RemoteIntegration.App</SilverlightAppEntry>
-    <TestPageFileName>TestPage.html</TestPageFileName>
+    <SilverlightAppEntry>StatLight.ExternalWebTest.App</SilverlightAppEntry>
+    <TestPageFileName>StatLight.ExternalWebTestTestPage.html</TestPageFileName>
     <CreateTestPage>true</CreateTestPage>
     <ValidateXaml>true</ValidateXaml>
     <EnableOutOfBrowser>false</EnableOutOfBrowser>
     <OutOfBrowserSettingsFile>Properties\OutOfBrowserSettings.xml</OutOfBrowserSettingsFile>
     <UsePlatformExtensions>false</UsePlatformExtensions>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
-    <LinkedServerProject />
+    <LinkedServerProject>
+    </LinkedServerProject>
   </PropertyGroup>
-  <!--
-  //
-  // Silverlight Code Coverage Instrumentation
-  // List any libraries or assemblies that you would like to instrument during
-  // a code coverage pass. An example, for ClassLibrary1, is provided, and
-  // commented out below as a starting point:
-  //
-  -->
-  <!--
-  <ItemGroup>
-    <InstrumentSilverlightAssemblies Include="SilverlightClassLibrary1">
-      <Visible>false</Visible>
-    </InstrumentSilverlightAssemblies>
-  </ItemGroup>
-  -->
   <!-- This property group is only here to support building this project using the 
        MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
        to set the TargetFrameworkVersion to v3.5 -->
@@ -79,10 +66,10 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight">
       <HintPath>..\..\..\lib\Silverlight\Microsoft\May2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
+    <Reference Include="mscorlib" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows" />
-    <Reference Include="mscorlib" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
@@ -90,6 +77,15 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\StatLight.Client.Harness\Messaging\HttpResponseCompleteEventArgs.cs">
+      <Link>Helper\HttpResponseCompleteEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\StatLight.Client.Harness\Messaging\HttpResponseCompleteEventHandler.cs">
+      <Link>Helper\HttpResponseCompleteEventHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\StatLight.Client.Harness\Messaging\HttpWebRequest.cs">
+      <Link>Helper\HttpWebRequest.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -114,10 +110,10 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\ServiceReference1\Service11.wsdl" />
-    <Content Include="ServiceReferences.ClientConfig" />
     <None Include="Service References\ServiceReference1\Service11.xsd">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -140,17 +136,14 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\StatLight.Client.Harness.MSTest\StatLight.Client.Harness.MSTest.csproj">
-      <Project>{F7099E4C-164F-4AAC-8D65-EB40B0F9143E}</Project>
-      <Name>StatLight.Client.Harness.MSTest</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\StatLight.Client.Harness\StatLight.Client.Harness.csproj">
-      <Project>{163315C4-D4D6-4342-B386-F6D80975CF95}</Project>
-      <Name>StatLight.Client.Harness</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
