@@ -89,7 +89,8 @@
     </Compile>
     <Compile Include="FixtureBase.cs" />
     <Compile Include="IntegrationTestClientTestRunConfiguration.ClientConfigTests.cs" />
-    <Compile Include="NestedClassInheritanceTests.cs" />
+    <Compile Include="SpecialScenarios\SpecialScenariosBase.cs" />
+    <Compile Include="SpecialScenarios\NestedClassInheritanceTests.cs" />
     <Compile Include="ProviderTests\MSTest\when_testing_the_runner_with_MSTest_tests_sl3.cs" />
     <Compile Include="ProviderTests\UnitDriven\when_testing_the_runner_with_UnitDriven_tests_sl3.cs" />
     <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_xunit_tests_sl3.cs" />
@@ -103,16 +104,16 @@
     <Compile Include="ProviderTests\XUnitLight\when_testing_the_runner_with_xunitlight_tests.cs" />
     <Compile Include="ProviderTests\TestXapFileLocations.cs" />
     <Compile Include="ProviderTests\UnitDriven\when_testing_the_runner_with_UnitDrive_tests_filtered_by_certain_methods.cs" />
-    <Compile Include="MessageBoxMonitorTests.cs" />
+    <Compile Include="SpecialScenarios\MessageBoxMonitorTests.cs" />
     <Compile Include="ProviderTests\MSTest\when_testing_the_runner_with_MSTest_tests_filtered_by_certain_methods.cs" />
     <Compile Include="ProviderTests\NUnit\when_testing_the_runner_with_NUnit_tests_filtered_by_certain_methods.cs" />
     <Compile Include="ProviderTests\XUnitLight\when_testing_the_runner_with_Xunitlight_tests_filtered_by_certain_methods.cs" />
-    <Compile Include="DebugAssertMonitorTests.cs" />
+    <Compile Include="SpecialScenarios\DebugAssertMonitorTests.cs" />
     <Compile Include="IntegrationFixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleResourceFileTests.cs" />
-    <Compile Include="ServiceReferenceClientConfigTests.ClientConfigTests.cs" />
-    <Compile Include="XapReaderTests.cs" />
+    <Compile Include="SpecialScenarios\SampleResourceFileTests.cs" />
+    <Compile Include="SpecialScenarios\ServiceReferenceClientConfigTests.ClientConfigTests.cs" />
+    <Compile Include="SpecialScenarios\XapReaderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StatLight.Core\StatLight.Core.csproj">

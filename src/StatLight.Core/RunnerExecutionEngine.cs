@@ -1,6 +1,5 @@
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -13,7 +12,6 @@ using StatLight.Core.Reporting;
 using StatLight.Core.Reporting.Providers;
 using StatLight.Core.Reporting.Providers.MSTestTRX;
 using StatLight.Core.Runners;
-using TinyIoC;
 
 namespace StatLight.Core
 {
@@ -23,27 +21,21 @@ namespace StatLight.Core
         private readonly IStatLightRunnerFactory _statLightRunnerFactory;
         private readonly IEventPublisher _eventPublisher;
         private readonly InputOptions _inputOptions;
-        private readonly TinyIoCContainer _ioc;
         private readonly ICurrentStatLightConfiguration _currentStatLightConfiguration;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public RunnerExecutionEngine(ILogger logger, IStatLightRunnerFactory statLightRunnerFactory, IEventPublisher eventPublisher, InputOptions inputOptions, TinyIoCContainer ioc)
+        public RunnerExecutionEngine(
+            ILogger logger,
+            IStatLightRunnerFactory statLightRunnerFactory,
+            IEventPublisher eventPublisher,
+            InputOptions inputOptions,
+            ICurrentStatLightConfiguration currentStatLightConfiguration)
         {
-            if (ioc == null) throw new ArgumentNullException("ioc");
-
             _logger = logger;
             _statLightRunnerFactory = statLightRunnerFactory;
             _eventPublisher = eventPublisher;
             _inputOptions = inputOptions;
-            _ioc = ioc;
-
-            var lightConfigurationFactory = _ioc.Resolve<StatLightConfigurationFactory>();
-
-            IEnumerable<StatLightConfiguration> statLightConfigurations = lightConfigurationFactory.GetConfigurations();
-            var currentStatLightConfiguration = new CurrentStatLightConfiguration(statLightConfigurations);
-
-            ioc.Register<ICurrentStatLightConfiguration>(currentStatLightConfiguration);
-            _currentStatLightConfiguration = ioc.Resolve<ICurrentStatLightConfiguration>();
+            _currentStatLightConfiguration = currentStatLightConfiguration;
         }
 
         public TestReportCollection Run()

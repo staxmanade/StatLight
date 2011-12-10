@@ -15,27 +15,28 @@ namespace StatLight.IntegrationTests.ProviderTests.NUnit
         private ClientTestRunConfiguration _clientTestRunConfiguration;
         private string _explicitTestName;
 
-        protected override ClientTestRunConfiguration ClientTestRunConfiguration
+        protected override string GetTestXapPath()
         {
-            get { return _clientTestRunConfiguration; }
+            return TestXapFileLocations.NUnit;
         }
 
-        protected override void Before_all_tests()
+        protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            base.Before_all_tests();
-
-            PathToIntegrationTestXap = TestXapFileLocations.NUnit;
-            const string namespaceAndClass = "StatLight.IntegrationTests.Silverlight.NUnitTests.";
-
-            _explicitTestName = "Should_only_run_Explicitly";
-
-            var fullTestName = namespaceAndClass + _explicitTestName;
-
-            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.NUnit,
-                                                                                        new List<string>
+            get
+            {
+                if (_clientTestRunConfiguration == null)
+                {
+                    const string namespaceAndClass = "StatLight.IntegrationTests.Silverlight.NUnitTests.";
+                    _explicitTestName = "Should_only_run_Explicitly";
+                    var fullTestName = namespaceAndClass + _explicitTestName;
+                    _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.NUnit,
+                                                                                                new List<string>
                                                                                             {
                                                                                                 fullTestName,
                                                                                             });
+                }
+                return _clientTestRunConfiguration;
+            }
         }
 
         [Test]

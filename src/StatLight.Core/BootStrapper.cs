@@ -36,6 +36,7 @@ namespace StatLight.Core
             ioc.Register<ResponseFactory>().AsSingleton();
 
             ioc.Register<IPostHandler, PostHandler>().AsSingleton();
+            ioc.Register<ICurrentStatLightConfiguration, CurrentStatLightConfiguration>();
 
             return ioc;
         }

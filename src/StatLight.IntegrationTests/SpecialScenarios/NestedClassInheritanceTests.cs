@@ -5,30 +5,31 @@ using StatLight.Core.Configuration;
 using StatLight.Core.Reporting;
 using StatLight.Core.Tests;
 
-namespace StatLight.IntegrationTests
+namespace StatLight.IntegrationTests.SpecialScenarios
 {
     [TestFixture]
     public class when_something_tests_are_in_a_NestedCLassInheritance_structure
-        : IntegrationFixtureBase
+        : SpecialScenariosBase
     {
         private ClientTestRunConfiguration _clientTestRunConfiguration;
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return _clientTestRunConfiguration; }
-        }
+            get
+            {
+                if (_clientTestRunConfiguration == null)
+                {
+                    const string prefix = "StatLight.IntegrationTests.Silverlight.NestedClassInheritanceTests.A+B";
+                    _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
+                        new List<string>
+                           {
+                               prefix + "1.MethodA",
+                               prefix + "2.MethodA",
+                           });
+                }
 
-        protected override void Before_all_tests()
-        {
-            base.Before_all_tests();
-
-            const string prefix = "StatLight.IntegrationTests.Silverlight.NestedClassInheritanceTests.A+B";
-            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
-                new List<string>
-                   {
-                       prefix + "1.MethodA",
-                       prefix + "2.MethodA",
-                   });
+                return _clientTestRunConfiguration;
+            }
         }
 
         [Test]

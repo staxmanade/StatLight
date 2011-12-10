@@ -1,20 +1,18 @@
 using System;
 using System.IO;
-using Ionic.Zip;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
 using StatLight.IntegrationTests.ProviderTests;
+using NUnit.Framework;
+using StatLight.Core.Tests;
+using StatLight.Core.WebServer.XapInspection;
+using System.Collections.Generic;
 
-namespace StatLight.IntegrationTests
+namespace StatLight.IntegrationTests.SpecialScenarios
 {
 	namespace XapReader
 	{
-		using NUnit.Framework;
-		using StatLight.Core.Tests;
-		using StatLight.Core.WebServer.XapInspection;
-		using System.Collections.Generic;
-
-		[TestFixture]
+	    [TestFixture]
 		public class when_XapReader_is_loading_an_MSTest_xap : FixtureBase
 		{
 			private TestFileCollection _testFileCollection;
@@ -25,7 +23,7 @@ namespace StatLight.IntegrationTests
 
 				string fileName = ProviderTests.TestXapFileLocations.SilverlightIntegrationTests;
 
-                _testFileCollection = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(fileName);
+                _testFileCollection = new Core.WebServer.XapInspection.XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(fileName);
 			}
 
 			//[Test]
@@ -90,7 +88,7 @@ namespace StatLight.IntegrationTests
 				    zipFile.Save(_xapPath);
 				}
 
-                _testFileCollection = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(_xapPath);
+                _testFileCollection = new Core.WebServer.XapInspection.XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(_xapPath);
 			}
 
 			protected override void After_all_tests()
@@ -151,7 +149,7 @@ namespace StatLight.IntegrationTests
 
 			private void ShouldLoadCorrectType(string fileName, UnitTestProviderType unitTestProviderType)
 			{
-                var xapReadItems = new XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(fileName);
+                var xapReadItems = new Core.WebServer.XapInspection.XapReader(new ConsoleLogger(LogChatterLevels.Full)).LoadXapUnderTest(fileName);
 				xapReadItems.UnitTestProvider.ShouldEqual(unitTestProviderType);
 			}
 		}

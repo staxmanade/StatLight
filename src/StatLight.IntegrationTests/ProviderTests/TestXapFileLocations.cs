@@ -1,19 +1,26 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace StatLight.IntegrationTests.ProviderTests
 {
-	public class TestXapFileLocations
-	{
-		private static readonly string CurrentDirectory = Environment.CurrentDirectory + @"\\ProviderTests\_TestXaps\";
+    public class TestXapFileLocations
+    {
+        private static string GetBaseDirectory()
+        {
+            var baseDirectoryName = Path.GetDirectoryName(typeof(TestXapFileLocations).Assembly.CodeBase);
+            return Path.Combine(baseDirectoryName, @"ProviderTests", "_TestXaps").Replace(@"file:\", "") + "\\";
+        }
 
-		public static string MSTest = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.MSTest.xap";
+        private static readonly string CurrentDirectory = GetBaseDirectory();
+        public static string MSTest = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.MSTest.xap";
         public static string MSTestSL3 = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.MSTest-SL3.xap";
         public static string NUnit = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.NUnit.xap";
-		public static string UnitDriven =  CurrentDirectory + "StatLight.IntegrationTests.Silverlight.UnitDriven.xap";
-		public static string UnitDrivenSl3 =  CurrentDirectory + "StatLight.IntegrationTests.Silverlight.UnitDriven-SL3.xap";
-		public static string XUnit = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.Xunit.xap";
+        public static string UnitDriven = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.UnitDriven.xap";
+        public static string UnitDrivenSl3 = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.UnitDriven-SL3.xap";
+        public static string XUnit = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.Xunit.xap";
         public static string XUnitSL3 = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.Xunit-SL3.xap";
         public static string XUnitLight = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.XunitLight.xap";
         public static string SilverlightIntegrationTests = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.xap";
-	}
+    }
 }

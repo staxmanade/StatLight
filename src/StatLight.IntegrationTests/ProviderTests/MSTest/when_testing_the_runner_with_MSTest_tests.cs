@@ -22,24 +22,26 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         private readonly IList<TestExecutionMethodFailedClientEvent> _testExecutionMethodFailedClientEvent = new List<TestExecutionMethodFailedClientEvent>();
         private readonly IList<TestExecutionMethodPassedClientEvent> _testExecutionMethodPassedClientEvent = new List<TestExecutionMethodPassedClientEvent>();
 
+        protected override string GetTestXapPath()
+        {
+            return TestXapFileLocations.MSTest;
+        }
+
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return _clientTestRunConfiguration; }
+            get { return _clientTestRunConfiguration ?? (_clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration()); }
         }
 
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
 
-            PathToIntegrationTestXap = TestXapFileLocations.MSTest;
-            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration();
             EventSubscriptionManager.AddListenerAction<InitializationOfUnitTestHarnessClientEvent>(e => _initializationOfUnitTestHarnessClientEvent = e);
             EventSubscriptionManager.AddListenerAction<TestExecutionClassCompletedClientEvent>(e => _testExecutionClassCompletedClientEvent.Add(e));
             EventSubscriptionManager.AddListenerAction<TestExecutionMethodIgnoredClientEvent>(e => _testExecutionMethodIgnoredClientEvent.Add(e));
             EventSubscriptionManager.AddListenerAction<TestExecutionMethodFailedClientEvent>(e => _testExecutionMethodFailedClientEvent.Add(e));
             EventSubscriptionManager.AddListenerAction<TestExecutionMethodPassedClientEvent>(e => _testExecutionMethodPassedClientEvent.Add(e));
         }
-
 
         [Test]
         public void Should_have_correct_TotalFailed_count()

@@ -13,15 +13,14 @@ namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return _clientTestRunConfiguration; }
+            get { return _clientTestRunConfiguration ?? (_clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.UnitDriven)); }
         }
 
-        protected override void Before_all_tests()
+        protected override string GetTestXapPath()
         {
-            base.Before_all_tests();
-            PathToIntegrationTestXap = TestXapFileLocations.UnitDrivenSl3;
-            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.UnitDriven);
+            return TestXapFileLocations.UnitDrivenSl3;
         }
+
 
         [Test]
         public void Should_have_correct_TotalFailed_count()

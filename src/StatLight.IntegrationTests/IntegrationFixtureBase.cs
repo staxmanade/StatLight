@@ -10,34 +10,30 @@ namespace StatLight.IntegrationTests
     using StatLight.Core.Reporting;
     using StatLight.Core.Runners;
     using StatLight.Core.WebServer.XapHost;
-    using StatLight.IntegrationTests.ProviderTests;
     using TinyIoC;
 
     public abstract class IntegrationFixtureBase : FixtureBase
     {
         private StatLightRunnerFactory _statLightRunnerFactory;
-        private string _pathToIntegrationTestXap;
         private readonly ILogger _testLogger;
         private EventAggregator _eventSubscriptionManager;
-        private readonly TinyIoCContainer _ioc;
+        private TinyIoCContainer _ioc;
 
         protected IntegrationFixtureBase()
         {
             _testLogger = new ConsoleLogger(LogChatterLevels.Full);
-            _pathToIntegrationTestXap = TestXapFileLocations.SilverlightIntegrationTests;
-            _ioc = BootStrapper.Initialize(new InputOptions(), _testLogger);
         }
 
-        public string PathToIntegrationTestXap
+        protected abstract string GetTestXapPath();
+
+        private string GetTestXapPathInternal()
         {
-            get { return _pathToIntegrationTestXap; }
-            set
-            {
-                if (File.Exists(value))
-                    _pathToIntegrationTestXap = value;
-                else
-                    throw new FileNotFoundException("test xap file not found...[{0}]".FormatWith(value));
-            }
+            var value = GetTestXapPath();
+
+            if (File.Exists(value))
+                return value;
+
+            throw new FileNotFoundException("test xap file not found...[{0}]".FormatWith(value));
         }
 
         protected IEventSubscriptionManager EventSubscriptionManager { get { return _eventSubscriptionManager; } }
@@ -59,33 +55,32 @@ namespace StatLight.IntegrationTests
         protected override void Before_all_tests()
         {
             base.Before_all_tests();
-            _eventSubscriptionManager = IoC.Resolve<EventAggregator>();
 
-            _statLightRunnerFactory = new StatLightRunnerFactory(_testLogger, _ioc);
-        }
-
-        protected TinyIoCContainer IoC { get { return _ioc; } }
-
-        protected override void Because()
-        {
-            base.Because();
+            System.Diagnostics.Debug.Assert(ClientTestRunConfiguration != null);
 
             var options = new InputOptions()
                 .SetUnitTestProviderType(ClientTestRunConfiguration.UnitTestProviderType)
-                .SetXapPaths(new[] { _pathToIntegrationTestXap })
+                .SetXapPaths(new[] { GetTestXapPathInternal()})
                 .SetMicrosoftTestingFrameworkVersion(MSTestVersion)
                 .SetMethodsToTest(ClientTestRunConfiguration.MethodsToTest)
                 .SetTagFilters(ClientTestRunConfiguration.TagFilter)
             ;
 
-            var statLightConfigurationFactory = new StatLightConfigurationFactory(_testLogger, options);
+            _ioc = BootStrapper.Initialize(options, _testLogger);
 
-            StatLightConfiguration statLightConfiguration = statLightConfigurationFactory.GetConfigurations().Single();
+            _eventSubscriptionManager = _ioc.Resolve<EventAggregator>();
+            _statLightRunnerFactory = new StatLightRunnerFactory(_testLogger, _ioc);
+
+            var currentStatLightConfiguration = _ioc.Resolve<ICurrentStatLightConfiguration>();
+            StatLightConfiguration statLightConfiguration = currentStatLightConfiguration.Current;
             _testLogger.Debug("Setting up xaphost {0}".FormatWith(statLightConfiguration.Server.XapHostType));
 
-            _ioc.Register<ICurrentStatLightConfiguration>(new CurrentStatLightConfiguration(new[] { statLightConfiguration }));
-
             Runner = _statLightRunnerFactory.CreateOnetimeConsoleRunner(statLightConfiguration);
+        }
+
+        protected override void Because()
+        {
+            base.Because();
 
             TestReport = Runner.Run();
         }

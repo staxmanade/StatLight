@@ -4,43 +4,46 @@ using StatLight.Core.Configuration;
 
 namespace StatLight.IntegrationTests.ProviderTests.UnitDriven
 {
-	[TestFixture]
-	public class when_testing_the_runner_with_UnitDriven_tests_filtered_by_certain_methods
-		: filtered_tests____
-	{
-		private ClientTestRunConfiguration _clientTestRunConfiguration;
+    [TestFixture]
+    public class when_testing_the_runner_with_UnitDriven_tests_filtered_by_certain_methods
+        : filtered_tests____
+    {
+        private ClientTestRunConfiguration _clientTestRunConfiguration;
 
-		protected override ClientTestRunConfiguration ClientTestRunConfiguration
-		{
-			get { return _clientTestRunConfiguration; }
-		}
+        protected override ClientTestRunConfiguration ClientTestRunConfiguration
+        {
+            get
+            {
+                if (_clientTestRunConfiguration == null)
+                {
 
-		protected override void Before_all_tests()
-		{
-            base.Before_all_tests();
+                    const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.UnitDriven.";
 
-            PathToIntegrationTestXap = TestXapFileLocations.UnitDriven;
+                    NormalClassTestName = "ExampleTests";
+                    NestedClassTestName = "ExampleTests+UnitDrivenNestedClassTests";
 
-            const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.UnitDriven.";
+                    _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration (
+                            UnitTestProviderType.UnitDriven,
+                            new List<string>
+                            {
+                                namespaceToTestFrom + NormalClassTestName + ".EmptyTest",
+                                namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
+                            }
+                        );
+                }
 
-            NormalClassTestName = "ExampleTests";
-            NestedClassTestName = "ExampleTests+UnitDrivenNestedClassTests";
+                return _clientTestRunConfiguration;
+            }
+        }
 
-            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration
-                (
-                    UnitTestProviderType.UnitDriven,
-                    new List<string>
-                        {
-                            namespaceToTestFrom + NormalClassTestName + ".EmptyTest",
-                            namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
-                        }
-                );
-
-    	}
+        protected override string GetTestXapPath()
+        {
+            return TestXapFileLocations.UnitDriven;
+        }
 
         [Ignore("UnitDriven's host doesn't do Nested classes.")]
         public override void should_execute_nested_class_test()
         {
         }
-	}
+    }
 }

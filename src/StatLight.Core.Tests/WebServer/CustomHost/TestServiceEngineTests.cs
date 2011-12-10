@@ -36,7 +36,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
 
             var dummyServerTestRunConfiguration = GetDummyServerTestRunConfiguration();
             var statLightConfiguration = new StatLightConfiguration(clientConfig, dummyServerTestRunConfiguration);
-            var currentStatLightConfiguration = new CurrentStatLightConfiguration(new[] { statLightConfiguration });
+            var currentStatLightConfiguration = new CurrentStatLightConfiguration(statLightConfiguration);
 
             _responseFactory = new ResponseFactory(currentStatLightConfiguration);
             _mockPostHandler = new Mock<IPostHandler>();

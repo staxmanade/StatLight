@@ -14,15 +14,12 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return this._clientTestRunConfiguration; }
+            get { return _clientTestRunConfiguration ?? (_clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.Xunit)); }
         }
 
-        protected override void Before_all_tests()
+        protected override string GetTestXapPath()
         {
-            base.Before_all_tests();
-
-            base.PathToIntegrationTestXap = TestXapFileLocations.XUnitSL3;
-            this._clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.Xunit);
+            return TestXapFileLocations.XUnit;
         }
 
         [Test]

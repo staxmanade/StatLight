@@ -1,35 +1,35 @@
 ﻿using System.Linq;
-using System.Collections.Generic;
 using NUnit.Framework;
 using StatLight.Core.Configuration;
 using StatLight.Core.Tests;
 using StatLight.Core.Reporting;
 
-namespace StatLight.IntegrationTests
+namespace StatLight.IntegrationTests.SpecialScenarios
 {
     [TestFixture]
     public class when_something_executing_in_silverlight_throws_up_a_modal_MessageBox
-        : IntegrationFixtureBase
+        : SpecialScenariosBase
     {
-        private ClientTestRunConfiguration clientTestRunConfiguration;
+        private ClientTestRunConfiguration _clientTestRunConfiguration;
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return clientTestRunConfiguration; }
-        }
+            get
+            {
+                if (_clientTestRunConfiguration == null)
+                {
+                    const string prefix = "StatLight.IntegrationTests.Silverlight.When_a_modal_MessageBox_is_displayed";
+                    _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
+                        new []
+                        {
+                            prefix + ".messageBox_overload_1X",
+                            prefix + ".messageBox_overload_1_MessageBoxButton_OKX",
+                            prefix + ".messageBox_overload_1_MessageBoxButton_OKCancel",
+                        });
+                }
 
-        protected override void Before_all_tests()
-        {
-            base.Before_all_tests();
-
-            const string prefix = "StatLight.IntegrationTests.Silverlight.When_a_modal_MessageBox_is_displayed";
-            clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
-                new List<string>
-                   {
-                       prefix + ".messageBox_overload_1X",
-                       prefix + ".messageBox_overload_1_MessageBoxButton_OKX",
-                       prefix + ".messageBox_overload_1_MessageBoxButton_OKCancel",
-                   });
+                return _clientTestRunConfiguration;
+            }
         }
 
         [Test]

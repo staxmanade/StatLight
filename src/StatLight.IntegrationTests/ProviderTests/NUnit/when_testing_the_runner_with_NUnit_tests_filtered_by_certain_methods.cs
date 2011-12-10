@@ -12,25 +12,30 @@ namespace StatLight.IntegrationTests.ProviderTests.NUnit
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return _clientTestRunConfiguration; }
-        }
+            get
+            {
+                if (_clientTestRunConfiguration == null)
+                {
+                    const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.";
 
-        protected override void Before_all_tests()
-        {
-            base.Before_all_tests();
-            
-            PathToIntegrationTestXap = TestXapFileLocations.NUnit;
-            const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.";
+                    NormalClassTestName = "NUnitTests";
+                    NestedClassTestName = "NUnitTests+NUnitNestedClassTests";
 
-            NormalClassTestName = "NUnitTests";
-            NestedClassTestName = "NUnitTests+NUnitNestedClassTests";
-
-            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.NUnit,
-                new List<string>
+                    _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.NUnit,
+                        new List<string>
                         {
                             namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
                             namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
                         });
+                }
+
+                return _clientTestRunConfiguration;
+            }
+        }
+
+        protected override string GetTestXapPath()
+        {
+            return TestXapFileLocations.NUnit;
         }
     }
 }

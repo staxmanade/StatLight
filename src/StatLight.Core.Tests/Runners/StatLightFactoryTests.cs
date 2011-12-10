@@ -1,4 +1,8 @@
 ﻿
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace StatLight.Core.Tests.Runners
 {
     using NUnit.Framework;
@@ -16,16 +20,16 @@ namespace StatLight.Core.Tests.Runners
         {
             base.Before_all_tests();
             container = BootStrapper.Initialize(new InputOptions(), TestLogger);
+
         }
 
         protected override void Because()
         {
             base.Because();
             var clientTestRunConfiguration = base.CreateTestDefaultClinetTestRunConfiguraiton();
-            _statLightConfiguration = new StatLightConfiguration(clientTestRunConfiguration,
-                                                                 MockServerTestRunConfiguration);
-            var currentStatLightConfiguration = new CurrentStatLightConfiguration(new[] {_statLightConfiguration});
-            container.Register<ICurrentStatLightConfiguration>(currentStatLightConfiguration);
+            _statLightConfiguration = new StatLightConfiguration(clientTestRunConfiguration, MockServerTestRunConfiguration);
+            var fakeCurrentStatLightConfiguration = new CurrentStatLightConfiguration(_statLightConfiguration);
+            container.Register<ICurrentStatLightConfiguration>(fakeCurrentStatLightConfiguration);
         }
 
         [Test]

@@ -12,29 +12,32 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return _clientTestRunConfiguration; }
+            get
+            {
+                if (_clientTestRunConfiguration == null)
+                {
+                    const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.";
+
+                    NormalClassTestName = "MSTestTests";
+                    NestedClassTestName = "MSTestTests+MSTestNestedClassTests";
+
+                    _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(
+                        new List<string>
+                        {
+                            namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
+                            namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
+                        }
+                    );
+                }
+
+                return _clientTestRunConfiguration;
+            }
         }
 
-        protected override void Before_all_tests()
+
+        protected override string GetTestXapPath()
         {
-            base.Before_all_tests();
-
-            PathToIntegrationTestXap = TestXapFileLocations.MSTest;
-
-            const string namespaceToTestFrom = "StatLight.IntegrationTests.Silverlight.";
-
-            NormalClassTestName = "MSTestTests";
-            NestedClassTestName = "MSTestTests+MSTestNestedClassTests";
-
-            _clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration
-                    (
-                        new List<string>
-		                    {
-		                		namespaceToTestFrom + NormalClassTestName + ".this_should_be_a_passing_test",
-		                		namespaceToTestFrom + NestedClassTestName + ".this_should_be_a_passing_test",
-		                	}
-                    );
-
+            return TestXapFileLocations.MSTest;
         }
     }
 

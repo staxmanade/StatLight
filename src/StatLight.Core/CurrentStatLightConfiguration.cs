@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,20 @@ namespace StatLight.Core
         private readonly List<StatLightConfiguration> _configurations;
         private int _currentIndex;
 
-        public CurrentStatLightConfiguration(IEnumerable<StatLightConfiguration> configurations)
+        internal CurrentStatLightConfiguration(StatLightConfiguration statLightConfiguration)
         {
-            _configurations = configurations.ToList();
+            _configurations = new List<StatLightConfiguration> { statLightConfiguration };
+
+            Reset();
+        }
+
+        public CurrentStatLightConfiguration(StatLightConfigurationFactory statLightConfigurationFactory)
+        {
+            if (statLightConfigurationFactory == null)
+                throw new ArgumentNullException("statLightConfigurationFactory");
+
+            _configurations = statLightConfigurationFactory.GetConfigurations().ToList();
+
             Reset();
         }
 
