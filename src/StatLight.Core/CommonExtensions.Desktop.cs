@@ -1,7 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Text;
-using StatLight.Core.WebServer.XapInspection;
+using StatLight.Core.Events;
+using TinyIoC;
 
 namespace StatLight
 {
@@ -72,6 +72,22 @@ namespace StatLight
                 }
                 return encryptedString.ToString();
             }
+        }
+
+
+        private static IEventSubscriptionManager _eventSubscriptionManager;
+        public static TinyIoCContainer ResolveAndAddToEventAggregator<T>(this TinyIoCContainer ioc) where T : class
+        {
+            if (ioc == null)
+                throw new ArgumentNullException("ioc");
+
+            if (_eventSubscriptionManager == null)
+                _eventSubscriptionManager = ioc.Resolve<IEventSubscriptionManager>();
+
+            var listener = ioc.Resolve<T>();
+
+            _eventSubscriptionManager.AddListener(listener);
+            return ioc;
         }
 
     }

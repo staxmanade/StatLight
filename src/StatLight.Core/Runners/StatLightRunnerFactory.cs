@@ -1,20 +1,13 @@
-
-
-
 namespace StatLight.Core.Runners
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.Composition.Hosting;
-    using System.IO;
     using System.Linq;
-    using System.Reflection;
     using StatLight.Core.Common;
     using StatLight.Core.Common.Abstractions.Timing;
     using StatLight.Core.Configuration;
     using StatLight.Core.Events;
     using StatLight.Core.Monitoring;
-    using StatLight.Core.Properties;
     using StatLight.Core.Reporting;
     using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.Reporting.Providers.TeamCity;
@@ -29,7 +22,7 @@ namespace StatLight.Core.Runners
         private readonly IEventSubscriptionManager _eventSubscriptionManager;
         private readonly IEventPublisher _eventPublisher;
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
-        private ConsoleResultHandler _consoleResultHandler;
+        private bool _hasConsoleResultHandlerBeenAddeToEventAgregator;
 
         public StatLightRunnerFactory(ILogger logger, TinyIoCContainer ioc)
         {
@@ -42,76 +35,11 @@ namespace StatLight.Core.Runners
             _eventSubscriptionManager = ioc.Resolve<IEventSubscriptionManager>();
             _eventPublisher = ioc.Resolve<IEventPublisher>();
 
-            var debugListener = new ConsoleDebugListener(logger);
-            _eventSubscriptionManager.AddListener(debugListener);
+            _ioc.ResolveAndAddToEventAggregator<ConsoleDebugListener>();
 
-            SetupExtensions(_eventSubscriptionManager);
+            ioc.Resolve<ExtensionResolver>().AddExtensionsToEventAggregator();
         }
 
-        private static string GetFullPath(string path)
-        {
-            if (!Path.IsPathRooted(path) && AppDomain.CurrentDomain.BaseDirectory != null)
-            {
-                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-            }
-
-            return Path.GetFullPath(path);
-        }
-
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private void SetupExtensions(IEventSubscriptionManager eventSubscriptionManager)
-        {
-            try
-            {
-                var path = GetFullPath("Extensions");
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                using (var directoryCatalog = new DirectoryCatalog(path))
-                using (var compositionContainer = new CompositionContainer(directoryCatalog))
-                {
-
-                    var extensions = compositionContainer.GetExports<ITestingReportEvents>().ToList();
-                    if (extensions.Any())
-                    {
-                        _logger.Debug("********** Extensions **********");
-                        foreach (var lazyExtension in extensions)
-                        {
-                            var extensionInstance = lazyExtension.Value;
-                            _logger.Debug("* Adding - {0}".FormatWith(extensionInstance.GetType().FullName));
-                            eventSubscriptionManager.AddListener(extensionInstance);
-                        }
-                        _logger.Debug("********************************");
-                    }
-                }
-            }
-            catch (ReflectionTypeLoadException rfex)
-            {
-                string loaderExceptionMessages = "";
-                foreach (var t in rfex.LoaderExceptions)
-                {
-                    loaderExceptionMessages += "   -  ";
-                    loaderExceptionMessages += t.Message;
-                    loaderExceptionMessages += Environment.NewLine;
-                }
-
-                string msg = @"
-********************* ReflectionTypeLoadException *********************
-***** Begin Loader Exception Messages *****
-{0}
-***** End Loader Exception Messages *****
-".FormatWith(loaderExceptionMessages);
-
-                _logger.Error(msg);
-            }
-            catch (Exception e)
-            {
-                _logger.Error("Failed to initialize extension. Error:{0}{1}".FormatWith(Environment.NewLine, e.ToString()));
-            }
-        }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public IRunner CreateContinuousTestRunner(IEnumerable<StatLightConfiguration> statLightConfigurations)
@@ -136,7 +64,7 @@ namespace StatLight.Core.Runners
             
             StartupBrowserCommunicationTimeoutMonitor();
 
-            CreateAndAddConsoleResultHandlerToEventAggregator(_logger);
+            CreateAndAddConsoleResultHandlerToEventAggregator();
 
             return new ContinuousConsoleRunner(_logger, _eventSubscriptionManager, _eventPublisher, statLightConfigurations,
                                         webServer, webBrowsers, responseFactory, dialogMonitorRunner);
@@ -177,7 +105,7 @@ namespace StatLight.Core.Runners
                 out webBrowsers,
                 out dialogMonitorRunner);
 
-            CreateAndAddConsoleResultHandlerToEventAggregator(_logger);
+            CreateAndAddConsoleResultHandlerToEventAggregator();
             IRunner runner = new OnetimeRunner(_logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
             return runner;
         }
@@ -188,7 +116,7 @@ namespace StatLight.Core.Runners
             var location = new WebServerLocation(_logger);
 
             var webServer = CreateWebServer(_logger, statLightConfiguration);
-            CreateAndAddConsoleResultHandlerToEventAggregator(_logger);
+            CreateAndAddConsoleResultHandlerToEventAggregator();
             IRunner runner = new WebServerOnlyRunner(_logger, _eventSubscriptionManager, _eventPublisher, webServer, location.TestPageUrl, statLightConfiguration.Server.XapToTestPath);
 
             return runner;
@@ -257,12 +185,13 @@ namespace StatLight.Core.Runners
             }
         }
 
-        private void CreateAndAddConsoleResultHandlerToEventAggregator(ILogger logger)
+        private void CreateAndAddConsoleResultHandlerToEventAggregator()
         {
-            if (_consoleResultHandler == null)
+            if (_hasConsoleResultHandlerBeenAddeToEventAgregator == false)
             {
-                _consoleResultHandler = new ConsoleResultHandler(logger);
-                _eventSubscriptionManager.AddListener(_consoleResultHandler);
+                _hasConsoleResultHandlerBeenAddeToEventAgregator = true;
+
+                _ioc.ResolveAndAddToEventAggregator<ConsoleResultHandler>();
             }
         }
 
@@ -301,8 +230,6 @@ namespace StatLight.Core.Runners
 
         private IDialogMonitorRunner SetupDialogMonitorRunner(ILogger logger, IEnumerable<IWebBrowser> webBrowsers)
         {
-            var debugAssertMonitorTimer = new TimerWrapper(Settings.Default.DialogSmackDownElapseMilliseconds);
-
             var dialogMonitors = new List<IDialogMonitor>
             {
                 new DebugAssertMonitor(logger),
@@ -314,7 +241,7 @@ namespace StatLight.Core.Runners
                 dialogMonitors.Add(monitor);
             }
 
-            return new DialogMonitorRunner(logger, _eventPublisher, debugAssertMonitorTimer, dialogMonitors);
+            return new DialogMonitorRunner(logger, _eventPublisher, dialogMonitors);
         }
     }
 }

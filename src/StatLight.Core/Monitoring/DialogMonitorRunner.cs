@@ -1,12 +1,11 @@
-using StatLight.Core.Common.Abstractions.Timing;
-
 namespace StatLight.Core.Monitoring
 {
     using System;
     using System.Collections.Generic;
     using StatLight.Core.Common;
+    using StatLight.Core.Common.Abstractions.Timing;
     using StatLight.Core.Events;
-    using StatLight.Core.Events;
+    using StatLight.Core.Properties;
 
     internal class DialogMonitorRunner : IDialogMonitorRunner
     {
@@ -15,8 +14,12 @@ namespace StatLight.Core.Monitoring
         private readonly ITimer _dialogPingingTimer;
         private readonly IList<IDialogMonitor> _dialogMonitors;
         private readonly Dictionary<int, bool> _isMonitorCurrentlyRunning = new Dictionary<int, bool>();
+        
+        public DialogMonitorRunner(ILogger logger, IEventPublisher eventPublisher, IList<IDialogMonitor> dialogMonitors)
+            : this(logger, eventPublisher, dialogMonitors, new TimerWrapper(Settings.Default.DialogSmackDownElapseMilliseconds))
+        {}
 
-        public DialogMonitorRunner(ILogger logger, IEventPublisher eventPublisher, ITimer dialogPingingTimer, IList<IDialogMonitor> dialogMonitors)
+        public DialogMonitorRunner(ILogger logger, IEventPublisher eventPublisher, IList<IDialogMonitor> dialogMonitors, ITimer dialogPingingTimer)
         {
             if (dialogMonitors == null)
                 throw new ArgumentNullException("dialogMonitors");

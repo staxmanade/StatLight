@@ -162,6 +162,7 @@
     <Compile Include="Reporting\ConsoleDebugListener.cs" />
     <Compile Include="Reporting\ReportOutputFileType.cs" />
     <Compile Include="Runners\EventAggregatorFactory.cs" />
+    <Compile Include="Runners\ExtensionResolver.cs" />
     <Compile Include="Runners\IStatLightRunnerFactory.cs" />
     <Compile Include="TinyIoC.cs" />
     <Compile Include="TinyIoCGlobalSupressions.cs" />
