@@ -13,7 +13,6 @@ namespace StatLight.Console
     using StatLight.Core.Configuration;
     using StatLight.Core.Properties;
     using StatLight.Core.Reporting;
-    using StatLight.Core.Runners;
     using TinyIoC;
 
     class Program
