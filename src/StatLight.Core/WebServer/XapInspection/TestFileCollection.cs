@@ -62,29 +62,29 @@ namespace StatLight.Core.WebServer.XapInspection
                  * Removed support because the [Timeout(?)] attribute didn't seem to work - 
                  * figured it was a good point to start deprecating some of these assemblies.
                  */
-                //new { Version = MicrosoftTestingFrameworkVersion.December2008, MicrosoftSilverlightTestingHash = "9ecc2326c15db40aa28afc466a683279380affec", Supported = false, VisualStudioQualityHash = "279e346983bd33bce15462aea198d3afc70ecbf0", },
-                //new { Version = MicrosoftTestingFrameworkVersion.March2009, MicrosoftSilverlightTestingHash = "8043c0da38fa18b224082e400189aca37ff0505f" , Supported = false, VisualStudioQualityHash = "9d8a5bdc59cb80eaf47a2a17353485c837ef817c", },
+                //new { Version = MicrosoftTestingFrameworkVersion.MSTest2008December, MicrosoftSilverlightTestingHash = "9ecc2326c15db40aa28afc466a683279380affec", Supported = false, VisualStudioQualityHash = "279e346983bd33bce15462aea198d3afc70ecbf0", },
+                //new { Version = MicrosoftTestingFrameworkVersion.MSTest2009March, MicrosoftSilverlightTestingHash = "8043c0da38fa18b224082e400189aca37ff0505f" , Supported = false, VisualStudioQualityHash = "9d8a5bdc59cb80eaf47a2a17353485c837ef817c", },
 
                 // Still supported
-                new { Version = MicrosoftTestingFrameworkVersion.July2009, MicrosoftSilverlightTestingHash = "108d7c8a4f753f55433e1c195bb9e8f548bd627d", Supported = true, VisualStudioQualityHash = "e8d46980845d785615c7687fe51fb85d141f5297", },
-                new { Version = MicrosoftTestingFrameworkVersion.October2009, MicrosoftSilverlightTestingHash = "8282f627299dc4cfd62f505ae7a6119aaae62d0d", Supported = true, VisualStudioQualityHash = "cf41fb881d6485035ddfedc57a3ca07be101fb6f", },
-                new { Version = MicrosoftTestingFrameworkVersion.November2009, MicrosoftSilverlightTestingHash = "aba8d1ea91c37f06000b6f2a2927e4feb00bd97d", Supported = true, VisualStudioQualityHash = "67f08086a0a7025928344820fbdd8ebdfba40179", },
+                new { Version = MicrosoftTestingFrameworkVersion.MSTest2009July, MicrosoftSilverlightTestingHash = "108d7c8a4f753f55433e1c195bb9e8f548bd627d", Supported = true, VisualStudioQualityHash = "e8d46980845d785615c7687fe51fb85d141f5297", },
+                new { Version = MicrosoftTestingFrameworkVersion.MSTest2009October, MicrosoftSilverlightTestingHash = "8282f627299dc4cfd62f505ae7a6119aaae62d0d", Supported = true, VisualStudioQualityHash = "cf41fb881d6485035ddfedc57a3ca07be101fb6f", },
+                new { Version = MicrosoftTestingFrameworkVersion.MSTest2009November, MicrosoftSilverlightTestingHash = "aba8d1ea91c37f06000b6f2a2927e4feb00bd97d", Supported = true, VisualStudioQualityHash = "67f08086a0a7025928344820fbdd8ebdfba40179", },
 
                 // Mix 2010 Preview
-                new { Version = MicrosoftTestingFrameworkVersion.March2010, MicrosoftSilverlightTestingHash = "4b41678001f2000720a5b7479e4d20ea77820605", Supported = true, VisualStudioQualityHash = "221bab08a6c78e0d66f2bbf69f38c6be79d04c1f", },
+                new { Version = MicrosoftTestingFrameworkVersion.MSTest2010March, MicrosoftSilverlightTestingHash = "4b41678001f2000720a5b7479e4d20ea77820605", Supported = true, VisualStudioQualityHash = "221bab08a6c78e0d66f2bbf69f38c6be79d04c1f", },
 
                 // April SL 4 release
-                new { Version = MicrosoftTestingFrameworkVersion.April2010, MicrosoftSilverlightTestingHash = "357a677957f309ae85c3e5aeeda43a32bca23ad3", Supported = true, VisualStudioQualityHash = "26e01beb49ef84d79069da70edc6e5af0876a550", },
+                new { Version = MicrosoftTestingFrameworkVersion.MSTest2010April, MicrosoftSilverlightTestingHash = "357a677957f309ae85c3e5aeeda43a32bca23ad3", Supported = true, VisualStudioQualityHash = "26e01beb49ef84d79069da70edc6e5af0876a550", },
 
                 // SL 3 build of the SL4 release to support phone
-                new { Version = MicrosoftTestingFrameworkVersion.May2010, MicrosoftSilverlightTestingHash = "de70e6249e6c13b60d8b556c6495b2d34a737d7c", Supported = true, VisualStudioQualityHash = "4b0fedf528fa9f0fbdc1c0af875cabe3fe7956f6", },
+                new { Version = MicrosoftTestingFrameworkVersion.MSTest2010May, MicrosoftSilverlightTestingHash = "de70e6249e6c13b60d8b556c6495b2d34a737d7c", Supported = true, VisualStudioQualityHash = "4b0fedf528fa9f0fbdc1c0af875cabe3fe7956f6", },
 
                 // Custom build of the framework - until and 'official' signed build is available
-                new { Version = MicrosoftTestingFrameworkVersion.Feb2011, MicrosoftSilverlightTestingHash = "8962C4BF1FFE3A2E432BC5991E2B142AFE1167A8", Supported = true, VisualStudioQualityHash = "26e01beb49ef84d79069da70edc6e5af0876a550", },
+                new { Version = MicrosoftTestingFrameworkVersion.MSTest2011Feb, MicrosoftSilverlightTestingHash = "8962C4BF1FFE3A2E432BC5991E2B142AFE1167A8", Supported = true, VisualStudioQualityHash = "26e01beb49ef84d79069da70edc6e5af0876a550", },
 
                 // Released on Jeff's blog
                 // http://www.jeff.wilcox.name/2011/06/updated-ut-mango-bits/
-                new { Version = MicrosoftTestingFrameworkVersion.June2011, MicrosoftSilverlightTestingHash = "b43f74adec6e911ce0e01d882fd2958a33f8c5fd", Supported = true, VisualStudioQualityHash = "303e7eb91b26dd6aad394dd4727351485068c8be", },
+                new { Version = MicrosoftTestingFrameworkVersion.MSTest2011June, MicrosoftSilverlightTestingHash = "b43f74adec6e911ce0e01d882fd2958a33f8c5fd", Supported = true, VisualStudioQualityHash = "303e7eb91b26dd6aad394dd4727351485068c8be", },
             };
 
 

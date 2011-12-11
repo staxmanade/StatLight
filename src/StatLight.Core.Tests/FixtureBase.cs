@@ -87,7 +87,7 @@ namespace StatLight.Core.Tests
             mockXapHostFileLoaderFactory
                 .Setup(s => s.LoadXapHostFor(It.IsAny<XapHostType>()))
                 .Returns(new byte[] { 0, 1, 1, 2, 3, 1, });
-            _mockServerTestRunConfiguration = new ServerTestRunConfiguration(() => new byte[] { 1, 2 }, _pathToTempXapFile, XapHostType.MSTestNovember2009, "", true, new WindowGeometry());
+            _mockServerTestRunConfiguration = new ServerTestRunConfiguration(() => new byte[] { 1, 2 }, _pathToTempXapFile, XapHostType.MSTest2009November, "", true, new WindowGeometry());
 
             Assert.IsTrue(File.Exists(_pathToTempXapFile));
         }

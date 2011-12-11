@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-#if March2010 || April2010 || May2010
+#if MSTest2010March || MSTest2010April || MSTest2010May
 using ITestHarness = Microsoft.Silverlight.Testing.Harness.UnitTestHarness;
-#elif Feb2011
+#elif MSTest2011Feb
 using Microsoft.Silverlight.Testing.Harness;
 using ITestHarness = Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 #else
@@ -59,7 +59,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
         /// <param name="testHarness">The unit test harness.</param>
         /// <param name="assemblyReference">Assembly reflection object.</param>
         /// <returns>Returns the assembly metadata interface.</returns>
-#if March2010 || April2010 || May2010 || May2010 || July2009 || October2009 || November2009
+#if MSTest2010March || MSTest2010April || MSTest2010May || MSTest2010May || MSTest2009July || MSTest2009October || MSTest2009November
         public IAssembly GetUnitTestAssembly(ITestHarness testHarness, Assembly assemblyReference)
 #else
         public IAssembly GetUnitTestAssembly(UnitTestHarness testHarness, Assembly assemblyReference)

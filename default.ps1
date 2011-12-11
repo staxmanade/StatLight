@@ -31,17 +31,17 @@ properties {
 	#  - 2. Add the version below 
 	#  - 3. Add the version to the MicrosoftTestingFrameworkVersion enum in the project
 	$microsoft_silverlight_testing_versions = @(
-			'June2011'
-			'Feb2011'
-			'March2010'
-			'April2010'
-			'May2010'
+			'MSTest2011June'
+			'MSTest2011Feb'
+			'MSTest2010March'
+			'MSTest2010April'
+			'MSTest2010May'
 
-#			'December2008'
-#			'March2009'
-			'July2009'
-			'October2009'
-			'November2009'
+#			'MSTest2008December'
+#			'MSTest2009March'
+			'MSTest2009July'
+			'MSTest2009October'
+			'MSTest2009November'
 		)
 }
 
@@ -668,7 +668,7 @@ Task compile-StatLIght-UnitDrivenHost {
 	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
 	
 	
-	$zippedName = "$build_dir\$statlight_xap_for_prefix.UnitDrivenDecember2009.zip"
+	$zippedName = "$build_dir\$statlight_xap_for_prefix.UnitDriven2009December.zip"
 
 	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="4.0.50401.00">
 		<Deployment.Parts>'
@@ -704,7 +704,7 @@ Task compile-StatLIght-XUnitContribHost {
 	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
 	
 	
-	$zippedName = "$build_dir\$statlight_xap_for_prefix.XUnitContribApril2011.zip"
+	$zippedName = "$build_dir\$statlight_xap_for_prefix.XUnitContrib2011April.zip"
 
 	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="4.0.50401.00">
 		<Deployment.Parts>'
@@ -806,7 +806,7 @@ Task test-multiple-one-xap-one-dll {
 
 Task test-multiple-two-dlls {
 	$scriptFile = GetTemporaryXmlFile;
-	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.dll" "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-v=April2010" "-r=$scriptFile" 
+	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.dll" "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-v=MSTest2010April" "-r=$scriptFile" 
 
 	if(Is-Release-Build){
 		Assert-statlight-xml-report-results -message "test-multiple-two-dlls" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 12 -expectedFailedCount 4 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 1
@@ -993,15 +993,15 @@ Task package-release -depends clean-release {
 	$expectedFilesToInclude = @(
 			'Ionic.Zip.Reduced.dll'
 			'Microsoft.Silverlight.Testing.License.txt'
-			'StatLight.Client.For.July2009.xap'
-			'StatLight.Client.For.March2010.xap'
-			'StatLight.Client.For.April2010.xap'
-			'StatLight.Client.For.May2010.xap'
-			'StatLight.Client.For.November2009.xap'
-			'StatLight.Client.For.October2009.xap'
-			'StatLight.Client.For.June2011.xap'
-			'StatLight.Client.For.UnitDrivenDecember2009.xap'
-			'StatLight.Client.For.XUnitContribApril2011.xap'
+			'StatLight.Client.For.MSTest2009July.xap'
+			'StatLight.Client.For.MSTest2010March.xap'
+			'StatLight.Client.For.MSTest2010April.xap'
+			'StatLight.Client.For.MSTest2010May.xap'
+			'StatLight.Client.For.MSTest2009November.xap'
+			'StatLight.Client.For.MSTest2009October.xap'
+			'StatLight.Client.For.MSTest2011June.xap'
+			'StatLight.Client.For.UnitDriven2009December.xap'
+			'StatLight.Client.For.XUnitContrib2011April.xap'
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'

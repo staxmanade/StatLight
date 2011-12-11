@@ -10,7 +10,7 @@ namespace StatLight.Core.Tests.WebServer.XapHost
     {
         private XapHostFileLoaderFactory _xapHostFileLoaderFactory;
 
-        private const XapHostType DefaultXapHostType = XapHostType.MSTestMay2010;
+        private const XapHostType DefaultXapHostType = XapHostType.MSTest2010May;
 
         protected override void Before_all_tests()
         {
@@ -41,45 +41,45 @@ namespace StatLight.Core.Tests.WebServer.XapHost
         }
 
         // Depricated: [Test]
-        // Depricated: public void Should_return_the_default_MSTest_xap_host_for_MSTest_December2008_test_provider()
+        // Depricated: public void Should_return_the_default_MSTest_xap_host_for_MSTest_MSTest2008December_test_provider()
         // Depricated: {
-        // Depricated:     _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.December2008)
-        // Depricated:         .ShouldEqual(XapHostType.MSTestDecember2008);
+        // Depricated:     _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2008December)
+        // Depricated:         .ShouldEqual(XapHostType.MSTest2008December);
         // Depricated: }
         // Depricated: 
         // Depricated: [Test]
-        // Depricated: public void Should_return_the_default_MSTest_xap_host_for_MSTest_March2009_test_provider()
+        // Depricated: public void Should_return_the_default_MSTest_xap_host_for_MSTest_MSTest2009March_test_provider()
         // Depricated: {
-        // Depricated:     _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.March2009)
-        // Depricated:         .ShouldEqual(XapHostType.MSTestMarch2009);
+        // Depricated:     _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2009March)
+        // Depricated:         .ShouldEqual(XapHostType.MSTest2009March);
         // Depricated: }
 
         [Test]
-        public void Should_return_the_default_MSTest_xap_host_for_MSTest_July2009_test_provider()
+        public void Should_return_the_default_MSTest_xap_host_for_MSTest_MSTest2009July_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.July2009)
-                .ShouldEqual(XapHostType.MSTestJuly2009);
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2009July)
+                .ShouldEqual(XapHostType.MSTest2009July);
         }
 
         [Test]
-        public void Should_return_the_default_MSTest_xap_host_for_MSTest_October2009_test_provider()
+        public void Should_return_the_default_MSTest_xap_host_for_MSTest_MSTest2009October_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.October2009)
-                .ShouldEqual(XapHostType.MSTestOctober2009);
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2009October)
+                .ShouldEqual(XapHostType.MSTest2009October);
         }
 
         [Test]
-        public void Should_return_the_default_MSTest_xap_host_for_MSTest_November2009_test_provider()
+        public void Should_return_the_default_MSTest_xap_host_for_MSTest_MSTest2009November_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.November2009)
-                .ShouldEqual(XapHostType.MSTestNovember2009);
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2009November)
+                .ShouldEqual(XapHostType.MSTest2009November);
         }
 
         [Test]
         public void Should_return_the_default_UnitDriven_xap_host_for_December2009_test_provider()
         {
             _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.UnitDriven, null)
-                .ShouldEqual(XapHostType.UnitDrivenDecember2009);
+                .ShouldEqual(XapHostType.UnitDriven2009December);
         }
 
     }

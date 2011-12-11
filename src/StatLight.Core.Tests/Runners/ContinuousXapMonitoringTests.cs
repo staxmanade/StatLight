@@ -20,7 +20,7 @@ namespace StatLight.Core.Tests.Runners
     //    {
     //        var clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, string.Empty, null);
     //        var serverTestRunConfiguration = new ServerTestRunConfiguration(() => new byte[] { 0, 2, 3, 4 }, "foo",
-    //                                                                        xapHostType: XapHostType.MSTestApril2010,
+    //                                                                        xapHostType: XapHostType.MSTest2010April,
     //                                                                        queryString: string.Empty,
     //                                                                        forceBrowserStart: true,
     //                                                                        windowGeometry: new WindowGeometry());
@@ -73,7 +73,7 @@ namespace StatLight.Core.Tests.Runners
 
 //            _clientTestRunConfiguration = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, string.Empty, null);
 //            var serverTestRunConfiguration = new ServerTestRunConfiguration(() => new byte[] { 0, 2, 3, 4 }, "foo",
-//                                                                            xapHostType: XapHostType.MSTestApril2010,
+//                                                                            xapHostType: XapHostType.MSTest2010April,
 //                                                                            queryString: string.Empty,
 //                                                                            forceBrowserStart: true,
 //                                                                            windowGeometry: new WindowGeometry());

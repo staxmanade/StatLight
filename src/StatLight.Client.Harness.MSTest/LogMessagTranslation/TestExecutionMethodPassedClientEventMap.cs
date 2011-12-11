@@ -1,5 +1,5 @@
 ﻿using Microsoft.Silverlight.Testing.Harness;
-#if July2009 || October2009 || November2009
+#if MSTest2009July || MSTest2009October || MSTest2009November
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 #else 
 #endif

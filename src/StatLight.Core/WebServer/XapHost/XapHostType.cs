@@ -2,39 +2,40 @@
 {
     public enum XapHostType
     {
-        MSTestDecember2008,
-        MSTestMarch2009,
-        MSTestJuly2009,
-        MSTestOctober2009,
-        MSTestNovember2009,
-        MSTestMarch2010,
-        MSTestApril2010,
-        MSTestMay2010,
-        MSTestFeb2011,
-        MSTestJune2011,
+        MSTest2008December,
+        MSTest2009March,
+        MSTest2009July,
+        MSTest2009October,
+        MSTest2009November,
 
-        UnitDrivenDecember2009,
-        XunitContribApril2011
+        MSTest2010March,
+        MSTest2010April,
+        MSTest2010May,
+
+        MSTest2011Feb,
+        MSTest2011June,
+
+        UnitDriven2009December,
+        XunitContrib2011April
     }
 
     public enum MicrosoftTestingFrameworkVersion
     {
         //Obsolete versions
-        //December2008 = 1,
-        //March2009 = 2,
+        //MSTest2008December = 1,
+        //MSTest2009March = 2,
 
         //Supported versions
-        July2009 = 3,
-        October2009 = 4,
-        November2009 = 5,
+        MSTest2009July = 3,
+        MSTest2009October = 4,
+        MSTest2009November = 5,
 
-        March2010 = 6,
-        April2010 = 7,
+        MSTest2010March = 6,
+        MSTest2010April = 7,
+        MSTest2010May = 8,
 
-        May2010 = 8,
-
-        Feb2011 = 9,
-        June2011 = 10,
+        MSTest2011Feb = 9,
+        MSTest2011June = 10,
 
         //FYI: go update StatLightClientXapNames.Default value when changing the default runner...
     }

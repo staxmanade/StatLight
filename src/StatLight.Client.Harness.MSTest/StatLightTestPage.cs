@@ -4,7 +4,7 @@ using StatLight.Client.Harness.Messaging;
 
 namespace StatLight.Client.Harness.Hosts.MSTest
 {
-#if July2009 || October2009 || November2009
+#if MSTest2009July || MSTest2009October || MSTest2009November
 #else
     public class StatLightTestPage : UserControl, ITestPage
     {

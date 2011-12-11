@@ -2,11 +2,11 @@
 using System.Reflection;
 using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-#if March2010 || April2010 || May2010
+#if MSTest2010March || MSTest2010April || MSTest2010May
 using ITestHarness = Microsoft.Silverlight.Testing.Harness.UnitTestHarness;
-#elif Feb2011
+#elif MSTest2011Feb
 
-#elif May2010 || July2009 || October2009 || November2009
+#elif MSTest2010May || MSTest2009July || MSTest2009October || MSTest2009November
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 #endif
 
@@ -18,7 +18,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
         protected UnitTestFrameworkAssemblyBase(IUnitTestProvider provider, object unitTestHarness, Assembly assembly)
         {
             Provider = provider;
-#if March2010 || April2010 || May2010 || July2009 || October2009 || November2009
+#if MSTest2010March || MSTest2010April || MSTest2010May || MSTest2009July || MSTest2009October || MSTest2009November
             TestHarness = unitTestHarness as ITestHarness;
 #else
             TestHarness = unitTestHarness as UnitTestHarness;
@@ -34,7 +34,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
 
         protected Assembly Assembly { get; set; }
 
-#if March2010 || April2010 || May2010 || July2009 || October2009 || November2009
+#if MSTest2010March || MSTest2010April || MSTest2010May || MSTest2009July || MSTest2009October || MSTest2009November
         public ITestHarness TestHarness { get; set; }
 #else
         public UnitTestHarness TestHarness { get; set; }

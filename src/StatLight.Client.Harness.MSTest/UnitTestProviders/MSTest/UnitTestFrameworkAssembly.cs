@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-#if March2010 || April2010 || May2010
+#if MSTest2010March || MSTest2010April || MSTest2010May
 using ITestHarness = Microsoft.Silverlight.Testing.Harness.UnitTestHarness;
-#elif October2009 || November2009 || July2009
+#elif MSTest2009October || MSTest2009November || MSTest2009July
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 #else
 using ITestHarness = Microsoft.Silverlight.Testing.UnitTesting.Metadata;

@@ -52,7 +52,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
         {
             var config = new ServerTestRunConfiguration(xapHost: () => _hostXap,
                                                                    xapToTest: "",
-                                                                   xapHostType: XapHostType.MSTestApril2010,
+                                                                   xapHostType: XapHostType.MSTest2010April,
                                                                    queryString: "foo",
                                                                    forceBrowserStart: false,
                                                                    windowGeometry: new WindowGeometry()

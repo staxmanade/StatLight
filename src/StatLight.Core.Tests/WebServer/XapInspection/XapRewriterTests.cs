@@ -131,7 +131,7 @@ namespace StatLight.Core.Tests.WebServer.XapInspection
             // Throws exception here...
             //ZipStorer.Open(fileAsStream, FileAccess.Read);
 
-            //ZipStorer.Open(@"C:\Code\StatLight\src\build\bin\Debug\StatLight.Client.For.April2010.xap", FileAccess.Read);
+            //ZipStorer.Open(@"C:\Code\StatLight\src\build\bin\Debug\StatLight.Client.For.MSTest2010April.xap", FileAccess.Read);
         }
 
 

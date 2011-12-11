@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.Harness;
-#if March2010 || April2010 || May2010
+#if MSTest2010March || MSTest2010April || MSTest2010May
 using ITestHarness = Microsoft.Silverlight.Testing.Harness.UnitTestHarness;
-#elif November2009 || October2009 || July2009
+#elif MSTest2009November || MSTest2009October || MSTest2009July
 using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 #else
 using ITestHarness = Microsoft.Silverlight.Testing.UnitTesting.Metadata;
