@@ -70,11 +70,25 @@ namespace StatLight.Console
                         .SetIsRequestingDebug(options.IsRequestingDebug)
                         ;
 
-                    TinyIoCContainer ioc = BootStrapper.Initialize(inputOptions);
+                    TestReportCollection testReports = null;
 
-                    var commandLineExecutionEngine = ioc.Resolve<RunnerExecutionEngine>();
+                    try
+                    {
+                        TinyIoCContainer ioc = BootStrapper.Initialize(inputOptions);
 
-                    TestReportCollection testReports = commandLineExecutionEngine.Run();
+                        var commandLineExecutionEngine = ioc.Resolve<RunnerExecutionEngine>();
+
+                        testReports = commandLineExecutionEngine.Run();
+                    }
+                    catch (TinyIoCResolutionException tinyIoCResolutionException)
+                    {
+                        if (options.IsRequestingDebug)
+                        {
+                            throw;
+                        }
+
+                        throw ResolveNonTinyIocException(tinyIoCResolutionException);
+                    }
 
                     if (testReports.FinalResult == RunCompletedState.Failure)
                         Environment.ExitCode = ExitFailed;
@@ -114,6 +128,14 @@ Try: (the following two steps that should allow StatLight to start a web server 
                 }
             }
         }
+
+        private static Exception ResolveNonTinyIocException(Exception ex)
+        {
+            if (ex is TinyIoCResolutionException)
+                return ResolveNonTinyIocException(ex.InnerException);
+            return ex;
+        }
+
 
         private static void HandleUnknownError(Exception exception)
         {
