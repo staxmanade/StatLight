@@ -14,6 +14,7 @@
 
         MSTest2011Feb,
         MSTest2011June,
+        MSTestDecember2011,
 
         UnitDriven2009December,
         XunitContrib2011April
@@ -36,6 +37,7 @@
 
         MSTest2011Feb = 9,
         MSTest2011June = 10,
+        MSTest2011December = 11,
 
         //FYI: go update StatLightClientXapNames.Default value when changing the default runner...
     }
