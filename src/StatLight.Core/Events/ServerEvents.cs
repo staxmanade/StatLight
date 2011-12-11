@@ -86,7 +86,7 @@ namespace StatLight.Core.Events
 
     public class MessageReceivedFromClientServerEvent { }
 
-    [InheritedExport]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1040:AvoidEmptyInterfaces"), InheritedExport]
     public interface IShouldBeAddedToEventAggregator { }
 
     [InheritedExport]
