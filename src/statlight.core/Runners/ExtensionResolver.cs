@@ -38,9 +38,9 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private IEnumerable<ITestingReportEvents> GetExtensions()
+        private IEnumerable<object> GetExtensions()
         {
-            var testingReportEventsExtensions = new List<ITestingReportEvents>();
+            var testingReportEventsExtensions = new List<IShouldBeAddedToEventAggregator>();
             try
             {
                 var path = GetFullPath("Extensions");
@@ -52,7 +52,7 @@ namespace StatLight.Core.Runners
                 using (var directoryCatalog = new DirectoryCatalog(path))
                 using (var compositionContainer = new CompositionContainer(directoryCatalog))
                 {
-                    testingReportEventsExtensions = compositionContainer.GetExports<ITestingReportEvents>().Select(s => s.Value).ToList();
+                    testingReportEventsExtensions = compositionContainer.GetExports<IShouldBeAddedToEventAggregator>().Select(s => s.Value).ToList();
                 }
             }
             catch (ReflectionTypeLoadException rfex)

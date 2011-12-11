@@ -87,11 +87,14 @@ namespace StatLight.Core.Events
     public class MessageReceivedFromClientServerEvent { }
 
     [InheritedExport]
-    public interface ITestingReportEvents : IListener<TestCaseResult>,
+    public interface IShouldBeAddedToEventAggregator { }
+
+    [InheritedExport]
+    public interface ITestingReportEvents : IShouldBeAddedToEventAggregator,
+        IListener<TestCaseResult>,
         IListener<TraceClientEvent>,
         IListener<BrowserHostCommunicationTimeoutServerEvent>,
         IListener<FatalSilverlightExceptionServerEvent>,
         IListener<UnhandledExceptionClientEvent>
     { }
-
 }
