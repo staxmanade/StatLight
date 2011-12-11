@@ -4,7 +4,7 @@
 *.suo
 *.docstates
 _ReSharper.*/
-src/**/*.xap
+src/IntegrationTests/**/*.xap
 TestResult.xml
 *.sln.cache
 *.VisualState.xml
