@@ -128,10 +128,14 @@ Try: (the following two steps that should allow StatLight to start a web server 
             }
         }
 
-        private static Exception ResolveNonTinyIocException(Exception ex)
+        internal static Exception ResolveNonTinyIocException(Exception ex)
         {
-            if (ex is TinyIoCResolutionException)
+            if (ex.InnerException == null)
+                return ex;
+
+            if (ex is TinyIoCResolutionException || ex is TargetInvocationException)
                 return ResolveNonTinyIocException(ex.InnerException);
+
             return ex;
         }
 

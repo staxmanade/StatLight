@@ -126,6 +126,7 @@
     <Compile Include="Runners\OneTimeRunnerTests.cs" />
     <Compile Include="Runners\StatLightFactoryTests.cs" />
     <Compile Include="Monitoring\BrowserCommunicationTimeoutMonitorTests.cs" />
+    <Compile Include="SpikeTests.cs" />
     <Compile Include="WebBrowser\ChromeWebBrowserTests.cs" />
     <Compile Include="WebBrowser\FirefoxWebBrowserTests.cs" />
     <Compile Include="WebBrowser\SelfHostedWebBrowserTests.cs" />
