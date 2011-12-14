@@ -995,18 +995,30 @@ Task package-release -depends clean-release {
 
 	$versionBuildPath = "$release_dir\$versionNumber"
 	
-	$expectedFilesToInclude = ($microsoft_silverlight_testing_versions | select { "StatLight.Client.For.$_.xap"})
-	$expectedFilesToInclude += @(
+	$expectedFilesToInclude = @(
+			'StatLight.Client.For.MSTest2011December.xap'
+			'StatLight.Client.For.MSTest2011October.xap'
+			'StatLight.Client.For.MSTest2011June.xap'
+			'StatLight.Client.For.MSTest2011Feb.xap'
+			'StatLight.Client.For.MSTest2010March.xap'
+			'StatLight.Client.For.MSTest2010April.xap'
+			'StatLight.Client.For.MSTest2010May.xap'
+			'StatLight.Client.For.MSTest2009July.xap'
+			'StatLight.Client.For.MSTest2009October.xap'
+			'StatLight.Client.For.MSTest2009November.xap'
 			'Ionic.Zip.Reduced.dll'
 			'Microsoft.Silverlight.Testing.License.txt'
-			'StatLight.Client.For.UnitDrivenDecember2009.xap'
-			'StatLight.Client.For.XUnitContribApril2011.xap'
+			'StatLight.Client.For.UnitDriven2009December.xap'
+			'StatLight.Client.For.XUnitContrib2011April.xap'
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'
 			'StatLight.exe.config'
 			#'StatLight.Sources.v*'
 		)
+"****"
+	$expectedFilesToInclude
+"****"
 
 	$knownFilesToExclude = @(
 		'Microsoft.Silverlight.Testing.dll'
@@ -1030,7 +1042,7 @@ Task package-release -depends clean-release {
 	#Move-Item (Get-ChildItem $release_dir\$statLightSourcesFilePrefix*) "$versionBuildPath\$($_.Name)"
 	$filesToCopyFromBuild | foreach{ Copy-Item $_ "$versionBuildPath\$($_.Name)"  }
 
-	$knownFilesToExclude | where { Test-Path "$versionBuildPath\$_" } | foreach{ Remove-Item "$versionBuildPath\$_" }
+	$knownFilesToExclude | where { Test-Path "$versionBuildPath\$_" } | foreach{ Remove-Item "$versionBuildPath\$_"; "Cleaning - $versionBuildPath\$_" }
 	
 	$unexpectedFilesInReleaseDir = (Get-ChildItem $versionBuildPath -Exclude $expectedFilesToInclude)
 	if($unexpectedFilesInReleaseDir.Count)
