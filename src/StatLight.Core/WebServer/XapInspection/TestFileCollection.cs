@@ -86,7 +86,7 @@ namespace StatLight.Core.WebServer.XapInspection
                 // http://www.jeff.wilcox.name/2011/06/updated-ut-mango-bits/
                 new { Version = MicrosoftTestingFrameworkVersion.MSTest2011June, MicrosoftSilverlightTestingHash = "b43f74adec6e911ce0e01d882fd2958a33f8c5fd", Supported = true, VisualStudioQualityHash = "303e7eb91b26dd6aad394dd4727351485068c8be", },
 
-                new { Version = MicrosoftTestingFrameworkVersion.October2011, MicrosoftSilverlightTestingHash = "86ea4ad64113131926dad8b08a623f282df8e649", Supported = true, VisualStudioQualityHash = "14b756f21e7f94ed6201732ccf6fdd97a7fdfe9f", },
+                new { Version = MicrosoftTestingFrameworkVersion.MSTest2011October, MicrosoftSilverlightTestingHash = "86ea4ad64113131926dad8b08a623f282df8e649", Supported = true, VisualStudioQualityHash = "14b756f21e7f94ed6201732ccf6fdd97a7fdfe9f", },
             };
 
 

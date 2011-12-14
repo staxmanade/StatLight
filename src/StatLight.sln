@@ -95,7 +95,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting", "IntegrationTests\StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting\StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting.csproj", "{406BE1DE-C4D3-4CDD-9E1A-AD425F81AB9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest-SL5", "StatLight.IntegrationTests.Silverlight.MSTest\StatLight.IntegrationTests.Silverlight.MSTest-SL5.csproj", "{D563A469-E386-42AF-A66E-99AC16B3C494}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLight.IntegrationTests.Silverlight.MSTest-SL5", "IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\StatLight.IntegrationTests.Silverlight.MSTest-SL5.csproj", "{D563A469-E386-42AF-A66E-99AC16B3C494}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -356,11 +356,9 @@ Global
 		{D563A469-E386-42AF-A66E-99AC16B3C494}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D563A469-E386-42AF-A66E-99AC16B3C494}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D563A469-E386-42AF-A66E-99AC16B3C494}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D563A469-E386-42AF-A66E-99AC16B3C494}.Debug|x86.Build.0 = Debug|Any CPU
 		{D563A469-E386-42AF-A66E-99AC16B3C494}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D563A469-E386-42AF-A66E-99AC16B3C494}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D563A469-E386-42AF-A66E-99AC16B3C494}.Release|x86.ActiveCfg = Release|Any CPU
-		{D563A469-E386-42AF-A66E-99AC16B3C494}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

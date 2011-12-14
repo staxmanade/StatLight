@@ -59,7 +59,7 @@
       <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Tests.Silverlight.UnitTestProvider">
-      <HintPath>..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\Raven.Tests.Silverlight.UnitTestProvider.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\Raven.Tests.Silverlight.UnitTestProvider.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />

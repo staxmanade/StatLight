@@ -37,7 +37,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
         protected override string GetTestXapPath()
         {
-            return TestXapFileLocations.MSTest;
+            return TestXapFileLocations.MSTestSL4;
         }
     }
 

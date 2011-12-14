@@ -2,7 +2,6 @@
 {
     public enum XapHostType
     {
-<<<<<<< HEAD
         MSTest2008December,
         MSTest2009March,
         MSTest2009July,
@@ -15,25 +14,14 @@
 
         MSTest2011Feb,
         MSTest2011June,
+<<<<<<< HEAD
+        MSTestDecember2011,
+=======
+        MSTest2011October,
+>>>>>>> Fixes from merge prior merges.
 
         UnitDriven2009December,
         XunitContrib2011April
-=======
-        MSTestDecember2008,
-        MSTestMarch2009,
-        MSTestJuly2009,
-        MSTestOctober2009,
-        MSTestNovember2009,
-        MSTestMarch2010,
-        MSTestApril2010,
-        MSTestMay2010,
-        MSTestFeb2011,
-        MSTestJune2011,
-        MSTestOctober2011,
-
-        UnitDrivenDecember2009,
-        XunitContribApril2011
->>>>>>> Added October 2011 version of Microsoft.Silverlight.Testing
     }
 
     public enum MicrosoftTestingFrameworkVersion
@@ -51,14 +39,13 @@
         MSTest2010April = 7,
         MSTest2010May = 8,
 
-<<<<<<< HEAD
         MSTest2011Feb = 9,
         MSTest2011June = 10,
+<<<<<<< HEAD
+        MSTest2011December = 11,
 =======
-        Feb2011 = 9,
-        June2011 = 10,
-        October2011 = 11,
->>>>>>> Added October 2011 version of Microsoft.Silverlight.Testing
+        MSTest2011October = 11,
+>>>>>>> Fixes from merge prior merges.
 
         //FYI: go update StatLightClientXapNames.Default value when changing the default runner...
     }

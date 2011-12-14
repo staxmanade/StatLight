@@ -32,6 +32,7 @@ properties {
 	#  - 3. Add the version to the MicrosoftTestingFrameworkVersion enum in the project
 	$microsoft_silverlight_testing_versions = @(
 			'MSTest2011December'
+			'MSTest2011October'
 			'MSTest2011June'
 			'MSTest2011Feb'
 			'MSTest2010March'
@@ -808,7 +809,7 @@ Task test-multiple-one-xap-one-dll {
 
 Task test-multiple-two-dlls {
 	$scriptFile = GetTemporaryXmlFile;
-	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.dll" "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-v=April2010" "-r=$scriptFile" 
+	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.dll" "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-v=MSTest2010April" "-r=$scriptFile" 
 
 	if(Is-Release-Build){
 		Assert-statlight-xml-report-results -message "test-multiple-two-dlls" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 12 -expectedFailedCount 4 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 1
@@ -898,9 +899,9 @@ function Assert-statlight-xml-report-results
 }
 
 Task test-all-mstest-version-acceptance-tests {
-#	@( 'October2011' ) | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
-	@( 'October2011' ) | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
-#	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
+##	@( 'MSTest2011October' ) | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
+#	@( 'MSTest2011October' ) | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
+	$microsoft_silverlight_testing_versions | foreach { Execute-MSTest-Version-Acceptance-Tests-AllSL $_ }
 }
 
 Task test-custom-test-provider {
@@ -993,18 +994,11 @@ Task package-release -depends clean-release {
 	$versionNumber = $versionNumber + "-" + $commit
 
 	$versionBuildPath = "$release_dir\$versionNumber"
-
-	$expectedFilesToInclude = @(
+	
+	$expectedFilesToInclude = ($microsoft_silverlight_testing_versions | select { "StatLight.Client.For.$_.xap"})
+	$expectedFilesToInclude += @(
 			'Ionic.Zip.Reduced.dll'
 			'Microsoft.Silverlight.Testing.License.txt'
-			'StatLight.Client.For.July2009.xap'
-			'StatLight.Client.For.March2010.xap'
-			'StatLight.Client.For.April2010.xap'
-			'StatLight.Client.For.May2010.xap'
-			'StatLight.Client.For.November2009.xap'
-			'StatLight.Client.For.October2009.xap'
-			'StatLight.Client.For.June2011.xap'
-			'StatLight.Client.For.October2011.xap'
 			'StatLight.Client.For.UnitDrivenDecember2009.xap'
 			'StatLight.Client.For.XUnitContribApril2011.xap'
 			'StatLight.Core.dll'

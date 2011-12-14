@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 
 namespace StatLight.IntegrationTests.ProviderTests
 {
@@ -13,8 +11,9 @@ namespace StatLight.IntegrationTests.ProviderTests
         }
 
         private static readonly string CurrentDirectory = GetBaseDirectory();
-        public static string MSTest = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.MSTest.xap";
         public static string MSTestSL3 = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.MSTest-SL3.xap";
+        public static string MSTestSL4 = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.MSTest-SL4.xap";
+        public static string MSTestSL5 = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.MSTest-SL5.xap";
         public static string NUnit = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.NUnit.xap";
         public static string UnitDriven = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.UnitDriven.xap";
         public static string UnitDrivenSl3 = CurrentDirectory + "StatLight.IntegrationTests.Silverlight.UnitDriven-SL3.xap";
