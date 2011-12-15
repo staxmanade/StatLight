@@ -26,11 +26,13 @@ namespace StatLight.Core.Reporting.Providers.Console
         {
             if (string.IsNullOrEmpty(fileName))
             {
+                writer.WriteLine();
                 "*************** Summary ********************"
                     .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
             }
             else
             {
+                writer.WriteLine();
                 "*************** Summary for : {0}"
                     .FormatWith(fileName)
                     .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorInformation, true);
