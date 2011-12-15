@@ -61,19 +61,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Silverlight.Testing">
-      <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.Silverlight.Testing.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\Microsoft\MSTest2010May\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight">
-      <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\Microsoft\MSTest2010May\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="NUnit.Silverlight.Compatibility">
-      <HintPath>..\..\lib\Silverlight\NUnit\NUnit.Silverlight.Compatibility.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\NUnit\NUnit.Silverlight.Compatibility.dll</HintPath>
     </Reference>
     <Reference Include="NUnit.Silverlight.Framework">
-      <HintPath>..\..\lib\Silverlight\NUnit\NUnit.Silverlight.Framework.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\NUnit\NUnit.Silverlight.Framework.dll</HintPath>
     </Reference>
     <Reference Include="NUnit.Silverlight.Metadata">
-      <HintPath>..\..\lib\Silverlight\NUnit\NUnit.Silverlight.Metadata.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\NUnit\NUnit.Silverlight.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />

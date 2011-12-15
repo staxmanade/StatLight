@@ -71,16 +71,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AsyncCtpLibrary_Silverlight">
-      <HintPath>..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\AsyncCtpLibrary_Silverlight.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\AsyncCtpLibrary_Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\Microsoft.Silverlight.Testing.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Tests.Silverlight.UnitTestProvider">
-      <HintPath>..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\Raven.Tests.Silverlight.UnitTestProvider.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\RavenCustomSilverlightUnitTestProvider\Raven.Tests.Silverlight.UnitTestProvider.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
