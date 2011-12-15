@@ -16,7 +16,6 @@ namespace StatLight.Core.Runners
     using StatLight.Core.Monitoring;
     using StatLight.Core.Properties;
     using StatLight.Core.Reporting;
-    using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
 
@@ -159,7 +158,9 @@ namespace StatLight.Core.Runners
                     buildEvent = _queuedRuns.Dequeue();
                 }
 
-                _currentStatLightConfiguration.SetCurrentTo(buildEvent.XapPath);
+                var xapPath = buildEvent.XapPath;
+
+                _currentStatLightConfiguration.SetCurrentTo(xapPath);
 
                 _currentStatLightConfiguration.Current.Client.TagFilter = _currentFilterString;
 
@@ -169,7 +170,7 @@ namespace StatLight.Core.Runners
                     eventPublisher: _eventPublisher,
                     webServer: _webServer,
                     webBrowsers: _webBrowsers,
-                    xapPath: buildEvent.XapPath,
+                    xapPath: xapPath,
                     dialogMonitorRunner: _dialogMonitorRunner))
                 {
                     Stopwatch singleRunStopwatch = Stopwatch.StartNew();
@@ -205,6 +206,10 @@ namespace StatLight.Core.Runners
 
         public void Handle(XapFileBuildChangedServerEvent message)
         {
+            if (message == null) throw new ArgumentNullException("message");
+
+            _logger.Debug("ContinuousConsoleRunner.Handle<XapFileBuildChangedServerEvent> - {0} - {1}".FormatWith(DateTime.Now, message.XapPath));
+
             lock (_sync)
             {
                 _queuedRuns.Enqueue(message);
