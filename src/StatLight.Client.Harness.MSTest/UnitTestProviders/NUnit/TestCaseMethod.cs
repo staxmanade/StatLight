@@ -1,4 +1,6 @@
-﻿namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
+﻿using StatLight.Client.Harness.Messaging;
+
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 {
     using System.Reflection;
     using System.Text;
@@ -13,9 +15,12 @@
         public TestCaseMethod(MethodInfo methodInfo, object testCaseAttribute)
             : base(methodInfo)
         {
-            _testCaseArguments = testCaseAttribute.GetObjectPropertyValue("Arguments") as object[];
+            _testCaseArguments = testCaseAttribute.GetObjectPropertyValue("Arguments") as object[] ?? new object[0];
             _testName = testCaseAttribute.GetObjectPropertyValue("TestName") as string;
             _expectedResult = testCaseAttribute.GetObjectPropertyValue("Result");
+
+            if (_testCaseArguments.Length == 0)
+                Server.Debug("TestCaseMethod[{0}] could not get Arguments".FormatWith(methodInfo.Name));
         }
 
         public override void Invoke(object instance)
@@ -41,7 +46,9 @@
                 for (int i = 0; i < _testCaseArguments.Length; i++)
                 {
                     var arg = _testCaseArguments[i];
-                    string argString = arg.ToString();
+                    string argString = "<null>";
+                    if (arg != null)
+                        argString = arg.ToString();
                     if (arg is string)
                     {
                         argString = "\"" + argString + "\"";
