@@ -53,7 +53,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>Bin\Release\</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT SILVERLIGHT5</DefineConstants>
+    <DefineConstants>TRACE;SILVERLIGHT;SILVERLIGHT5</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -63,11 +63,11 @@
   <ItemGroup>
     <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.Silverlight.Testing.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\Microsoft\MSTest2011October\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+      <HintPath>..\..\..\lib\Silverlight\Microsoft\MSTest2011October\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
@@ -111,6 +111,6 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PostBuildEvent>copy $(ProjectDir)$(OutDir)$(ProjectName).xap $(ProjectDir)$(ProjectName).xap
-copy /Y $(ProjectDir)$(OutDir)AppManifest.xaml $(ProjectDir)$(OutDir)AppManifest-SL5.xaml</PostBuildEvent>
+copy $(ProjectDir)$(OutDir)AppManifest.xaml $(ProjectDir)$(OutDir)AppManifest-SL5.xaml</PostBuildEvent>
   </PropertyGroup>
 </Project>
