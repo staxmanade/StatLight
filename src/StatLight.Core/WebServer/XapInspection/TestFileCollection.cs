@@ -87,6 +87,9 @@ namespace StatLight.Core.WebServer.XapInspection
                 new { Version = MicrosoftTestingFrameworkVersion.MSTest2011June, MicrosoftSilverlightTestingHash = "b43f74adec6e911ce0e01d882fd2958a33f8c5fd", Supported = true, VisualStudioQualityHash = "303e7eb91b26dd6aad394dd4727351485068c8be", },
 
                 new { Version = MicrosoftTestingFrameworkVersion.MSTest2011October, MicrosoftSilverlightTestingHash = "86ea4ad64113131926dad8b08a623f282df8e649", Supported = true, VisualStudioQualityHash = "14b756f21e7f94ed6201732ccf6fdd97a7fdfe9f", },
+
+                // Release of Silverlight 5
+                new { Version = MicrosoftTestingFrameworkVersion.MSTest2011December, MicrosoftSilverlightTestingHash = "3DCDF4616E1AE9989BD99D7D3C5FE55044C44206", Supported = true, VisualStudioQualityHash = "fb1386dd30326a4a3cdff642ef40947188838792", },
             };
 
 
