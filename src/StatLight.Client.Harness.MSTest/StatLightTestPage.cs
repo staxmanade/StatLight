@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using Microsoft.Silverlight.Testing;
 using StatLight.Client.Harness.Messaging;
 
@@ -6,7 +7,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 {
 #if MSTest2009July || MSTest2009October || MSTest2009November
 #else
-    public class StatLightTestPage : UserControl, ITestPage
+    public class StatLightTestPage : UserControl, ITestPage, IMobileTestPage
     {
         public static bool IsBrowserHostShown = false;
         public Panel TestPanel
@@ -33,6 +34,11 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 
         private class TestPanelImplementation : Panel
         {
+        }
+
+        public bool NavigateBack()
+        {
+            return false;
         }
     }
 #endif

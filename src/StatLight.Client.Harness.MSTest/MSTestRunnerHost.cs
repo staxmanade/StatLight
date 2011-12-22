@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Microsoft.Silverlight.Testing;
 using Microsoft.Silverlight.Testing.Harness;
-using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Client.Harness.Events;
 using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit;
 using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
@@ -18,6 +13,10 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 {
     public class MSTestRunnerHost : ITestRunnerHost
     {
+        public MSTestRunnerHost()
+        {
+            
+        }
         private ClientTestRunConfiguration _clientTestRunConfiguration;
         private ILoadedXapData _loadedXapData;
 
@@ -61,21 +60,22 @@ namespace StatLight.Client.Harness.Hosts.MSTest
         {
             Microsoft.Silverlight.Testing.UnitTesting.Metadata.UnitTestProviders.Providers.Clear();
 
+#if !WINDOWS_PHONE
             if (unitTestProviderType == UnitTestProviderType.XUnitLight)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new XUnitTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit.XUnitTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.NUnit)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new NUnitTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit.NUnitTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.UnitDriven)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new UnitDrivenTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven.UnitDrivenTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
             {
-                Type interfaceLookingFor = typeof(IUnitTestProvider);
+                System.Type interfaceLookingFor = typeof(Microsoft.Silverlight.Testing.UnitTesting.Metadata.IUnitTestProvider);
 
                 var allProviderPossibilities = (from assembly in _loadedXapData.TestAssemblies
                                                 from type in assembly.GetTypes()
@@ -87,8 +87,8 @@ namespace StatLight.Client.Harness.Hosts.MSTest
                 if (allProviderPossibilities.Count == 1)
                 {
                     var customProviderType = allProviderPossibilities.First();
-                    var instance = Activator.CreateInstance(customProviderType);
-                    var provider = (IUnitTestProvider)instance;
+                    var instance = System.Activator.CreateInstance(customProviderType);
+                    var provider = (Microsoft.Silverlight.Testing.UnitTesting.Metadata.IUnitTestProvider)instance;
                     UnitTestSystem.RegisterUnitTestProvider(provider);
                 }
                 else
@@ -105,6 +105,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
                 }
             }
             else
+#endif
             {
                 UnitTestSystem.RegisterUnitTestProvider(new VsttProvider());
             }

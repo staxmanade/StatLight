@@ -20,12 +20,10 @@ namespace StatLight.Core.WebServer.XapInspection
     public class XapReader
     {
         private readonly ILogger _logger;
-
         public XapReader(ILogger logger)
         {
             _logger = logger;
         }
-
         public TestFileCollection LoadXapUnderTest(string archiveFileName)
         {
             var files = new List<ITestFile>();

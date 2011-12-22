@@ -7,7 +7,7 @@ using StatLight.Core.WebServer;
 
 namespace StatLight.Core.WebBrowser
 {
-    internal class WebBrowserFactory
+    public class WebBrowserFactory
     {
         private readonly ILogger _logger;
         private readonly ICurrentStatLightConfiguration _currentStatLightConfiguration;

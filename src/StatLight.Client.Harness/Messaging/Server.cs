@@ -39,6 +39,9 @@ namespace StatLight.Client.Harness.Messaging
 
         public static void LogException(Exception exception)
         {
+#if WINDOWS_PHONE
+            System.Windows.MessageBox.Show(exception.ToString());
+#endif
             var messageObject = new UnhandledExceptionClientEvent
             {
                 ExceptionInfo = exception,

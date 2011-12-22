@@ -8,6 +8,7 @@ namespace StatLight.Core.Configuration
     using System.Reflection;
     using StatLight.Core.Common;
     using StatLight.Core.WebBrowser;
+    using StatLight.Core.WebServer.AssemblyResolution;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.WebServer.XapInspection;
 
@@ -17,6 +18,10 @@ namespace StatLight.Core.Configuration
         private readonly ILogger _logger;
         private readonly InputOptions _options;
         private readonly XapHostFileLoaderFactory _xapHostFileLoaderFactory;
+        public StatLightConfigurationFactory(ILogger logger)
+            : this(logger, new XapHostFileLoaderFactory(logger))
+        {
+        }
 
         public StatLightConfigurationFactory(ILogger logger, InputOptions options)
         {
@@ -45,6 +50,7 @@ namespace StatLight.Core.Configuration
 
             Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string runtimeVersion = null;
+            IEnumerable<string> testAssemblyFormalNames = new List<string>();
             string entryPointAssembly = string.Empty;
 
             var xapReader = new XapReader(_logger);
@@ -59,22 +65,26 @@ namespace StatLight.Core.Configuration
 
             entryPointAssembly = testFileCollection.TestAssemblyFullName;
 
+            }
             filesToCopyIntoHostXap = () =>
             {
                 return xapReader.LoadXapUnderTest(xapPath).FilesContainedWithinXap;
             };
+                testAssemblyFormalNames = testFileCollection.GetAssemblyNames();
+            }
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, _options.MethodsToTest, _options.TagFilters, _options.NumberOfBrowserHosts, _options.WebBrowserType, entryPointAssembly, _options.WindowGeometry);
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, _options.MethodsToTest, _options.TagFilters, _options.NumberOfBrowserHosts, _options.WebBrowserType, entryPointAssembly, _options.WindowGeometry, testAssemblyFormalNames);
 
             var serverConfig = CreateServerConfiguration(
                 xapPath,
-                clientConfig.UnitTestProviderType,
+                unitTestProviderType,
                 microsoftTestingFrameworkVersion,
                 filesToCopyIntoHostXap,
                 _options.QueryString,
                 _options.ForceBrowserStart,
                 _options.WindowGeometry,
-                runtimeVersion);
+                runtimeVersion,
+                isPhoneRun);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
@@ -84,6 +94,7 @@ namespace StatLight.Core.Configuration
             Func<IEnumerable<ITestFile>> filesToCopyIntoHostXap = () => new List<ITestFile>();
             string entryPointAssembly = string.Empty;
             string runtimeVersion = null;
+            IEnumerable<string> testAssemblyFormalNames = new List<string>();
 
             var dllFileInfo = new FileInfo(dllPath);
             var assemblyResolver = new AssemblyResolver(_logger);
@@ -111,7 +122,7 @@ namespace StatLight.Core.Configuration
                                                                     dependentFilesUnderTest).FilesContainedWithinXap;
                                         };
 
-            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, _options.MethodsToTest, _options.TagFilters, _options.NumberOfBrowserHosts, _options.WebBrowserType, entryPointAssembly, _options.WindowGeometry);
+            var clientConfig = new ClientTestRunConfiguration(unitTestProviderType, _options.MethodsToTest, _options.TagFilters, _options.NumberOfBrowserHosts, _options.WebBrowserType, entryPointAssembly, _options.WindowGeometry, testAssemblyFormalNames);
 
             var serverConfig = CreateServerConfiguration(
                 dllPath,
@@ -121,7 +132,8 @@ namespace StatLight.Core.Configuration
                 _options.QueryString,
                 _options.ForceBrowserStart,
                 _options.WindowGeometry,
-                runtimeVersion);
+                runtimeVersion,
+                isPhoneRun);
 
             return new StatLightConfiguration(clientConfig, serverConfig);
         }
@@ -157,9 +169,10 @@ namespace StatLight.Core.Configuration
             string queryString,
             bool forceBrowserStart,
             WindowGeometry windowGeometry,
-            string runtimeVersion)
+            string runtimeVersion,
+            bool isPhoneRun)
         {
-            XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion);
+            XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion, isPhoneRun);
 
             Func<byte[]> hostXapFactory = () =>
             {

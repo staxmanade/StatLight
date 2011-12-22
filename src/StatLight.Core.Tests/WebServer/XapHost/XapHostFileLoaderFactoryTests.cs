@@ -25,19 +25,19 @@ namespace StatLight.Core.Tests.WebServer.XapHost
                 .ShouldBeThrownBy(() =>
                     _xapHostFileLoaderFactory.MapToXapHostType(
                         (UnitTestProviderType)int.MaxValue,
-                        (MicrosoftTestingFrameworkVersion)int.MaxValue));
+                        (MicrosoftTestingFrameworkVersion)int.MaxValue, isPhoneRun:false));
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_NUnit_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.NUnit, null).ShouldEqual(DefaultXapHostType);
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.NUnit, null, isPhoneRun: false).ShouldEqual(DefaultXapHostType);
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_XUnitLight_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.XUnitLight, null).ShouldEqual(DefaultXapHostType);
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.XUnitLight, null, isPhoneRun: false).ShouldEqual(DefaultXapHostType);
         }
 
         // Depricated: [Test]
@@ -78,7 +78,7 @@ namespace StatLight.Core.Tests.WebServer.XapHost
         [Test]
         public void Should_return_the_default_UnitDriven_xap_host_for_December2009_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.UnitDriven, null)
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.UnitDriven, null, isPhoneRun: false)
                 .ShouldEqual(XapHostType.UnitDriven2009December);
         }
 

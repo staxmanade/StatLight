@@ -663,7 +663,11 @@ Task compile-StatLight-MSTestHostVersionIntegrationTests {
 Task compile-Solution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
 	$verbosity = "/verbosity:normal"
-	exec { . $msbuild $solutionFile /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo } 'msbuild failed on StatLight.sln'
+	$solutionFolder = (split-path (get-item $solutionFile))
+	
+	exec { . $msbuild $solutionFile /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo /p:CompileTimeSolutionDir="$solutionFolder" } 'msbuild failed on StatLight.sln'
+	
+	Copy-Item ".\src\StatLight.Client.Harness.Phone\Bin\$build_configuration\StatLight.Client.Harness.Phone.xap" "$build_dir\StatLight.Client.For.MSTestMay2010Phone.xap"
 }
 
 Task compile-StatLIght-UnitDrivenHost {
@@ -943,6 +947,32 @@ Task test-usage-of-TestPanel-displays-warning {
 	}
 }
 
+Task test-phone-xap {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-x=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.xap"  "-r=$scriptFile" "--UserPhoneEmulator"
+	
+
+	if( Is-Release-Build ) {
+		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 4 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
+	else {
+		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
+}
+
+Task test-phone-dll {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-d=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.dll"  "-r=$scriptFile" "--UserPhoneEmulator"
+	
+
+	if( Is-Release-Build ) {
+		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 4 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
+	else {
+		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
+}
+
 #########################################
 #
 # Release packaging
@@ -1010,11 +1040,12 @@ Task package-release -depends clean-release {
 			'Microsoft.Silverlight.Testing.License.txt'
 			'StatLight.Client.For.UnitDriven2009December.xap'
 			'StatLight.Client.For.XUnitContrib2011April.xap'
+			'StatLight.Client.For.MSTestMay2010Phone.xap'
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'
 			'StatLight.exe.config'
-			#'StatLight.Sources.v*'
+			'StatLight.Core.Phone.dll'
 		)
 "****"
 	$expectedFilesToInclude
@@ -1029,6 +1060,7 @@ Task package-release -depends clean-release {
 		'StatLight.IntegrationTests.Silverlight.MSTest-SL3.dll'
 		'StatLight.IntegrationTests.Silverlight.MSTest-SL4.dll'
 		'StatLight.IntegrationTests.Silverlight.MSTest-SL5.dll'
+		'StatLight.Core.Phone.dll'
 	)
 
 	$filesToCopyFromBuild = @(
@@ -1090,11 +1122,15 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 	Write-Documentation
 }
 
-Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning, test-multiple-xaps, test-multiple-one-xap-one-dll, test-multiple-two-dlls, test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll {
+Task test-multiple -depends test-multiple-xaps, test-multiple-one-xap-one-dll, test-multiple-two-dlls {
+}
+Task test-single-assemblies -depends test-single-assembly-run, test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll {
+}
+Task test-phone -depends test-phone-xap, test-phone-dll {
+}
+
+Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning, test-multiple, test-phone {
 }
 
 Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLIght-XUnitContribHost, compile-StatLight-MSTestHostVersionIntegrationTests {
-}
-
-Task test-single-assemblies -depends test-single-assembly-run {
 }

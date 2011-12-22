@@ -20,7 +20,7 @@ namespace StatLight.Core.Configuration
         private Collection<string> _methodsToTest;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "4#", Justification = "System.Uri is not DataContract serializable")]
-        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, WebBrowserType webBrowserType, string entryPointAssembly, WindowGeometry windowGeometry)
+        public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, WebBrowserType webBrowserType, bool showTestingBrowserHost, string entryPointAssembly, WindowGeometry windowGeometry, IEnumerable<string> testAssemblyFormalNames)
         {
             if (methodsToTest == null) throw new ArgumentNullException("methodsToTest");
             if (unitTestProviderType == UnitTestProviderType.Undefined)
@@ -36,7 +36,11 @@ namespace StatLight.Core.Configuration
             WebBrowserType = webBrowserType;
             EntryPointAssembly = entryPointAssembly;
             WindowGeometry = windowGeometry;
+            TestAssemblyFormalNames = testAssemblyFormalNames.ToList();
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly"), DataMember]
+        public List<string> TestAssemblyFormalNames { get; set; }
 
         [DataMember]
         public string EntryPointAssembly { get; set; }
@@ -132,13 +136,14 @@ namespace StatLight.Core.Configuration
                 if (!_instanceNumber.HasValue)
                 {
                     const string instanceNumber = "InstaneNumber";
-
+#if !WINDOWS_PHONE
                     if (System.Windows.Application.Current.Host.InitParams.ContainsKey(instanceNumber))
                     {
                         string initParam = System.Windows.Application.Current.Host.InitParams[instanceNumber];
                         _instanceNumber = int.Parse(initParam);
                     }
                     else
+#endif
                     {
                         _instanceNumber = 1;
                     }
