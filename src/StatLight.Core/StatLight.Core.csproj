@@ -171,7 +171,6 @@
     <Compile Include="TinyIoC.cs" />
     <Compile Include="TinyIoCGlobalSupressions.cs" />
     <Compile Include="WebServer\TestPage.cs" />
-    <Compile Include="WebServer\XapInspection\AssemblyResolver.cs" />
     <Compile Include="ExternalComponentFactory.cs" />
     <Compile Include="WebServer\AssemblyResolution\AssemblyResolver.cs" />
     <Compile Include="Reporting\Providers\IXmlReport.cs" />

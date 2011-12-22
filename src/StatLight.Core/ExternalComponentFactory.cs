@@ -3,7 +3,6 @@ using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using EventAggregatorNet;
 using StatLight.Core.Common;
 using StatLight.Core.Events;
 using StatLight.Core.Runners;

@@ -16,7 +16,7 @@ namespace StatLight.Core.WebServer.XapHost
             if (fileName == null) throw new ArgumentNullException("fileName");
 
             _logger = logger;
-            var pathToThisExe = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace(@"file:\", "");
+            var pathToThisExe = baseDirectory;
             _fileName = Path.Combine(pathToThisExe, fileName);
 
             if (!File.Exists(_fileName))

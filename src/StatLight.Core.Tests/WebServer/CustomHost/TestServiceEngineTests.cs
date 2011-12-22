@@ -31,7 +31,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
             var webServerLocation = new WebServerLocation(TestLogger, 38881);
             var consoleLogger = new ConsoleLogger(LogChatterLevels.Full);
             _hostXap = new byte[] { 5, 4, 2, 1, 4 };
-            var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, string.Empty, null);
+            var clientConfig = new ClientTestRunConfiguration(UnitTestProviderType.MSTest, new List<string>(), "", 1, WebBrowserType.SelfHosted, string.Empty, new WindowGeometry(), new List<string>());
             _serializedConfiguration = clientConfig.Serialize();
 
             var dummyServerTestRunConfiguration = GetDummyServerTestRunConfiguration();
@@ -55,7 +55,8 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
                                                                    xapHostType: XapHostType.MSTest2010April,
                                                                    queryString: "foo",
                                                                    forceBrowserStart: false,
-                                                                   windowGeometry: new WindowGeometry()
+                                                                   windowGeometry: new WindowGeometry(),
+                                                                   isPhoneRun: false
                                                                    );
             return config;
         }

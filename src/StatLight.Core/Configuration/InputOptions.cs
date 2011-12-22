@@ -32,6 +32,7 @@ namespace StatLight.Core.Configuration
             OutputForTeamCity = false;
             StartWebServerOnly = false;
             IsRequestingDebug = false;
+            IsPhoneRun = false;
         }
 
         public WindowGeometry WindowGeometry { get; private set; }
@@ -52,6 +53,7 @@ namespace StatLight.Core.Configuration
         public bool OutputForTeamCity { get; private set; }
         public bool StartWebServerOnly { get; private set; }
         public bool IsRequestingDebug { get; set; }
+        public bool IsPhoneRun { get; set; }
 
         public InputOptions DumpValuesForDebug(ILogger logger)
         {
@@ -213,6 +215,12 @@ namespace StatLight.Core.Configuration
         public InputOptions SetIsRequestingDebug(bool isRequestingDebug)
         {
             IsRequestingDebug = isRequestingDebug;
+            return this;
+        }
+
+        public InputOptions SetIsPhoneRun(bool isPhoneRun)
+        {
+            IsPhoneRun = isPhoneRun;
             return this;
         }
     }

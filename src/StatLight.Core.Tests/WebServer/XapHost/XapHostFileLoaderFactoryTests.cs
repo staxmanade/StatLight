@@ -57,21 +57,21 @@ namespace StatLight.Core.Tests.WebServer.XapHost
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_MSTest_MSTest2009July_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2009July)
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2009July, isPhoneRun:false)
                 .ShouldEqual(XapHostType.MSTest2009July);
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_MSTest_MSTest2009October_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2009October)
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2009October, isPhoneRun: false)
                 .ShouldEqual(XapHostType.MSTest2009October);
         }
 
         [Test]
         public void Should_return_the_default_MSTest_xap_host_for_MSTest_MSTest2009November_test_provider()
         {
-            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2009November)
+            _xapHostFileLoaderFactory.MapToXapHostType(UnitTestProviderType.MSTest, MicrosoftTestingFrameworkVersion.MSTest2009November, isPhoneRun: false)
                 .ShouldEqual(XapHostType.MSTest2009November);
         }
 

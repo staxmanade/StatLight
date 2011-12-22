@@ -36,10 +36,17 @@ namespace StatLight.WindowsPhoneEmulator
             var dsmgrObj = new DatastoreManager(1033);
             Platform wp7Sdk = dsmgrObj.GetPlatforms().First();
 
+            foreach (var device in wp7Sdk.GetDevices())
+            {
+                _logger.Debug(device.Name);
+            }
+
             //TODO: hook up to real wp7 phone and see if we can get StatLight to run on that?
             bool useEmulator = true;
             if (useEmulator)
-                _wp7Device = wp7Sdk.GetDevices().Single(d => d.Name == "Windows Phone 7 Emulator");
+            {
+                _wp7Device = wp7Sdk.GetDevices().Single(d => d.Name == "Windows Phone 7 Emulator" || d.Name == "Windows Phone Emulator");
+            }
             else
                 _wp7Device = wp7Sdk.GetDevices().Single(d => d.Name == "Windows Phone 7 Device");
         }

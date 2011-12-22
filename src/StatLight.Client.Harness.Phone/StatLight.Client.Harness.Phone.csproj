@@ -55,10 +55,11 @@
       <HintPath>..\..\lib\Phone\Microsoft\Microsoft.Phone.Interop.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Silverlight.Testing, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Silverlight\Microsoft\May2010\Microsoft.Silverlight.Testing.dll</HintPath>
+      <HintPath>..\..\lib\Silverlight\Microsoft\MSTest2010May\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\Silverlight\Microsoft\MSTest2010May\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <HintPath>..\..\lib\Phone\Microsoft\System.dll</HintPath>
     </Reference>
@@ -226,14 +227,11 @@
     <Compile Include="..\StatLight.Core\Configuration\UnitTestProviderTypes.cs">
       <Link>Core\Common\UnitTestProviderTypes.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Core\Configuration\WindowGeometry.cs">
+      <Link>Core\Configuration\WindowGeometry.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Core\Reporting\Messages\LogMessageType.cs">
       <Link>Core\Reporting\Messages\LogMessageType.cs</Link>
-    </Compile>
-    <Compile Include="..\StatLight.Core\Reporting\Messages\MobilOtherMessageType.cs">
-      <Link>Core\Reporting\Messages\MobilOtherMessageType.cs</Link>
-    </Compile>
-    <Compile Include="..\StatLight.Core\Reporting\Messages\MobilScenarioResult.cs">
-      <Link>Core\Reporting\Messages\MobilScenarioResult.cs</Link>
     </Compile>
     <Compile Include="..\StatLight.Core\Reporting\Messages\TestOutcome.cs">
       <Link>Core\Reporting\Messages\TestOutcome.cs</Link>
@@ -292,6 +290,6 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)StatLight.Client.Harness.Phone.xap $(SolutionDir)build\bin\$(ConfigurationName)\StatLight.Client.For.MSTestMay2010Phone.xap</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetDir)StatLight.Client.Harness.Phone.xap $(SolutionDir)build\bin\$(ConfigurationName)\StatLight.Client.For.MSTest2010MayPhone.xap</PostBuildEvent>
   </PropertyGroup>
 </Project>

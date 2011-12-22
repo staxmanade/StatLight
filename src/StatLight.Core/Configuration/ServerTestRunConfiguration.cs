@@ -5,9 +5,7 @@ namespace StatLight.Core.Configuration
 {
     public class ServerTestRunConfiguration
     {
-        public ServerTestRunConfiguration(Func<byte[]> xapHost, long dialogSmackDownElapseMilliseconds, string xapToTest, XapHostType xapHostType, string queryString, bool forceBrowserStart, bool showTestingBrowserHost)
-        public ServerTestRunConfiguration(Func<byte[]> xapHost, string xapToTest, XapHostType xapHostType, string queryString, bool forceBrowserStart, WindowGeometry windowGeometry)
-        public ServerTestRunConfiguration(Func<byte[]> xapHost, long dialogSmackDownElapseMilliseconds, string xapToTest, XapHostType xapHostType, string queryString, bool forceBrowserStart, bool showTestingBrowserHost, bool isPhoneRun)
+        public ServerTestRunConfiguration(Func<byte[]> xapHost, string xapToTest, XapHostType xapHostType, string queryString, bool forceBrowserStart, WindowGeometry windowGeometry, bool isPhoneRun)
         {
             if (xapHost == null) throw new ArgumentNullException("xapHost");
             if (xapToTest == null) throw new ArgumentNullException("xapToTest");

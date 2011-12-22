@@ -33,8 +33,9 @@ namespace StatLight.Core.WebServer.XapHost
                 XapHostFileLoaders.Add(e, new DiskXapHostFileLoader(_logger, xapDirectory, ClientXapNameFormat.FormatWith(enumItemCasted)));
             }
 
-            XapHostFileLoaders.Add(XapHostType.UnitDriven2009December, new DiskXapHostFileLoader(_logger, ClientXapNameFormat.FormatWith(XapHostType.UnitDriven2009December)));
-            XapHostFileLoaders.Add(XapHostType.XunitContrib2011April, new DiskXapHostFileLoader(_logger, ClientXapNameFormat.FormatWith(XapHostType.XunitContrib2011April)));
+            XapHostFileLoaders.Add(XapHostType.MSTest2010MayPhone, new DiskXapHostFileLoader(_logger, xapDirectory, ClientXapNameFormat.FormatWith(XapHostType.MSTest2010MayPhone)));
+            XapHostFileLoaders.Add(XapHostType.UnitDriven2009December, new DiskXapHostFileLoader(_logger, xapDirectory, ClientXapNameFormat.FormatWith(XapHostType.UnitDriven2009December)));
+            XapHostFileLoaders.Add(XapHostType.XunitContrib2011April, new DiskXapHostFileLoader(_logger, xapDirectory, ClientXapNameFormat.FormatWith(XapHostType.XunitContrib2011April)));
         }
 
         public virtual byte[] LoadXapHostFor(XapHostType version)
@@ -57,8 +58,8 @@ namespace StatLight.Core.WebServer.XapHost
                 switch (unitTestProviderType)
                 {
                     case UnitTestProviderType.MSTest:
-                        if (microsoftTestingFrameworkVersion != null && microsoftTestingFrameworkVersion == MicrosoftTestingFrameworkVersion.May2010)
-                            return XapHostType.MSTestMay2010Phone;
+                        if (microsoftTestingFrameworkVersion != null && microsoftTestingFrameworkVersion == MicrosoftTestingFrameworkVersion.MSTest2010May)
+                            return XapHostType.MSTest2010MayPhone;
 
                         throwNotSupportedException();
                         break;
@@ -77,16 +78,18 @@ namespace StatLight.Core.WebServer.XapHost
             }
             else
             {
-                case UnitTestProviderType.NUnit:
-                case UnitTestProviderType.XUnitLight:
-                    return XapHostType.MSTest2010May;
+                switch (unitTestProviderType)
+                {
+                    case UnitTestProviderType.NUnit:
+                    case UnitTestProviderType.XUnitLight:
+                        return XapHostType.MSTest2010May;
 
                     case UnitTestProviderType.MSTestWithCustomProvider:
                     case UnitTestProviderType.MSTest:
 
-                    if(microsoftTestingFrameworkVersion.HasValue)
-                    {
-                        var msTestVersionXapHostStringName = microsoftTestingFrameworkVersion.Value.ToString();
+                        if (microsoftTestingFrameworkVersion.HasValue)
+                        {
+                            var msTestVersionXapHostStringName = microsoftTestingFrameworkVersion.Value.ToString();
 
                             if (Enum.IsDefined(typeof(XapHostType), msTestVersionXapHostStringName))
                                 return (XapHostType)Enum.Parse(typeof(XapHostType), msTestVersionXapHostStringName);
@@ -95,10 +98,10 @@ namespace StatLight.Core.WebServer.XapHost
                         throwNotSupportedException();
                         break;
 
-                case UnitTestProviderType.UnitDriven:
-                    return XapHostType.UnitDriven2009December;
-                case UnitTestProviderType.Xunit:
-                    return XapHostType.XunitContrib2011April;
+                    case UnitTestProviderType.UnitDriven:
+                        return XapHostType.UnitDriven2009December;
+                    case UnitTestProviderType.XUnit:
+                        return XapHostType.XunitContrib2011April;
 
                     case UnitTestProviderType.Undefined:
                     default:

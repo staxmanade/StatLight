@@ -67,6 +67,7 @@ namespace StatLight.Console
                         .SetOutputForTeamCity(options.OutputForTeamCity)
                         .SetStartWebServerOnly(options.StartWebServerOnly)
                         .SetIsRequestingDebug(options.IsRequestingDebug)
+                        .SetIsPhoneRun(options.UserPhoneEmulator)
                         ;
 
                     TestReportCollection testReports = null;

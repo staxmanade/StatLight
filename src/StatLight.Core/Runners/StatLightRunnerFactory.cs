@@ -30,7 +30,6 @@ namespace StatLight.Core.Runners
         private readonly IEventPublisher _eventPublisher;
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
         private bool _hasConsoleResultHandlerBeenAddeToEventAgregator;
-        private ExternalComponentFactory _externalComponentFactory;
 
         public StatLightRunnerFactory(ILogger logger, TinyIoCContainer ioc)
         {
@@ -44,10 +43,8 @@ namespace StatLight.Core.Runners
             _eventPublisher = ioc.Resolve<IEventPublisher>();
 
             _ioc.ResolveAndAddToEventAggregator<ConsoleDebugListener>();
-            _externalComponentFactory = new ExternalComponentFactory(_logger);
 
-
-            ioc.Resolve<ExtensionResolver>().AddExtensionsToEventAggregator();
+            _ioc.Resolve<ExtensionResolver>().AddExtensionsToEventAggregator();
         }
 
 
@@ -164,15 +161,15 @@ namespace StatLight.Core.Runners
             }
         }
 
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        //public IRunner CreateRemotelyHostedRunner(StatLightConfiguration statLightConfiguration)
-        //{
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public IRunner CreateRemotelyHostedRunner(StatLightConfiguration statLightConfiguration)
+        {
         //    if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
 
             //ClientTestRunConfiguration clientTestRunConfiguration = statLightConfiguration.Client;
             //ServerTestRunConfiguration serverTestRunConfiguration = statLightConfiguration.Server;
 
-        //    throw new NotImplementedException();
+            throw new NotImplementedException();
         //    //var urlToTestPage = statLightConfiguration.Client.XapToTestUrl.ToUri();
 
         //    //var location = new RemoteSiteOverriddenLocation(logger, urlToTestPage);
@@ -195,7 +192,7 @@ namespace StatLight.Core.Runners
         //    //
         //    //IRunner runner = new OnetimeRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
         //    //return runner;
-        //}
+        }
 
         private IDialogMonitorRunner SetupDialogMonitorRunner(ILogger logger, IEnumerable<IWebBrowser> webBrowsers)
         {

@@ -1,10 +1,37 @@
-﻿namespace StatLight.Core.WebServer.AssemblyResolution
+﻿using System.Collections.Generic;
+
+namespace StatLight.Core.WebServer.AssemblyResolution
 {
     using System;
     using System.IO;
     using System.Reflection;
     using Microsoft.Win32;
     using StatLight.Core.Common;
+
+    //public class AssemblyResolver
+    //{
+    //    private readonly ILogger _logger;
+
+    //    public AssemblyResolver(ILogger logger)
+    //    {
+    //        if (logger == null) throw new ArgumentNullException("logger");
+    //        _logger = logger;
+    //    }
+
+    //    public IEnumerable<string> ResolveAllDependentAssemblies(string path)
+    //    {
+    //        _logger.Debug("AssemblyResolver - path: {0}".FormatWith(path));
+
+    //        _logger.Debug("Creating new AppDomain to reflect over assembly - " + path);
+    //        AppDomain tempDomain = AppDomain.CreateDomain("TemporaryAppDomain");
+
+    //        var instanceAndUnwrap = (AppDomainReflectionManager)tempDomain.CreateInstanceFromAndUnwrap(
+    //            GetType().Assembly.CodeBase,
+    //            typeof(AppDomainReflectionManager).FullName);
+
+    //        return instanceAndUnwrap.GetAllReferences(path);
+    //    }
+    //}
 
     public class SilverlightAssemblyResolver : AssemblyResolverBase
     {
