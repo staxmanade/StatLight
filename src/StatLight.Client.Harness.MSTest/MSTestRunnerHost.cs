@@ -45,16 +45,23 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             return ui;
         }
 
+        private static bool _hasAlreadySentSignalTestCompleteClientEvent = false;
+
         private void CurrentHarness_TestHarnessCompleted(object sender, TestHarnessCompletedEventArgs e)
         {
-            var state = e.State;
-            var signalTestCompleteClientEvent = new SignalTestCompleteClientEvent
+            if (!_hasAlreadySentSignalTestCompleteClientEvent)
             {
-                Failed = state.Failed,
-                TotalFailureCount = state.Failures,
-                TotalTestsCount = state.TotalScenarios,
-            };
-            Server.SignalTestComplete(signalTestCompleteClientEvent);
+                _hasAlreadySentSignalTestCompleteClientEvent = true;
+
+                var state = e.State;
+                var signalTestCompleteClientEvent = new SignalTestCompleteClientEvent
+                {
+                    Failed = state.Failed,
+                    TotalFailureCount = state.Failures,
+                    TotalTestsCount = state.TotalScenarios,
+                };
+                Server.SignalTestComplete(signalTestCompleteClientEvent);
+            }
         }
 
         private void SetupUnitTestProvider(UnitTestProviderType unitTestProviderType)
@@ -131,7 +138,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             }
 
             // Don't enable a U.I. when not specifying the U.I. Mode.
-            if (!_clientTestRunConfiguration.ShowTestingBrowserHost)
+            if (!_clientTestRunConfiguration.WindowGeometry.ShouldShowWindow)
             {
                 var statLightTestPage = new StatLightTestPage();
                 settings.TestHarness.TestPage = statLightTestPage;

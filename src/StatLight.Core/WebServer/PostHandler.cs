@@ -92,7 +92,6 @@ The Error from deserializing is
 
             if (Is<SignalTestCompleteClientEvent>(xmlMessage))
             {
-
                 var result = xmlMessage.Deserialize<SignalTestCompleteClientEvent>();
                 _eventPublisher.SendMessage(result);
                 var totalMessagsPostedCount = result.TotalMessagesPostedCount;

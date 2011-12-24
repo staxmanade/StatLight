@@ -72,9 +72,6 @@ namespace StatLight.Core.Configuration
         }
 
         [DataMember]
-        public bool ShowTestingBrowserHost { get; set; }
-
-        [DataMember]
         public WindowGeometry WindowGeometry { get; set; }
 
 

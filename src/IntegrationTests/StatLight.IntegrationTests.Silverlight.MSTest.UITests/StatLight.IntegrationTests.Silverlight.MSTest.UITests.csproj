@@ -92,6 +92,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AutomationPeerSample.xaml.cs">
+      <DependentUpon>AutomationPeerSample.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ControlWithBorder.xaml.cs">
       <DependentUpon>ControlWithBorder.xaml</DependentUpon>
     </Compile>
@@ -108,6 +111,10 @@
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AutomationPeerSample.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ControlWithBorder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
