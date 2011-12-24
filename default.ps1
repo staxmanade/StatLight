@@ -819,6 +819,13 @@ Task test-multiple-two-dlls {
 	}
 }
 
+Task test-statlight-no-communication-from-browser-forced-timeout {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.dll" "-r=$scriptFile" '--MethodsToTest="StatLight.IntegrationTests.Silverlight.LongRunningAsyncTests.Should_take_a_really_long_time_and_probably_timeout;"' '--OverrideSetting:MaxWaitTimeAllowedBeforeCommunicationErrorSent=00:00:10'
+
+	Assert-statlight-xml-report-results -message "test-statlight-no-communication-from-browser-forced-timeout" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 0 -expectedFailedCount 1 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
+}
+
 Task test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll {
 	$scriptFile = GetTemporaryXmlFile;
 	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.NoRefToMicrosoftSLTesting.dll" "-r=$scriptFile" 
@@ -1115,7 +1122,8 @@ Task test-all -depends `
 	test-multiple-xaps, `
 	test-multiple-one-xap-one-dll, `
 	test-multiple-two-dlls, `
-	test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll {
+	test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll, `
+	test-statlight-no-communication-from-browser-forced-timeout {
 }
 
 Task build-all -depends `

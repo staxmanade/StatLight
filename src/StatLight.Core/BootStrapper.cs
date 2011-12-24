@@ -16,14 +16,15 @@ namespace StatLight.Core
         {
             if (inputOptions == null) throw new ArgumentNullException("inputOptions");
             var ioc = new TinyIoCContainer();
-
             ILogger logger = overrideLogger ?? GetLogger(inputOptions.IsRequestingDebug);
+            ioc.Register(logger);
+
+            ioc.Resolve<SettingsOverrideApplicator>()
+                .ApplySettingsFrom(inputOptions.SettingsOverride, Properties.Settings.Default);
 
             inputOptions.DumpValuesForDebug(logger);
-
             ioc.Register(ioc);
             ioc.Register(inputOptions);
-            ioc.Register(logger);
             ioc.Register<WebServerLocation>().AsSingleton();
             ioc.Register<IStatLightRunnerFactory, StatLightRunnerFactory>();
 

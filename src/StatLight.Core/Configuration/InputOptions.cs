@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace StatLight.Core.Configuration
             OutputForTeamCity = false;
             StartWebServerOnly = false;
             IsRequestingDebug = false;
+            SettingsOverride = new Dictionary<string, string>();
         }
 
         public WindowGeometry WindowGeometry { get; private set; }
@@ -51,7 +53,8 @@ namespace StatLight.Core.Configuration
         public bool ContinuousIntegrationMode { get; private set; }
         public bool OutputForTeamCity { get; private set; }
         public bool StartWebServerOnly { get; private set; }
-        public bool IsRequestingDebug { get; set; }
+        public bool IsRequestingDebug { get; private set; }
+        public IDictionary<string, string> SettingsOverride { get; private set; }
 
         public InputOptions DumpValuesForDebug(ILogger logger)
         {
@@ -215,5 +218,13 @@ namespace StatLight.Core.Configuration
             IsRequestingDebug = isRequestingDebug;
             return this;
         }
+
+        public InputOptions SetSettingsOverride(IDictionary<string, string> settingsOverride)
+        {
+            if (settingsOverride == null) throw new ArgumentNullException("settingsOverride");
+            SettingsOverride = settingsOverride;
+            return this;
+        }
+        
     }
 }

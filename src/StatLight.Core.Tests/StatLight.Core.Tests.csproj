@@ -99,6 +99,7 @@
     <Compile Include="Console\ArgExtensions.cs" />
     <Compile Include="Console\ArgOptionsTests.cs" />
     <Compile Include="Console\ConsoleMainTests.cs" />
+    <Compile Include="Console\WhenOverridingSettings.cs" />
     <Compile Include="Events\Aggregation\EventAggregatorTests.cs" />
     <Compile Include="Events\EventAggregatorExtensions.cs" />
     <Compile Include="Events\ExceptionInfoTests.cs" />

@@ -1,3 +1,5 @@
+using StatLight.Core.Properties;
+
 namespace StatLight.Core.Runners
 {
     using System;
@@ -138,7 +140,7 @@ namespace StatLight.Core.Runners
         {
             if (_browserCommunicationTimeoutMonitor == null)
             {
-                _browserCommunicationTimeoutMonitor = new BrowserCommunicationTimeoutMonitor(_eventPublisher, new TimerWrapper(3000), TimeSpan.FromMinutes(5));
+                _browserCommunicationTimeoutMonitor = new BrowserCommunicationTimeoutMonitor(_logger, _eventPublisher, new TimerWrapper(3000), Settings.Default.MaxWaitTimeAllowedBeforeCommunicationErrorSent);
                 _eventSubscriptionManager.AddListener(_browserCommunicationTimeoutMonitor);
             }
         }
