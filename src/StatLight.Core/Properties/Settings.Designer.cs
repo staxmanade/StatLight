@@ -85,5 +85,14 @@ namespace StatLight.Core.Properties {
                 return ((int)(this["DialogSmackDownElapseMilliseconds"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:05:00")]
+        public global::System.TimeSpan MaxWaitTimeAllowedBeforeCommunicationErrorSent {
+            get {
+                return ((global::System.TimeSpan)(this["MaxWaitTimeAllowedBeforeCommunicationErrorSent"]));
+            }
+        }
     }
 }

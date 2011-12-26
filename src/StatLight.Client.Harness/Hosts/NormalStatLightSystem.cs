@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net;
 using System.Windows;
-using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Configuration;
+using StatLight.Core.Events.Messaging;
 using StatLight.Core.WebServer;
 
-namespace StatLight.Client.Harness.Hosts
+namespace StatLight.Core.Events.Hosts
 {
     public class NormalStatLightSystem : StatLightSystemBase
     {

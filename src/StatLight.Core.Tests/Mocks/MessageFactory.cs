@@ -1,5 +1,5 @@
 ﻿
-using StatLight.Client.Harness.Events;
+using StatLight.Core.Events;
 
 namespace StatLight.Core.Tests.Mocks
 {

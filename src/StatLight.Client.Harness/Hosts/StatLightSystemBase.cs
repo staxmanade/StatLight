@@ -3,13 +3,13 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Windows;
-using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
+using StatLight.Core.Events.Messaging;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebServer;
 
-namespace StatLight.Client.Harness.Hosts
+namespace StatLight.Core.Events.Hosts
 {
     public abstract class StatLightSystemBase
     {
@@ -28,7 +28,7 @@ namespace StatLight.Client.Harness.Hosts
                 Assembly[] list;
 #if WINDOWS_PHONE
                 if(typeof(T) == typeof(ITestRunnerHost))
-                    return (new StatLight.Client.Harness.Hosts.MSTest.MSTestRunnerHost() as T);
+                    return (new StatLight.Core.Events.Hosts.MSTest.MSTestRunnerHost() as T);
                 throw new NotSupportedException("type({0}) is not supported.".FormatWith(typeof(T).FullName));
 #else
                 list = Deployment.Current.Parts

@@ -1,17 +1,13 @@
 ﻿
 
-using System.Collections.Concurrent;
-using System.Linq;
-using StatLight.Core.Events;
 
 namespace StatLight.Core.Reporting
 {
     using System;
     using System.Collections.Generic;
-    using StatLight.Client.Harness.Events;
+    using System.Linq;
+    using Events;
     using StatLight.Core.Common;
-    using StatLight.Core.Events;
-    using StatLight.Core.Events;
 
     public class TestResultAggregator : IDisposable,
         IListener<TestExecutionMethodPassedClientEvent>,
@@ -67,7 +63,7 @@ namespace StatLight.Core.Reporting
                     return;
                 }
 
-                var msg = new TestCaseResult(ResultType.Passed)
+                var msg = new TestCaseResultServerEvent(ResultType.Passed)
                 {
                     Finished = message.Finished,
                     Started = message.Started,
@@ -81,12 +77,12 @@ namespace StatLight.Core.Reporting
             _eventMatchMacker.AddEvent(message, action);
         }
 
-        private static void TranslateCoreInfo(ref TestCaseResult result, TestExecutionMethod message)
+        private static void TranslateCoreInfo(ref TestCaseResultServerEvent resultServerEvent, TestExecutionMethodClientEvent message)
         {
-            result.ClassName = message.ClassName;
-            result.NamespaceName = message.NamespaceName;
-            result.MethodName = message.MethodName;
-            result.PopulateMetadata(message.Metadata);
+            resultServerEvent.ClassName = message.ClassName;
+            resultServerEvent.NamespaceName = message.NamespaceName;
+            resultServerEvent.MethodName = message.MethodName;
+            resultServerEvent.PopulateMetadata(message.Metadata);
         }
 
         public void Handle(TestExecutionMethodFailedClientEvent message)
@@ -101,7 +97,7 @@ namespace StatLight.Core.Reporting
                     return;
                 }
 
-                var msg = new TestCaseResult(ResultType.Failed)
+                var msg = new TestCaseResultServerEvent(ResultType.Failed)
                 {
                     Finished = message.Finished,
                     Started = message.Started,
@@ -121,7 +117,7 @@ namespace StatLight.Core.Reporting
         {
             if (message == null) throw new ArgumentNullException("message");
             //_logger.Debug("Handle - TestExecutionMethodIgnoredClientEvent - {0}".FormatWith(message.FullMethodName));
-            var msg = new TestCaseResult(ResultType.Ignored)
+            var msg = new TestCaseResultServerEvent(ResultType.Ignored)
             {
                 MethodName = message.Message,
             };
@@ -141,7 +137,7 @@ namespace StatLight.Core.Reporting
                 var className = m.ClassName;
                 var methodName = m.MethodName;
 
-                var msg = new TestCaseResult(ResultType.Failed)
+                var msg = new TestCaseResultServerEvent(ResultType.Failed)
                 {
                     OtherInfo = message.Message,
                     NamespaceName = namespaceName,
@@ -158,7 +154,7 @@ namespace StatLight.Core.Reporting
             }
             else if (message.DialogType == DialogType.MessageBox)
             {
-                var msg = new TestCaseResult(ResultType.SystemGeneratedFailure)
+                var msg = new TestCaseResultServerEvent(ResultType.SystemGeneratedFailure)
                 {
                     OtherInfo = message.Message,
                     NamespaceName = "[StatLight]",
@@ -197,11 +193,11 @@ namespace StatLight.Core.Reporting
             _eventMatchMacker.AddBeginEvent(message);
         }
 
-        private void ReportIt(TestCaseResult result)
+        private void ReportIt(TestCaseResultServerEvent resultServerEvent)
         {
-            OnTestCaseResultCreated(result);
-            _currentReport.AddResult(result);
-            _eventPublisher.SendMessage(result);
+            OnTestCaseResultCreated(resultServerEvent);
+            _currentReport.AddResult(resultServerEvent);
+            _eventPublisher.SendMessage(resultServerEvent);
         }
 
         private class EventMatchMacker
@@ -215,7 +211,7 @@ namespace StatLight.Core.Reporting
             private static readonly object _sync = new object();
             private readonly Dictionary<string, Action> _awaitingForAMatch = new Dictionary<string, Action>();
 
-            public void AddEvent(TestExecutionMethod clientEvent, Action actionOnCompletion)
+            public void AddEvent(TestExecutionMethodClientEvent clientEvent, Action actionOnCompletion)
             {
                 lock (_sync)
                 {
@@ -263,7 +259,7 @@ namespace StatLight.Core.Reporting
 
         private void ReportFailureMessage(string messageValue)
         {
-            var msg = new TestCaseResult(ResultType.Failed)
+            var msg = new TestCaseResultServerEvent(ResultType.Failed)
                           {
                               OtherInfo = messageValue,
                           };
@@ -290,24 +286,24 @@ namespace StatLight.Core.Reporting
             }
         }
 
-        private void OnTestCaseResultCreated(TestCaseResult result)
+        private void OnTestCaseResultCreated(TestCaseResultServerEvent resultServerEvent)
         {
             lock (_sync)
             {
-                IEnumerable<TestContextMessageClientEvent> testContextMessageClientEvents = _unhandledMessages.Where(x => x.FullTestName == result.FullMethodName());
+                IEnumerable<TestContextMessageClientEvent> testContextMessageClientEvents = _unhandledMessages.Where(x => x.FullTestName == resultServerEvent.FullMethodName());
                 foreach (var message in testContextMessageClientEvents.OrderBy(x => x.Order))
                 {
-                    AppendTestContextMetadata(result, message);
+                    AppendTestContextMetadata(resultServerEvent, message);
                 }
 
-                _unhandledMessages.RemoveAll(x => x.FullTestName == result.FullMethodName());
+                _unhandledMessages.RemoveAll(x => x.FullTestName == resultServerEvent.FullMethodName());
             }
         }
 
         private readonly List<TestContextMessageClientEvent> _unhandledMessages = new List<TestContextMessageClientEvent>();
-        private static void AppendTestContextMetadata(TestCaseResult result, TestContextMessageClientEvent message)
+        private static void AppendTestContextMetadata(TestCaseResultServerEvent resultServerEvent, TestContextMessageClientEvent message)
         {
-            result.PopulateMetadata(new[] { new MetaDataInfo("TestContextWriteMethod", "TestContextWriteMethod", message.Message), });
+            resultServerEvent.PopulateMetadata(new[] { new MetaDataInfo("TestContextWriteMethod", "TestContextWriteMethod", message.Message), });
         }
     }
 }

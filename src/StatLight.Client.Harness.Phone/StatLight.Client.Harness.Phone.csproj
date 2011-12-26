@@ -167,12 +167,6 @@
     <Compile Include="..\statlight.client.harness.mstest\unittestproviders\UnitTestFrameworkAssemblyBase.cs">
       <Link>UnitTestProviders\UnitTestFrameworkAssemblyBase.cs</Link>
     </Compile>
-    <Compile Include="..\StatLight.Client.Harness\Events\ClientEvents.cs">
-      <Link>Events\ClientEvents.cs</Link>
-    </Compile>
-    <Compile Include="..\StatLight.Client.Harness\Events\ExceptionInfo.cs">
-      <Link>Events\ExceptionInfo.cs</Link>
-    </Compile>
     <Compile Include="..\StatLight.Client.Harness\Hosts\CurrentXapData.cs">
       <Link>Hosts\CurrentXapData.cs</Link>
     </Compile>
@@ -229,6 +223,12 @@
     </Compile>
     <Compile Include="..\StatLight.Core\Configuration\WindowGeometry.cs">
       <Link>Core\Configuration\WindowGeometry.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Events\Events.Client.cs">
+      <Link>Core\Events\Events.Client.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Events\ExceptionInfo.cs">
+      <Link>Core\Events\ExceptionInfo.cs</Link>
     </Compile>
     <Compile Include="..\StatLight.Core\Reporting\Messages\LogMessageType.cs">
       <Link>Core\Reporting\Messages\LogMessageType.cs</Link>

@@ -72,9 +72,16 @@
         #endregion
 
         private readonly IList<string> _dlls = new List<string>();
+
         public IList<string> Dlls
         {
             get { return _dlls; }
+        }
+
+        private readonly IDictionary<string, string> _overriddenSettings = new Dictionary<string, string>();
+        public IDictionary<string, string> OverriddenSettings
+        {
+            get { return _overriddenSettings; }
         }
 
         public bool UserPhoneEmulator { get; private set; }
@@ -204,6 +211,17 @@
                     })
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
                 .Add<string>("debug", "Prints a verbose spattering of internal logging information. Useful when trying to understand possible issues or when reporting issues back to StatLight.CodePlex.com", v => IsRequestingDebug = true)
+                .Add("OverrideSetting", "Specify settings to overried at the command line. [EX: --OverrideSetting:MaxWaitTimeAllowedBeforeCommunicationErrorSent=00:00:20", v =>
+                    {
+                        if (string.IsNullOrEmpty(v))
+                            return;
+
+                        var item = v.Split('=');
+                        if (item.Length != 2)
+                            throw new StatLightException("Invalid settings format specified");
+
+                        OverriddenSettings.Add(item[0], item[1]);
+                    })
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)
                 ;
         }

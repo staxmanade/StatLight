@@ -1,8 +1,6 @@
+using System;
 using NUnit.Framework;
 using StatLight.Core.Events;
-using StatLight.Client.Harness.Events;
-using System;
-using StatLight.Core.Reporting;
 
 namespace StatLight.Core.Tests.Reporting.Providers
 {
@@ -12,14 +10,14 @@ namespace StatLight.Core.Tests.Reporting.Providers
     {
         protected abstract THandler Handler { get; }
 
-        private TestCaseResult Create(ResultType type)
+        private TestCaseResultServerEvent Create(ResultType type)
         {
-            return new TestCaseResult(type);
+            return new TestCaseResultServerEvent(type);
         }
 
-        private TestCaseResult Create(ResultType type, ExceptionInfo ex)
+        private TestCaseResultServerEvent Create(ResultType type, ExceptionInfo ex)
         {
-            return new TestCaseResult(type) { ExceptionInfo = ex };
+            return new TestCaseResultServerEvent(type) { ExceptionInfo = ex };
         }
 
         [Test]

@@ -1,8 +1,7 @@
 ﻿namespace StatLight.Core.Reporting.Providers.Console
 {
     using System;
-    using StatLight.Client.Harness.Events;
-    using StatLight.Core.Events;
+    using Events;
     using StatLight.Core.Common;
     using StatLight.Core.Properties;
 
@@ -58,7 +57,7 @@
             _logger.Warning(Environment.NewLine);
         }
 
-        public void Handle(TestCaseResult message)
+        public void Handle(TestCaseResultServerEvent message)
         {
             if (message == null) throw new ArgumentNullException("message");
             switch (message.ResultType)
@@ -75,13 +74,13 @@
                     break;
 
                 default:
-                    "Unknown TestCaseResult (to StatLight) - {0}".FormatWith(message.ResultType)
+                    "Unknown TestCaseResultServerEvent (to StatLight) - {0}".FormatWith(message.ResultType)
                         .WrapConsoleMessageWithColor(Settings.ConsoleColorError, true);
                     break;
             }
         }
 
-        public static void WriteOutError(TestCaseResult message)
+        public static void WriteOutError(TestCaseResultServerEvent message)
         {
             if (message == null)
                 throw new ArgumentNullException("message");

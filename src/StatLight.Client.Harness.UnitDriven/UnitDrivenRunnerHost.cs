@@ -5,13 +5,13 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using StatLight.Client.Harness.Events;
-using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Configuration;
+using StatLight.Core.Events;
+using StatLight.Core.Events.Messaging;
 using UnitDriven;
 using UnitDriven.Commanding;
 
-namespace StatLight.Client.Harness.Hosts.UnitDriven
+namespace StatLight.Core.Events.Hosts.UnitDriven
 {
 
     public class UnitDrivenRunnerHost : ITestRunnerHost
@@ -200,12 +200,12 @@ namespace StatLight.Client.Harness.Hosts.UnitDriven
             Server.PostMessage(e);
         }
 
-        private static TestExecutionMethod PopulateCoreInfo(TestExecutionMethod testExecutionMethod, MethodInfo method)
+        private static TestExecutionMethodClientEvent PopulateCoreInfo(TestExecutionMethodClientEvent testExecutionMethodClientEvent, MethodInfo method)
         {
-            testExecutionMethod.NamespaceName = method.ReflectedType.Namespace;
-            testExecutionMethod.ClassName = method.ReflectedType.ClassNameIncludingParentsIfNested();
-            testExecutionMethod.MethodName = method.Name;
-            return testExecutionMethod;
+            testExecutionMethodClientEvent.NamespaceName = method.ReflectedType.Namespace;
+            testExecutionMethodClientEvent.ClassName = method.ReflectedType.ClassNameIncludingParentsIfNested();
+            testExecutionMethodClientEvent.MethodName = method.Name;
+            return testExecutionMethodClientEvent;
         }
 
         private void SendTestCompleteClientEvent()

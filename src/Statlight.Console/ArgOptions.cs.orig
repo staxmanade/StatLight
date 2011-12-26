@@ -1,15 +1,15 @@
-﻿
-
-namespace StatLight.Console
+﻿namespace StatLight.Console
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using Mono.Options;
     using StatLight.Core.Common;
     using StatLight.Core.Configuration;
+    using StatLight.Core.Reporting;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer.XapHost;
 
@@ -30,8 +30,6 @@ namespace StatLight.Console
         public bool ContinuousIntegrationMode { get; private set; }
 
         public bool ShowHelp { get; private set; }
-
-        public bool ShowTestingBrowserHost { get; private set; }
 
         public bool OutputForTeamCity { get; private set; }
 
@@ -61,6 +59,8 @@ namespace StatLight.Console
 
         public bool ForceBrowserStart { get; private set; }
 
+        public WindowGeometry WindowGeometry { get; private set; }
+
         #region XmlReport
         public string XmlReportOutputPath { get; private set; }
         private ReportOutputFileType _reportOutputFileType = ReportOutputFileType.StatLight;
@@ -72,12 +72,21 @@ namespace StatLight.Console
         #endregion
 
         private readonly IList<string> _dlls = new List<string>();
+
         public IList<string> Dlls
         {
             get { return _dlls; }
         }
 
+<<<<<<< HEAD
         public bool UserPhoneEmulator { get; private set; }
+=======
+        private readonly IDictionary<string, string> _overriddenSettings = new Dictionary<string, string>();
+        public IDictionary<string, string> OverriddenSettings
+        {
+            get { return _overriddenSettings; }
+        }
+>>>>>>> master
 
         private ArgOptions()
             : this(new string[] { })
@@ -90,6 +99,7 @@ namespace StatLight.Console
             _optionSet = GetOptions();
             NumberOfBrowserHosts = 1;
             _args = args;
+            WindowGeometry = new WindowGeometry();
             List<string> extra;
 
             try
@@ -121,7 +131,8 @@ namespace StatLight.Console
                     })
                 .Add("t|TagFilters", "The tag filter expression used to filter executed tests. (See Microsoft.Silverlight.Testing filter format for how to generate complicated filter expressions) Only available with MSTest.", v => TagFilters = v, OptionValueType.Optional)
                 .Add<string>("c|Continuous", "Runs a single test run, and then monitors the xap for build changes and re-runs the tests automatically.", v => ContinuousIntegrationMode = true)
-                .Add<string>("b|ShowTestingBrowserHost", "Show the browser that is running the tests - necessary to run UI specific tests (hidden by default)", v => ShowTestingBrowserHost = true)
+                .Add("b|BrowserWindow", "Sets the display visibility and/or size of the StatLight browser window. Leave blank to keep browser window hidden. Specify this flag to have the browser window shown with the default height/width. Or using the following pattern [M|m|n][HEIGHTxWIDTH] you can specify the window state [M|Maximized|m|Minimized|N|Normal][{HEIGHT}x{WIDTH}] to be able to specify a specific size. EX: -b:N800x600 a normal window with a width of 800 and height of 600.",
+                    v => WindowGeometry = ParseWindowGeometry(v))
                 .Add("MethodsToTest", "Semicolon seperated list of full method names to execute. EX: --methodsToTest=\"RootNamespace.ChildNamespace.ClassName.MethodUnderTest;RootNamespace.ChildNamespace.ClassName.Method2UnderTest;\"", v =>
                     {
                         v = v ?? string.Empty;
@@ -170,16 +181,11 @@ namespace StatLight.Console
                         else
                             throw new DirectoryNotFoundException("Could not find directory in [{0}]".FormatWith(v));
                     })
-<<<<<<< HEAD
-                //This is not something anyone is really using and just muddies up the console api
-                //.Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v => UseRemoteTestPage = true)
-=======
-                .Add("ReportOutputFileType", "Specify the type of report output when using the -r|--ReportOutputFile=[path]. Possible options [{0}]".FormatWith(typeof(ReportOutputFileType).FormatEnumString()), v => 
+                .Add("ReportOutputFileType", "Specify the type of report output when using the -r|--ReportOutputFile=[path]. Possible options [{0}]".FormatWith(typeof(ReportOutputFileType).FormatEnumString()), v =>
                     {
                         ReportOutputFileType = ParseEnum<ReportOutputFileType>(v);
                     })
                 .Add<string>("UseRemoteTestPage", "You can specify a remotly hosted test page (that contains a StatLight remote runner) by specifying -x=http://localhost/pathToTestPage.html and the --UseRemoteTestPage flag to have StatLight spin up a browser to call the remote page.", v => UseRemoteTestPage = true)
->>>>>>> master
                 .Add("WebBrowserType", "If you have other browser installed, you can have StatLight use any of the following web browsers [{0}]".FormatWith(typeof(WebBrowserType).FormatEnumString()), v =>
                     {
                         _webBrowserType = ParseEnum<WebBrowserType>(v);
@@ -206,7 +212,21 @@ namespace StatLight.Console
                         throw new StatLightException("THe --MSGenericTestFormat flag has been removed. You should now be using --ReportOutputFileType:{0}".FormatWith(ReportOutputFileType.MSGenericTest));
                     })
                 .Add<string>("webserveronly", "Starts up the StatLight web server without any browser. Useful when needing to attach Visual Studio Debugger to the browser and debug a test.", v => StartWebServerOnly = true)
+<<<<<<< HEAD
                 .Add<string>("debug", "Prints a verbose spattering of internal logging information. Useful when trying to understand possible issues or when reporting issues back to StatLight.CodePlex.com", v => IsRequestingDebug = true)
+=======
+                .Add("OverrideSetting", "Specify settings to overried at the command line. [EX: --OverrideSetting:MaxWaitTimeAllowedBeforeCommunicationErrorSent=00:00:20", v =>
+                    {
+                        if (string.IsNullOrEmpty(v))
+                            return;
+
+                        var item = v.Split('=');
+                        if (item.Length != 2)
+                            throw new StatLightException("Invalid settings format specified");
+
+                        OverriddenSettings.Add(item[0], item[1]);
+                    })
+>>>>>>> master
                 .Add<string>("?|help", "displays the help message", v => ShowHelp = true)
                 ;
         }
@@ -221,6 +241,66 @@ namespace StatLight.Console
             {
                 throw new StatLightException("Could not find an WebBrowserType defined as [{0}]. Please specify one of the following [{1}].".FormatWith(value, typeof(T).FormatEnumString()));
             }
+        }
+
+        internal static WindowGeometry ParseWindowGeometry(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return new WindowGeometry { State = BrowserWindowState.Normal };
+
+            input = input.Trim().Replace("'", string.Empty).Replace("\"", string.Empty);
+
+            var geometry = new WindowGeometry
+            {
+                State = BrowserWindowState.Normal,
+            };
+
+            const string pattern = "(Maximized|Minimized|maximized|minimized|Normal|normal|M|m|N)?(([0-9]+)x([0-9]+))?";
+            var matches = Regex.Match(input, pattern);
+            if (matches.Groups.Count != 5)
+            {
+                throw new StatLightException("If specifying the geometry it must be 'WIDTHxHEIGHT'");
+            }
+
+            var stateFlag = matches.Groups[1].Value;
+            switch (stateFlag)
+            {
+                case "":
+                    break; // leave the default
+                case "M":
+                case "Maximized":
+                case "maximized":
+                    geometry.State = BrowserWindowState.Maximized;
+                    break;
+                case "m":
+                case "Minimized":
+                case "minimized":
+                    geometry.State = BrowserWindowState.Minimized;
+                    break;
+                case "N":
+                case "Normal":
+                case "normal":
+                    geometry.State = BrowserWindowState.Normal;
+                    break;
+                default:
+                    throw new StatLightException("Unknown browser state flag [{0}]. Try specifying either [M|m|N] for [Maximized|minimized|Normal]".FormatWith(stateFlag));
+            }
+
+            var widthString = matches.Groups[3].Value;
+            var heightString = matches.Groups[4].Value;
+            if (!string.IsNullOrEmpty(widthString) || !string.IsNullOrEmpty(heightString))
+            {
+                int width;
+                int height;
+                if (!int.TryParse(widthString, out width) || !int.TryParse(heightString, out height) || width < 1 || height < 1)
+                {
+                    throw new Exception("Width and height in geometry must be positive integers. (We parsed width[{0}] and height[{1}])".FormatWith(widthString, heightString));
+                }
+
+                geometry.Size = new WindowSize(width, height);
+            }
+
+            return geometry;
         }
 
         public static void ShowHelpMessage(TextWriter @out)
@@ -276,37 +356,6 @@ namespace StatLight.Console
             //@out.WriteLine("--- ReportOutputFile       - '{0}'".FormatWith(options.XmlReportOutputPath));
             //@out.WriteLine("--- teamcity               - {0}".FormatWith(options.OutputForTeamCity));
             //@out.WriteLine("--- webserveronly          - {0}".FormatWith(options.StartWebServerOnly));
-        }
-
-        public void DumpValuesForDebug(ILogger logger)
-        {
-            var properties = this.GetType().GetProperties().OrderBy(o => o.Name);
-            const string stringFormat = "{0,-35}: {1}";
-
-            logger.Debug("****************** Input options as configured ******************");
-            foreach (var propertyInfo in properties)
-            {
-                var propertyValue = propertyInfo.GetValue(this, new object[0]);
-                if (propertyValue is IEnumerable<string>)
-                {
-                    logger.Debug(stringFormat.FormatWith(propertyInfo.Name, "IEnumerable<string>"));
-                    logger.Debug("{0,-35}  {{".FormatWith(""));
-                    int i = 0;
-                    foreach (var itemValue in (IEnumerable<string>)propertyValue)
-                    {
-                        if (i > 0)
-                            logger.Debug("{0,-35}    {1}".FormatWith("", itemValue));
-                        else
-                            logger.Debug("{0,-35}    '{1}'".FormatWith("", itemValue));
-                    }
-                    logger.Debug("{0,-35}  }}".FormatWith(""));
-                }
-                else
-                {
-                    logger.Debug(stringFormat.FormatWith(propertyInfo.Name, propertyValue));
-                }
-            }
-            logger.Debug("*****************************************************************");
         }
     }
 

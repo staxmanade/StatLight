@@ -3,37 +3,37 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StatLight.Client.Harness.Events;
+using StatLight.Core.Events;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
+namespace StatLight.Core.Events.Hosts.MSTest.LogMessagTranslation
 {
     public static class ReflectionInfoHelper
     {
-        public static void AssignTestExecutionMethodInfo(this TestExecutionMethod testExecutionMethod, ITestMethod testMethod)
+        public static void AssignTestExecutionMethodInfo(this TestExecutionMethodClientEvent testExecutionMethodClientEvent, ITestMethod testMethod)
         {
             var methodInfo = testMethod.Method;
-            testExecutionMethod.NamespaceName = methodInfo.ReflectedType.Namespace;
-            testExecutionMethod.ClassName = methodInfo.ReflectedType.ClassNameIncludingParentsIfNested();
-            testExecutionMethod.MethodName = testMethod.Name;
+            testExecutionMethodClientEvent.NamespaceName = methodInfo.ReflectedType.Namespace;
+            testExecutionMethodClientEvent.ClassName = methodInfo.ReflectedType.ClassNameIncludingParentsIfNested();
+            testExecutionMethodClientEvent.MethodName = testMethod.Name;
         }
 
-        public static void AssignMetadata(this TestExecutionMethod testExecutionMethod, MethodInfo methodInfo)
+        public static void AssignMetadata(this TestExecutionMethodClientEvent testExecutionMethodClientEvent, MethodInfo methodInfo)
         {
             var descriptionAttribute = methodInfo.GetAttribute<DescriptionAttribute>().FirstOrDefault();
             if (descriptionAttribute != null)
             {
-                testExecutionMethod.AddMetadata("Description", descriptionAttribute.Description, "Description");
+                testExecutionMethodClientEvent.AddMetadata("Description", descriptionAttribute.Description, "Description");
             }
 
             var ownerAttribute = methodInfo.GetAttribute<OwnerAttribute>().FirstOrDefault();
             if (ownerAttribute != null)
             {
-                testExecutionMethod.AddMetadata("Owner", ownerAttribute.Owner, "Owner");
+                testExecutionMethodClientEvent.AddMetadata("Owner", ownerAttribute.Owner, "Owner");
             }
 
             foreach (var testPropertyAttribute in methodInfo.GetAttribute<TestPropertyAttribute>())
             {
-                testExecutionMethod.AddMetadata("TestProperty", testPropertyAttribute.Name, testPropertyAttribute.Value);
+                testExecutionMethodClientEvent.AddMetadata("TestProperty", testPropertyAttribute.Name, testPropertyAttribute.Value);
             }
         }
 

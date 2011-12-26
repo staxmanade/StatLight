@@ -40,3 +40,4 @@ Thanks for contributions from:
 - [Mike Benza](https://github.com/MikeBenza)
 - [Remo Gloor](https://github.com/remogloor)
 - [Steven De Kock](https://github.com/sdekock)
+- [Bob Brumfield](https://github.com/brumfb)

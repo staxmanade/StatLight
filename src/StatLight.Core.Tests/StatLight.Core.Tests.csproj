@@ -99,13 +99,13 @@
     <Compile Include="Console\ArgExtensions.cs" />
     <Compile Include="Console\ArgOptionsTests.cs" />
     <Compile Include="Console\ConsoleMainTests.cs" />
+    <Compile Include="Console\WhenOverridingSettings.cs" />
     <Compile Include="Events\Aggregation\EventAggregatorTests.cs" />
     <Compile Include="Events\EventAggregatorExtensions.cs" />
     <Compile Include="Events\ExceptionInfoTests.cs" />
     <Compile Include="GlobalExtensions.cs" />
     <Compile Include="QuickSpikeTests.cs" />
     <Compile Include="Reporting\DialogAssertionMatchmakerTests.cs" />
-    <Compile Include="Reporting\DialogAssertionMessageMatchMakerTests.cs" />
     <Compile Include="Reporting\Providers\MSTestTRX\TRXReportTests.cs" />
     <Compile Include="Reporting\Providers\NUnit\NUnitXmlReportTests.cs" />
     <Compile Include="Reporting\Providers\PublishedEventsToHandleBase.cs" />
@@ -132,6 +132,7 @@
     <Compile Include="WebBrowser\SelfHostedWebBrowserTests.cs" />
     <Compile Include="WebServer\CustomHost\TestServiceEngineTests.cs" />
     <Compile Include="SpecificationExtensions.cs" />
+    <Compile Include="WebServer\PostHandlerTests\PostHandlerTests.cs" />
     <Compile Include="WebServer\WebServerLocationTests.cs" />
     <Compile Include="WebServer\XapHost\XapHostFileLoaderFactoryTests.cs" />
     <Compile Include="WebServer\XapInspection\SilverlightAssemblyResolverTests.cs" />

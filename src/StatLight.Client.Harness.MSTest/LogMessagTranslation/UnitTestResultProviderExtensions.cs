@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Silverlight.Testing.Harness;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
+namespace StatLight.Core.Events.Hosts.MSTest.LogMessagTranslation
 {
     internal static class UnitTestResultProviderExtensions
     {

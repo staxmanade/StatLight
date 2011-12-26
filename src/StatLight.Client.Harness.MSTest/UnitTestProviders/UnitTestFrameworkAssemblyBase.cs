@@ -11,7 +11,7 @@ using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 #endif
 
 
-namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
+namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders
 {
     public abstract class UnitTestFrameworkAssemblyBase : IAssembly
     {

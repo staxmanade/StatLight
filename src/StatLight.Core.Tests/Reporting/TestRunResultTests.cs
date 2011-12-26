@@ -18,11 +18,11 @@ namespace StatLight.Core.Tests.Reporting
             return startTime.AddSeconds(1);
         }
 
-        public static TestCaseResult CreatePassed()
+        public static TestCaseResultServerEvent CreatePassed()
         {
             var started = getStartTime();
 
-            return new TestCaseResult(ResultType.Passed)
+            return new TestCaseResultServerEvent(ResultType.Passed)
                         {
                             NamespaceName = "N1",
                             ClassName = "C1",
@@ -32,10 +32,10 @@ namespace StatLight.Core.Tests.Reporting
                         };
         }
 
-        public static TestCaseResult CreateFailed()
+        public static TestCaseResultServerEvent CreateFailed()
         {
             var started = getStartTime();
-            return new TestCaseResult(ResultType.Failed)
+            return new TestCaseResultServerEvent(ResultType.Failed)
                         {
                             NamespaceName = "N1",
                             ClassName = "C1",
@@ -46,10 +46,10 @@ namespace StatLight.Core.Tests.Reporting
                         };
         }
 
-        public static TestCaseResult CreateIgnored()
+        public static TestCaseResultServerEvent CreateIgnored()
         {
             var started = getStartTime();
-            return new TestCaseResult(ResultType.Ignored)
+            return new TestCaseResultServerEvent(ResultType.Ignored)
                         {
                             NamespaceName = "N1",
                             ClassName = "C1",

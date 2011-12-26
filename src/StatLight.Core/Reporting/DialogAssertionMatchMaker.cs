@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
 
 namespace StatLight.Core.Reporting
@@ -42,7 +41,7 @@ namespace StatLight.Core.Reporting
             }
         }
 
-        public bool WasEventAlreadyClosed(TestExecutionMethod message)
+        public bool WasEventAlreadyClosed(TestExecutionMethodClientEvent message)
         {
             return _completedMessage.Any(a =>
                                          a.NamespaceName == message.NamespaceName

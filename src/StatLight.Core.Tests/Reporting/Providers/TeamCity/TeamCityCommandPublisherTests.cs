@@ -1,14 +1,12 @@
 ﻿using System;
-using StatLight.Client.Harness.Events;
+using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
 using StatLight.Core.Events;
-using StatLight.Core.Reporting;
+using StatLight.Core.Reporting.Providers.TeamCity;
 
 namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using NUnit.Framework;
-    using StatLight.Core.Reporting.Providers.TeamCity;
 
     public class TestMessageWriter : ICommandWriter
     {
@@ -108,7 +106,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
         protected override void Because()
         {
             base.Because();
-            var message = new TestCaseResult(ResultType.Passed);
+            var message = new TestCaseResultServerEvent(ResultType.Passed);
             publisher.Handle(message);
         }
 
@@ -138,7 +136,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
         protected override void Because()
         {
             base.Because();
-            publisher.Handle(new TestCaseResult(ResultType.Failed){ExceptionInfo = new Exception()});
+            publisher.Handle(new TestCaseResultServerEvent(ResultType.Failed){ExceptionInfo = new Exception()});
         }
 
         [Test]
@@ -176,7 +174,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.TeamCity
             base.Because();
             const string testNameIgnored = "some_test_to_ignore";
             var message = new TestExecutionMethodIgnoredClientEvent { Message = testNameIgnored };
-            publisher.Handle(new TestCaseResult(ResultType.Ignored));
+            publisher.Handle(new TestCaseResultServerEvent(ResultType.Ignored));
         }
 
         [Test]

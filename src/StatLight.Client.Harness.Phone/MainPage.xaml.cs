@@ -1,5 +1,5 @@
 ﻿using Microsoft.Phone.Controls;
-using StatLight.Client.Harness.Hosts;
+using StatLight.Core.Events.Hosts;
 
 namespace StatLight.Client.Harness.Phone
 {

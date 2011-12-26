@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace StatLight.Core.Configuration
             OutputForTeamCity = false;
             StartWebServerOnly = false;
             IsRequestingDebug = false;
+            SettingsOverride = new Dictionary<string, string>();
             IsPhoneRun = false;
         }
 
@@ -53,6 +55,7 @@ namespace StatLight.Core.Configuration
         public bool OutputForTeamCity { get; private set; }
         public bool StartWebServerOnly { get; private set; }
         public bool IsRequestingDebug { get; set; }
+        public IDictionary<string, string> SettingsOverride { get; private set; }
         public bool IsPhoneRun { get; set; }
 
         public InputOptions DumpValuesForDebug(ILogger logger)
@@ -218,10 +221,18 @@ namespace StatLight.Core.Configuration
             return this;
         }
 
+        public InputOptions SetSettingsOverride(IDictionary<string, string> settingsOverride)
+        {
+            if (settingsOverride == null) throw new ArgumentNullException("settingsOverride");
+            SettingsOverride = settingsOverride;
+            return this;
+        }
+
         public InputOptions SetIsPhoneRun(bool isPhoneRun)
         {
             IsPhoneRun = isPhoneRun;
             return this;
         }
+        
     }
 }

@@ -3,13 +3,11 @@ using System.Linq;
 using System.Windows;
 using Microsoft.Silverlight.Testing;
 using Microsoft.Silverlight.Testing.Harness;
-using StatLight.Client.Harness.Events;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest;
-using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
+using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Client.Harness.Hosts.MSTest
+namespace StatLight.Core.Events.Hosts.MSTest
 {
     public class MSTestRunnerHost : ITestRunnerHost
     {
@@ -44,16 +42,23 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             return ui;
         }
 
+        private static bool _hasAlreadySentSignalTestCompleteClientEvent = false;
+
         private void CurrentHarness_TestHarnessCompleted(object sender, TestHarnessCompletedEventArgs e)
         {
-            var state = e.State;
-            var signalTestCompleteClientEvent = new SignalTestCompleteClientEvent
+            if (!_hasAlreadySentSignalTestCompleteClientEvent)
             {
-                Failed = state.Failed,
-                TotalFailureCount = state.Failures,
-                TotalTestsCount = state.TotalScenarios,
-            };
-            Server.SignalTestComplete(signalTestCompleteClientEvent);
+                _hasAlreadySentSignalTestCompleteClientEvent = true;
+
+                var state = e.State;
+                var signalTestCompleteClientEvent = new SignalTestCompleteClientEvent
+                {
+                    Failed = state.Failed,
+                    TotalFailureCount = state.Failures,
+                    TotalTestsCount = state.TotalScenarios,
+                };
+                Server.SignalTestComplete(signalTestCompleteClientEvent);
+            }
         }
 
         private void SetupUnitTestProvider(UnitTestProviderType unitTestProviderType)
@@ -63,15 +68,15 @@ namespace StatLight.Client.Harness.Hosts.MSTest
 #if !WINDOWS_PHONE
             if (unitTestProviderType == UnitTestProviderType.XUnitLight)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit.XUnitTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.Xunit.XUnitTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.NUnit)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit.NUnitTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.NUnit.NUnitTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.UnitDriven)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven.UnitDrivenTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.UnitDriven.UnitDrivenTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
             {
@@ -107,7 +112,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             else
 #endif
             {
-                UnitTestSystem.RegisterUnitTestProvider(new VsttProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.MSTest.VsttProvider());
             }
         }
 
@@ -132,7 +137,7 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             }
 
             // Don't enable a U.I. when not specifying the U.I. Mode.
-            if (!_clientTestRunConfiguration.ShowTestingBrowserHost)
+            if (!_clientTestRunConfiguration.WindowGeometry.ShouldShowWindow)
             {
                 var statLightTestPage = new StatLightTestPage();
                 settings.TestHarness.TestPage = statLightTestPage;

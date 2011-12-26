@@ -1,13 +1,10 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
-using StatLight.Client.Harness.Events;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events;
 using StatLight.Core.Tests;
-using StatLight.Core.Reporting;
-using StatLight.Core.Events;
 
 namespace StatLight.IntegrationTests.ProviderTests.MSTest
 {
@@ -116,7 +113,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 #endif
         }
 
-        private static void AssertTestExecutionClassData(TestExecutionClass e)
+        private static void AssertTestExecutionClassData(TestExecutionClassClientEvent e)
         {
             e.NamespaceName.ShouldEqual("StatLight.IntegrationTests.Silverlight", "{0} - NamespaceName property should be correct.".FormatWith(e.GetType().FullName));
 

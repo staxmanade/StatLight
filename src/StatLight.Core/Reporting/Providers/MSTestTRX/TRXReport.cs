@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Xml.Linq;
-using StatLight.Client.Harness.Events;
-using StatLight.Core.Common;
 using StatLight.Core.Events;
+using StatLight.Core.Common;
 
 namespace StatLight.Core.Reporting.Providers.MSTestTRX
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "TRX")]
     public class TRXReport : IXmlReport
     {
-        private static readonly Dictionary<TestCaseResult, Guid> _executionIdHash = new Dictionary<TestCaseResult, Guid>();
-        private static readonly Dictionary<TestCaseResult, Guid> _testIdHash = new Dictionary<TestCaseResult, Guid>();
+        private static readonly Dictionary<TestCaseResultServerEvent, Guid> _executionIdHash = new Dictionary<TestCaseResultServerEvent, Guid>();
+        private static readonly Dictionary<TestCaseResultServerEvent, Guid> _testIdHash = new Dictionary<TestCaseResultServerEvent, Guid>();
         private readonly TestReportCollection _report;
         private readonly IGuidSequenceGenerator _guidSequenceGenerator;
         private readonly TestSettings _testSettings;
@@ -141,7 +138,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
             return doc;
         }
 
-        private static IEnumerable<TestCaseResult> GetTRXTests(TestReportCollection testReportCollection)
+        private static IEnumerable<TestCaseResultServerEvent> GetTRXTests(TestReportCollection testReportCollection)
         {
             return testReportCollection
                 .AllTests()
@@ -167,7 +164,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
             };
 
 
-            Func<TestCaseResult, XElement> getOutput = test =>
+            Func<TestCaseResultServerEvent, XElement> getOutput = test =>
             {
                 Func<Func<ExceptionInfo, string>, string> getExceptionInfo = (getter) =>
                 {
@@ -218,7 +215,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
             );
         }
 
-        private static XElement GetTestOwner(TestCaseResult test, XNamespace ns)
+        private static XElement GetTestOwner(TestCaseResultServerEvent test, XNamespace ns)
         {
             var owners = test.Metadata.Where(i => i.Value == "Owner");
             var items = new List<XElement>();
@@ -233,14 +230,14 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
             return null;
         }
 
-        private Guid GetExecutionId(TestCaseResult testCaseResult)
+        private Guid GetExecutionId(TestCaseResultServerEvent testCaseResultServerEvent)
         {
-            return GetGuidForItem(testCaseResult, HashType.ExecutionId);
+            return GetGuidForItem(testCaseResultServerEvent, HashType.ExecutionId);
         }
 
-        private Guid GetTestId(TestCaseResult testCaseResult)
+        private Guid GetTestId(TestCaseResultServerEvent testCaseResultServerEvent)
         {
-            return GetGuidForItem(testCaseResult, HashType.TestId);
+            return GetGuidForItem(testCaseResultServerEvent, HashType.TestId);
         }
 
         private enum HashType
@@ -249,9 +246,9 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
             TestId,
         }
 
-        private Guid GetGuidForItem(TestCaseResult testCaseResult, HashType hashType)
+        private Guid GetGuidForItem(TestCaseResultServerEvent testCaseResultServerEvent, HashType hashType)
         {
-            IDictionary<TestCaseResult, Guid> hash;
+            IDictionary<TestCaseResultServerEvent, Guid> hash;
             switch (hashType)
             {
                 case HashType.ExecutionId:
@@ -265,25 +262,25 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
             }
 
             Guid newGuid;
-            if (hash.ContainsKey(testCaseResult))
-                newGuid = hash[testCaseResult];
+            if (hash.ContainsKey(testCaseResultServerEvent))
+                newGuid = hash[testCaseResultServerEvent];
             else
             {
                 newGuid = _guidSequenceGenerator.GetNext();
-                hash.Add(testCaseResult, newGuid);
+                hash.Add(testCaseResultServerEvent, newGuid);
             }
             return newGuid;
         }
 
 
-        //private static string GetErrorStackTrace(TestCaseResult testCaseResult)
+        //private static string GetErrorStackTrace(TestCaseResultServerEvent testCaseResult)
         //{
         //    if (testCaseResult.ExceptionInfo != null)
         //        return testCaseResult.ExceptionInfo.StackTrace ?? "";
         //    return testCaseResult.OtherInfo ?? "";
         //}
 
-        //private static string GetErrorMessage(TestCaseResult r)
+        //private static string GetErrorMessage(TestCaseResultServerEvent r)
         //{
         //    if (r.ExceptionInfo != null)
         //        return r.ExceptionInfo.FullMessage ?? "";

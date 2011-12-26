@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace StatLight.Client.Harness.Events
+namespace StatLight.Core.Events
 {
     public class ExceptionInfo
     {

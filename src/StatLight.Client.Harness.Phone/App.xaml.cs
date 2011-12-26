@@ -2,7 +2,7 @@
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
-using StatLight.Client.Harness.Messaging;
+using StatLight.Core.Events.Messaging;
 
 namespace StatLight.Client.Harness.Phone
 {

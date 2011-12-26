@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-using StatLight.Client.Harness.Messaging;
+using StatLight.Core.Events.Messaging;
 using StatLight.Core.Configuration;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
+namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.MSTest
 {
     /// <summary>
     /// Test class wrapper.

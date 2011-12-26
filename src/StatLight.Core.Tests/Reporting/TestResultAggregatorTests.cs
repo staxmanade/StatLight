@@ -1,11 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
 using StatLight.Core.Reporting;
-using System.Collections.Generic;
-using StatLight.Core.Events;
 
 namespace StatLight.Core.Tests.Reporting
 {
@@ -26,7 +24,7 @@ namespace StatLight.Core.Tests.Reporting
         [TestFixture]
         public class when_a_TestExecutionMethodPassedClientEvent_was_published : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
         {
-            private TestCaseResult _passedResult;
+            private TestCaseResultServerEvent _passedResultServerEvent;
             private TestExecutionMethodPassedClientEvent _testExecutionMethodPassedClientEvent;
 
             protected override void Before_all_tests()
@@ -54,11 +52,11 @@ namespace StatLight.Core.Tests.Reporting
                 });
                 TestResultAggregator.Handle(_testExecutionMethodPassedClientEvent);
 
-                _passedResult =
+                _passedResultServerEvent =
                     TestResultAggregator
                     .CurrentReport
                     .TestResults.Where(w => w.ResultType == ResultType.Passed)
-                    .Cast<TestCaseResult>()
+                    .Cast<TestCaseResultServerEvent>()
                     .FirstOrDefault();
             }
 
@@ -71,41 +69,41 @@ namespace StatLight.Core.Tests.Reporting
             [Test]
             public void Should_be_able_to_get_the_specific_passedResult()
             {
-                _passedResult.ShouldNotBeNull();
+                _passedResultServerEvent.ShouldNotBeNull();
             }
 
             [Test]
             public void Should_have_translated_the_ClassName()
             {
-                _passedResult.ClassName.ShouldEqual(_testExecutionMethodPassedClientEvent.ClassName);
+                _passedResultServerEvent.ClassName.ShouldEqual(_testExecutionMethodPassedClientEvent.ClassName);
             }
 
             [Test]
             public void Should_have_translated_the_MethodName()
             {
-                _passedResult.MethodName.ShouldEqual(_testExecutionMethodPassedClientEvent.MethodName);
+                _passedResultServerEvent.MethodName.ShouldEqual(_testExecutionMethodPassedClientEvent.MethodName);
             }
             [Test]
             public void Should_have_translated_the_NameSpace()
             {
-                _passedResult.NamespaceName.ShouldEqual(_testExecutionMethodPassedClientEvent.NamespaceName);
+                _passedResultServerEvent.NamespaceName.ShouldEqual(_testExecutionMethodPassedClientEvent.NamespaceName);
             }
             [Test]
             public void Should_have_translated_the_Started()
             {
-                _passedResult.Started.ShouldEqual(_testExecutionMethodPassedClientEvent.Started);
+                _passedResultServerEvent.Started.ShouldEqual(_testExecutionMethodPassedClientEvent.Started);
             }
 
             [Test]
             public void Should_not_have_an_ExceptionInfo()
             {
-                _passedResult.ExceptionInfo.ShouldBeNull();
+                _passedResultServerEvent.ExceptionInfo.ShouldBeNull();
             }
 
             [Test]
             public void Should_have_translated_the_Finished()
             {
-                _passedResult.Finished.ShouldEqual(_testExecutionMethodPassedClientEvent.Finished);
+                _passedResultServerEvent.Finished.ShouldEqual(_testExecutionMethodPassedClientEvent.Finished);
             }
 
             [Test]
@@ -118,7 +116,7 @@ namespace StatLight.Core.Tests.Reporting
         [TestFixture]
         public class when_a_TestExecutionMethodFailedClientEvent_was_published : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
         {
-            private TestCaseResult _failedResult;
+            private TestCaseResultServerEvent _failedResultServerEvent;
             private TestExecutionMethodFailedClientEvent _testExecutionMethodFailedClientEvent;
 
             protected override void Before_all_tests()
@@ -148,11 +146,11 @@ namespace StatLight.Core.Tests.Reporting
                 });
                 TestResultAggregator.Handle(_testExecutionMethodFailedClientEvent);
 
-                _failedResult =
+                _failedResultServerEvent =
                     TestResultAggregator
                     .CurrentReport
                     .TestResults.Where(w => w.ResultType == ResultType.Failed)
-                    .Cast<TestCaseResult>()
+                    .Cast<TestCaseResultServerEvent>()
                     .FirstOrDefault();
             }
 
@@ -165,47 +163,47 @@ namespace StatLight.Core.Tests.Reporting
             [Test]
             public void Should_be_able_to_get_the_specific_passedResult()
             {
-                _failedResult.ShouldNotBeNull();
+                _failedResultServerEvent.ShouldNotBeNull();
             }
 
             [Test]
             public void Should_have_translated_the_ClassName()
             {
-                _failedResult.ClassName.ShouldEqual(_testExecutionMethodFailedClientEvent.ClassName);
+                _failedResultServerEvent.ClassName.ShouldEqual(_testExecutionMethodFailedClientEvent.ClassName);
             }
 
             [Test]
             public void Should_have_translated_the_MethodName()
             {
-                _failedResult.MethodName.ShouldEqual(_testExecutionMethodFailedClientEvent.MethodName);
+                _failedResultServerEvent.MethodName.ShouldEqual(_testExecutionMethodFailedClientEvent.MethodName);
             }
             [Test]
             public void Should_have_translated_the_NameSpace()
             {
-                _failedResult.NamespaceName.ShouldEqual(_testExecutionMethodFailedClientEvent.NamespaceName);
+                _failedResultServerEvent.NamespaceName.ShouldEqual(_testExecutionMethodFailedClientEvent.NamespaceName);
             }
             [Test]
             public void Should_have_translated_the_Started()
             {
-                _failedResult.Started.ShouldEqual(_testExecutionMethodFailedClientEvent.Started);
+                _failedResultServerEvent.Started.ShouldEqual(_testExecutionMethodFailedClientEvent.Started);
             }
 
             [Test]
             public void Should_not_have_an_ExceptionInfo()
             {
-                _failedResult.ExceptionInfo.ShouldNotBeNull();
+                _failedResultServerEvent.ExceptionInfo.ShouldNotBeNull();
             }
 
             [Test]
             public void Should_have_translated_the_Finished()
             {
-                _failedResult.Finished.ShouldEqual(_testExecutionMethodFailedClientEvent.Finished);
+                _failedResultServerEvent.Finished.ShouldEqual(_testExecutionMethodFailedClientEvent.Finished);
             }
 
             [Test]
             public void Should_be_a_failing_testCaseResult()
             {
-                _failedResult.ResultType.ShouldEqual(ResultType.Failed);
+                _failedResultServerEvent.ResultType.ShouldEqual(ResultType.Failed);
             }
 
             [Test]
@@ -243,15 +241,15 @@ namespace StatLight.Core.Tests.Reporting
         [TestFixture]
         public class when_a_dialog_assertion_occurs_we_should_rePublish_failure_events : for_a_TestResultAggregator_that_should_handle_a_ClientEvent
         {
-            private readonly List<TestCaseResult> _manufacturedFailedEvents = new List<TestCaseResult>();
-            private TestCaseResult _manufacturedFailedEvent;
+            private readonly List<TestCaseResultServerEvent> _manufacturedFailedEvents = new List<TestCaseResultServerEvent>();
+            private TestCaseResultServerEvent _manufacturedFailedEvent;
 
             protected override void Before_all_tests()
             {
                 base.Before_all_tests();
 
                 TestEventSubscriptionManager
-                    .AddListenerAction<TestCaseResult>(e =>
+                    .AddListenerAction<TestCaseResultServerEvent>(e =>
                     {
                         if (e.ResultType == ResultType.SystemGeneratedFailure)
                         {

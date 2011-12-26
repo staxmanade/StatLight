@@ -6,10 +6,8 @@ namespace StatLight.Core.Reporting.Providers.Xml
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Xml.Linq;
-    using StatLight.Client.Harness.Events;
-    using StatLight.Core.Events;
+    using Events;
     using StatLight.Core.Properties;
 
     public class XmlReport : IXmlReport
@@ -60,27 +58,27 @@ namespace StatLight.Core.Reporting.Providers.Xml
                         item.TestResults.Select(GetResult))).ToList();
         }
 
-        private static XElement GetResult(TestCaseResult result)
+        private static XElement GetResult(TestCaseResultServerEvent resultServerEvent)
         {
-            Func<TestCaseResult, string> formatName =
+            Func<TestCaseResultServerEvent, string> formatName =
                 resultX => resultX.FullMethodName();
 
             XElement otherInfoElement = null;
-            if (!string.IsNullOrEmpty(result.OtherInfo))
+            if (!string.IsNullOrEmpty(resultServerEvent.OtherInfo))
             {
-                otherInfoElement = new XElement("otherInfo", result.OtherInfo);
+                otherInfoElement = new XElement("otherInfo", resultServerEvent.OtherInfo);
             }
 
             XElement exceptionInfoElement = null;
-            if (result.ExceptionInfo != null)
+            if (resultServerEvent.ExceptionInfo != null)
             {
-                exceptionInfoElement = FormatExceptionInfoElement(result.ExceptionInfo);
+                exceptionInfoElement = FormatExceptionInfoElement(resultServerEvent.ExceptionInfo);
             }
 
             XElement metaData = null;
-            if (result.Metadata.Any())
+            if (resultServerEvent.Metadata.Any())
             {
-                metaData = new XElement("metaDataItems", from md in result.Metadata
+                metaData = new XElement("metaDataItems", from md in resultServerEvent.Metadata
                                                          select new XElement("metaData", 
                                                                     new XAttribute("classification", md.Classification), 
                                                                     new XAttribute("name", md.Name), 
@@ -88,9 +86,9 @@ namespace StatLight.Core.Reporting.Providers.Xml
             }
 
             return new XElement("test",
-                        new XAttribute("name", formatName(result)),
-                        new XAttribute("resulttype", result.ResultType),
-                        new XAttribute("timeToComplete", result.TimeToComplete.ToString()),
+                        new XAttribute("name", formatName(resultServerEvent)),
+                        new XAttribute("resulttype", resultServerEvent.ResultType),
+                        new XAttribute("timeToComplete", resultServerEvent.TimeToComplete.ToString()),
                         exceptionInfoElement,
                         otherInfoElement,
                         metaData

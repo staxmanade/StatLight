@@ -792,10 +792,10 @@ Task test-multiple-xaps {
 	$scriptFile = GetTemporaryXmlFile;
 	execStatLight "-x=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.xap" "-x=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.UITests.xap" "-r=$scriptFile" -b
 	if(Is-Release-Build){
-		Assert-statlight-xml-report-results -message "test-multiple-xaps" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 11 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+		Assert-statlight-xml-report-results -message "test-multiple-xaps" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 12 -expectedFailedCount 3 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
 	else {
-		Assert-statlight-xml-report-results -message "test-multiple-xaps" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 11 -expectedFailedCount 4 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
+		Assert-statlight-xml-report-results -message "test-multiple-xaps" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 12 -expectedFailedCount 4 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 1
 	}
 }
 
@@ -813,7 +813,7 @@ Task test-multiple-one-xap-one-dll {
 
 Task test-multiple-two-dlls {
 	$scriptFile = GetTemporaryXmlFile;
-	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.dll" "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-v=MSTest2010April" "-r=$scriptFile" 
+	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest-SL5.dll" "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.OtherTestAssembly\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.OtherTestAssembly.dll" "-o=MSTest" "-v=MSTest2011October" "-r=$scriptFile" 
 
 	if(Is-Release-Build){
 		Assert-statlight-xml-report-results -message "test-multiple-two-dlls" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 12 -expectedFailedCount 4 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 1
@@ -821,6 +821,13 @@ Task test-multiple-two-dlls {
 	else {
 		Assert-statlight-xml-report-results -message "test-multiple-two-dlls" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 12 -expectedFailedCount 5 -expectedIgnoredCount 2 -expectedSystemGeneratedfailedCount 1
 	}
+}
+
+Task test-statlight-no-communication-from-browser-forced-timeout {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.dll" "-r=$scriptFile" '--MethodsToTest="StatLight.IntegrationTests.Silverlight.LongRunningAsyncTests.Should_take_a_really_long_time_and_probably_timeout;"' '--OverrideSetting:MaxWaitTimeAllowedBeforeCommunicationErrorSent=00:00:10'
+
+	Assert-statlight-xml-report-results -message "test-statlight-no-communication-from-browser-forced-timeout" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 0 -expectedFailedCount 1 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
 }
 
 Task test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll {
@@ -936,7 +943,14 @@ Task test-sample-extension {
 }
 
 
-Task test-usage-of-TestPanel-displays-warning {
+Task test-UI-show-browser {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.UITests.dll" "-r=$scriptFile" -b
+
+	Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 3 -expectedFailedCount 0 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
+}
+
+Task test-UI-NoBrowser-displays-warning {
 
 # TODO: make this run against all supported MSTest versions?
 	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.UITests.dll" | Tee-Object -variable output 
@@ -966,10 +980,10 @@ Task test-phone-dll {
 	
 
 	if( Is-Release-Build ) {
-		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 4 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+		Assert-statlight-xml-report-results -message "test-phone-dll" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 4 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
 	}
 	else {
-		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+		Assert-statlight-xml-report-results -message "test-phone-dll" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
 	}
 }
 
@@ -1122,15 +1136,47 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 	Write-Documentation
 }
 
+
+
+
+Task test-UI -depends 	test-UI-NoBrowser-displays-warning, test-UI-show-browser {
+}
+
 Task test-multiple -depends test-multiple-xaps, test-multiple-one-xap-one-dll, test-multiple-two-dlls {
 }
+
 Task test-single-assemblies -depends test-single-assembly-run, test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll {
 }
+
 Task test-phone -depends test-phone-xap, test-phone-dll {
 }
 
-Task test-all -depends test-core, test-client-harness-tests, test-integrationTests, test-all-mstest-version-acceptance-tests, test-tests-in-other-assembly, test-specific-method-filter, test-remote-access-querystring, test-specific-multiple-browser-runner, test-custom-test-provider, test-auto-detects-xunit-contrib, test-single-assemblies, test-sample-extension, test-usage-of-TestPanel-displays-warning, test-multiple, test-phone {
+Task test-all -depends `
+	test-core, `
+	test-client-harness-tests, `
+	test-integrationTests, `
+	test-all-mstest-version-acceptance-tests, `
+	test-tests-in-other-assembly, `
+	test-specific-method-filter, `
+	test-remote-access-querystring, `
+	test-specific-multiple-browser-runner, `
+	test-custom-test-provider, `
+	test-auto-detects-xunit-contrib, `
+	test-sample-extension, `
+	test-UI, `
+	test-statlight-no-communication-from-browser-forced-timeout, `
+	test-multiple, `
+	test-single-assemblies, `
+	test-phone	{
 }
 
-Task build-all -depends clean-build, initialize, create-AssemblyInfo, compile-Solution, compile-StatLight-MSTestHostVersions, compile-StatLIght-UnitDrivenHost, compile-StatLIght-XUnitContribHost, compile-StatLight-MSTestHostVersionIntegrationTests {
+Task build-all -depends `
+	clean-build, `
+	initialize, `
+	create-AssemblyInfo, `
+	compile-Solution, `
+	compile-StatLight-MSTestHostVersions, `
+	compile-StatLIght-UnitDrivenHost, `
+	compile-StatLIght-XUnitContribHost, `
+	compile-StatLight-MSTestHostVersionIntegrationTests {
 }

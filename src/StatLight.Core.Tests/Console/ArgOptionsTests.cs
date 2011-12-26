@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using StatLight.Console;
 using StatLight.Core.Configuration;
@@ -98,6 +99,16 @@ namespace StatLight.Core.Tests.Console
 
                 command.Dlls.Count.ShouldEqual(1);
                 command.Dlls.First().ShouldEqual("somePath.dll");
+            }
+
+            [Test]
+            public void When_overriding_setting_MaxWaitTimeAllowedBeforeCommunicationErrorSent()
+            {
+                ArgOptions command = "--OverrideSetting:MaxWaitTimeAllowedBeforeCommunicationErrorSent=00:00:20".ToArgOptions();
+
+                command.OverriddenSettings.Count().ShouldEqual(1);
+                command.OverriddenSettings.First().Key.ShouldEqual("MaxWaitTimeAllowedBeforeCommunicationErrorSent");
+                command.OverriddenSettings.First().Value.ShouldEqual("00:00:20");
             }
         }
 

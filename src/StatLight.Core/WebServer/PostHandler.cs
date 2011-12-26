@@ -5,9 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using StatLight.Client.Harness.Events;
-using StatLight.Core.Common;
 using StatLight.Core.Events;
+using StatLight.Core.Common;
 using StatLight.Core.Serialization;
 
 namespace StatLight.Core.WebServer
@@ -92,7 +91,6 @@ The Error from deserializing is
 
             if (Is<SignalTestCompleteClientEvent>(xmlMessage))
             {
-
                 var result = xmlMessage.Deserialize<SignalTestCompleteClientEvent>();
                 _eventPublisher.SendMessage(result);
                 var totalMessagsPostedCount = result.TotalMessagesPostedCount;

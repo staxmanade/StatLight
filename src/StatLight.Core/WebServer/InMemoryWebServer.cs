@@ -120,24 +120,18 @@ namespace StatLight.Core.WebServer
             Server = new HttpListener();
             try
             {
-                string prefix = string.Format(
-                    CultureInfo.InvariantCulture,
-                    _webServerLocation.BaseUrl.ToString(),
-                    _webServerLocation.Port);
+                string prefix = string.Format(CultureInfo.InvariantCulture, _webServerLocation.BaseUrl.ToString(), _webServerLocation.Port);
                 Server.Prefixes.Add(prefix);
                 Server.Start();
                 Log("Listening on {0}", new object[] { prefix });
                 while (Listening)
                 {
-                    //Log("(Waiting for next request...)", new object[0]);
                     try
                     {
                         HttpListenerContext context = Server.GetContext();
-                        HttpListenerResponse response = context.Response;
-                        try
+                        using(HttpListenerResponse response = context.Response)
                         {
                             HttpListenerRequest request = context.Request;
-                            //Log("Received {0} request", new object[] { request.HttpMethod });
                             if (request.HttpMethod == "GET")
                             {
                                 ProcessGetRequest(request, response);
@@ -146,15 +140,6 @@ namespace StatLight.Core.WebServer
                             {
                                 ProcessPostRequest(request, response);
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            LogException(e);
-                        }
-                        finally
-                        {
-                            //Log("Sending response", new object[0]);
-                            response.Close();
                         }
                     }
                     catch (Exception e)

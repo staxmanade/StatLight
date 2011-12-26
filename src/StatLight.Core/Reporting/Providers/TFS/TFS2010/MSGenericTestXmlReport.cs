@@ -31,7 +31,7 @@ namespace StatLight.Core.Reporting.Providers.TFS.TFS2010
 
         public string GetXmlReport()
         {
-            Func<IEnumerable<TestCaseResult>, IEnumerable<XElement>> getInnerTests = result =>
+            Func<IEnumerable<TestCaseResultServerEvent>, IEnumerable<XElement>> getInnerTests = result =>
                 result.Select(s =>
                     new XElement("InnerTest",
                         new XElement("TestName", s.FullMethodName()),
@@ -69,16 +69,16 @@ namespace StatLight.Core.Reporting.Providers.TFS.TFS2010
             return TestResultType.Passed;
         }
 
-        private static string GetErrorMessage(TestCaseResult result)
+        private static string GetErrorMessage(TestCaseResultServerEvent resultServerEvent)
         {
             var sb = new StringBuilder();
-            if (result.ExceptionInfo != null)
-                sb.Append(result.ExceptionInfo.FullMessage);
+            if (resultServerEvent.ExceptionInfo != null)
+                sb.Append(resultServerEvent.ExceptionInfo.FullMessage);
 
-            if (!string.IsNullOrEmpty(result.OtherInfo))
+            if (!string.IsNullOrEmpty(resultServerEvent.OtherInfo))
             {
                 sb.Append(Environment.NewLine);
-                sb.Append(result.OtherInfo);
+                sb.Append(resultServerEvent.OtherInfo);
             }
 
             var rtn = sb.ToString();

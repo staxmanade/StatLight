@@ -4,7 +4,6 @@ using NUnit.Framework;
 using StatLight.Core.Common.Abstractions.Timing;
 using StatLight.Core.Events;
 using StatLight.Core.Monitoring;
-using StatLight.Core.Events;
 
 namespace StatLight.Core.Tests.Monitoring
 {
@@ -22,7 +21,7 @@ namespace StatLight.Core.Tests.Monitoring
 
                 MockTimer = new Mock<ITimer>();
 
-                Monitor = new BrowserCommunicationTimeoutMonitor(TestEventPublisher, MockTimer.Object,
+                Monitor = new BrowserCommunicationTimeoutMonitor(TestLogger, TestEventPublisher, MockTimer.Object,
                                                                   new TimeSpan(0, 0, 0, 1, 0));
             }
 

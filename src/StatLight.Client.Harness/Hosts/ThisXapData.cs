@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-using StatLight.Client.Harness.Messaging;
+using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Client.Harness.Hosts
+namespace StatLight.Core.Events.Hosts
 {
     public class ThisXapData : ILoadedXapData
     {

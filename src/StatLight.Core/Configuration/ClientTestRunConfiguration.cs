@@ -9,7 +9,7 @@ using System.Reflection;
 using StatLight.Core.WebBrowser;
 
 #if SILVERLIGHT
-using StatLight.Client.Harness.Hosts;
+using StatLight.Core.Events.Hosts;
 #endif
 namespace StatLight.Core.Configuration
 {
@@ -74,9 +74,6 @@ namespace StatLight.Core.Configuration
             get { return (_methodsToTest ?? (_methodsToTest = new Collection<string>())); }
             set { _methodsToTest = value; }
         }
-
-        [DataMember]
-        public bool ShowTestingBrowserHost { get; set; }
 
         [DataMember]
         public WindowGeometry WindowGeometry { get; set; }
