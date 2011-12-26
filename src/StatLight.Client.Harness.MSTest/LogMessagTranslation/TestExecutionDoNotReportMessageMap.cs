@@ -4,9 +4,9 @@ using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 #else
 #endif
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-using StatLight.Client.Harness.Events;
+using StatLight.Core.Events;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
+namespace StatLight.Core.Events.Hosts.MSTest.LogMessagTranslation
 {
     public class TestExecutionDoNotReportMessageMap : ILogMessageToClientEventTranslation
     {

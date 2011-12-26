@@ -1,6 +1,6 @@
-﻿using StatLight.Client.Harness.Messaging;
+﻿using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
+namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.NUnit
 {
     using System.Reflection;
     using System.Text;

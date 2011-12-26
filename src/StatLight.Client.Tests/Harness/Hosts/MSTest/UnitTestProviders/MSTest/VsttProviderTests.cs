@@ -1,6 +1,6 @@
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest;
+using StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.MSTest;
 
 namespace StatLight.Client.Tests.Harness.Hosts.MSTest.UnitTestProviders.MSTest
 {

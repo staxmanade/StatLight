@@ -9,7 +9,7 @@ namespace StatLight.Core.Reporting
     public class TestReport
     {
         private readonly string _xapPath;
-        private readonly IList<TestCaseResult> _testCaseResults = new List<TestCaseResult>();
+        private readonly IList<TestCaseResultServerEvent> _testCaseResults = new List<TestCaseResultServerEvent>();
 
         public TestReport(string xapPath)
         {
@@ -22,12 +22,12 @@ namespace StatLight.Core.Reporting
             get { return _xapPath; }
         }
 
-        public IEnumerable<TestCaseResult> TestResults { get { return _testCaseResults; } }
+        public IEnumerable<TestCaseResultServerEvent> TestResults { get { return _testCaseResults; } }
 
-        internal bool TryFindByFullName(string fullName, out TestCaseResult testCaseResult)
+        internal bool TryFindByFullName(string fullName, out TestCaseResultServerEvent testCaseResultServerEvent)
         {
-            testCaseResult = _testCaseResults.Where(w => w.FullMethodName() == fullName).SingleOrDefault();
-            return testCaseResult != null;
+            testCaseResultServerEvent = _testCaseResults.Where(w => w.FullMethodName() == fullName).SingleOrDefault();
+            return testCaseResultServerEvent != null;
         }
 
         public DateTime DateTimeRunCompleted { get; private set; }
@@ -50,8 +50,8 @@ namespace StatLight.Core.Reporting
                 //TODO: this isn't a very accurate value considering other factors...
 
                 return new TimeSpan(_testCaseResults
-                    .Where(w => w is TestCaseResult)
-                    .Cast<TestCaseResult>()
+                    .Where(w => w is TestCaseResultServerEvent)
+                    .Cast<TestCaseResultServerEvent>()
                     .Select(s => s.TimeToComplete.Ticks)
                     .Sum());
             }
@@ -90,7 +90,7 @@ namespace StatLight.Core.Reporting
             }
         }
 
-        public IEnumerable<TestCaseResult> Failures
+        public IEnumerable<TestCaseResultServerEvent> Failures
         {
             get
             {
@@ -98,10 +98,10 @@ namespace StatLight.Core.Reporting
             }
         }
 
-        public TestReport AddResult(TestCaseResult result)
+        public TestReport AddResult(TestCaseResultServerEvent resultServerEvent)
         {
             SetLastMessageReceivedTime();
-            _testCaseResults.Add(result);
+            _testCaseResults.Add(resultServerEvent);
             return this;
         }
 

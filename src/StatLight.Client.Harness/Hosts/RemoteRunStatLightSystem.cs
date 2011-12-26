@@ -7,7 +7,7 @@ using StatLight.Core.Common;
 using StatLight.Core.Configuration;
 using StatLight.Core.WebServer;
 
-namespace StatLight.Client.Harness.Hosts
+namespace StatLight.Core.Events.Hosts
 {
     public class RemoteRunStatLightSystem : StatLightSystemBase
     {

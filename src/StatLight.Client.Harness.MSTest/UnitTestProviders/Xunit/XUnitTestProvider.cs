@@ -11,7 +11,7 @@ using Microsoft.Silverlight.Testing.Harness;
 #endif
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit
+namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.Xunit
 {
     /// <summary>
     /// Provider xUnit metadata.

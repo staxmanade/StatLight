@@ -5,16 +5,16 @@ using System.Windows;
 using Microsoft.Silverlight.Testing;
 using Microsoft.Silverlight.Testing.Harness;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
-using StatLight.Client.Harness.Events;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven;
-using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit;
-using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
+using StatLight.Core.Events;
+using StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.MSTest;
+using StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.NUnit;
+using StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.UnitDriven;
+using StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.Xunit;
+using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Client.Harness.Hosts.MSTest
+namespace StatLight.Core.Events.Hosts.MSTest
 {
     public class MSTestRunnerHost : ITestRunnerHost
     {

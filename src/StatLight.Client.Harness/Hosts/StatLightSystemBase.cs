@@ -3,13 +3,13 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Windows;
-using StatLight.Client.Harness.Messaging;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
+using StatLight.Core.Events.Messaging;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebServer;
 
-namespace StatLight.Client.Harness.Hosts
+namespace StatLight.Core.Events.Hosts
 {
     public abstract class StatLightSystemBase
     {

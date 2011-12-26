@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StatLight.Client.Harness.Events;
+using StatLight.Core.Events;
 using StatLight.Client.Tests;
 using StatLight.Core.Serialization;
 

@@ -67,33 +67,33 @@ namespace StatLight.Core.Reporting.Providers.NUnit
 
         }
 
-        private static XElement CreateTestCaseElement(TestCaseResult result)
+        private static XElement CreateTestCaseElement(TestCaseResultServerEvent resultServerEvent)
         {
             var element = new XElement("test-case",
-                                new XAttribute("name", result.FullMethodName()),
-                                new XAttribute("executed", result.ResultType == ResultType.Ignored ? "False" : "True"),
-                                new XAttribute("time", result.TimeToComplete.ToString(@"hh\:mm\:ss\.ffff", CultureInfo.InvariantCulture)),
-                                new XAttribute("result", result.ResultType == ResultType.Ignored ? "Ignored" : (result.ResultType == ResultType.Failed || result.ResultType == ResultType.SystemGeneratedFailure) ? "Failure" : "Success"));
+                                new XAttribute("name", resultServerEvent.FullMethodName()),
+                                new XAttribute("executed", resultServerEvent.ResultType == ResultType.Ignored ? "False" : "True"),
+                                new XAttribute("time", resultServerEvent.TimeToComplete.ToString(@"hh\:mm\:ss\.ffff", CultureInfo.InvariantCulture)),
+                                new XAttribute("result", resultServerEvent.ResultType == ResultType.Ignored ? "Ignored" : (resultServerEvent.ResultType == ResultType.Failed || resultServerEvent.ResultType == ResultType.SystemGeneratedFailure) ? "Failure" : "Success"));
 
-            if (result.ResultType != ResultType.Ignored)
-                element.Add(new XAttribute("success", result.ResultType == ResultType.Passed ? "True" : "False"));
+            if (resultServerEvent.ResultType != ResultType.Ignored)
+                element.Add(new XAttribute("success", resultServerEvent.ResultType == ResultType.Passed ? "True" : "False"));
 
-            if (result.ResultType == ResultType.Failed || result.ResultType == ResultType.SystemGeneratedFailure)
+            if (resultServerEvent.ResultType == ResultType.Failed || resultServerEvent.ResultType == ResultType.SystemGeneratedFailure)
                 element.Add(new XElement("failure",
-                    new XElement("message", GetErrorMessage(result)),
-                    new XElement("stack-trace", new XCData(GetErrorStackTrace(result)))));
+                    new XElement("message", GetErrorMessage(resultServerEvent)),
+                    new XElement("stack-trace", new XCData(GetErrorStackTrace(resultServerEvent)))));
 
             return element;
         }
 
-        private static string GetErrorStackTrace(TestCaseResult testCaseResult)
+        private static string GetErrorStackTrace(TestCaseResultServerEvent testCaseResultServerEvent)
         {
-            if (testCaseResult.ExceptionInfo != null)
-                return testCaseResult.ExceptionInfo.StackTrace ?? "";
-            return testCaseResult.OtherInfo ?? "";
+            if (testCaseResultServerEvent.ExceptionInfo != null)
+                return testCaseResultServerEvent.ExceptionInfo.StackTrace ?? "";
+            return testCaseResultServerEvent.OtherInfo ?? "";
         }
 
-        private static string GetErrorMessage(TestCaseResult r)
+        private static string GetErrorMessage(TestCaseResultServerEvent r)
         {
             if (r.ExceptionInfo != null)
                 return r.ExceptionInfo.FullMessage ?? "";

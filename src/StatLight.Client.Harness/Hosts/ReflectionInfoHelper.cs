@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using StatLight.Client.Harness.Messaging;
+using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Client.Harness.Hosts
+namespace StatLight.Core.Events.Hosts
 {
     public static class ReflectionInfoHelper
     {

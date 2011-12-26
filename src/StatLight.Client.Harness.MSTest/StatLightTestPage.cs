@@ -1,8 +1,8 @@
 ﻿using System.Windows.Controls;
 using Microsoft.Silverlight.Testing;
-using StatLight.Client.Harness.Messaging;
+using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Client.Harness.Hosts.MSTest
+namespace StatLight.Core.Events.Hosts.MSTest
 {
 #if MSTest2009July || MSTest2009October || MSTest2009November
 #else

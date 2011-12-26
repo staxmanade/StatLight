@@ -104,6 +104,12 @@
     <Compile Include="..\StatLight.Core\Configuration\UnitTestProviderTypes.cs">
       <Link>Core\Common\UnitTestProviderTypes.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Core\Events\Events.Client.cs">
+      <Link>Core\Events\Events.Client.cs</Link>
+    </Compile>
+    <Compile Include="..\StatLight.Core\Events\ExceptionInfo.cs">
+      <Link>Core\Events\ExceptionInfo.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Core\Reporting\Messages\LogMessageType.cs">
       <Link>Core\Reporting\Messages\LogMessageType.cs</Link>
     </Compile>
@@ -120,8 +126,6 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AssemblyInfo.This.cs" />
-    <Compile Include="Events\ExceptionInfo.cs" />
-    <Compile Include="Events\ClientEvents.cs" />
     <Compile Include="Hosts\CurrentXapData.cs" />
     <Compile Include="Hosts\ILoadedXapData.cs" />
     <Compile Include="Hosts\ITestRunnerHost.cs" />
@@ -152,6 +156,9 @@
       <Link>StatLight.snk</Link>
     </None>
     <None Include="Properties\AppManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Events\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

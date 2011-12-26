@@ -1,17 +1,15 @@
 ﻿
-using System.Linq;
 
 namespace StatLight.Core.Runners
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using StatLight.Core.Common;
     using StatLight.Core.Events;
-    using StatLight.Core.Events;
     using StatLight.Core.Monitoring;
     using StatLight.Core.Reporting;
-    using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer;
 

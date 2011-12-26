@@ -1,13 +1,10 @@
 ﻿
-using System.Text;
-using StatLight.Core.Properties;
-
 namespace StatLight.Core.Reporting.Providers.TeamCity
 {
     using System;
-    using StatLight.Client.Harness.Events;
-    using StatLight.Core.Reporting;
-    using StatLight.Core.Events;
+    using System.Text;
+    using Events;
+    using StatLight.Core.Properties;
 
     public class TeamCityTestResultHandler : ITestingReportEvents
     {
@@ -77,7 +74,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
             WriteServerEventFailure("BrowserHostCommunicationTimeoutServerEvent", writeMessage);
         }
 
-        public void Handle(TestCaseResult message)
+        public void Handle(TestCaseResultServerEvent message)
         {
             if (message == null) throw new ArgumentNullException("message");
             var name = message.FullMethodName();
@@ -143,7 +140,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
                     break;
 
                 default:
-                    "Unknown TestCaseResult (to StatLight) - {0}".FormatWith(message.ResultType)
+                    "Unknown TestCaseResultServerEvent (to StatLight) - {0}".FormatWith(message.ResultType)
                         .WrapConsoleMessageWithColor(Settings.Default.ConsoleColorError, true);
                     break;
             }

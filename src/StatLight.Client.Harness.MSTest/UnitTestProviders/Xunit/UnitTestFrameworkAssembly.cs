@@ -13,7 +13,7 @@ using ITestHarness = Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 #endif
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit
+namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.Xunit
 {
     /// <summary>
     /// Assembly metadata for the Visual Studio Team Test unit test framework.

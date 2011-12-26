@@ -1,7 +1,6 @@
 ﻿using System;
-using StatLight.Client.Harness.Events;
-using StatLight.Core.Common;
 using StatLight.Core.Events;
+using StatLight.Core.Common;
 
 namespace StatLight.Core.Reporting
 {

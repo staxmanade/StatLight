@@ -1,9 +1,8 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using StatLight.Client.Harness.Events;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events;
 using StatLight.Core.Tests;
@@ -114,7 +113,7 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 #endif
         }
 
-        private static void AssertTestExecutionClassData(TestExecutionClass e)
+        private static void AssertTestExecutionClassData(TestExecutionClassClientEvent e)
         {
             e.NamespaceName.ShouldEqual("StatLight.IntegrationTests.Silverlight", "{0} - NamespaceName property should be correct.".FormatWith(e.GetType().FullName));
 
@@ -209,15 +208,15 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
         [Test]
         public void Should_have_pulled_the_TestContext_WriteLine_information_and_be_in_the_correct_order()
         {
-            TestCaseResult testCaseResult = TestReport
+            TestCaseResultServerEvent testCaseResultServerEvent = TestReport
                 .TestResults
                 .Where(w => w.MethodName.Equals("Should_be_able_to_write_to_the_TestContext") && w.ClassName.Equals("MSTestTests"))
                 .Single();
 
-            testCaseResult.Metadata.Count().ShouldBeGreaterThan(0, "Should have found some metadata");
+            testCaseResultServerEvent.Metadata.Count().ShouldBeGreaterThan(0, "Should have found some metadata");
 
             var sb = new StringBuilder();
-            var allItems = testCaseResult.Metadata.ToList();
+            var allItems = testCaseResultServerEvent.Metadata.ToList();
             bool failed = false;
             for (int i = 0; i < allItems.Count; i++)
             {
@@ -243,14 +242,14 @@ namespace StatLight.IntegrationTests.ProviderTests.MSTest
 
     internal static class AssertionExtensions
     {
-        public static bool HasExceptionInfoWithCriteria(this TestCaseResult testt, Func<ExceptionInfo, bool> criteria)
+        public static bool HasExceptionInfoWithCriteria(this TestCaseResultServerEvent testt, Func<ExceptionInfo, bool> criteria)
         {
             return testt.ExceptionInfo == null ? false : criteria(testt.ExceptionInfo);
         }
 
-        public static IEnumerable<string> ReadMetadata(this TestCaseResult testCaseResult, string property)
+        public static IEnumerable<string> ReadMetadata(this TestCaseResultServerEvent testCaseResultServerEvent, string property)
         {
-            var data = testCaseResult.Metadata.Where(w => w.Name == property);
+            var data = testCaseResultServerEvent.Metadata.Where(w => w.Name == property);
             if (data.Any())
                 return data.Select(s => s.Value);
 

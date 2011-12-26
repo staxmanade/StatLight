@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Windows;
 using StatLight.Core.Configuration;
 
-namespace StatLight.Client.Harness.Hosts
+namespace StatLight.Core.Events.Hosts
 {
     public interface ITestRunnerHost
     {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Silverlight.Testing.Harness;
-using StatLight.Client.Harness.Mocks;
 using StatLight.Client.Tests;
+using StatLight.Core.Events.Mocks;
 
-namespace StatLight.Client.Harness.LogMessageHandling
+namespace StatLight.Core.Events.LogMessageHandling
 {
     public class when_the_LogMessages_is_a_ScenarioResult : FixtureBase
     {

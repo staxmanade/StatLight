@@ -1,12 +1,11 @@
 ﻿using System;
-using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
 
 namespace SampleExtension
 {
     public class Class1 : ITestingReportEvents
     {
-        public void Handle(TestCaseResult message)
+        public void Handle(TestCaseResultServerEvent message)
         {
             Console.WriteLine("Hello From Class1");
         }

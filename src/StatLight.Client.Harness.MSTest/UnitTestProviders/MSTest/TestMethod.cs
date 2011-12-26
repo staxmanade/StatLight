@@ -7,10 +7,10 @@ using System.Globalization;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StatLight.Client.Harness.Events;
-using StatLight.Client.Harness.Messaging;
+using StatLight.Core.Events;
+using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
+namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.MSTest
 {
     /// <summary>
     /// A provider wrapper for a test method.

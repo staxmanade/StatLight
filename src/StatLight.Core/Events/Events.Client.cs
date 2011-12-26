@@ -1,8 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Threading;
 
-namespace StatLight.Client.Harness.Events
+namespace StatLight.Core.Events
 {
     public abstract class ClientEvent
     {
@@ -30,16 +29,16 @@ namespace StatLight.Client.Harness.Events
 
 
 
-    public abstract class TestExecutionClass : ClientEvent
+    public abstract class TestExecutionClassClientEvent : ClientEvent
     {
         public string NamespaceName { get; set; }
         public string ClassName { get; set; }
     }
 
-    public class TestExecutionClassBeginClientEvent : TestExecutionClass
+    public class TestExecutionClassBeginClientEvent : TestExecutionClassClientEvent
     { }
 
-    public class TestExecutionClassCompletedClientEvent : TestExecutionClass
+    public class TestExecutionClassCompletedClientEvent : TestExecutionClassClientEvent
     { }
 
     public class MetaDataInfo
@@ -60,11 +59,11 @@ namespace StatLight.Client.Harness.Events
         public string Value { get; set; }
     }
 
-    public abstract class TestExecutionMethod : TestExecutionClass
+    public abstract class TestExecutionMethodClientEvent : TestExecutionClassClientEvent
     {
         private readonly Collection<MetaDataInfo> _metadata;
 
-        protected TestExecutionMethod()
+        protected TestExecutionMethodClientEvent()
         {
             _metadata = new Collection<MetaDataInfo>();
         }
@@ -89,12 +88,12 @@ namespace StatLight.Client.Harness.Events
         }
     }
 
-    public class TestExecutionMethodBeginClientEvent : TestExecutionMethod
+    public class TestExecutionMethodBeginClientEvent : TestExecutionMethodClientEvent
     {
         public DateTime Started { get; set; }
     }
 
-    public class TestExecutionMethodIgnoredClientEvent : TestExecutionMethod
+    public class TestExecutionMethodIgnoredClientEvent : TestExecutionMethodClientEvent
     {
         public string Message { get; set; }
         public DateTime Started { get; set; }
@@ -105,7 +104,7 @@ namespace StatLight.Client.Harness.Events
         }
     }
 
-    public class TestExecutionMethodFailedClientEvent : TestExecutionMethod
+    public class TestExecutionMethodFailedClientEvent : TestExecutionMethodClientEvent
     {
         public ExceptionInfo ExceptionInfo { get; set; }
         public DateTime Started { get; set; }
@@ -118,7 +117,7 @@ namespace StatLight.Client.Harness.Events
         public string Description { get; set; }
     }
 
-    public class TestExecutionMethodPassedClientEvent : TestExecutionMethod
+    public class TestExecutionMethodPassedClientEvent : TestExecutionMethodClientEvent
     {
         public DateTime Started { get; set; }
         public DateTime Finished { get; set; }

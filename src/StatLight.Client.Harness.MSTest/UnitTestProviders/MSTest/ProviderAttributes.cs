@@ -1,4 +1,4 @@
-﻿namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
+﻿namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.MSTest
 {
 	public class ProviderAttributes
 	{

@@ -127,12 +127,6 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\StatLight.Client.Harness\Events\ClientEvents.cs">
-      <Link>Events\ClientEvents.cs</Link>
-    </Compile>
-    <Compile Include="..\StatLight.Client.Harness\Events\ExceptionInfo.cs">
-      <Link>Events\ExceptionInfo.cs</Link>
-    </Compile>
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
@@ -140,6 +134,8 @@
     <Compile Include="BootStrapper.cs" />
     <Compile Include="Configuration\SettingsOverrideApplicator.cs" />
     <Compile Include="CurrentStatLightConfiguration.cs" />
+    <Compile Include="Events\Events.Client.cs" />
+    <Compile Include="Events\ExceptionInfo.cs" />
     <Compile Include="RunnerExecutionEngine.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="Common\ConsoleLogger.cs" />
@@ -157,7 +153,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Events\TestCaseResult.cs" />
+    <Compile Include="Events\TestCaseResultServerEvent.cs" />
     <Compile Include="Events\ResultType.cs" />
     <Compile Include="Reporting\Providers\MSTestTRX\TRXReport.cs" />
     <Compile Include="Reporting\TestReportCollection.cs" />
@@ -173,8 +169,7 @@
     <Compile Include="Reporting\Providers\IXmlReport.cs" />
     <Compile Include="WebServer\XapInspection\XapRewriter.cs" />
     <Compile Include="Events\Aggregation\EventAggregator.cs" />
-    <Compile Include="Events\PayloadEvent.cs" />
-    <Compile Include="Events\ServerEvents.cs" />
+    <Compile Include="Events\Events.Server.cs" />
     <Compile Include="Monitoring\BrowserCommunicationTimeoutMonitor.cs" />
     <Compile Include="Monitoring\DialogMonitorResult.cs" />
     <Compile Include="Monitoring\DialogMonitorRunner.cs" />

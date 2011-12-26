@@ -1,6 +1,6 @@
 using System;
 using NUnit.Framework;
-using StatLight.Client.Harness.Events;
+using StatLight.Core.Events;
 using StatLight.Core.Serialization;
 
 namespace StatLight.Core.Tests.Events

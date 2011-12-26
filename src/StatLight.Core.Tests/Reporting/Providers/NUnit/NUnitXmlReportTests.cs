@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
-using StatLight.Client.Harness.Events;
 using StatLight.Core.Events;
 using StatLight.Core.Reporting;
 using StatLight.Core.Reporting.Providers.NUnit;
@@ -20,9 +19,9 @@ namespace StatLight.Core.Tests.Reporting.Providers
         {
             base.Before_all_tests();
 
-            Func<ResultType, ExceptionInfo, TestCaseResult> getResult = (resultType, exceptionInfo) =>
+            Func<ResultType, ExceptionInfo, TestCaseResultServerEvent> getResult = (resultType, exceptionInfo) =>
             {
-                return new TestCaseResult(resultType)
+                return new TestCaseResultServerEvent(resultType)
                 {
                     ClassName = "class_name",
                     MethodName = "method_name",

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
+namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders
 {
     public static class DynamicAttributeHelper
     {

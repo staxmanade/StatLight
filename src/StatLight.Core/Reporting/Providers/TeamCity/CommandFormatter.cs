@@ -4,7 +4,7 @@ namespace StatLight.Core.Reporting.Providers.TeamCity
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using StatLight.Client.Harness.Events;
+    using Events;
     using StatLight.Core.Common;
 
     internal static class CommandFormatter

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using StatLight.Core.Events;
-using StatLight.Client.Harness.Events;
 using StatLight.Core.Common;
 
 namespace StatLight.Core.Runners

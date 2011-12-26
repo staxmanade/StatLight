@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-namespace StatLight.Client.Harness.Mocks
+namespace StatLight.Core.Events.Mocks
 {
     public class MockTestClass : ITestClass
     {

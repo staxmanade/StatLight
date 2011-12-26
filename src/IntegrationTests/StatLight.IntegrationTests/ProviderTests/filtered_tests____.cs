@@ -38,7 +38,7 @@ namespace StatLight.IntegrationTests.ProviderTests
                 .ShouldEqual(1);
         }
 
-        private IEnumerable<TestCaseResult> TestCaseResults()
+        private IEnumerable<TestCaseResultServerEvent> TestCaseResults()
         {
             return TestReport.TestResults;
         }

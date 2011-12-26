@@ -1,12 +1,8 @@
 ﻿
-using System;
-using System.Diagnostics;
-
 namespace StatLight.Core.Events
 {
+    using System;
     using System.ComponentModel.Composition;
-    using StatLight.Client.Harness.Events;
-    using StatLight.Core.Events;
     using StatLight.Core.Reporting;
 
     public enum DialogType
@@ -91,7 +87,7 @@ namespace StatLight.Core.Events
 
     [InheritedExport]
     public interface ITestingReportEvents : IShouldBeAddedToEventAggregator,
-        IListener<TestCaseResult>,
+        IListener<TestCaseResultServerEvent>,
         IListener<TraceClientEvent>,
         IListener<BrowserHostCommunicationTimeoutServerEvent>,
         IListener<FatalSilverlightExceptionServerEvent>,

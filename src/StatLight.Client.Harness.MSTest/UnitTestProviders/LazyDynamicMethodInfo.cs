@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
 
-namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
+namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders
 {
     /// <summary>
 	/// A class that does a lazy lookup when needed using reflection.

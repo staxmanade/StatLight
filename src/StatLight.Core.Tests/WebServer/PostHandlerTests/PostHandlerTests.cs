@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using System.IO;
 using Moq;
 using NUnit.Framework;
-using StatLight.Client.Harness.Events;
 using StatLight.Core.Configuration;
+using StatLight.Core.Events;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebBrowser;
 using StatLight.Core.WebServer;
 using StatLight.Core.WebServer.XapHost;
-using StatLight.Core.Events;
 
 namespace StatLight.Core.Tests.WebServer.PostHandlerTests
 {

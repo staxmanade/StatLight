@@ -9,7 +9,7 @@ using System.Reflection;
 using StatLight.Core.WebBrowser;
 
 #if SILVERLIGHT
-using StatLight.Client.Harness.Hosts;
+using StatLight.Core.Events.Hosts;
 #endif
 namespace StatLight.Core.Configuration
 {

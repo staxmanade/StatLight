@@ -45,7 +45,7 @@ namespace StatLight.Core.Reporting
             _testReports.Add(testReport);
         }
 
-        public IEnumerable<TestCaseResult> AllTests()
+        public IEnumerable<TestCaseResultServerEvent> AllTests()
         {
             return this.SelectMany(s => s.TestResults);
         }

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using StatLight.Client.Harness.Events;
 
 namespace StatLight.Core.Events
 {
     [DebuggerDisplay("Result=[{ResultType}], Method={NamespaceName}.{ClassName}.{MethodName}")]
-    public class TestCaseResult
+    public class TestCaseResultServerEvent
     {
         private readonly List<MetaDataInfo> _metadata;
 
-        public TestCaseResult(ResultType resultType)
+        public TestCaseResultServerEvent(ResultType resultType)
         {
             ResultType = resultType;
             _metadata = new List<MetaDataInfo>();
