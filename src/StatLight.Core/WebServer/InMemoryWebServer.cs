@@ -158,13 +158,11 @@ namespace StatLight.Core.WebServer
         {
             var msg = exception.ToString();
 
-            _logger.Debug(exception.ToString());
-
-            //// This exception would be cool to get rid of - but I'm not sure how to shut down the process more gracefully
-            //if (!msg.Contains("The I/O operation has been aborted because of either a thread exit or"))
-            //{
-            //    _logger.Debug(exception.ToString());
-            //}
+            // This exception would be cool to get rid of - but I'm not sure how to shut down the process more gracefully
+            if (!msg.Contains("The I/O operation has been aborted because of either a thread exit or"))
+            {
+                _logger.Debug(exception.ToString());
+            }
         }
 
         private static void ServeString(HttpListenerResponse response, byte[] value)

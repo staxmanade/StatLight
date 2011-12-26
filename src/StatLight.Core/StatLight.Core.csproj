@@ -136,6 +136,8 @@
     <Compile Include="CurrentStatLightConfiguration.cs" />
     <Compile Include="Events\Events.Client.cs" />
     <Compile Include="Events\ExceptionInfo.cs" />
+    <Compile Include="Events\IShouldBeAddedToEventAggregator.Server.cs" />
+    <Compile Include="Events\ITestingReportEvents.Server.cs" />
     <Compile Include="RunnerExecutionEngine.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="Common\ConsoleLogger.cs" />
@@ -168,7 +170,6 @@
     <Compile Include="WebServer\XapInspection\AssemblyResolver.cs" />
     <Compile Include="Reporting\Providers\IXmlReport.cs" />
     <Compile Include="WebServer\XapInspection\XapRewriter.cs" />
-    <Compile Include="Events\Aggregation\EventAggregator.cs" />
     <Compile Include="Events\Events.Server.cs" />
     <Compile Include="Monitoring\BrowserCommunicationTimeoutMonitor.cs" />
     <Compile Include="Monitoring\DialogMonitorResult.cs" />
