@@ -134,6 +134,7 @@
     <Compile Include="BootStrapper.cs" />
     <Compile Include="Configuration\SettingsOverrideApplicator.cs" />
     <Compile Include="CurrentStatLightConfiguration.cs" />
+    <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Events\Events.Client.cs" />
     <Compile Include="Events\ExceptionInfo.cs" />
     <Compile Include="Events\IShouldBeAddedToEventAggregator.Server.cs" />
@@ -149,7 +150,6 @@
     <Compile Include="CommonExtensions.Desktop.cs" />
     <Compile Include="Common\StatLightException.cs" />
     <Compile Include="Configuration\InputOptions.cs" />
-    <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
