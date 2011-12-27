@@ -15,6 +15,7 @@ properties {
 	$clientHarnessBuildOutputDir = ".\src\StatLight.Client.Harness\bin\$build_configuration"
 	
 	$solutionFile = ?? $solutionFile ".\src\StatLight.sln"
+	$solutionFilePhone = ?? $solutionFilePhone ".\src\StatLight.Phone.sln"
 	
 	$nunit_console_path = 'Tools\NUnit\nunit-console-x86.exe'
 
@@ -22,6 +23,8 @@ properties {
 	$core_assembly_path = "$build_dir\StatLight.Core.dll"
 	$test_assembly_path = "src\StatLight.Core.Tests\bin\x86\$build_configuration\StatLight.Core.Tests.dll"
 	$integration_test_assembly_path = "$build_dir\StatLight.IntegrationTests.dll"
+	
+	$isPhoneBuild = ?? $isPhoneBuild $false
 	
 	# All of the versions that this script will create compatible 
 	# builds of the statlight silverlight client for...
@@ -59,12 +62,6 @@ function ?? {
 }
 
 Task default -depends build-debug
-
-Task build-Debug -depends build-all, test-all {
-}
-
-Task build-full-Release -depends build-all, test-all, package-release {
-}
 
 if(!($Global:hasLoadedNUnitSpecificationExtensions))
 {
@@ -665,7 +662,16 @@ Task compile-Solution {
 	$verbosity = "/verbosity:normal"
 	$solutionFolder = (split-path (get-item $solutionFile))
 	
-	exec { . $msbuild $solutionFile /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo /p:CompileTimeSolutionDir="$solutionFolder" } 'msbuild failed on StatLight.sln'
+	exec { . $msbuild $solutionFile /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo /p:CompileTimeSolutionDir="$solutionFolder" } 'msbuild failed on $solutionFile'
+}
+
+Task compile-Solution-Phone {
+	$script:isPhoneBuild = $true
+	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
+	$verbosity = "/verbosity:normal"
+	$solutionFolder = (split-path (get-item $solutionFilePhone))
+	
+	exec { . $msbuild $solutionFilePhone /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo /p:CompileTimeSolutionDir="$solutionFolder" } 'msbuild failed $solutionFilePhone'
 	
 	Copy-Item ".\src\StatLight.Client.Harness.Phone\Bin\$build_configuration\StatLight.Client.Harness.Phone.xap" "$build_dir\StatLight.Client.For.MSTestMay2010Phone.xap"
 }
@@ -1054,13 +1060,18 @@ Task package-release -depends clean-release {
 			'Microsoft.Silverlight.Testing.License.txt'
 			'StatLight.Client.For.UnitDriven2009December.xap'
 			'StatLight.Client.For.XUnitContrib2011April.xap'
-			'StatLight.Client.For.MSTest2010MayPhone.xap'
-			'StatLight.WindowsPhoneEmulator.dll'
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'
 			'StatLight.exe.config'
 		)
+		
+	if($script:isPhoneBuild -eq $true){
+		$expectedFilesToInclude += @(
+			'StatLight.Client.For.MSTest2010MayPhone.xap'
+			'StatLight.WindowsPhoneEmulator.dll'
+		)
+	}
 "****"
 	$expectedFilesToInclude
 "****"
@@ -1151,6 +1162,22 @@ Task test-single-assemblies -depends test-single-assembly-run, test-one-dll-not-
 Task test-phone -depends test-phone-xap, test-phone-dll {
 }
 
+Task build-Debug -depends build-all, test-all {
+}
+
+Task build-Debug-Phone -depends build-all, compile-Solution-Phone, test-all, test-phone {
+}
+
+Task build-full-Release -depends build-all, test-all, package-release {
+}
+
+Task build-full-Release-Phone -depends `
+	build-all-phone, `
+	test-all, `
+	test-phone, `
+	package-release {
+}
+
 Task test-all -depends `
 	test-core, `
 	test-client-harness-tests, `
@@ -1166,15 +1193,26 @@ Task test-all -depends `
 	test-UI, `
 	test-statlight-no-communication-from-browser-forced-timeout, `
 	test-multiple, `
-	test-single-assemblies, `
-	test-phone	{
+	test-single-assemblies {
 }
+
 
 Task build-all -depends `
 	clean-build, `
 	initialize, `
 	create-AssemblyInfo, `
 	compile-Solution, `
+	compile-StatLight-MSTestHostVersions, `
+	compile-StatLIght-UnitDrivenHost, `
+	compile-StatLIght-XUnitContribHost, `
+	compile-StatLight-MSTestHostVersionIntegrationTests {
+}
+
+Task build-all-phone -depends `
+	clean-build, `
+	initialize, `
+	create-AssemblyInfo, `
+	compile-Solution-Phone, `
 	compile-StatLight-MSTestHostVersions, `
 	compile-StatLIght-UnitDrivenHost, `
 	compile-StatLIght-XUnitContribHost, `
