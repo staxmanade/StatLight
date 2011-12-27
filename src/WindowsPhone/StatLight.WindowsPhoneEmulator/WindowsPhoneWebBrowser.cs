@@ -53,6 +53,8 @@ namespace StatLight.WindowsPhoneEmulator
 
         public void Start()
         {
+            var oneTimePhoneEmulatorDialogMonitor = new OneTimePhoneEmulatorDialogMonitor(_logger);
+
             // Get CoreCon WP7 SDK
             _logger.Debug("Connecting to Windows Phone 7 Emulator/Device...");
             _wp7Device.Connect();

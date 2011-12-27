@@ -68,6 +68,9 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq">
+      <HintPath>..\..\..\lib\Desktop\Moq\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\..\lib\Desktop\NUnit\nunit.framework.dll</HintPath>
     </Reference>
@@ -85,6 +88,7 @@
     </Compile>
     <Compile Include="Class1.cs" />
     <Compile Include="FixtureBase.cs" />
+    <Compile Include="PhoneEmulatorGpuDialogMonitorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

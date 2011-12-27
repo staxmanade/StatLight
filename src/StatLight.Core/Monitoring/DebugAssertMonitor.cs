@@ -1,13 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using StatLight.Core.Events;
-
+﻿
 namespace StatLight.Core.Monitoring
 {
-    using System.Globalization;
+    using System;
     using System.Windows.Automation;
     using StatLight.Core.Common;
+    using StatLight.Core.Events;
 
     internal class DebugAssertMonitor : IDialogMonitor
     {
@@ -20,6 +17,7 @@ namespace StatLight.Core.Monitoring
 
         public DialogMonitorResult ExecuteDialogSlapDown(Action<string> ifSlappedAction)
         {
+            if (ifSlappedAction == null) throw new ArgumentNullException("ifSlappedAction");
             var noActionTaken = DialogMonitorResult.NoSlapdownAction();
 
             var dialogWindow = TreeWalker.ControlViewWalker.GetFirstChild(AutomationElement.RootElement);
