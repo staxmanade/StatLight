@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Windows.Browser;
 
 namespace StatLight.Client.Model.Messaging
 {

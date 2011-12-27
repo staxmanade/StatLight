@@ -114,6 +114,7 @@
     <Compile Include="SpecialScenarios\SampleResourceFileTests.cs" />
     <Compile Include="SpecialScenarios\ServiceReferenceClientConfigTests.ClientConfigTests.cs" />
     <Compile Include="SpecialScenarios\XapReaderTests.cs" />
+    <Compile Include="WindowsPhoneWebBrowserTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\StatLight.Core\StatLight.Core.csproj">

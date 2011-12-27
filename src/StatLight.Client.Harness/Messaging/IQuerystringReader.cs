@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Windows.Browser;
 
 namespace StatLight.Client.Model.Messaging
 {
@@ -74,7 +73,10 @@ namespace StatLight.Client.Model.Messaging
 
         private static bool TryReadQuerystringValue(string key, out string value)
         {
-            var qs = HtmlPage.Document.QueryString;
+#if WINDOWS_PHONE
+            throw new NotImplementedException();
+#else
+            var qs = System.Windows.Browser.HtmlPage.Document.QueryString;
             if (qs.ContainsKey(key))
             {
                 value = qs[key];
@@ -82,6 +84,7 @@ namespace StatLight.Client.Model.Messaging
             }
             value = null;
             return false;
+#endif
         }
     }
 

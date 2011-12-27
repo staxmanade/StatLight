@@ -68,6 +68,7 @@ namespace StatLight.Console
                         .SetStartWebServerOnly(options.StartWebServerOnly)
                         .SetIsRequestingDebug(options.IsRequestingDebug)
                         .SetSettingsOverride(options.OverriddenSettings)
+                        .SetIsPhoneRun(options.UserPhoneEmulator)
                         ;
 
                     TestReportCollection testReports = null;

@@ -26,15 +26,17 @@ namespace StatLight.Core.Tests.WebServer.PostHandlerTests
                     tagFilters: string.Empty,
                     numberOfBrowserHosts: 1,
                     webBrowserType: WebBrowserType.SelfHosted,
-                    entryPointAssembly: null,
-                    windowGeometry: new WindowGeometry()
+                    entryPointAssembly: string.Empty,
+                    windowGeometry: new WindowGeometry(),
+                    testAssemblyFormalNames: new List<string>()
                 ),
                 new ServerTestRunConfiguration(xapHost: () => new byte[0],
                     xapToTest: string.Empty,
                     xapHostType: XapHostType.MSTest2008December,
                     queryString: string.Empty,
                     forceBrowserStart: true,
-                    windowGeometry: new WindowGeometry()
+                    windowGeometry: new WindowGeometry(),
+                    isPhoneRun: false
                 )
             );
 

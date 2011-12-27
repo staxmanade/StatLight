@@ -17,6 +17,8 @@
         MSTest2011October,
         MSTest2011December,
 
+        MSTest2010MayPhone,
+
         UnitDriven2009December,
         XunitContrib2011April
     }

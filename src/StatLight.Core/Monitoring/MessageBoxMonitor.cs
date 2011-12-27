@@ -20,6 +20,8 @@ namespace StatLight.Core.Monitoring
 
         public DialogMonitorResult ExecuteDialogSlapDown(Action<string> ifSlappedAction)
         {
+            if (ifSlappedAction == null) throw new ArgumentNullException("ifSlappedAction");
+
             var noActionTaken = DialogMonitorResult.NoSlapdownAction();
 
             if (!_webBrowserToMonitor.ProcessId.HasValue)
@@ -93,13 +95,15 @@ Dialog Message:
         }
     }
 
-    internal static class AutomationTypes
+    public static class AutomationTypes
     {
-        public static string ControlTitleBar = "title bar";
-        public static string ControlText = "text";
+        public const string ControlTitleBar = "title bar";
+        public const string ControlText = "text";
 
         public static string GetNamePropertyOf(this AutomationElement dialogWindow, string type)
         {
+            if (dialogWindow == null) throw new ArgumentNullException("dialogWindow");
+
             var controlTypePropertyCondition = new PropertyCondition(AutomationElement.LocalizedControlTypeProperty, type);
             var firstResultOfCondition = dialogWindow.FindFirst(TreeScope.Children, controlTypePropertyCondition);
             return firstResultOfCondition.GetCurrentPropertyValue(AutomationElement.NameProperty) as string;

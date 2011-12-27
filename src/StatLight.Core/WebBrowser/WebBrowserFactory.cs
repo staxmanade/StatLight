@@ -7,7 +7,7 @@ using StatLight.Core.WebServer;
 
 namespace StatLight.Core.WebBrowser
 {
-    internal class WebBrowserFactory
+    public class WebBrowserFactory
     {
         private readonly ILogger _logger;
         private readonly ICurrentStatLightConfiguration _currentStatLightConfiguration;
@@ -22,6 +22,7 @@ namespace StatLight.Core.WebBrowser
 
         public IWebBrowser Create(WebBrowserType browserType, Uri pageToHost, bool forceBrowserStart, bool isStartingMultipleInstances, WindowGeometry windowGeometry)
         {
+            if (windowGeometry == null) throw new ArgumentNullException("windowGeometry");
             switch (browserType)
             {
                 case WebBrowserType.SelfHosted:
@@ -46,11 +47,29 @@ namespace StatLight.Core.WebBrowser
             int numberOfBrowserHosts = statLightConfiguration.Client.NumberOfBrowserHosts;
             var testPageUrlWithQueryString = new Uri(_webServerLocation.TestPageUrl + "?" + queryString);
 
+            Func<int, IWebBrowser> webBrowserFactoryHelper;
+
+            if (statLightConfiguration.Server.IsPhoneRun)
+            {
+                var externalComponentFactory = new ExternalComponentFactory(_logger);
+                webBrowserFactoryHelper = instanceId =>
+                {
+                    Func<byte[]> hostXap = statLightConfiguration.Server.HostXap;
+                    return externalComponentFactory.CreatePhone(hostXap);
+                };
+            }
+            else
+            {
+                webBrowserFactoryHelper = instanceId => Create(webBrowserType, testPageUrlWithQueryString,
+                                                               forceBrowserStart, numberOfBrowserHosts > 1,
+                                                               windowGeometry);
+            }
+
             _logger.Debug("testPageUrlWithQueryString = " + testPageUrlWithQueryString);
 
             List<IWebBrowser> webBrowsers = Enumerable
                 .Range(1, numberOfBrowserHosts)
-                .Select(browserI => Create(webBrowserType, testPageUrlWithQueryString, forceBrowserStart, numberOfBrowserHosts > 1, windowGeometry))
+                .Select(browserI => webBrowserFactoryHelper(browserI))
                 .ToList();
             return webBrowsers;
         }

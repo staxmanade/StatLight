@@ -34,6 +34,7 @@ namespace StatLight.Core.Configuration
             StartWebServerOnly = false;
             IsRequestingDebug = false;
             SettingsOverride = new Dictionary<string, string>();
+            IsPhoneRun = false;
         }
 
         public WindowGeometry WindowGeometry { get; private set; }
@@ -53,8 +54,9 @@ namespace StatLight.Core.Configuration
         public bool ContinuousIntegrationMode { get; private set; }
         public bool OutputForTeamCity { get; private set; }
         public bool StartWebServerOnly { get; private set; }
-        public bool IsRequestingDebug { get; private set; }
+        public bool IsRequestingDebug { get; set; }
         public IDictionary<string, string> SettingsOverride { get; private set; }
+        public bool IsPhoneRun { get; set; }
 
         public InputOptions DumpValuesForDebug(ILogger logger)
         {
@@ -223,6 +225,12 @@ namespace StatLight.Core.Configuration
         {
             if (settingsOverride == null) throw new ArgumentNullException("settingsOverride");
             SettingsOverride = settingsOverride;
+            return this;
+        }
+
+        public InputOptions SetIsPhoneRun(bool isPhoneRun)
+        {
+            IsPhoneRun = isPhoneRun;
             return this;
         }
         

@@ -15,6 +15,7 @@ properties {
 	$clientHarnessBuildOutputDir = ".\src\StatLight.Client.Harness\bin\$build_configuration"
 	
 	$solutionFile = ?? $solutionFile ".\src\StatLight.sln"
+	$solutionFilePhone = ?? $solutionFilePhone ".\src\StatLight.Phone.sln"
 	
 	$nunit_console_path = 'Tools\NUnit\nunit-console-x86.exe'
 
@@ -22,6 +23,8 @@ properties {
 	$core_assembly_path = "$build_dir\StatLight.Core.dll"
 	$test_assembly_path = "src\StatLight.Core.Tests\bin\x86\$build_configuration\StatLight.Core.Tests.dll"
 	$integration_test_assembly_path = "$build_dir\StatLight.IntegrationTests.dll"
+	
+	$isPhoneBuild = ?? $isPhoneBuild $false
 	
 	# All of the versions that this script will create compatible 
 	# builds of the statlight silverlight client for...
@@ -59,12 +62,6 @@ function ?? {
 }
 
 Task default -depends build-debug
-
-Task build-Debug -depends build-all, test-all {
-}
-
-Task build-full-Release -depends build-all, test-all, package-release {
-}
 
 if(!($Global:hasLoadedNUnitSpecificationExtensions))
 {
@@ -663,7 +660,20 @@ Task compile-StatLight-MSTestHostVersionIntegrationTests {
 Task compile-Solution {
 	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
 	$verbosity = "/verbosity:normal"
-	exec { . $msbuild $solutionFile /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo } 'msbuild failed on StatLight.sln'
+	$solutionFolder = (split-path (get-item $solutionFile))
+	
+	exec { . $msbuild $solutionFile /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo /p:CompileTimeSolutionDir="$solutionFolder" } 'msbuild failed on $solutionFile'
+}
+
+Task compile-Solution-Phone {
+	$script:isPhoneBuild = $true
+	$msbuild = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe'
+	$verbosity = "/verbosity:normal"
+	$solutionFolder = (split-path (get-item $solutionFilePhone))
+	
+	exec { . $msbuild $solutionFilePhone /t:Rebuild /p:Configuration=$build_configuration /p:Platform=x86 $verbosity /nologo /p:CompileTimeSolutionDir="$solutionFolder" } 'msbuild failed $solutionFilePhone'
+	
+	Copy-Item ".\src\StatLight.Client.Harness.Phone\Bin\$build_configuration\StatLight.Client.Harness.Phone.xap" "$build_dir\StatLight.Client.For.MSTestMay2010Phone.xap"
 }
 
 Task compile-StatLIght-UnitDrivenHost {
@@ -957,6 +967,32 @@ Task test-UI-NoBrowser-displays-warning {
 	}
 }
 
+Task test-phone-xap {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-x=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.xap"  "-r=$scriptFile" "--UserPhoneEmulator"
+	
+
+	if( Is-Release-Build ) {
+		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 4 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
+	else {
+		Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
+}
+
+Task test-phone-dll {
+	$scriptFile = GetTemporaryXmlFile;
+	execStatLight "-d=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.dll"  "-r=$scriptFile" "--UserPhoneEmulator"
+	
+
+	if( Is-Release-Build ) {
+		Assert-statlight-xml-report-results -message "test-phone-dll" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 4 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
+	else {
+		Assert-statlight-xml-report-results -message "test-phone-dll" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 5 -expectedFailedCount 2 -expectedIgnoredCount 1 -expectedSystemGeneratedfailedCount 0
+	}
+}
+
 #########################################
 #
 # Release packaging
@@ -1028,8 +1064,14 @@ Task package-release -depends clean-release {
 			'StatLight.EULA.txt'
 			'StatLight.exe'
 			'StatLight.exe.config'
-			#'StatLight.Sources.v*'
 		)
+		
+	if($script:isPhoneBuild -eq $true){
+		$expectedFilesToInclude += @(
+			'StatLight.Client.For.MSTest2010MayPhone.xap'
+			'StatLight.WindowsPhoneEmulator.dll'
+		)
+	}
 "****"
 	$expectedFilesToInclude
 "****"
@@ -1043,6 +1085,7 @@ Task package-release -depends clean-release {
 		'StatLight.IntegrationTests.Silverlight.MSTest-SL3.dll'
 		'StatLight.IntegrationTests.Silverlight.MSTest-SL4.dll'
 		'StatLight.IntegrationTests.Silverlight.MSTest-SL5.dll'
+		'StatLight.Core.Phone.dll'
 	)
 
 	$filesToCopyFromBuild = @(
@@ -1104,6 +1147,37 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 	Write-Documentation
 }
 
+
+
+
+Task test-UI -depends 	test-UI-NoBrowser-displays-warning, test-UI-show-browser {
+}
+
+Task test-multiple -depends test-multiple-xaps, test-multiple-one-xap-one-dll, test-multiple-two-dlls {
+}
+
+Task test-single-assemblies -depends test-single-assembly-run, test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll {
+}
+
+Task test-phone -depends test-phone-xap, test-phone-dll {
+}
+
+Task build-Debug -depends build-all, test-all {
+}
+
+Task build-Debug-Phone -depends build-all, compile-Solution-Phone, test-all, test-phone {
+}
+
+Task build-full-Release -depends build-all, test-all, package-release {
+}
+
+Task build-full-Release-Phone -depends `
+	build-all-phone, `
+	test-all, `
+	test-phone, `
+	package-release {
+}
+
 Task test-all -depends `
 	test-core, `
 	test-client-harness-tests, `
@@ -1115,16 +1189,13 @@ Task test-all -depends `
 	test-specific-multiple-browser-runner, `
 	test-custom-test-provider, `
 	test-auto-detects-xunit-contrib, `
-	test-single-assemblies, `
 	test-sample-extension, `
-	test-UI-NoBrowser-displays-warning, `
-	test-UI-show-browser, `
-	test-multiple-xaps, `
-	test-multiple-one-xap-one-dll, `
-	test-multiple-two-dlls, `
-	test-one-dll-not-referencing-MicrosoftSilverlightTesting-dll, `
-	test-statlight-no-communication-from-browser-forced-timeout {
+	test-UI, `
+	test-statlight-no-communication-from-browser-forced-timeout, `
+	test-multiple, `
+	test-single-assemblies {
 }
+
 
 Task build-all -depends `
 	clean-build, `
@@ -1137,5 +1208,13 @@ Task build-all -depends `
 	compile-StatLight-MSTestHostVersionIntegrationTests {
 }
 
-Task test-single-assemblies -depends test-single-assembly-run {
+Task build-all-phone -depends `
+	clean-build, `
+	initialize, `
+	create-AssemblyInfo, `
+	compile-Solution-Phone, `
+	compile-StatLight-MSTestHostVersions, `
+	compile-StatLIght-UnitDrivenHost, `
+	compile-StatLIght-XUnitContribHost, `
+	compile-StatLight-MSTestHostVersionIntegrationTests {
 }

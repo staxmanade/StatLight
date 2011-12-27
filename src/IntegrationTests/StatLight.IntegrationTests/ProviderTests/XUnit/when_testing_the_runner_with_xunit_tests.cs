@@ -14,7 +14,7 @@ namespace StatLight.IntegrationTests.ProviderTests.XUnit
 
         protected override ClientTestRunConfiguration ClientTestRunConfiguration
         {
-            get { return _clientTestRunConfiguration ?? (_clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.Xunit)); }
+            get { return _clientTestRunConfiguration ?? (_clientTestRunConfiguration = new IntegrationTestClientTestRunConfiguration(UnitTestProviderType.XUnit)); }
         }
 
         protected override string GetTestXapPath()

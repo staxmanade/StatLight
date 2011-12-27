@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AA6F387F-BB41-4FA8-B38A-7037A7C59716}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StatLight.Core</RootNamespace>
+    <AssemblyName>StatLight.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\StatLight.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRules>
+    </CodeAnalysisRules>
+    <CodeAnalysisRuleSet>Migrated rules for StatLight.Core (2).ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\build\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRules>
+    </CodeAnalysisRules>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>..\build\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>..\..\lib\Desktop\DotNetZip\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationClientsideProviders">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationTypes">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="AssemblyInfo.Core.cs" />
+    <Compile Include="BootStrapper.cs" />
+    <Compile Include="Configuration\SettingsOverrideApplicator.cs" />
+    <Compile Include="CurrentStatLightConfiguration.cs" />
+    <Compile Include="Events\EventAggregator.cs" />
+    <Compile Include="Events\Events.Client.cs" />
+    <Compile Include="Events\ExceptionInfo.cs" />
+    <Compile Include="Events\IShouldBeAddedToEventAggregator.Server.cs" />
+    <Compile Include="Events\ITestingReportEvents.Server.cs" />
+    <Compile Include="RunnerExecutionEngine.cs" />
+    <Compile Include="CommonExtensions.cs" />
+    <Compile Include="Common\ConsoleLogger.cs" />
+    <Compile Include="Common\NullLogger.cs" />
+    <Compile Include="Common\LoggerBase.cs" />
+    <Compile Include="Common\LogChatterLevel.cs" />
+    <Compile Include="Common\ILogger.cs" />
+    <Compile Include="Common\Resources.cs" />
+    <Compile Include="CommonExtensions.Desktop.cs" />
+    <Compile Include="Common\StatLightException.cs" />
+    <Compile Include="Configuration\InputOptions.cs" />
+<<<<<<< HEAD
+    <Compile Include="Events\EventAggregator.cs" />
+    <Compile Include="Common\TraceLogger.cs" />
+    <Compile Include="Configuration\IStatLightConfigurationFactory.cs" />
+=======
+>>>>>>> master
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Events\TestCaseResultServerEvent.cs" />
+    <Compile Include="Events\ResultType.cs" />
+    <Compile Include="Reporting\Providers\MSTestTRX\TRXReport.cs" />
+    <Compile Include="Reporting\TestReportCollection.cs" />
+    <Compile Include="Reporting\ConsoleDebugListener.cs" />
+    <Compile Include="Reporting\ReportOutputFileType.cs" />
+    <Compile Include="Runners\IPhoneEmulator.cs" />
+    <Compile Include="Runners\EventAggregatorFactory.cs" />
+    <Compile Include="Runners\ExtensionResolver.cs" />
+    <Compile Include="Runners\IStatLightRunnerFactory.cs" />
+    <Compile Include="TinyIoC.cs" />
+    <Compile Include="TinyIoCGlobalSupressions.cs" />
+    <Compile Include="WebServer\TestPage.cs" />
+    <Compile Include="ExternalComponentFactory.cs" />
+    <Compile Include="WebServer\AssemblyResolution\AssemblyResolver.cs" />
+    <Compile Include="Reporting\Providers\IXmlReport.cs" />
+    <Compile Include="WebServer\AssemblyResolution\AssemblyResolverBase.cs" />
+    <Compile Include="WebServer\AssemblyResolution\PhoneAssemblyResolver.cs" />
+    <Compile Include="WebServer\AssemblyResolution\SilverlightAssemblyResolver.cs" />
+    <Compile Include="WebServer\XapInspection\XapRewriter.cs" />
+    <Compile Include="Events\Events.Server.cs" />
+    <Compile Include="Monitoring\BrowserCommunicationTimeoutMonitor.cs" />
+    <Compile Include="Monitoring\DialogMonitorResult.cs" />
+    <Compile Include="Monitoring\DialogMonitorRunner.cs" />
+    <Compile Include="Monitoring\IDialogMonitor.cs" />
+    <Compile Include="Monitoring\IDialogMonitorRunner.cs" />
+    <Compile Include="Reporting\DialogAssertionMatchMaker.cs" />
+    <Compile Include="Reporting\Messages\LogMessageType.cs" />
+    <Compile Include="Reporting\Messages\TestOutcome.cs" />
+    <Compile Include="Reporting\Providers\Console\ConsoleTestCompleteMessage.cs" />
+    <Compile Include="Reporting\Providers\Console\ConsoleResultHandler.cs" />
+    <Compile Include="Reporting\Providers\NUnit\NUnitXmlReport.cs" />
+    <Compile Include="Reporting\Providers\TFS\TFS2010\TestResultType.cs" />
+    <Compile Include="Reporting\Providers\TFS\TFS2010\MSGenericTestXmlReport.cs" />
+    <Compile Include="Reporting\Providers\Xml\XmlReport.cs" />
+    <Compile Include="Reporting\Providers\Xml\XmlSchemaValidator.cs" />
+    <Compile Include="Runners\ContinuousConsoleRunner.cs" />
+    <Compile Include="Monitoring\MessageBoxMonitor.cs" />
+    <Compile Include="Monitoring\DebugAssertMonitor.cs">
+    </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Configuration\StatLightConfiguration.cs" />
+    <Compile Include="Configuration\StatLightConfigurationFactory.cs" />
+    <Compile Include="Runners\RunnerType.cs" />
+    <Compile Include="Runners\WebServerOnlyRunner.cs" />
+    <Compile Include="Runners\IRunner.cs" />
+    <Compile Include="WebServer\IPostHandler.cs" />
+    <Compile Include="WebServer\PostHandler.cs" />
+    <Compile Include="WebServer\ResponseFactory.cs" />
+    <Compile Include="WebServer\ResponseFile.cs" />
+    <Compile Include="WebServer\InMemoryWebServer.cs" />
+    <Compile Include="WebBrowser\ChromeWebBrowser.cs" />
+    <Compile Include="WebBrowser\FirefoxWebBrowser.cs" />
+    <Compile Include="WebBrowser\OutOfProcessWebBrowserBase.cs" />
+    <Compile Include="WebBrowser\WebBrowserFactory.cs" />
+    <Compile Include="WebBrowser\WebBrowserType.cs" />
+    <Compile Include="Reporting\Providers\TeamCity\ConsoleMessageWriter.cs" />
+    <Compile Include="Reporting\TestReport.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Reporting\Providers\TeamCity\Command.cs" />
+    <Compile Include="Reporting\Providers\TeamCity\CommandFactory.cs" />
+    <Compile Include="Reporting\Providers\TeamCity\CommandFormatter.cs" />
+    <Compile Include="Reporting\Providers\TeamCity\CommandType.cs" />
+    <Compile Include="Reporting\Providers\TeamCity\ICommandWriter.cs" />
+    <Compile Include="Reporting\Providers\TeamCity\TeamCityTestResultHandler.cs" />
+    <Compile Include="Reporting\TestResultAggregator.cs" />
+    <Compile Include="Runners\OneTimeRunner.cs" />
+    <Compile Include="Reporting\RunCompletedState.cs" />
+    <Compile Include="Runners\TeamCityRunner.cs" />
+    <Compile Include="Runners\StatLightRunnerFactory.cs" />
+    <Compile Include="Common\Abstractions\Timing\ITimer.cs" />
+    <Compile Include="Common\Abstractions\Timing\TimerWrapperElapsedEventArgs.cs" />
+    <Compile Include="Common\Abstractions\Timing\TimingWrapper.cs" />
+    <Compile Include="Configuration\UnitTestProviderTypes.cs" />
+    <Compile Include="WebBrowser\SelfHostedWebBrowser.cs" />
+    <Compile Include="WebBrowser\IWebBrowser.cs" />
+    <Compile Include="WebServer\IWebServer.cs" />
+    <Compile Include="Configuration\ServerTestRunConfiguration.cs" />
+    <Compile Include="WebServer\RemoteSiteOverriddenLocation.cs" />
+    <Compile Include="WebServer\StatLightServiceRestApi.cs" />
+    <Compile Include="Configuration\ClientTestRunConfiguration.cs" />
+    <Compile Include="WebServer\WebServerLocation.cs" />
+    <Compile Include="Monitoring\XapFileBuildChangedMonitor.cs" />
+    <Compile Include="WebServer\XapHost\XapHostType.cs" />
+    <Compile Include="WebServer\XapHost\DiskXapHostFileLoader.cs" />
+    <Compile Include="WebServer\XapHost\IXapHostFileLoader.cs" />
+    <Compile Include="WebServer\XapHost\XapHostFileLoaderFactory.cs" />
+    <Compile Include="WebServer\XapInspection\ITestFile.cs" />
+    <Compile Include="WebServer\XapInspection\TestFile.cs" />
+    <Compile Include="WebServer\XapInspection\TestFileCollection.cs" />
+    <Compile Include="WebServer\XapInspection\XapReader.cs" />
+    <Compile Include="WebServer\XapInspection\XapZipArchiveFactory.cs" />
+    <Compile Include="Configuration\WindowGeometry.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\CodeAnalysis.ruleset">
+      <Link>CodeAnalysis.ruleset</Link>
+    </None>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Reporting\Providers\TFS\TFS2010\SummaryResults.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\ClientAccessPolicy.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\StatLight.snk">
+      <Link>StatLight.snk</Link>
+    </None>
+    <None Include="Resources\CrossDomain.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NUnitXmlResults.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\XmlReportSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\FavIcon.ico" />
+    <None Include="Resources\TestPage.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reporting\Providers\TFS\HowIGeneratedTheSummaryResults.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

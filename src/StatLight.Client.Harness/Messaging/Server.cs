@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using StatLight.Client.Model.Messaging;
-using StatLight.Core.Events;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebServer;
 using StatLight.Core.Configuration;
@@ -39,6 +38,9 @@ namespace StatLight.Core.Events.Messaging
 
         public static void LogException(Exception exception)
         {
+#if WINDOWS_PHONE
+            System.Windows.MessageBox.Show(exception.ToString());
+#endif
             var messageObject = new UnhandledExceptionClientEvent
             {
                 ExceptionInfo = exception,

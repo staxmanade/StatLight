@@ -1,4 +1,3 @@
-using StatLight.Core.Properties;
 
 namespace StatLight.Core.Runners
 {
@@ -10,6 +9,7 @@ namespace StatLight.Core.Runners
     using StatLight.Core.Configuration;
     using StatLight.Core.Events;
     using StatLight.Core.Monitoring;
+    using StatLight.Core.Properties;
     using StatLight.Core.Reporting;
     using StatLight.Core.Reporting.Providers.Console;
     using StatLight.Core.Reporting.Providers.TeamCity;
@@ -39,7 +39,7 @@ namespace StatLight.Core.Runners
 
             _ioc.ResolveAndAddToEventAggregator<ConsoleDebugListener>();
 
-            ioc.Resolve<ExtensionResolver>().AddExtensionsToEventAggregator();
+            _ioc.Resolve<ExtensionResolver>().AddExtensionsToEventAggregator();
         }
 
 
@@ -59,7 +59,7 @@ namespace StatLight.Core.Runners
 
             CreateAndAddConsoleResultHandlerToEventAggregator();
 
-            return new ContinuousConsoleRunner(_logger, _eventSubscriptionManager, _eventPublisher, 
+            return new ContinuousConsoleRunner(_logger, _eventSubscriptionManager, _eventPublisher,
                                         webServer, webBrowsers, dialogMonitorRunner, _ioc.Resolve<ICurrentStatLightConfiguration>());
         }
 
@@ -136,6 +136,7 @@ namespace StatLight.Core.Runners
             return webBrowserFactory.CreateWebBrowsers();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private void StartupBrowserCommunicationTimeoutMonitor()
         {
             if (_browserCommunicationTimeoutMonitor == null)
@@ -158,34 +159,34 @@ namespace StatLight.Core.Runners
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public IRunner CreateRemotelyHostedRunner(StatLightConfiguration statLightConfiguration)
         {
-            if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
+            //    if (statLightConfiguration == null) throw new ArgumentNullException("statLightConfiguration");
 
             //ClientTestRunConfiguration clientTestRunConfiguration = statLightConfiguration.Client;
             //ServerTestRunConfiguration serverTestRunConfiguration = statLightConfiguration.Server;
 
             throw new NotImplementedException();
-            //var urlToTestPage = statLightConfiguration.Client.XapToTestUrl.ToUri();
+            //    //var urlToTestPage = statLightConfiguration.Client.XapToTestUrl.ToUri();
 
-            //var location = new RemoteSiteOverriddenLocation(logger, urlToTestPage);
-            //var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
-            //SetupDebugClientEventListener(logger);
-            //var webServer = CreateWebServer(logger, statLightConfiguration, location);
-            //
-            //var showTestingBrowserHost = serverTestRunConfiguration.ShowTestingBrowserHost;
-            //
-            //var querystring = "?{0}={1}".FormatWith(StatLightServiceRestApi.StatLightResultPostbackUrl,
-            //                                       HttpUtility.UrlEncode(location.BaseUrl.ToString()));
-            //var testPageUrlAndPostbackQuerystring = new Uri(location.TestPageUrl + querystring);
-            //logger.Debug("testPageUrlAndPostbackQuerystring={0}".FormatWith(testPageUrlAndPostbackQuerystring.ToString()));
-            //var webBrowsers = GetWebBrowsers(logger, testPageUrlAndPostbackQuerystring, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart);
-            //
-            //var dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
-            //
-            //StartupBrowserCommunicationTimeoutMonitor();
-            //CreateAndAddConsoleResultHandlerToEventAggregator(logger);
-            //
-            //IRunner runner = new OnetimeRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
-            //return runner;
+            //    //var location = new RemoteSiteOverriddenLocation(logger, urlToTestPage);
+            //    //var debugAssertMonitorTimer = new TimerWrapper(serverTestRunConfiguration.DialogSmackDownElapseMilliseconds);
+            //    //SetupDebugClientEventListener(logger);
+            //    //var webServer = CreateWebServer(logger, statLightConfiguration, location);
+            //    //
+            //    //var showTestingBrowserHost = serverTestRunConfiguration.ShowTestingBrowserHost;
+            //    //
+            //    //var querystring = "?{0}={1}".FormatWith(StatLightServiceRestApi.StatLightResultPostbackUrl,
+            //    //                                       HttpUtility.UrlEncode(location.BaseUrl.ToString()));
+            //    //var testPageUrlAndPostbackQuerystring = new Uri(location.TestPageUrl + querystring);
+            //    //logger.Debug("testPageUrlAndPostbackQuerystring={0}".FormatWith(testPageUrlAndPostbackQuerystring.ToString()));
+            //    //var webBrowsers = GetWebBrowsers(logger, testPageUrlAndPostbackQuerystring, clientTestRunConfiguration, showTestingBrowserHost, serverTestRunConfiguration.QueryString, statLightConfiguration.Server.ForceBrowserStart);
+            //    //
+            //    //var dialogMonitorRunner = SetupDialogMonitorRunner(logger, webBrowsers, debugAssertMonitorTimer);
+            //    //
+            //    //StartupBrowserCommunicationTimeoutMonitor();
+            //    //CreateAndAddConsoleResultHandlerToEventAggregator(logger);
+            //    //
+            //    //IRunner runner = new OnetimeRunner(logger, _eventSubscriptionManager, _eventPublisher, webServer, webBrowsers, statLightConfiguration.Server.XapToTestPath, dialogMonitorRunner);
+            //    //return runner;
         }
 
         private IDialogMonitorRunner SetupDialogMonitorRunner(ILogger logger, IEnumerable<IWebBrowser> webBrowsers)
