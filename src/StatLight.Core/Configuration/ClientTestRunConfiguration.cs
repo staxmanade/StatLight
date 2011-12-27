@@ -18,16 +18,21 @@ namespace StatLight.Core.Configuration
     {
         private string _tagFilters = string.Empty;
         private Collection<string> _methodsToTest;
+        private Collection<string> _testAssemblyFormalNames;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "4#", Justification = "System.Uri is not DataContract serializable")]
         public ClientTestRunConfiguration(UnitTestProviderType unitTestProviderType, IEnumerable<string> methodsToTest, string tagFilters, int numberOfBrowserHosts, WebBrowserType webBrowserType, string entryPointAssembly, WindowGeometry windowGeometry, IEnumerable<string> testAssemblyFormalNames)
         {
             if (methodsToTest == null) throw new ArgumentNullException("methodsToTest");
+            if (entryPointAssembly == null) throw new ArgumentNullException("entryPointAssembly");
             if (unitTestProviderType == UnitTestProviderType.Undefined)
                 throw new ArgumentException("Must be defined", "unitTestProviderType");
 
             if (numberOfBrowserHosts <= 0)
                 throw new ArgumentOutOfRangeException("numberOfBrowserHosts", "Must be greater than 0");
+
+            //if (testAssemblyFormalNames.Count() == 0)
+            //    throw new ArgumentException("must have some assemblies specified", "testAssemblyFormalNames");
 
             _methodsToTest = methodsToTest.ToCollection();
             _tagFilters = tagFilters ?? string.Empty;
@@ -36,11 +41,16 @@ namespace StatLight.Core.Configuration
             WebBrowserType = webBrowserType;
             EntryPointAssembly = entryPointAssembly;
             WindowGeometry = windowGeometry;
-            TestAssemblyFormalNames = testAssemblyFormalNames.ToList();
+            _testAssemblyFormalNames = new Collection<string>(testAssemblyFormalNames.ToList());
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly"), DataMember]
-        public List<string> TestAssemblyFormalNames { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [DataMember]
+        public Collection<string> TestAssemblyFormalNames
+        {
+            get { return (_testAssemblyFormalNames ?? (_testAssemblyFormalNames = new Collection<string>())); }
+            set { _testAssemblyFormalNames = value; }
+        }
 
         [DataMember]
         public string EntryPointAssembly { get; set; }

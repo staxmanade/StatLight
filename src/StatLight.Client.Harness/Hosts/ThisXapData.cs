@@ -11,8 +11,12 @@ namespace StatLight.Core.Events.Hosts
     {
         public ThisXapData(string entryPointAssembly, IEnumerable<string> testAssemblyFormalNames)
         {
+            if (entryPointAssembly == null) throw new ArgumentNullException("entryPointAssembly");
+            if (testAssemblyFormalNames == null) throw new ArgumentNullException("testAssemblyFormalNames");
+
             Server.Debug("ThisXapData.Expected EntryPointAssembly - {0}".FormatWith(entryPointAssembly));
             Server.Debug("ThisXapData - looking for test assemblies");
+            Server.Debug("testAssemblyFormalNames.Count() =" + testAssemblyFormalNames.Count());
 #if WINDOWS_PHONE
             _testAssemblies = (from name in testAssemblyFormalNames
                                where IsNotSpecialAssembly(name.Substring(0, name.IndexOf(',')))

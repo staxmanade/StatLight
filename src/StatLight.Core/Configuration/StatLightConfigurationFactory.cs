@@ -105,16 +105,18 @@ namespace StatLight.Core.Configuration
             var coreFileUnderTest = new TestFile(dllFileInfo.FullName);
             var dependentFilesUnderTest = dependentAssemblies.Select(file => new TestFile(file)).ToList();
             dependentFilesUnderTest.Add(coreFileUnderTest);
-            var xapReadItems = new TestFileCollection(_logger,
+            var testFileCollection = new TestFileCollection(_logger,
                                                         AssemblyName.GetAssemblyName(dllFileInfo.FullName).ToString(),
                                                         dependentFilesUnderTest);
+
+            testAssemblyFormalNames = testFileCollection.GetAssemblyNames();
 
             UnitTestProviderType unitTestProviderType = _options.UnitTestProviderType;
             MicrosoftTestingFrameworkVersion? microsoftTestingFrameworkVersion = _options.MicrosoftTestingFrameworkVersion;
 
-            SetupUnitTestProviderType(xapReadItems, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
+            SetupUnitTestProviderType(testFileCollection, ref unitTestProviderType, ref microsoftTestingFrameworkVersion);
 
-            entryPointAssembly = xapReadItems.TestAssemblyFullName;
+            entryPointAssembly = testFileCollection.TestAssemblyFullName;
 
             filesToCopyIntoHostXap = () =>
                                         {

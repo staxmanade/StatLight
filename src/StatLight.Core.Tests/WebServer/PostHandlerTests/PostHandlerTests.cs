@@ -26,7 +26,7 @@ namespace StatLight.Core.Tests.WebServer.PostHandlerTests
                     tagFilters: string.Empty,
                     numberOfBrowserHosts: 1,
                     webBrowserType: WebBrowserType.SelfHosted,
-                    entryPointAssembly: null,
+                    entryPointAssembly: string.Empty,
                     windowGeometry: new WindowGeometry(),
                     testAssemblyFormalNames: new List<string>()
                 ),

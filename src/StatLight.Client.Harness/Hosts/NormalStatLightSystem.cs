@@ -3,26 +3,50 @@ using System.Net;
 using System.Windows;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events.Messaging;
-using StatLight.Core.WebServer;
 
 namespace StatLight.Core.Events.Hosts
 {
     public class NormalStatLightSystem : StatLightSystemBase
     {
-        private readonly Uri _postbackUriBase;
-
         internal NormalStatLightSystem(Action<UIElement> onReady)
         {
-            
+
 #if WINDOWS_PHONE
-            
-            var urlx = "http://localhost:8887/";
+
+            Setup(onReady, "http://localhost:8888/");
+            //TryFindHomeServer(8888, onReady);
 #else
             var src = Application.Current.Host.Source;
             var urlx = src.Scheme + "://" + src.Host + ":" + src.Port + "/";
+            Setup(onReady, urlx);
 #endif
-            _postbackUriBase = new Uri(urlx);
-            SetPostbackUri(_postbackUriBase);
+        }
+
+        private void TryFindHomeServer(int port, Action<UIElement> onReady)
+        {
+            System.Diagnostics.Debugger.Break();
+            //var url = "http://localhost:8888/crossdomain.xml";
+            var url = "http://localhost:{0}/crossdomain.xml".FormatWith(port);
+            var request = WebRequest.Create(url);
+
+            request.BeginGetResponse(asyncResult =>
+            {
+                var response = (HttpWebResponse)request.EndGetResponse(asyncResult);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    Setup(onReady, url);
+                }
+                else
+                {
+                    TryFindHomeServer(++port, onReady);
+                }
+            }, null);
+
+        }
+
+        private void Setup(Action<UIElement> onReady, string urlx)
+        {
+            SetPostbackUri(new Uri(urlx));
 
             OnReadySetupRootVisual(onReady);
         }
@@ -49,3 +73,4 @@ namespace StatLight.Core.Events.Hosts
         }
     }
 }
+
