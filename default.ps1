@@ -1054,12 +1054,12 @@ Task package-release -depends clean-release {
 			'Microsoft.Silverlight.Testing.License.txt'
 			'StatLight.Client.For.UnitDriven2009December.xap'
 			'StatLight.Client.For.XUnitContrib2011April.xap'
-			'StatLight.Client.For.MSTestMay2010Phone.xap'
+			'StatLight.Client.For.MSTest2010MayPhone.xap'
+			'StatLight.WindowsPhoneEmulator.dll'
 			'StatLight.Core.dll'
 			'StatLight.EULA.txt'
 			'StatLight.exe'
 			'StatLight.exe.config'
-			'StatLight.Core.Phone.dll'
 		)
 "****"
 	$expectedFilesToInclude
