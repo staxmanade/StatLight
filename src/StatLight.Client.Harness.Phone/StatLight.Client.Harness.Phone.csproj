@@ -188,6 +188,9 @@
     <Compile Include="..\StatLight.Client.Harness\Hosts\RemoteRunStatLightSystem.cs">
       <Link>Hosts\RemoteRunStatLightSystem.cs</Link>
     </Compile>
+    <Compile Include="..\StatLight.Client.Harness\Hosts\Settings.cs">
+      <Link>Hosts\Settings.cs</Link>
+    </Compile>
     <Compile Include="..\StatLight.Client.Harness\Hosts\StatLightSystemBase.cs">
       <Link>Hosts\StatLightSystemBase.cs</Link>
     </Compile>

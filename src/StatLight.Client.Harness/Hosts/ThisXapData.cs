@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
 using StatLight.Core.Events.Messaging;
 
 namespace StatLight.Client.Harness.Hosts
@@ -17,17 +16,11 @@ namespace StatLight.Client.Harness.Hosts
             Server.Debug("ThisXapData.Expected EntryPointAssembly - {0}".FormatWith(entryPointAssembly));
             Server.Debug("ThisXapData - looking for test assemblies");
             Server.Debug("testAssemblyFormalNames.Count() =" + testAssemblyFormalNames.Count());
-#if WINDOWS_PHONE
+
             _testAssemblies = (from name in testAssemblyFormalNames
                                where IsNotSpecialAssembly(name.Substring(0, name.IndexOf(',')))
                                let assembly = Assembly.Load(name)
                                select assembly).ToArray();
-#else
-            _testAssemblies = (from ap in Deployment.Current.Parts
-                               where IsNotSpecialAssembly(ap.Source)
-                               let stream = Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative))
-                               select new AssemblyPart().Load(stream.Stream)).ToArray();
-#endif
 
             foreach (Assembly t in _testAssemblies)
             {
@@ -43,20 +36,22 @@ namespace StatLight.Client.Harness.Hosts
 
         private static bool IsNotSpecialAssembly(string name)
         {
-            if (name.Equals("System.Windows.Controls.dll", StringComparison.OrdinalIgnoreCase))
-                return false;
-            if (name.Equals("System.Xml.Linq.dll", StringComparison.OrdinalIgnoreCase))
-                return false;
-            if (name.Equals("System.Xml.Serialization.dll", StringComparison.OrdinalIgnoreCase))
-                return false;
-            if (name.Equals("Microsoft.Silverlight.Testing.dll", StringComparison.OrdinalIgnoreCase))
-                return false;
-            if (name.Equals("Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll", StringComparison.OrdinalIgnoreCase))
-                return false;
-            if (name.Equals("StatLight.Client.Harness.MSTest.dll", StringComparison.OrdinalIgnoreCase))
-                return false;
-            if (name.Equals("StatLight.Client.Harness.dll", StringComparison.OrdinalIgnoreCase))
-                return false;
+            var specialAssemblies = new[]
+            {
+                "System.Windows.Controls.dll",
+                "System.Xml.Linq.dll",
+                "System.Xml.Serialization.dll",
+                "Microsoft.Silverlight.Testing.dll",
+                "Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll",
+                "StatLight.Client.Harness.MSTest.dll",
+                "StatLight.Client.Harness.dll",
+            };
+
+            foreach (var specialAssembly in specialAssemblies)
+            {
+                if (name.Equals(specialAssembly, StringComparison.OrdinalIgnoreCase))
+                    return false;
+            }
 
             return true;
         }

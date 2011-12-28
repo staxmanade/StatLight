@@ -43,7 +43,7 @@ namespace StatLight.Core.WebServer.XapInspection
                 AddFile(zipArchive, file, parts);
             }
 
-            //NOTE: the StatLightTempName is a crazy string hick because I couldn't figure out how to get the XAttribute to look like x:Name=...
+            //NOTE: the StatLightTempName is a crazy string hack because I couldn't figure out how to get the XAttribute to look like x:Name=...
 
             //xapZipArchive.RemoveEntry("AppManifest.xaml");
             if (runtimeVersion != null)

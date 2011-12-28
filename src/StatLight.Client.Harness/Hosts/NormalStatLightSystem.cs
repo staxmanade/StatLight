@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
-using System.Xml.Linq;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events.Messaging;
 
@@ -33,19 +31,5 @@ namespace StatLight.Client.Harness.Hosts
             CompletedTestXapRequest = true;
             DisplayTestHarness();
         }
-    }
-
-    public class Settings
-    {
-        static Settings()
-        {
-            var appManifestXml = XDocument.Load("StatLight.Settings.xml").Root;
-            Func<string, XElement> getElement = settingName => appManifestXml.Elements(settingName).First();
-            Func<string, string> getValue = settingName => getElement(settingName).Value;
-
-            Port = int.Parse(getValue("Port"));
-        }
-
-        public static int Port { get; private set; }
     }
 }

@@ -1,7 +1,4 @@
-﻿
-using StatLight.Core.WebServer;
-
-namespace StatLight.Core.Configuration
+﻿namespace StatLight.Core.Configuration
 {
     using System;
     using System.Collections.Generic;
@@ -10,6 +7,7 @@ namespace StatLight.Core.Configuration
     using System.Reflection;
     using System.Xml.Linq;
     using StatLight.Core.Common;
+    using StatLight.Core.WebServer;
     using StatLight.Core.WebServer.AssemblyResolution;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.WebServer.XapInspection;

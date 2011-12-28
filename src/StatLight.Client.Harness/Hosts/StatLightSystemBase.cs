@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Windows;
-using StatLight.Client.Harness.Hosts;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events.Messaging;
@@ -28,7 +27,7 @@ namespace StatLight.Client.Harness.Hosts
 
                 Assembly[] list;
 #if WINDOWS_PHONE
-                if(typeof(T) == typeof(ITestRunnerHost))
+                if (typeof(T) == typeof(ITestRunnerHost))
                     return (new StatLight.Client.Harness.Hosts.MSTest.MSTestRunnerHost() as T);
                 throw new NotSupportedException("type({0}) is not supported.".FormatWith(typeof(T).FullName));
 #else
