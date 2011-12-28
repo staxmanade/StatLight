@@ -11,7 +11,7 @@ using StatLight.Core.Events.Messaging;
 using UnitDriven;
 using UnitDriven.Commanding;
 
-namespace StatLight.Core.Events.Hosts.UnitDriven
+namespace StatLight.Client.Harness.Hosts.UnitDriven
 {
 
     public class UnitDrivenRunnerHost : ITestRunnerHost

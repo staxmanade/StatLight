@@ -5,14 +5,15 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using StatLight.Client.Harness.Hosts;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events;
+using StatLight.Client.Harness.Hosts;
 using StatLight.Core.Events.Messaging;
+using Xunit.Runner.Silverlight;
 
-namespace StatLight.Core.Events.Hosts.XUnit
+namespace StatLight.Client.Harness.XUnit
 {
-    using Xunit.Runner.Silverlight;
-
     public class XUnitRunnerHost : ITestRunnerHost
     {
         private ILoadedXapData _loadedXapData;

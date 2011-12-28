@@ -2,10 +2,10 @@ using System;
 using System.Text;
 using Microsoft.Silverlight.Testing.Harness;
 using StatLight.Core.Events;
-using StatLight.Core.Events.Hosts.MSTest.LogMessagTranslation;
+using StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation;
 using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Core.Events.Hosts.MSTest
+namespace StatLight.Client.Harness.Hosts.MSTest
 {
     internal sealed class ServerHandlingLogProvider : LogProvider
     {

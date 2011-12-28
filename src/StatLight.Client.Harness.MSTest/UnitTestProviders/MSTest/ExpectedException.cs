@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.MSTest
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
 {
 	/// <summary>
 	/// Expected exception metadata.

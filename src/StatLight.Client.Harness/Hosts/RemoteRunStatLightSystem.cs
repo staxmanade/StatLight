@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows;
+using StatLight.Client.Harness.Hosts;
 using StatLight.Client.Model.Messaging;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
 using StatLight.Core.WebServer;
 
-namespace StatLight.Core.Events.Hosts
+namespace StatLight.Client.Harness.Hosts
 {
     public class RemoteRunStatLightSystem : StatLightSystemBase
     {

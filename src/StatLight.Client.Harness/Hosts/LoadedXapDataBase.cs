@@ -2,7 +2,7 @@
 using System.Reflection;
 using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Core.Events.Hosts
+namespace StatLight.Client.Harness.Hosts
 {
     public class LoadedXapDataBase
     {

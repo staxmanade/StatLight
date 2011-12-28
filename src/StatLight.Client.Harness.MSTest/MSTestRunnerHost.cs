@@ -5,9 +5,12 @@ using Microsoft.Silverlight.Testing;
 using Microsoft.Silverlight.Testing.Harness;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
+using StatLight.Core.Events;
+using StatLight.Client.Harness.Hosts;
+using StatLight.Client.Harness.Hosts.MSTest;
 using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Core.Events.Hosts.MSTest
+namespace StatLight.Client.Harness.Hosts.MSTest
 {
     public class MSTestRunnerHost : ITestRunnerHost
     {
@@ -68,15 +71,15 @@ namespace StatLight.Core.Events.Hosts.MSTest
 #if !WINDOWS_PHONE
             if (unitTestProviderType == UnitTestProviderType.XUnitLight)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.Xunit.XUnitTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit.XUnitTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.NUnit)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.NUnit.NUnitTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit.NUnitTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.UnitDriven)
             {
-                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.UnitDriven.UnitDrivenTestProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven.UnitDrivenTestProvider());
             }
             else if (unitTestProviderType == UnitTestProviderType.MSTestWithCustomProvider)
             {
@@ -112,7 +115,7 @@ namespace StatLight.Core.Events.Hosts.MSTest
             else
 #endif
             {
-                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.MSTest.VsttProvider());
+                UnitTestSystem.RegisterUnitTestProvider(new StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest.VsttProvider());
             }
         }
 

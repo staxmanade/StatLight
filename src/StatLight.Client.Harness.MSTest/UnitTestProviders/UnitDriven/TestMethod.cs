@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.UnitDriven
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven
 {
 	/// <summary>
 	/// A provider wrapper for a test method.

@@ -9,7 +9,7 @@ using Microsoft.Silverlight.Testing.UnitTesting.Harness;
 #endif
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.NUnit
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 {
     /// <summary>
     /// Assembly metadata for the Visual Studio Team Test unit test framework.

@@ -4,7 +4,7 @@ using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using StatLight.Client.Tests;
-using StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.NUnit;
+using StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit;
 
 namespace StatLight.Core.Events.UnitTestProviders.NUnit
 {

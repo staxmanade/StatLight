@@ -11,7 +11,7 @@ using ITestHarness = Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using Microsoft.Silverlight.Testing.Harness;
 #endif
 
-namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.NUnit
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 {
     public class NUnitTestProvider : IUnitTestProvider
     {

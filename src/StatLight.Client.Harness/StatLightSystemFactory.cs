@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
-using StatLight.Core.Events.Hosts;
+using StatLight.Client.Harness.Hosts;
 
 namespace StatLight
 {

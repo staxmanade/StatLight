@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders
 {
     /// <summary>
     /// A lazy method type.

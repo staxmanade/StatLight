@@ -5,7 +5,7 @@ using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Core.Events.Messaging;
 using StatLight.Core.Configuration;
 
-namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.MSTest
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
 {
     /// <summary>
     /// Test class wrapper.

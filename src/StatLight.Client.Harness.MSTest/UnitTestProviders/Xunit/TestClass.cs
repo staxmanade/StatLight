@@ -4,7 +4,7 @@ using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using StatLight.Core.Configuration;
 
-namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.Xunit
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.Xunit
 {
 	/// <summary>
 	/// Test class wrapper.

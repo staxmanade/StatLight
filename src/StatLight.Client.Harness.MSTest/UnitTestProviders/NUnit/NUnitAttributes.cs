@@ -1,5 +1,5 @@
 ﻿
-namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.NUnit
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.NUnit
 {
     internal static class NUnitAttributes
     {

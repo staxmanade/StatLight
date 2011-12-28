@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace StatLight.Core.Events.Hosts
+namespace StatLight.Client.Harness.Hosts
 {
     public interface ILoadedXapData
     {

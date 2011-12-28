@@ -11,7 +11,7 @@ using Microsoft.Silverlight.Testing.Harness;
 #endif
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 
-namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.UnitDriven
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.UnitDriven
 {
 	/// <summary>
 	/// Provider for the Visual Studio Team Test unit test (UT) framework 

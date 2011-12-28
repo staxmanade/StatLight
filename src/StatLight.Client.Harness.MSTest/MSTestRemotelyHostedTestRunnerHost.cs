@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Windows;
 using Microsoft.Silverlight.Testing;
 
-namespace StatLight.Core.Events.Hosts.MSTest
+namespace StatLight.Client.Harness.Hosts.MSTest
 {
     public class MSTestRemotelyHostedTestRunnerHost : IRemotelyHostedTestRunnerHost
     {

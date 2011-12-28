@@ -4,8 +4,9 @@ using System.Reflection;
 using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StatLight.Core.Events;
+using StatLight.Client.Harness.Hosts;
 
-namespace StatLight.Core.Events.Hosts.MSTest.LogMessagTranslation
+namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
 {
     public static class ReflectionInfoHelper
     {

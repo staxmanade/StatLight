@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StatLight.Core.Events;
 using StatLight.Core.Events.Messaging;
 
-namespace StatLight.Core.Events.Hosts.MSTest.UnitTestProviders.MSTest
+namespace StatLight.Client.Harness.Hosts.MSTest.UnitTestProviders.MSTest
 {
     /// <summary>
     /// A provider wrapper for a test method.

@@ -2,8 +2,9 @@
 using System.Reflection;
 using System.Windows;
 using StatLight.Core.Configuration;
+using StatLight.Client.Harness.Hosts;
 
-namespace StatLight.Core.Events.Hosts
+namespace StatLight.Client.Harness.Hosts
 {
     public interface ITestRunnerHost
     {

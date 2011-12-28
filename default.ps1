@@ -712,7 +712,43 @@ Task compile-StatLIght-UnitDrivenHost {
 	#Create-Xap $zippedName $zipFiles
 }
 
-Task compile-StatLIght-XUnitContribHost {
+Task compile-StatLight-XUnitContribHost {
+	$xunitContribXapFile = ".\src\StatLight.Client.Harness.XUnit\Bin\$build_configuration\StatLight.Client.Harness.dll"
+	$references = (ls .\src\StatLight.Client.Harness.XUnit\Bin\$build_configuration\*.dll)
+	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
+	
+	
+	$zippedName = "$build_dir\$statlight_xap_for_prefix.XUnitContrib2011April.zip"
+
+	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="4.0.50401.00">
+		<Deployment.Parts>'
+	
+	$referencedNames | foreach { 
+		$ass = $_
+		$extraStuff = "
+			<AssemblyPart x:Name=""$ass"" Source=""$ass.dll"" />"
+		$appManifestContent += $extraStuff	
+	}
+
+	$appManifestContent += '	</Deployment.Parts>
+	</Deployment>'
+
+	$newAppManifestFile = "$(($pwd).Path)\src\build\AppManifest.xaml"
+	Remove-If-Exists $newAppManifestFile
+	([xml]$appManifestContent).Save($newAppManifestFile);
+
+	$zipFiles = $references
+	$zipFiles += @(
+					Get-Item $newAppManifestFile
+				)
+
+	Remove-If-Exists $zippedName
+	#throw 'a'
+	$zipFiles | Zip-Files-From-Pipeline $zippedName | Out-Null
+	#Create-Xap $zippedName $zipFiles
+}
+
+Task compile-StatLight-XUnitContribHost-Phone {
 	$xunitContribXapFile = ".\src\StatLight.Client.Harness.XUnit\Bin\$build_configuration\StatLight.Client.Harness.dll"
 	$references = (ls .\src\StatLight.Client.Harness.XUnit\Bin\$build_configuration\*.dll)
 	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
@@ -1204,7 +1240,7 @@ Task build-all -depends `
 	compile-Solution, `
 	compile-StatLight-MSTestHostVersions, `
 	compile-StatLIght-UnitDrivenHost, `
-	compile-StatLIght-XUnitContribHost, `
+	compile-StatLight-XUnitContribHost, `
 	compile-StatLight-MSTestHostVersionIntegrationTests {
 }
 
@@ -1215,6 +1251,6 @@ Task build-all-phone -depends `
 	compile-Solution-Phone, `
 	compile-StatLight-MSTestHostVersions, `
 	compile-StatLIght-UnitDrivenHost, `
-	compile-StatLIght-XUnitContribHost, `
+	compile-StatLight-XUnitContribHost, `
 	compile-StatLight-MSTestHostVersionIntegrationTests {
 }

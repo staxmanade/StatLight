@@ -1,7 +1,7 @@
 ﻿using Microsoft.Silverlight.Testing.Harness;
 using StatLight.Core.Events;
 
-namespace StatLight.Core.Events.Hosts.MSTest.LogMessagTranslation
+namespace StatLight.Client.Harness.Hosts.MSTest.LogMessagTranslation
 {
     public interface ILogMessageToClientEventTranslation
     {
