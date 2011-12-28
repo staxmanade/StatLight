@@ -1,5 +1,5 @@
 ﻿
-namespace StatLight.Core.Common
+namespace StatLight.Core.Common.Logging
 {
 	public abstract class LoggerBase : ILogger
 	{

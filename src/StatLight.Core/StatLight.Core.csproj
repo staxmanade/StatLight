@@ -137,27 +137,25 @@
     <Compile Include="Events\EventAggregator.cs" />
     <Compile Include="Events\Events.Client.cs" />
     <Compile Include="Events\ExceptionInfo.cs" />
-    <Compile Include="Events\IShouldBeAddedToEventAggregator.Server.cs" />
-    <Compile Include="Events\ITestingReportEvents.Server.cs" />
+    <Compile Include="Events\IShouldBeAddedToEventAggregator.cs" />
+    <Compile Include="Events\ITestingReportEvents.cs" />
     <Compile Include="RunnerExecutionEngine.cs" />
     <Compile Include="CommonExtensions.cs" />
-    <Compile Include="Common\ConsoleLogger.cs" />
-    <Compile Include="Common\NullLogger.cs" />
-    <Compile Include="Common\LoggerBase.cs" />
-    <Compile Include="Common\LogChatterLevel.cs" />
+    <Compile Include="Common\Logging\ConsoleLogger.cs" />
+    <Compile Include="Common\Logging\NullLogger.cs" />
+    <Compile Include="Common\Logging\LoggerBase.cs" />
+    <Compile Include="Common\Logging\LogChatterLevel.cs" />
     <Compile Include="Common\ILogger.cs" />
-    <Compile Include="Common\Resources.cs" />
     <Compile Include="CommonExtensions.Desktop.cs" />
     <Compile Include="Common\StatLightException.cs" />
     <Compile Include="Configuration\InputOptions.cs" />
-    <Compile Include="Common\TraceLogger.cs" />
+    <Compile Include="Common\Logging\TraceLogger.cs" />
     <Compile Include="Configuration\IStatLightConfigurationFactory.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Events\TestCaseResultServerEvent.cs" />
     <Compile Include="Events\ResultType.cs" />
     <Compile Include="Reporting\Providers\MSTestTRX\TRXReport.cs" />
     <Compile Include="Reporting\TestReportCollection.cs" />
@@ -183,8 +181,6 @@
     <Compile Include="Monitoring\IDialogMonitor.cs" />
     <Compile Include="Monitoring\IDialogMonitorRunner.cs" />
     <Compile Include="Reporting\DialogAssertionMatchMaker.cs" />
-    <Compile Include="Reporting\Messages\LogMessageType.cs" />
-    <Compile Include="Reporting\Messages\TestOutcome.cs" />
     <Compile Include="Reporting\Providers\Console\ConsoleTestCompleteMessage.cs" />
     <Compile Include="Reporting\Providers\Console\ConsoleResultHandler.cs" />
     <Compile Include="Reporting\Providers\NUnit\NUnitXmlReport.cs" />

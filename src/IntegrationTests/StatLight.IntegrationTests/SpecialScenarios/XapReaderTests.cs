@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using StatLight.Core.Common;
+using StatLight.Core.Common.Logging;
 using StatLight.Core.Configuration;
 using StatLight.IntegrationTests.ProviderTests;
 using NUnit.Framework;

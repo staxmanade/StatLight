@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using StatLight.Core.Common.Logging;
 using StatLight.Core.Events;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;

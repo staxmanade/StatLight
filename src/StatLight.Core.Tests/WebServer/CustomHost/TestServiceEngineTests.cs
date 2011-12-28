@@ -4,6 +4,7 @@ using System.Net;
 using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;
+using StatLight.Core.Common.Logging;
 using StatLight.Core.Configuration;
 using StatLight.Core.Serialization;
 using StatLight.Core.WebBrowser;

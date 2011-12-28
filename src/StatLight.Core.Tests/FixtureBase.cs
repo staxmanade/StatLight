@@ -5,6 +5,7 @@ using System.IO;
 using Moq;
 using NUnit.Framework;
 using StatLight.Core.Common;
+using StatLight.Core.Common.Logging;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events;
 using StatLight.Core.Runners;

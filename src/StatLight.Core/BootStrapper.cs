@@ -1,5 +1,6 @@
 ﻿using System;
 using StatLight.Core.Common;
+using StatLight.Core.Common.Logging;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events;
 using StatLight.Core.Runners;

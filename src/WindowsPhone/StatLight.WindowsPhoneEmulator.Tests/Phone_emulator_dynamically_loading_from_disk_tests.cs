@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using StatLight.Core.Common;
+using StatLight.Core.Common.Logging;
 using StatLight.Core.Tests;
 using StatLight.Core.WebBrowser;
 

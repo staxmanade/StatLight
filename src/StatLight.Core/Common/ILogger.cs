@@ -1,5 +1,5 @@
 ﻿
-using System.ComponentModel.Composition;
+using StatLight.Core.Common.Logging;
 
 namespace StatLight.Core.Common
 {

@@ -120,7 +120,6 @@
     <Compile Include="Reporting\Providers\Console\ConsoleTestResultHandlerTests.cs" />
     <Compile Include="Reporting\Providers\TeamCity\TeamCityCommandPublisherTests.cs" />
     <Compile Include="Reporting\Providers\TeamCity\TeamCityCommands.cs" />
-    <Compile Include="Mocks\MessageFactory.cs" />
     <Compile Include="Reporting\TestResultAggregatorTests.cs" />
     <Compile Include="Reporting\TestRunResultTests.cs" />
     <Compile Include="Runners\OneTimeRunnerTests.cs" />

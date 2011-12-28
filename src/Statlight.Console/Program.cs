@@ -31,7 +31,7 @@ namespace StatLight.Console
 
             using (var consoleIconSwapper = new ConsoleIconSwapper())
             {
-                consoleIconSwapper.ShowConsoleIcon(CoreResources.FavIcon);
+                consoleIconSwapper.ShowConsoleIcon(Resources.FavIcon);
 
                 try
                 {

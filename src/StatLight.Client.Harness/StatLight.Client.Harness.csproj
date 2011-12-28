@@ -110,12 +110,6 @@
     <Compile Include="..\StatLight.Core\Events\ExceptionInfo.cs">
       <Link>Core\Events\ExceptionInfo.cs</Link>
     </Compile>
-    <Compile Include="..\StatLight.Core\Reporting\Messages\LogMessageType.cs">
-      <Link>Core\Reporting\Messages\LogMessageType.cs</Link>
-    </Compile>
-    <Compile Include="..\StatLight.Core\Reporting\Messages\TestOutcome.cs">
-      <Link>Core\Reporting\Messages\TestOutcome.cs</Link>
-    </Compile>
     <Compile Include="..\StatLight.Core\WebBrowser\WebBrowserType.cs">
       <Link>Core\WebBrowser\WebBrowserType.cs</Link>
     </Compile>
@@ -156,9 +150,7 @@
     </None>
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Events\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

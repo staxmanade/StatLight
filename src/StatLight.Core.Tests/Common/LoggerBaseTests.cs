@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using StatLight.Core.Common;
+using StatLight.Core.Common.Logging;
 
 namespace StatLight.Core.Tests.Common
 {

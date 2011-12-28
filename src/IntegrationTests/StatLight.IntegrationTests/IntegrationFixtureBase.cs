@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.Common.Logging;
+
 namespace StatLight.IntegrationTests
 {
     using System.IO;

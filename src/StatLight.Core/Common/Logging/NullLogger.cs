@@ -1,7 +1,4 @@
-﻿
-using System;
-
-namespace StatLight.Core.Common
+﻿namespace StatLight.Core.Common.Logging
 {
 	public sealed class NullLogger : LoggerBase
 	{

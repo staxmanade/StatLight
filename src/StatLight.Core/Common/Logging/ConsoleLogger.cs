@@ -1,8 +1,7 @@
-﻿
-using System;
+﻿using System;
 using StatLight.Core.Properties;
 
-namespace StatLight.Core.Common
+namespace StatLight.Core.Common.Logging
 {
     public class ConsoleLogger : LoggerBase
     {

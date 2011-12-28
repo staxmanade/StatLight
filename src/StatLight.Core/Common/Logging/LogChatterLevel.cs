@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace StatLight.Core.Common
+namespace StatLight.Core.Common.Logging
 {
 	[Flags]
 	public enum LogChatterLevels
