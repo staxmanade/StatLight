@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Net;
+using System.Linq;
 using System.Windows;
+using System.Xml.Linq;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events.Messaging;
 
@@ -10,38 +11,10 @@ namespace StatLight.Client.Harness.Hosts
     {
         internal NormalStatLightSystem(Action<UIElement> onReady)
         {
-
-#if WINDOWS_PHONE
-
-            Setup(onReady, "http://localhost:8888/");
-            //TryFindHomeServer(8888, onReady);
-#else
-            var src = Application.Current.Host.Source;
-            var urlx = src.Scheme + "://" + src.Host + ":" + src.Port + "/";
-            Setup(onReady, urlx);
-#endif
-        }
-
-        private void TryFindHomeServer(int port, Action<UIElement> onReady)
-        {
-            System.Diagnostics.Debugger.Break();
-            //var url = "http://localhost:8888/crossdomain.xml";
-            var url = "http://localhost:{0}/crossdomain.xml".FormatWith(port);
-            var request = WebRequest.Create(url);
-
-            request.BeginGetResponse(asyncResult =>
-            {
-                var response = (HttpWebResponse)request.EndGetResponse(asyncResult);
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    Setup(onReady, url);
-                }
-                else
-                {
-                    TryFindHomeServer(++port, onReady);
-                }
-            }, null);
-
+            var appManifestXml = XDocument.Load("StatLight.Settings.xml");
+            var portElement = appManifestXml.Root.Elements("Port").First();
+            var port = int.Parse(portElement.Value);
+            Setup(onReady, "http://localhost:{0}/".FormatWith(port));
         }
 
         private void Setup(Action<UIElement> onReady, string urlx)

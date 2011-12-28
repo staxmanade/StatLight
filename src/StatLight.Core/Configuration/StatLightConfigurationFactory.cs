@@ -1,4 +1,6 @@
 ﻿
+using StatLight.Core.WebServer;
+
 namespace StatLight.Core.Configuration
 {
     using System;
@@ -6,8 +8,8 @@ namespace StatLight.Core.Configuration
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Xml.Linq;
     using StatLight.Core.Common;
-    using StatLight.Core.WebBrowser;
     using StatLight.Core.WebServer.AssemblyResolution;
     using StatLight.Core.WebServer.XapHost;
     using StatLight.Core.WebServer.XapInspection;
@@ -17,12 +19,14 @@ namespace StatLight.Core.Configuration
         public const int DefaultDialogSmackDownElapseMilliseconds = 5000;
         private readonly ILogger _logger;
         private readonly InputOptions _options;
+        private readonly WebServerLocation _webServerLocation;
         private readonly XapHostFileLoaderFactory _xapHostFileLoaderFactory;
 
-        public StatLightConfigurationFactory(ILogger logger, InputOptions options)
+        public StatLightConfigurationFactory(ILogger logger, InputOptions options, WebServerLocation webServerLocation)
         {
             _logger = logger;
             _options = options;
+            _webServerLocation = webServerLocation;
             _xapHostFileLoaderFactory = new XapHostFileLoaderFactory(_logger);
         }
 
@@ -178,14 +182,29 @@ namespace StatLight.Core.Configuration
         {
             XapHostType xapHostType = _xapHostFileLoaderFactory.MapToXapHostType(unitTestProviderType, microsoftTestingFrameworkVersion, isPhoneRun);
 
+            Func<IEnumerable<ITestFile>> rewrittenFilesToCopyFunc = RewriteFunc(filesToCopyIntoHostXapFunc);
+
             Func<byte[]> hostXapFactory = () =>
             {
                 byte[] hostXap = _xapHostFileLoaderFactory.LoadXapHostFor(xapHostType);
-                hostXap = RewriteXapWithSpecialFiles(hostXap, filesToCopyIntoHostXapFunc, runtimeVersion);
+                hostXap = RewriteXapWithSpecialFiles(hostXap, rewrittenFilesToCopyFunc, runtimeVersion);
                 return hostXap;
             };
 
             return new ServerTestRunConfiguration(hostXapFactory, xapPath, xapHostType, queryString, forceBrowserStart, windowGeometry, _options.IsPhoneRun);
+        }
+
+        private Func<IEnumerable<ITestFile>> RewriteFunc(Func<IEnumerable<ITestFile>> filesToCopyIntoHostXapFunc)
+        {
+            string fileString = @"
+<Settings>
+    <Port>{0}</Port>
+</Settings>
+".FormatWith(_webServerLocation.Port);
+            var settingsTestFile = new TestFile("StatLight.Settings.xml", fileString.ToByteArray());
+
+            Func<IEnumerable<ITestFile>> x = () => filesToCopyIntoHostXapFunc().Concat(new[] {settingsTestFile});
+            return x;
         }
 
         private byte[] RewriteXapWithSpecialFiles(byte[] xapHost, Func<IEnumerable<ITestFile>> filesToCopyIntoHostXapFunc, string runtimeVersion)
