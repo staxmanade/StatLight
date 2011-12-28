@@ -210,9 +210,7 @@ function StatLightIntegrationTestsReferences {
 }
 
 function compile-StatLight-MSTestHost {
-	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$outAssemblyName)
-
-	$references = StatLightReferences $microsoft_Silverlight_Testing_Version_Name
+	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$outAssemblyName, $references)
 
 	$sourceFiles = @(
 		"src\AssemblyInfo.cs"
@@ -252,13 +250,7 @@ echo $sourceFiles
 }
 
 function compile-StatLight-MSTestHostIntegrationTests {
-	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$outAssemblyName, [string]$additionalDefines)
-
-	$resources = @(
-		#"src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\obj\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.g.resources"
-	)
-
-	$references = StatLightIntegrationTestsReferences $microsoft_Silverlight_Testing_Version_Name
+	param([string]$microsoft_Silverlight_Testing_Version_Name, [string]$outAssemblyName, [string]$additionalDefines, $references)
 
 	$sourceFiles = @(
 		".\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\App.g.cs"
@@ -308,7 +300,9 @@ function Build-And-Package-StatLight-MSTest {
 	
 	$statlightBuildFilePath = "$build_dir\StatLight.Client.Harness.MSTest.dll"
 	
-	compile-StatLight-MSTestHost $microsoft_Silverlight_Testing_Version_Name $statlightBuildFilePath
+	$references = StatLightReferences $microsoft_Silverlight_Testing_Version_Name
+	
+	compile-StatLight-MSTestHost $microsoft_Silverlight_Testing_Version_Name $statlightBuildFilePath $references
 	
 	Assert ( test-path $statlightBuildFilePath) "File should exist $statlightBuildFilePath"
 	
@@ -352,7 +346,9 @@ function Build-And-Package-StatLight-MSTest-IntegrationTests {
 
 	Remove-If-Exists $dllPath
 
-	compile-StatLight-MSTestHostIntegrationTests $microsoft_Silverlight_Testing_Version_Name $dllPath $additionalDefines
+	$references = StatLightIntegrationTestsReferences $microsoft_Silverlight_Testing_Version_Name
+
+	compile-StatLight-MSTestHostIntegrationTests $microsoft_Silverlight_Testing_Version_Name $dllPath $additionalDefines $references
 	
 	$zippedName = "$build_dir\StatLight.Client.For.$microsoft_Silverlight_Testing_Version_Name.Integration-" + $silverlightVersion + ".zip"
 	$sourceAppManifest = "src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest\Bin\$build_configuration\AppManifest-" + $silverlightVersion + ".xaml"
@@ -610,6 +606,12 @@ Task initialize {
 	}
 }
 
+#########################################
+#
+# Building/Compilation tasks
+#
+#########################################
+
 Task create-AssemblyInfo {
 
 	$versionInfoFile = 'src/VersionInfo.cs'
@@ -632,12 +634,6 @@ Task clean-build {
 	
 	mkdir $build_dir -Force
 }
-
-#########################################
-#
-# Building/Compilation tasks
-#
-#########################################
 
 Task compile-StatLight-MSTestHostVersions {
 
@@ -676,7 +672,7 @@ Task compile-Solution-Phone {
 	Copy-Item ".\src\StatLight.Client.Harness.Phone\Bin\$build_configuration\StatLight.Client.Harness.Phone.xap" "$build_dir\StatLight.Client.For.MSTestMay2010Phone.xap"
 }
 
-Task compile-StatLIght-UnitDrivenHost {
+Task compile-StatLight-UnitDrivenHost {
 	$unitDrivenXapFile = ".\src\StatLight.Client.Harness.UnitDriven\Bin\$build_configuration\StatLight.Client.Harness.dll"
 	$references = (ls .\src\StatLight.Client.Harness.UnitDriven\Bin\$build_configuration\*.dll)
 	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
@@ -749,39 +745,7 @@ Task compile-StatLight-XUnitContribHost {
 }
 
 Task compile-StatLight-XUnitContribHost-Phone {
-	$xunitContribXapFile = ".\src\StatLight.Client.Harness.XUnit\Bin\$build_configuration\StatLight.Client.Harness.dll"
-	$references = (ls .\src\StatLight.Client.Harness.XUnit\Bin\$build_configuration\*.dll)
-	$referencedNames = ($references | foreach { $_.Name.TrimEnd(".dll") })
-	
-	
-	$zippedName = "$build_dir\$statlight_xap_for_prefix.XUnitContrib2011April.zip"
-
-	$appManifestContent = [string] '<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="StatLight.Client.Harness" EntryPointType="StatLight.Client.Harness.App" RuntimeVersion="4.0.50401.00">
-		<Deployment.Parts>'
-	
-	$referencedNames | foreach { 
-		$ass = $_
-		$extraStuff = "
-			<AssemblyPart x:Name=""$ass"" Source=""$ass.dll"" />"
-		$appManifestContent += $extraStuff	
-	}
-
-	$appManifestContent += '	</Deployment.Parts>
-	</Deployment>'
-
-	$newAppManifestFile = "$(($pwd).Path)\src\build\AppManifest.xaml"
-	Remove-If-Exists $newAppManifestFile
-	([xml]$appManifestContent).Save($newAppManifestFile);
-
-	$zipFiles = $references
-	$zipFiles += @(
-					Get-Item $newAppManifestFile
-				)
-
-	Remove-If-Exists $zippedName
-	#throw 'a'
-	$zipFiles | Zip-Files-From-Pipeline $zippedName | Out-Null
-	#Create-Xap $zippedName $zipFiles
+	throw "Not implemented"
 }
 
 #########################################
@@ -1239,7 +1203,7 @@ Task build-all -depends `
 	create-AssemblyInfo, `
 	compile-Solution, `
 	compile-StatLight-MSTestHostVersions, `
-	compile-StatLIght-UnitDrivenHost, `
+	compile-StatLight-UnitDrivenHost, `
 	compile-StatLight-XUnitContribHost, `
 	compile-StatLight-MSTestHostVersionIntegrationTests {
 }
@@ -1250,7 +1214,7 @@ Task build-all-phone -depends `
 	create-AssemblyInfo, `
 	compile-Solution-Phone, `
 	compile-StatLight-MSTestHostVersions, `
-	compile-StatLIght-UnitDrivenHost, `
+	compile-StatLight-UnitDrivenHost, `
 	compile-StatLight-XUnitContribHost, `
 	compile-StatLight-MSTestHostVersionIntegrationTests {
 }
