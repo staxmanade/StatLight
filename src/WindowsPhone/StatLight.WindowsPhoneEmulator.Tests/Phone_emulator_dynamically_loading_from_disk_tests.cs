@@ -1,6 +1,5 @@
 ﻿using System;
 using NUnit.Framework;
-using StatLight.Core;
 using StatLight.Core.Common;
 using StatLight.Core.Tests;
 using StatLight.Core.WebBrowser;
@@ -29,9 +28,9 @@ namespace StatLight.WindowsPhoneEmulator.Tests
         private static IWebBrowser GetWebBrowser()
         {
             var logger = new TraceLogger(LogChatterLevels.Full);
-            var externalComponentFactory = new ExternalComponentFactory(logger);
+            var webBrowserFactory = new WebBrowserFactory(logger, null, null);
             Func<byte[]> hostXap = () => new byte[] { 0, 0, 0 };
-            return externalComponentFactory.CreatePhone(hostXap);
+            return webBrowserFactory.CreatePhone(hostXap);
         }
     }
 }

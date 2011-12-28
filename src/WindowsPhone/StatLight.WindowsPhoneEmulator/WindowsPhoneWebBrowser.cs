@@ -68,26 +68,25 @@ namespace StatLight.WindowsPhoneEmulator
             _logger.Debug("Loading into emulator: " + _tempFileName);
             Thread.Sleep(2000);
 
-            
             _remoteApplication = _wp7Device.InstallApplication(
                 _appGuid,
                 _phoneGuid,
                 "WindowsPhoneApplication1",
                 null,
                 _tempFileName);
-            _logger.Debug("Sample XAP installed to Windows Phone 7 Emulator...");
+            _logger.Debug("StatLight XAP installed to Windows Phone 7 Emulator...");
 
-            // Launch Application 
-            _logger.Debug("Launching sample app on Windows Phone 7 Emulator...");
             _remoteApplication.Launch();
+            _logger.Debug("Launched StatLight app on Windows Phone 7 Emulator...");
         }
 
         private void Uninstall()
         {
             if (_wp7Device.IsConnected())
+            {
                 if (_wp7Device.IsApplicationInstalled(_appGuid))
                 {
-                    _logger.Debug("Uninstalling sample XAP to Windows Phone 7 Emulator/Device...");
+                    _logger.Debug("Uninstalling StatLight XAP to Windows Phone 7 Emulator/Device...");
 
                     _remoteApplication = _wp7Device.GetApplication(_appGuid);
 
@@ -96,8 +95,9 @@ namespace StatLight.WindowsPhoneEmulator
                         _remoteApplication.Uninstall();
                     }
 
-                    _logger.Debug("Sample XAP Uninstalled from Windows Phone 7 Emulator/Device...");
+                    _logger.Debug("StatLight XAP Uninstalled from Windows Phone 7 Emulator/Device...");
                 }
+            }
         }
 
         public void Stop()

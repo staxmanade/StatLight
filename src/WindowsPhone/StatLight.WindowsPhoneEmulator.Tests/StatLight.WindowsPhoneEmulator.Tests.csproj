@@ -86,7 +86,7 @@
     <Compile Include="..\..\StatLight.Core.Tests\SpecificationExtensions.cs">
       <Link>SpecificationExtensions.cs</Link>
     </Compile>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Phone_emulator_dynamically_loading_from_disk_tests.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="PhoneEmulatorGpuDialogMonitorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

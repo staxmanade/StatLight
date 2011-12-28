@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.Linq;
+using System.Reflection;
 using StatLight.Core.Common;
 using StatLight.Core.Configuration;
+using StatLight.Core.Runners;
 using StatLight.Core.WebServer;
 
 namespace StatLight.Core.WebBrowser
@@ -51,11 +54,10 @@ namespace StatLight.Core.WebBrowser
 
             if (statLightConfiguration.Server.IsPhoneRun)
             {
-                var externalComponentFactory = new ExternalComponentFactory(_logger);
                 webBrowserFactoryHelper = instanceId =>
                 {
                     Func<byte[]> hostXap = statLightConfiguration.Server.HostXap;
-                    return externalComponentFactory.CreatePhone(hostXap);
+                    return CreatePhone(hostXap);
                 };
             }
             else
@@ -73,5 +75,20 @@ namespace StatLight.Core.WebBrowser
                 .ToList();
             return webBrowsers;
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods", MessageId = "System.Reflection.Assembly.LoadFrom")]
+        public IWebBrowser CreatePhone(Func<byte[]> hostXap)
+        {
+            var fileName = AppDomain.CurrentDomain.BaseDirectory + @"\StatLight.WindowsPhoneEmulator.dll";
+            var assembly = Assembly.LoadFrom(fileName);
+            using(var assemblyCatalog = new AssemblyCatalog(assembly))
+            using (var compositionContainer = new CompositionContainer(assemblyCatalog))
+            {
+                var phoneEmulator = compositionContainer.GetExport<IPhoneEmulator>();
+                var phoneEmulatorWrapper = phoneEmulator.Value;
+                return phoneEmulatorWrapper.Create(logger: _logger, hostXap: hostXap);
+            }
+        }
+
     }
 }
