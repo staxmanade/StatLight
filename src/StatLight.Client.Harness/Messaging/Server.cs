@@ -38,7 +38,7 @@ namespace StatLight.Core.Events.Messaging
 
         public static void LogException(Exception exception)
         {
-#if WINDOWS_PHONE
+#if WINDOWS_PHONE && DEBUG
             System.Windows.MessageBox.Show(exception.ToString());
 #endif
             var messageObject = new UnhandledExceptionClientEvent
