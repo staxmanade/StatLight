@@ -1149,7 +1149,7 @@ Task ? -Description "Prints out the different tasks within the StatLIght build e
 
 Task compile-docs {
 	pushd .\docs
-		rm .\_build\* -r -fo
+		Remove-If-Exists .\_build\*
 		.\make.bat htmlhelp
 		& 'C:\Program Files (x86)\HTML Help Workshop\hhc.exe' .\_build\htmlhelp\StatLightdoc.hhp
 		& .\_build\htmlhelp\StatLightdoc.chm
