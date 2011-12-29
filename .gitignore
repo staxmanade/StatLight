@@ -18,3 +18,4 @@ obj/
 src/VersionInfo.cs
 temp_statlight-integration*
 *.user
+docs/_build/*
