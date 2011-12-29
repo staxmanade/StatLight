@@ -48,10 +48,11 @@ Contents:
 
    FAQ.rst
    CommandLineOptions.rst
-   DocumentationHome.rst
+   Overview.rst
    ContinuousIntegration.rst
    ContinuousMode.rst
    OptionsDefined.rst
+   Extensibility.rst
 
 
 Indices and tables

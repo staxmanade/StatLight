@@ -1,3 +1,12 @@
 @import url("default.css");
 
 span.strikethrough { text-decoration: line-through; }
+
+body {
+    text-align: left;
+}
+
+#content {
+    margin-left: 20px;
+    margin-right: 20px;
+}

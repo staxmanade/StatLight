@@ -16,9 +16,6 @@ Install
 * `StatLight on NuGet <http://nuget.org/List/Packages/StatLight>`_
 * `Download <http://statlight.codeplex.com/releases/>`_ unzip into your project's tools folder and leverage as needed.
 
-!! Local Development
-* [Continuous Mode] *-c* or *--Continuous* (continuously monitor xap changes and automatically re-runs tests)
-* [Test Filtering Options]
-
-!! Extending
-In the 1.4 release of StatLight I added a very basic extensibility model. Read more on the [Extensibility Documentation].
+Extending
+=========
+In the 1.4 release of StatLight some basic extensibility points were added. :ref:`Read more...<extensibility>`.
