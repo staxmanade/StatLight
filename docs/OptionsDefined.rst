@@ -1,8 +1,8 @@
 .. _optionsDefined:
 
-****************************
-Options Defined
-****************************
+***************
+Options Details
+***************
 
 
 .. _optionsTagFilters:
@@ -67,7 +67,7 @@ There are cases that you will have to help StatLight out. This option allows you
 
 This comes in handy if you have a custom provider EX:`Raven Custom provider <https://github.com/bennage/Raven-Custom-Silverlight-Unit-Test-Provider>`.
 
-The ``--MSTestWithCustomProvider`` option will instruct StatLight not use any of it's own providers and search your test assemblies for an ``IUnitTestProvider`` (EX:`Raven Custom provider <https://github.com/bennage/Raven-Custom-Silverlight-Unit-Test-Provider>`_
+The ``--MSTestWithCustomProvider`` option will instruct StatLight not use any of it's own providers and search your test assemblies for an ``IUnitTestProvider`` (EX: `Raven Custom provider <https://github.com/bennage/Raven-Custom-Silverlight-Unit-Test-Provider>`_)
 
 
 .. _optionsQueryString:
@@ -79,10 +79,10 @@ The ``--MSTestWithCustomProvider`` option will instruct StatLight not use any of
 
 When StatLight starts up an instance of a browser, the url the browser requests from the StatLight web server to load the test page is appended with your querystring options. StatLight doesn't use any of the querystring options itself, but allows you to access these parameters from within your silverlight testing xap.
 
-You can use the ``--QueryString="MyValue1=12345&MyValue2=7890"`` option to pass configuration into your silverlight tests.
+You can use the ``--QueryString="MyValue1=12345&MyValue2=7890"`` option to pass configuration into your silverlight tests. And then something like below to get at the value.
 
-::.
-
-   var myValue = HtmlPage.Document.QueryString["MyValue1"];
+   ::
+   
+      var myValue = HtmlPage.Document.QueryString["MyValue1"];
 
 One scenario this becomes useful is hosting a separate web service on a different port. You can first start up the web service instance with a build script. Then pass the port or location to the service into the StatLight test where your test code can fish the configuration out of the QueryString.

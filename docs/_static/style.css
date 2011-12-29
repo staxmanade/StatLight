@@ -10,3 +10,33 @@ body {
     margin-left: 20px;
     margin-right: 20px;
 }
+
+h1 {
+    color: #990000;
+}
+
+div.footer {
+	background-color: #990000;
+	/*color: #000000;*/
+}
+
+a {
+	color: #990000;
+	text-decoration: underline;
+}
+
+a:hover {
+	color: #aaa;
+}
+
+a.internal {
+
+}
+
+a.external {
+	color: #404040;
+}
+
+a:hover.external {
+	color: #000000;
+}
