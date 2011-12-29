@@ -30,9 +30,10 @@ NOTE: *third party extensions are leveraging StatLight and are subject to their 
 * `Growl Plugin Extension  <https://github.com/lindsve/Statlight.Growl>`_
    .. image:: _static/growl4windows.jpg
 * `AgUnit ReSharper <http://AgUnit.CodePlex.com>`_ plugin allowing you to run your tests from Visual Studio. (Backed by StatLight)
+* `TeamCity plugin for StatLight <https://bitbucket.org/metaman/teamcitydotnetcontrib/downloads>`_ Thanks to `@WMMac <http://twitter.com/MWMac>`_
 
-How does it work?
-=================
+External Links
+==============
 * Blog: `Automated Silverlight Unit Testing Using StatLight <http://www.wintellect.com/CS/blogs/jlikness/archive/2010/01/09/automated-silverlight-unit-testing-using-statlight.aspx>`_
 * MSDN Webcast: `geekSpeak: Silverlight Testing with Jeremy Likness (Level 200) <http://channel9.msdn.com/shows/geekSpeak/geekSpeak-Recording-Silverlight-Testing-with-Jeremy-Likness>`_
 * Blog: `Running Silverlight unit tests in TeamCity using StatLight <http://pontusmunck.com/2010/05/13/running-silverlight-unit-tests-in-teamcity-using-statlight/>`_
@@ -46,10 +47,11 @@ Contents:
    :maxdepth: 2
 
    FAQ.rst
+   CommandLineOptions.rst
    DocumentationHome.rst
    ContinuousIntegration.rst
    ContinuousMode.rst
-   TestFilteringOptions.rst
+   OptionsDefined.rst
 
 
 Indices and tables

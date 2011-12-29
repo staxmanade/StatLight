@@ -21,10 +21,12 @@ If you are running UI tests (EX: using the TestPanel in the Microsoft.Silverligh
  * Setup the integration service process to run at start. (This will be different for TeamCity, TFS, CruiseControl.Net (or other))
  * Take a look at the following to get your build agents running under a domain account http://lostechies.com/keithdahlby/2011/08/13/allowing-a-windows-service-to-interact-with-desktop-without-localsystem/
 
+.. _teamCity:
+
 TeamCity Integration 
 =============================
 
-* Checkout a TeamCity plugin build for StatLight - `Download <https://bitbucket.org/metaman/teamcitydotnetcontrib/downloads>`_ Thanks to `@WMMac <http://twitter.com/MWMac>`_
+* `TeamCity plugin for StatLight <https://bitbucket.org/metaman/teamcitydotnetcontrib/downloads>`_
 
 TeamCity has an extensibility that allows you to communicate to the server through the console (std out) with special commands. The TeamCity agent will capture the commands and publish the results within TeamCity.
 

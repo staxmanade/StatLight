@@ -1,9 +1,8 @@
-.. _getting_started:
+.. _statLightOverview:
 
-
-****************************
-StatLight Documentation Home
-****************************
+********
+Overview
+********
 
 How does it work?
 =============================
