@@ -45,6 +45,7 @@ CC.net support is not directly supported, however due to some generous work from
 
 `Link to thread <http://statlight.codeplex.com/Thread/View.aspx?ThreadId=233432>`_
 
+
 TFS
 ===
 
@@ -57,3 +58,10 @@ Other options are hacky work arounds - but could work for you.
 
 * Take a look at the following project http://statlightteambuild.codeplex.com
 * Another option (may work, but not positive of the outcome) by doing some xml transformations http://statlight.codeplex.com/discussions/258195
+
+Xml Report
+==========
+
+By specifying the -r or --ReportOutputFile and then a fully qualified path to place the xml report file. StatLight will generate an xml report that can be parsed during a continuous integration build to report errors.
+
+`StatLight Xml Report XSD <https://raw.github.com/staxmanade/StatLight/master/src/StatLight.Core/Resources/XmlReportSchema.xsd>`_
