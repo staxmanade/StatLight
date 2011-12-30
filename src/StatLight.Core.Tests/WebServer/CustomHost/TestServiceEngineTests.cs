@@ -41,7 +41,7 @@ namespace StatLight.Core.Tests.WebServer.CustomHost
 
             _responseFactory = new ResponseFactory(currentStatLightConfiguration);
             _mockPostHandler = new Mock<IPostHandler>();
-            _inMemoryWebServer = new InMemoryWebServer(consoleLogger, webServerLocation, _responseFactory, _mockPostHandler.Object);
+            _inMemoryWebServer = new InMemoryWebServer(consoleLogger, webServerLocation, _responseFactory, _mockPostHandler.Object, base.TestEventPublisher);
             _webClient = new WebClient();
 
             _baseUrl = webServerLocation.BaseUrl.ToString();

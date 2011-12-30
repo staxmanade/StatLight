@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using StatLight.Core.Common;
+using StatLight.Core.Events;
 
 namespace StatLight.Core.WebServer
 {
@@ -19,16 +20,18 @@ namespace StatLight.Core.WebServer
         private readonly WebServerLocation _webServerLocation;
         private Task _serverListener;
         private readonly IPostHandler _postHandler;
+        private IEventPublisher _eventPublisher;
         private bool Listening { get; set; }
 
 
         private HttpListener Server { get; set; }
 
-        public InMemoryWebServer(ILogger logger, WebServerLocation webServerLocation, ResponseFactory responseFactory, IPostHandler postHandler)
+        public InMemoryWebServer(ILogger logger, WebServerLocation webServerLocation, ResponseFactory responseFactory, IPostHandler postHandler, IEventPublisher eventPublisher)
         {
             _logger = logger;
             _webServerLocation = webServerLocation;
             _postHandler = postHandler;
+            _eventPublisher = eventPublisher;
             _responseFactory = responseFactory;
         }
 
@@ -57,9 +60,9 @@ namespace StatLight.Core.WebServer
                     HandleUnknownRequest(request, response);
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
-                _logger.Debug(exception.ToString());
+                LogException(exception);
             }
         }
 
@@ -129,7 +132,7 @@ namespace StatLight.Core.WebServer
                     try
                     {
                         HttpListenerContext context = Server.GetContext();
-                        using(HttpListenerResponse response = context.Response)
+                        using (HttpListenerResponse response = context.Response)
                         {
                             HttpListenerRequest request = context.Request;
                             if (request.HttpMethod == "GET")
@@ -161,7 +164,12 @@ namespace StatLight.Core.WebServer
             // This exception would be cool to get rid of - but I'm not sure how to shut down the process more gracefully
             if (!msg.Contains("The I/O operation has been aborted because of either a thread exit or"))
             {
-                _logger.Debug(exception.ToString());
+                _logger.Debug(msg);
+
+                _eventPublisher.SendMessage(new FatalSilverlightExceptionServerEvent(DialogType.None)
+                {
+                    Message = msg,
+                });
             }
         }
 
