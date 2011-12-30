@@ -26,6 +26,8 @@ properties {
 	
 	$isPhoneBuild = ?? $isPhoneBuild $false
 	
+	$chmDocPath  = '.\docs\_build\htmlhelp\StatLightdoc.chm'
+	
 	# All of the versions that this script will create compatible 
 	# builds of the statlight silverlight client for...
 	#
@@ -1037,14 +1039,13 @@ Task package-zip-project-sources-snapshot {
 	mv $sourceZipFile $release_dir\$sourceZipFile -Force | Out-Null
 }
 
-#Task package-release-temp {
 Task package-release -depends clean-release {
 	$versionNumber = get-formatted-assembly-version $core_assembly_path
 	$commit = Get-Git-Commit
 	$versionNumber = $versionNumber + "-" + $commit
 
 	$versionBuildPath = "$release_dir\$versionNumber"
-	
+
 	$expectedFilesToInclude = @(
 			'StatLight.Client.For.MSTest2011December.xap'
 			'StatLight.Client.For.MSTest2011October.xap'
@@ -1064,6 +1065,7 @@ Task package-release -depends clean-release {
 			'StatLight.EULA.txt'
 			'StatLight.exe'
 			'StatLight.exe.config'
+			'StatLight.chm'
 		)
 		
 	if($script:isPhoneBuild -eq $true){
@@ -1098,6 +1100,8 @@ Task package-release -depends clean-release {
 
 	#Move-Item (Get-ChildItem $release_dir\$statLightSourcesFilePrefix*) "$versionBuildPath\$($_.Name)"
 	$filesToCopyFromBuild | foreach{ Copy-Item $_ "$versionBuildPath\$($_.Name)"  }
+	cp $chmDocPath "$versionBuildPath\StatLight.chm" 
+
 
 	$knownFilesToExclude | where { Test-Path "$versionBuildPath\$_" } | foreach{ Remove-Item "$versionBuildPath\$_"; "Cleaning - $versionBuildPath\$_" }
 	
@@ -1152,8 +1156,11 @@ Task compile-docs {
 		Remove-If-Exists .\_build\*
 		.\make.bat htmlhelp
 		& 'C:\Program Files (x86)\HTML Help Workshop\hhc.exe' .\_build\htmlhelp\StatLightdoc.hhp
-		& .\_build\htmlhelp\StatLightdoc.chm
 	popd
+}
+
+Task doc -depends compile-docs {
+	& $chmDocPath
 }
 
 Task test-UI -depends 	test-UI-NoBrowser-displays-warning, test-UI-show-browser {
@@ -1174,13 +1181,17 @@ Task build-Debug -depends build-all, test-all {
 Task build-Debug-Phone -depends build-all, compile-Solution-Phone, test-all, test-phone {
 }
 
-Task build-full-Release -depends build-all, test-all, package-release {
+Task build-full-Release -depends build-all, `
+	test-all, `
+	compile-docs, `
+	package-release {
 }
 
 Task build-full-Release-Phone -depends `
 	build-all-phone, `
 	test-all, `
 	test-phone, `
+	compile-docs, `
 	package-release {
 }
 
