@@ -72,28 +72,10 @@ How to create a more sophisticated extension
       
       namespace SampleExtension
       {
-          public class Class1 : ITestingReportEvents
+          public class Class1 : IShouldBeAddedToEventAggregator
+			   IListener<TODO_Pick_an_event_to_listen_to>,
+			   IListener<TODO_Pick_another_event_to_listen_to>,
           {
-              public void Handle(TestCaseResult message)
-              {
-                  Console.WriteLine("Hello From Class1");
-              }
-      
-              public void Handle(TraceClientEvent message)
-              {
-              }
-      
-              public void Handle(BrowserHostCommunicationTimeoutServerEvent message)
-              {
-              }
-      
-              public void Handle(FatalSilverlightExceptionServerEvent message)
-              {
-              }
-      
-              public void Handle(UnhandledExceptionClientEvent message)
-              {
-              }
           }
       }
 
