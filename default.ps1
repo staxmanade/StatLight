@@ -971,7 +971,7 @@ Task test-UI-NoBrowser-displays-warning {
 
 Task test-phone-xap {
 	$scriptFile = GetTemporaryXmlFile;
-	execStatLight "-x=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.xap"  "-r=$scriptFile" "--UserPhoneEmulator"
+	execStatLight "-x=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.xap"  "-r=$scriptFile" "--UsePhoneEmulator"
 	
 
 	if( Is-Release-Build ) {
@@ -984,7 +984,7 @@ Task test-phone-xap {
 
 Task test-phone-dll {
 	$scriptFile = GetTemporaryXmlFile;
-	execStatLight "-d=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.dll"  "-r=$scriptFile" "--UserPhoneEmulator"
+	execStatLight "-d=src\StatLight.IntegrationTests.Phone.MSTest\Bin\$build_configuration\StatLight.IntegrationTests.Phone.MSTest.dll"  "-r=$scriptFile" "--UsePhoneEmulator"
 	
 
 	if( Is-Release-Build ) {

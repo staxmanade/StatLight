@@ -84,7 +84,7 @@
             get { return _overriddenSettings; }
         }
 
-        public bool UserPhoneEmulator { get; private set; }
+        public bool UsePhoneEmulator { get; private set; }
 
         private ArgOptions()
             : this(new string[] { })
@@ -202,7 +202,7 @@
                             throw new StatLightException("Could not parse parameter [{0}] for numberofbrowsers into an integer.".FormatWith(v));
                         }
                     })
-                .Add<string>("UserPhoneEmulator", "If you have the windows phone SDK installed. Attempt this run with the emulator.", v => UserPhoneEmulator = true)
+                .Add<string>("UsePhoneEmulator", "If you have the windows phone SDK installed. Attempt this run with the emulator.", v => UsePhoneEmulator = true)
                 .Add("QueryString", "Specify some QueryString that will be appended to the browser test page request. This can be helpful to setup a remote web service and pass in the url, or a port used. You can then access the querystring within silverlight HtmlPage.Document.QueryString[..]", v => QueryString = v ?? String.Empty)
                 .Add<string>("teamcity", "Changes the console output to generate the teamcity message spec.", v => OutputForTeamCity = true)
                 .Add<string>("MSGenericTestFormat", "This option has been replaced. Use the --ReportOutputFileType:MSGenericTestFormat", v =>
