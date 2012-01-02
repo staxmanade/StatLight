@@ -1065,8 +1065,8 @@ Task package-release -depends clean-release {
 			'StatLight.EULA.txt'
 			'StatLight.exe'
 			'StatLight.exe.config'
-			'StatLight.chm'
 		)
+			#TODO 'StatLight.chm'
 		
 	if($script:isPhoneBuild -eq $true){
 		$expectedFilesToInclude += @(
@@ -1100,7 +1100,7 @@ Task package-release -depends clean-release {
 
 	#Move-Item (Get-ChildItem $release_dir\$statLightSourcesFilePrefix*) "$versionBuildPath\$($_.Name)"
 	$filesToCopyFromBuild | foreach{ Copy-Item $_ "$versionBuildPath\$($_.Name)"  }
-	cp $chmDocPath "$versionBuildPath\StatLight.chm" 
+	#TODO cp $chmDocPath "$versionBuildPath\StatLight.chm" 
 
 
 	$knownFilesToExclude | where { Test-Path "$versionBuildPath\$_" } | foreach{ Remove-Item "$versionBuildPath\$_"; "Cleaning - $versionBuildPath\$_" }
