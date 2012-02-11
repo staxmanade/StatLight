@@ -89,6 +89,7 @@
     </Compile>
     <Compile Include="FixtureBase.cs" />
     <Compile Include="IntegrationTestClientTestRunConfiguration.ClientConfigTests.cs" />
+    <Compile Include="SpecialScenarios\FirstTestShouldOnlyBeExecutedOnce.cs" />
     <Compile Include="SpecialScenarios\SpecialScenariosBase.cs" />
     <Compile Include="SpecialScenarios\NestedClassInheritanceTests.cs" />
     <Compile Include="ProviderTests\MSTest\when_testing_the_runner_with_MSTest_tests_sl3.cs" />

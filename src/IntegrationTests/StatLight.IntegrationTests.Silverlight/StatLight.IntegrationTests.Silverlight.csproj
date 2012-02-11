@@ -84,6 +84,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FirstTestShouldOnlyRunOnce.cs" />
     <Compile Include="LongRunningAsyncTests.cs" />
     <Compile Include="DebugAssertTests.cs" />
     <Compile Include="NestedClassInheritanceTests.cs" />

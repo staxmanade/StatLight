@@ -41,6 +41,19 @@ namespace StatLight.Client.Harness.Hosts.MSTest
             Server.Debug("Completed - ConfigureSettings()");
 
             var ui = UnitTestSystem.CreateTestPage(settings);
+
+#if !MSTest2009July && !MSTest2009October && !MSTest2009November
+
+            // This little hack appears to fix a duplicate reporting issue of the first test as reported here
+            // http://statlight.codeplex.com/workitem/11906
+            //
+            // I found that this hack doesn't work for all cases, specifically older versions of the test frmework (reason for the #if...)
+            // And it also doesn't work for a U.I. test.
+            // http://itcrank.blogspot.com.au/2012/02/dodgy-silverlight-unittest-system.html
+
+            //if (!_clientTestRunConfiguration.WindowGeometry.ShouldShowWindow)
+            //    settings.TestAssemblies.Clear();
+#endif
             Server.Debug("Completed - UnitTestSystem.CreateTestPage(...)");
             return ui;
         }
