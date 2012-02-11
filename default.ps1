@@ -955,7 +955,7 @@ Task test-UI-show-browser {
 	$scriptFile = GetTemporaryXmlFile;
 	execStatLight "-d=.\src\IntegrationTests\StatLight.IntegrationTests.Silverlight.MSTest.UITests\Bin\$build_configuration\StatLight.IntegrationTests.Silverlight.MSTest.UITests.dll" "-r=$scriptFile" -b
 
-	Assert-statlight-xml-report-results -message "test-single-assembly-run" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 3 -expectedFailedCount 0 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
+	Assert-statlight-xml-report-results -message "test-UI-show-browser" -resultsXmlTextFilePath $scriptFile -expectedPassedCount 3 -expectedFailedCount 0 -expectedIgnoredCount 0 -expectedSystemGeneratedfailedCount 0
 }
 
 Task test-UI-NoBrowser-displays-warning {
