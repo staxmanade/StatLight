@@ -35,8 +35,8 @@ namespace StatLight.Core.WebServer.AssemblyResolution
         private AssemblyResolverBase CreateInOtherAppDomain<T>(AppDomain appDomain)
             where T : AssemblyResolverBase
         {
-            return (AssemblyResolverBase)appDomain.CreateInstanceAndUnwrap(
-                GetType().Assembly.FullName,
+            return (AssemblyResolverBase)appDomain.CreateInstanceFromAndUnwrap(
+                GetType().Assembly.CodeBase,
                 typeof(T).FullName);
         }
     }
