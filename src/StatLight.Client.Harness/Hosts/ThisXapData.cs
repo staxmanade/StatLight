@@ -36,6 +36,9 @@ namespace StatLight.Client.Harness.Hosts
 
         private static bool IsNotSpecialAssembly(string name)
         {
+            if (name.EndsWith(".resources"))
+                return false;
+
             var specialAssemblies = new[]
             {
                 "System.Windows.Controls.dll",
