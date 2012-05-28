@@ -41,7 +41,6 @@ namespace StatLight.Client.Harness.Hosts
 
             var specialAssemblies = new[]
             {
-                "System.Windows.Controls.dll",
                 "System.Xml.Linq.dll",
                 "System.Xml.Serialization.dll",
                 "Microsoft.Silverlight.Testing.dll",

@@ -177,7 +177,6 @@ function StatLightReferences {
 		"$silverlight_core_assemblies_location\System.Windows.dll",
 		"$silverlight_core_assemblies_location\System.Windows.Browser.dll",
 		"$silverlight_core_assemblies_location\System.Xml.dll",
-		"$silverlight_libraries_client_assemblies\System.Windows.Controls.dll",
 		"$silverlight_libraries_client_assemblies\System.Xml.Linq.dll",
 		"$silverlight_libraries_client_assemblies\System.Xml.Serialization.dll",
 		".\lib\Silverlight\Microsoft\$microsoft_silverlight_testing_version_name\Microsoft.Silverlight.Testing.dll"
