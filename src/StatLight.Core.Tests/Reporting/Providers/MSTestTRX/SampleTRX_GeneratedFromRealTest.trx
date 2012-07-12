@@ -23,7 +23,7 @@
     </UnitTest>
   </TestDefinitions>
   <TestLists>
-    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="StatLight Test List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
   </TestLists>
   <TestEntries>
     <TestEntry testId="becf20cb-74e3-3a4f-2d5f-8311683824ed" executionId="06e3924c-14f5-46e7-b640-77e77598e6c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
