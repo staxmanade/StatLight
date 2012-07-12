@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml;
 using NUnit.Framework;
 using StatLight.Core.Events;
 using StatLight.Core.Reporting;
@@ -86,15 +84,18 @@ namespace StatLight.Core.Tests.Reporting.Providers.MSTestTRX
 
             string fileData = memoryStream.ToArray().ToStringFromByteArray();
             string expectedFileData = Resources.SampleTRX_GeneratedFromRealTest;
+                       
+            // replace the hard coded credentials with the current domain and user name
+            expectedFileData = expectedFileData.Replace(@"DOMAIN\UserName", string.Format(@"{0}\{1}", Environment.UserDomainName, Environment.UserName));
 
             FixupRegEx("duration=\"00:00:00.0000000\"", ref expectedFileData, ref fileData,
                 @"duration=\""[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\.[0-9][0-9][0-9][0-9][0-9][0-9][0-9]\""");
 
             FixupRegEx("startTime=\"0000-00-00T00:00:00.0000000-00:00\"", ref expectedFileData, ref fileData,
-                @"startTime=\""[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9]:[0-9][0-9]\""");
+                @"startTime=\""[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9][0-9][-+][0-9][0-9]:[0-9][0-9]\""");
 
             FixupRegEx("endTime=\"0000-00-00T00:00:00.0000000-00:00\"", ref expectedFileData, ref fileData,
-                @"endTime=\""[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9]:[0-9][0-9]\""");
+                @"endTime=\""[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9][0-9][-+][0-9][0-9]:[0-9][0-9]\""");
 
             //fileData.Trace();
             //expectedFileData.Trace();
