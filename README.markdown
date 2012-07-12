@@ -41,3 +41,4 @@ Thanks for contributions from:
 - [Remo Gloor](https://github.com/remogloor)
 - [Steven De Kock](https://github.com/sdekock)
 - [Bob Brumfield](https://github.com/brumfb)
+- [Trevor Doorley](https://github.com/Trev72)
