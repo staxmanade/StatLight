@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -48,16 +49,16 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
         {
             var results = _report;
 
-            var testListId = _guidSequenceGenerator.GetNext();
+            _testListId = _guidSequenceGenerator.GetNext();
 
             var ns = XNamespace.Get(@"http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
-
+            
             var doc = new XDocument(
                 new XDeclaration("1.0", "UTF-8", "")
                 , new XElement(ns + "TestRun"
                     , new XAttribute("id", _guidSequenceGenerator.GetNext().ToString())
                     , new XAttribute("name", "StatLight TestRun")
-                    , new XAttribute("runUser", @"DOMAIN\UserName")
+                    , new XAttribute("runUser", string.Format(CultureInfo.InvariantCulture, @"{0}\{1}", Environment.UserDomainName, Environment.UserName))
                     , new XElement(ns + "TestSettings",
                         new XAttribute("name", _testSettings.Name)
                         , new XAttribute("id", _guidSequenceGenerator.GetNext())
@@ -117,8 +118,8 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                         )
                     , new XElement(ns + "TestLists"
                         , new XElement(ns + "TestList"
-                            , new XAttribute("name", "Results Not in a List")
-                            , new XAttribute("id", (_testListId = _guidSequenceGenerator.GetNext()))
+                            , new XAttribute("name", "StatLight Test List")
+                            , new XAttribute("id", _testListId)
                             )
                         )
                 //,GetTestDefinitions(results)
@@ -127,13 +128,13 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                           select new XElement(ns + "TestEntry"
                                 , new XAttribute("testId", GetTestId(test))
                                 , new XAttribute("executionId", GetExecutionId(test))
-                                , new XAttribute("testListId", testListId)
+                                , new XAttribute("testListId", _testListId)
                             )
                         )
                     , GetResults(results, ns)
                     )
                 );
-
+            
             //doc.Root.SetAttributeValue("xmlns", @"http://microsoft.com/schemas/VisualStudio/TeamTest/2010");
             return doc;
         }
