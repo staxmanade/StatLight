@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using StatLight.Core.Common;
 using StatLight.Core.Events;
+using TinyIoC;
 
 namespace StatLight.Core.Runners
 {
@@ -21,9 +22,9 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public void AddExtensionsToEventAggregator()
+        public void AddExtensionsToEventAggregator(TinyIoCContainer ioc)
         {
-            var extensions = GetExtensions().ToList();
+            var extensions = GetExtensions(ioc).ToList();
 
             if (!extensions.Any())
                 return;
@@ -38,7 +39,7 @@ namespace StatLight.Core.Runners
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private IEnumerable<object> GetExtensions()
+        private IEnumerable<object> GetExtensions(TinyIoCContainer ioc)
         {
             var testingReportEventsExtensions = new List<IShouldBeAddedToEventAggregator>();
             try
@@ -46,14 +47,19 @@ namespace StatLight.Core.Runners
                 var path = GetFullPath("Extensions");
                 if (!Directory.Exists(path))
                 {
-                    Directory.CreateDirectory(path);
+                    return Enumerable.Empty<object>();
+                }
+                var types = Directory.EnumerateDirectories(path, "*.dll").Select(Assembly.LoadFile).SelectMany(a=>a.SafeGetTypes()).Where(typeof (IShouldBeAddedToEventAggregator).IsAssignableFrom)
+                    .Where(t=>t.IsClass && t.IsAbstract == false).ToArray();
+                foreach (var type in types)
+                {
+                    ioc.Register(type, type.FullName);
+                }
+                foreach (var type in types)
+                {
+                    testingReportEventsExtensions.Add((IShouldBeAddedToEventAggregator) ioc.Resolve(type,type.FullName));
                 }
 
-                using (var directoryCatalog = new DirectoryCatalog(path))
-                using (var compositionContainer = new CompositionContainer(directoryCatalog))
-                {
-                    testingReportEventsExtensions = compositionContainer.GetExports<IShouldBeAddedToEventAggregator>().Select(s => s.Value).ToList();
-                }
             }
             catch (ReflectionTypeLoadException rfex)
             {
