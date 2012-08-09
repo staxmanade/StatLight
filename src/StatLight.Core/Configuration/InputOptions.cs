@@ -27,6 +27,7 @@ namespace StatLight.Core.Configuration
             ForceBrowserStart = true;
             XapPaths = new List<string>();
             DllPaths = new List<string>();
+            ExtensionDllPaths = new List<string>();
             ReportOutputPath = String.Empty;
             ReportOutputFileType = ReportOutputFileType.StatLight;
             ContinuousIntegrationMode = false;
@@ -49,6 +50,7 @@ namespace StatLight.Core.Configuration
         public bool ForceBrowserStart { get; protected set; }
         public IEnumerable<string> XapPaths { get; private set; }
         public IEnumerable<string> DllPaths { get; private set; }
+        public IEnumerable<string> ExtensionDllPaths { get; private set; }
         public string ReportOutputPath { get; private set; }
         public ReportOutputFileType ReportOutputFileType { get; private set; }
         public bool ContinuousIntegrationMode { get; private set; }
@@ -182,6 +184,14 @@ namespace StatLight.Core.Configuration
             if (dllPaths == null) throw new ArgumentNullException("dllPaths");
             AssertFileExists(dllPaths);
             DllPaths = dllPaths;
+            return this;
+        }
+
+        public InputOptions SetExtensionDllPaths(IEnumerable<string> extensionDllPaths)
+        {
+            if (extensionDllPaths == null) throw new ArgumentNullException("extensionDllPaths");
+            AssertFileExists(extensionDllPaths);
+            ExtensionDllPaths = extensionDllPaths;
             return this;
         }
 
