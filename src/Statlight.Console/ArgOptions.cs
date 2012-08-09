@@ -25,6 +25,11 @@
             get { return _xapPaths; }
         }
 
+        public IList<string> ExtensionDllPaths
+        {
+            get { return _extensionDllPaths; }
+        }
+
         public string TagFilters { get; private set; }
 
         public bool ContinuousIntegrationMode { get; private set; }
@@ -79,6 +84,8 @@
         }
 
         private readonly IDictionary<string, string> _overriddenSettings = new Dictionary<string, string>();
+        private IList<string> _extensionDllPaths = new List<string>();
+
         public IDictionary<string, string> OverriddenSettings
         {
             get { return _overriddenSettings; }
@@ -120,6 +127,7 @@
 
             return new OptionSet()
                 .Add("x|XapPath", "Path to test xap file. (Can specify multiple -x={path1} -x={path2})", v => _xapPaths.Add(v ?? string.Empty), OptionValueType.Required)
+                .Add("e|ExtensionDllPath", "Path to StatLight extension .dll. (Can specify multiple -e={path1} -e={path2})", v => _extensionDllPaths.Add(v ?? string.Empty))
                 .Add("d|Dll", "Assembly to test.", v =>
                     {
                         if (!string.IsNullOrEmpty(v))

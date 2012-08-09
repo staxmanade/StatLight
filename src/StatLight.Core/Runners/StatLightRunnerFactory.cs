@@ -41,7 +41,7 @@ namespace StatLight.Core.Runners
 
             _ioc.ResolveAndAddToEventAggregator<ConsoleDebugListener>();
 
-            _ioc.Resolve<ExtensionResolver>().AddExtensionsToEventAggregator();
+            _ioc.Resolve<ExtensionResolver>().AddExtensionsToEventAggregator(_ioc);
         }
 
 
