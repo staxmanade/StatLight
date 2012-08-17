@@ -42,3 +42,4 @@ Thanks for contributions from:
 - [Steven De Kock](https://github.com/sdekock)
 - [Bob Brumfield](https://github.com/brumfb)
 - [Trevor Doorley](https://github.com/Trev72)
+- [Krzysztof Kozmic](https://github.com/kkozmic)
