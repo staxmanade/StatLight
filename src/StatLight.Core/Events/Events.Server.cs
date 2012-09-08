@@ -121,7 +121,7 @@ namespace StatLight.Core.Events
         }
         public ExceptionInfo ExceptionInfo { get; set; }
 
-        public ResultType ResultType { get; private set; }
+        public ResultType ResultType { get; set; }
 
         public string FullMethodName()
         {
