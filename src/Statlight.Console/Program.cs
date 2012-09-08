@@ -61,6 +61,7 @@ namespace StatLight.Console
                         .SetForceBrowserStart(options.ForceBrowserStart)
                         .SetXapPaths(options.XapPaths)
                         .SetDllPaths(options.Dlls)
+                        .SetExtensionDllPaths(options.ExtensionDllPaths)
                         .SetReportOutputPath(options.XmlReportOutputPath)
                         .SetReportOutputFileType(options.ReportOutputFileType)
                         .SetContinuousIntegrationMode(options.ContinuousIntegrationMode)
