@@ -24,12 +24,16 @@ namespace StatLight.Core.Runners
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public void AddExtensionsToEventAggregator(TinyIoCContainer ioc)
         {
+            _logger.Debug("********** Extensions **********");
             var extensions = GetExtensions(ioc).ToList();
 
             if (!extensions.Any())
+            {
+                _logger.Debug("* None found");
+                _logger.Debug("********************************");
                 return;
+            }
 
-            _logger.Debug("********** Extensions **********");
             foreach (var extensionInstance in extensions)
             {
                 _logger.Debug("* Adding - {0}".FormatWith(extensionInstance.GetType().FullName));
@@ -60,11 +64,14 @@ namespace StatLight.Core.Runners
                 var assemblies = files.Select(TryLoadAssembly).Where(a => a != null).ToArray();
                 var types = assemblies.SelectMany(a => a.SafeGetTypes()).ToArray();
                 var extensionTypes = types
-                    .Where(typeof(IShouldBeAddedToEventAggregator).IsAssignableFrom)
-                    .Where(t=>t.IsClass && t.IsAbstract == false)
+                    .Where(typeof (IShouldBeAddedToEventAggregator).IsAssignableFrom)
+                    .Where(t => t.IsClass && t.IsAbstract == false)
                     .ToArray();
+
+                _logger.Debug("* Found {0} extension types".FormatWith(extensionTypes.Length));
                 foreach (var type in extensionTypes)
                 {
+                    _logger.Debug("* Registering " + type.FullName);
                     ioc.Register(type, type.FullName);
                 }
                 foreach (var type in extensionTypes)
@@ -116,6 +123,7 @@ namespace StatLight.Core.Runners
             var exception = default(Exception);
             try
             {
+                _logger.Debug("* trying to load extension assembly " + path);
                 AssemblyName name;
                 try
                 {
