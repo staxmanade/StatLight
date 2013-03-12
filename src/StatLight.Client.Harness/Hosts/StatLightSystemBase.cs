@@ -90,8 +90,15 @@ namespace StatLight.Client.Harness.Hosts
         {
             if (TestRunConfigurationDownloadComplete && CompletedTestXapRequest)
             {
-                var rootVisual = TestRunnerHost.StartRun();
-                OnReady(rootVisual);
+                try
+                {
+                    var rootVisual = TestRunnerHost.StartRun();
+                    OnReady(rootVisual);
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    ReflectionInfoHelper.HandleReflectionTypeLoadException(ex);
+                }
             }
         }
 
