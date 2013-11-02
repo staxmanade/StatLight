@@ -144,20 +144,12 @@
       <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.UnitDriven.xap</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\StatLight.IntegrationTests.Silverlight.UnitDriven\StatLight.IntegrationTests.Silverlight.UnitDriven-SL3.xap">
-      <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.UnitDriven-SL3.xap</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\StatLight.IntegrationTests.Silverlight.XunitLight\StatLight.IntegrationTests.Silverlight.XunitLight.xap">
       <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.XunitLight.xap</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\StatLight.IntegrationTests.Silverlight.Xunit\StatLight.IntegrationTests.Silverlight.Xunit.xap">
       <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.Xunit.xap</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\StatLight.IntegrationTests.Silverlight.Xunit\StatLight.IntegrationTests.Silverlight.Xunit-SL3.xap">
-      <Link>ProviderTests\_testXaps\StatLight.IntegrationTests.Silverlight.Xunit-SL3.xap</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\StatLight.IntegrationTests.Silverlight\StatLight.IntegrationTests.Silverlight.xap">
