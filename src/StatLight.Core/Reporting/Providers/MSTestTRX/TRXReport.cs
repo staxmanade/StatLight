@@ -108,7 +108,7 @@ namespace StatLight.Core.Reporting.Providers.MSTestTRX
                                   , new XAttribute("id", GetExecutionId(test))
                                 )
                               , new XElement(ns + "TestMethod"
-                                  , new XAttribute("codeBase", string.Empty)
+                                  , new XAttribute("codeBase", test.XapFilePath)
                                   , new XAttribute("adapterTypeName", string.Empty)
                                   , new XAttribute("className", test.NamespaceName + "." + test.ClassName)
                                   , new XAttribute("name", test.MethodName)
