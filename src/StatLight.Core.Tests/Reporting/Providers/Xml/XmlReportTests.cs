@@ -27,6 +27,7 @@ namespace StatLight.Core.Tests.Reporting.Providers.Xml
                                    Finished = new DateTime(2009, 2, 2, 2, 2, 2),
                                    Started = new DateTime(2009, 2, 2, 2, 2, 1),
                                    ExceptionInfo = exceptionInfo,
+                                   XapFilePath = "Test.xap", // 2014-Jan-30 pgrishan                                                       
                                };
                 };
 
