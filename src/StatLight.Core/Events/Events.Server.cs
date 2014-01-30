@@ -94,7 +94,7 @@ namespace StatLight.Core.Events
             _metadata = new List<MetaDataInfo>();
         }
         
-        public string XapFilePath { get; set; } // 2014-Jan-29 pgrishanov
+        public string XapFilePath { get; set; } 
         public string NamespaceName { get; set; }
         public string ClassName { get; set; }
         public string MethodName { get; set; }
