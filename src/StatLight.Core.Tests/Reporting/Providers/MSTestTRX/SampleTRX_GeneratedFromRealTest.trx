@@ -15,11 +15,11 @@
   <TestDefinitions>
     <UnitTest name="MethodPassed" id="becf20cb-74e3-3a4f-2d5f-8311683824ed">
       <Execution id="06e3924c-14f5-46e7-b640-77e77598e6c0" />
-      <TestMethod codeBase="" adapterTypeName="" className="N1.C1" name="MethodPassed" />
+      <TestMethod codeBase="Test.xap" adapterTypeName="" className="N1.C1" name="MethodPassed" />
     </UnitTest>
     <UnitTest name="MethodFailed" id="264ee2b2-3b8f-645c-d9ff-739a31f9c1e6">
       <Execution id="e9d88bbd-1814-445e-84fb-876d083d02d9" />
-      <TestMethod codeBase="" adapterTypeName="" className="N1.C1" name="MethodFailed" />
+      <TestMethod codeBase="Test.xap" adapterTypeName="" className="N1.C1" name="MethodFailed" />
     </UnitTest>
   </TestDefinitions>
   <TestLists>
