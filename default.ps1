@@ -334,7 +334,6 @@ function Build-And-Package-StatLight-MSTest {
 
 function Build-And-Package-All-StatLight-MSTest-IntegrationTests {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
-	Build-And-Package-StatLight-MSTest-IntegrationTests $microsoft_Silverlight_Testing_Version_Name "SILVERLIGHT3``;" "SL3" "-SL3"
 	Build-And-Package-StatLight-MSTest-IntegrationTests $microsoft_Silverlight_Testing_Version_Name "SILVERLIGHT4``;" "SL4" "-SL4"
 	Build-And-Package-StatLight-MSTest-IntegrationTests $microsoft_Silverlight_Testing_Version_Name "SILVERLIGHT5``;" "SL5" "-SL5"
 }
@@ -423,7 +422,6 @@ function execStatLight()
 
 function Execute-MSTest-Version-Acceptance-Tests-AllSL {
 	param([string]$microsoft_Silverlight_Testing_Version_Name)
-	Execute-MSTest-Version-Acceptance-Tests $microsoft_Silverlight_Testing_Version_Name "SL3"
 	Execute-MSTest-Version-Acceptance-Tests $microsoft_Silverlight_Testing_Version_Name "SL4"
 	Execute-MSTest-Version-Acceptance-Tests $microsoft_Silverlight_Testing_Version_Name "SL5"
 }
@@ -1083,7 +1081,6 @@ Task package-release -depends clean-release {
 		'nunit.framework.dll'
 		'StatLight.IntegrationTests.dll'
 		'StatLight.Client.Harness.MSTest.dll'
-		'StatLight.IntegrationTests.Silverlight.MSTest-SL3.dll'
 		'StatLight.IntegrationTests.Silverlight.MSTest-SL4.dll'
 		'StatLight.IntegrationTests.Silverlight.MSTest-SL5.dll'
 		'StatLight.Core.Phone.dll'

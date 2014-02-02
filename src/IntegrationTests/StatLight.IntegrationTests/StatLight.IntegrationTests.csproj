@@ -92,9 +92,6 @@
     <Compile Include="SpecialScenarios\FirstTestShouldOnlyBeExecutedOnce.cs" />
     <Compile Include="SpecialScenarios\SpecialScenariosBase.cs" />
     <Compile Include="SpecialScenarios\NestedClassInheritanceTests.cs" />
-    <Compile Include="ProviderTests\MSTest\when_testing_the_runner_with_MSTest_tests_sl3.cs" />
-    <Compile Include="ProviderTests\UnitDriven\when_testing_the_runner_with_UnitDriven_tests_sl3.cs" />
-    <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_xunit_tests_sl3.cs" />
     <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_xunit_tests.cs" />
     <Compile Include="ProviderTests\XUnit\when_testing_the_runner_with_Xunit_tests_filtered_by_certain_methods.cs" />
     <Compile Include="ProviderTests\filtered_tests____.cs" />

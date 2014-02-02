@@ -119,13 +119,7 @@ namespace StatLight.IntegrationTests.Silverlight
         }
         #endregion
 
-#if SILVERLIGHT3
-        [TestMethod]
-        public void ShouldBeSL3()
-        {
-            Assert.AreEqual('3', System.Windows.Deployment.Current.RuntimeVersion[0]);
-        }
-#elif SILVERLIGHT4
+#if SILVERLIGHT4
         [TestMethod]
         public void ShouldBeSL4()
         {
