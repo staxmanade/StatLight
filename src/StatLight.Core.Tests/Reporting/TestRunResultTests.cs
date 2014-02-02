@@ -29,7 +29,7 @@ namespace StatLight.Core.Tests.Reporting
                             MethodName = "MethodPassed",
                             Started = started,
                             Finished = getEndTime(started),
-                            XapFilePath = "Test.xap", // 2014-Jan-3ß pgrishan
+                            XapFilePath = "Test.xap", 
                         };
         }
 
@@ -44,7 +44,7 @@ namespace StatLight.Core.Tests.Reporting
                             ExceptionInfo = GetException(),
                             Started = started,
                             Finished = getEndTime(started),
-                            XapFilePath = "Test.xap", // 2014-Jan-3ß pgrishan
+                            XapFilePath = "Test.xap", 
                         };
         }
 
@@ -58,7 +58,7 @@ namespace StatLight.Core.Tests.Reporting
                             MethodName = "MethodIgnored",
                             Started = started,
                             Finished = getEndTime(started),
-                            XapFilePath = "Test.xap", // 2014-Jan-3ß pgrishan
+                            XapFilePath = "Test.xap", 
                         };
         }
 
