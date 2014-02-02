@@ -62,18 +62,10 @@ namespace StatLight.IntegrationTests.Silverlight.UnitDriven
 			Assert.AreEqual(expected, actual);
 		}
 
-#if !SILVERLIGHT3
         [TestMethod]
         public void ShouldBeSL5()
         {
             Assert.AreEqual('5', System.Windows.Deployment.Current.RuntimeVersion[0]);
         }
-#else
-        [TestMethod]
-        public void ShouldBeSL3()
-        {
-            Assert.AreEqual('3', System.Windows.Deployment.Current.RuntimeVersion[0]);
-        }
-#endif
 	}
 }

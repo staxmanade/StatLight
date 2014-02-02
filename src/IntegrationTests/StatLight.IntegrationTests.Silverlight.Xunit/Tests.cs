@@ -32,19 +32,11 @@
             Assert.True(false);
         }
 
-#if !SILVERLIGHT3
         [Fact]
         public void ShouldBeSL5()
         {
             Assert.Equal('5', System.Windows.Deployment.Current.RuntimeVersion[0]);
         }
-#else
-        [Fact]
-        public void ShouldBeSL3()
-        {
-            Assert.Equal('3', System.Windows.Deployment.Current.RuntimeVersion[0]);
-        }
-#endif
 
         [Fact(Skip = "Skip it")]
         public void this_should_be_an_Ignored_test()

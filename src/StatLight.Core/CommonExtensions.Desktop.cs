@@ -9,6 +9,8 @@ namespace StatLight
     {
         private static bool _initialColorSaved = false;
         private static System.ConsoleColor _initialColor;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly")]
         public static void WrapConsoleMessageWithColor(this string message, System.ConsoleColor color, bool useNewLine)
         {
             if (!_initialColorSaved)
