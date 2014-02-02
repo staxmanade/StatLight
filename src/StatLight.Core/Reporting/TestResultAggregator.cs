@@ -68,6 +68,11 @@ namespace StatLight.Core.Reporting
                     Finished = message.Finished,
                     Started = message.Started,
                 };
+                // 2014-Jan-30 pgrishan
+                if (_currentReport != null)
+                {
+                    msg.XapFilePath = _currentReport.XapPath;
+                }
 
                 TranslateCoreInfo(ref msg, message);
 
@@ -104,6 +109,11 @@ namespace StatLight.Core.Reporting
                     ExceptionInfo = message.ExceptionInfo,
                     OtherInfo = message.Description,
                 };
+                // 2014-Jan-30 pgrishan
+                if (_currentReport != null)
+                {
+                    msg.XapFilePath = _currentReport.XapPath;
+                }
 
                 TranslateCoreInfo(ref msg, message);
 
@@ -121,6 +131,12 @@ namespace StatLight.Core.Reporting
             {
                 MethodName = message.Message,
             };
+           // 2014-Jan-30 pgrishan
+           if (_currentReport != null)
+           {
+            msg.XapFilePath = _currentReport.XapPath;
+           }
+            
             ReportIt(msg);
         }
 
@@ -144,6 +160,11 @@ namespace StatLight.Core.Reporting
                     ClassName = className,
                     MethodName = methodName,
                 };
+                // 2014-Jan-30 pgrishan
+                if (_currentReport != null)
+                {
+                    msg.XapFilePath = _currentReport.XapPath;
+                }
 
                 ReportIt(msg);
             };
@@ -161,6 +182,11 @@ namespace StatLight.Core.Reporting
                     ClassName = "[CannotFigureItOut]",
                     MethodName = "[NotEnoughContext]",
                 };
+                // 2014-Jan-30 pgrishan
+                if (_currentReport != null)
+                {
+                    msg.XapFilePath = _currentReport.XapPath;
+                }
 
                 ReportIt(msg);
             }
@@ -263,6 +289,11 @@ namespace StatLight.Core.Reporting
                           {
                               OtherInfo = messageValue,
                           };
+            // 2014-Jan-30 pgrishan
+            if (_currentReport != null)
+            {
+                msg.XapFilePath = _currentReport.XapPath;
+            }
 
             ReportIt(msg);
         }
