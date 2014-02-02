@@ -821,7 +821,7 @@ convertfrom-stringdata @'
 '@
 }
 
-import-localizeddata -bindingvariable msgs -erroraction silentlycontinue
+#import-localizeddata -bindingvariable msgs -erroraction silentlycontinue
 
 $script:psake = @{}
 $psake.version = "4.3.1" # contains the current version of psake
