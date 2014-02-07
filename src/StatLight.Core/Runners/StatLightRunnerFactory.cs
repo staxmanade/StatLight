@@ -1,4 +1,3 @@
-
 using StatLight.Core.Common.Logging;
 
 namespace StatLight.Core.Runners
@@ -27,7 +26,7 @@ namespace StatLight.Core.Runners
         private readonly IEventPublisher _eventPublisher;
         private BrowserCommunicationTimeoutMonitor _browserCommunicationTimeoutMonitor;
         private bool _hasConsoleResultHandlerBeenAddeToEventAgregator;
-
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:Identifiers should be spelled correctly")]
         public StatLightRunnerFactory(ILogger logger, TinyIoCContainer ioc)
         {
             if (logger == null) throw new ArgumentNullException("logger");
