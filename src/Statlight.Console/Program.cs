@@ -102,7 +102,7 @@ namespace StatLight.Console
                 {
                     Environment.ExitCode = ExitFailed;
                     var helpMessage = @"
-Cannot run StatLight. The current account does not have the correct privilages.
+Cannot run StatLight. The current account does not have the correct privileges.
 
 Exception:
 {0}
