@@ -8,7 +8,6 @@ using System.Windows.Threading;
 using StatLight.Client.Harness.Hosts;
 using StatLight.Core.Configuration;
 using StatLight.Core.Events;
-using StatLight.Client.Harness.Hosts;
 using StatLight.Core.Events.Messaging;
 using Xunit.Runner.Silverlight;
 

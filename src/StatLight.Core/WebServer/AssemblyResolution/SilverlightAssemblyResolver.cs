@@ -69,12 +69,12 @@ namespace StatLight.Core.WebServer.AssemblyResolution
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "hklm")]
         internal static string GetSilverlightToolkitToolFolder()
         {
-            RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\SilverlightToolkit\Tools\v4.0");
+            RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Silverlight");
 
             if (registryKey == null)
                 throw new StatLightException(@"Could not open the registry and find key hklm\SOFTWARE\Microsoft\Silverlight");
 
-            var silverlightVersion = registryKey.GetValue("") as string;
+            var silverlightVersion = registryKey.GetValue("Version") as string;
 
             if (silverlightVersion == null)
                 throw new StatLightException("Cannot determine the Silverlight version as the registry key lookup returned nothing");

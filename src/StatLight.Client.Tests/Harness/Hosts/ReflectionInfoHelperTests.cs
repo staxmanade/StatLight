@@ -1,6 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StatLight.Client.Harness.Hosts;
-using StatLight.Client.Harness.Hosts;
 
 public class ClassInGlobalNamespace
 {

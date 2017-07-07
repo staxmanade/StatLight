@@ -1,4 +1,7 @@
 using System;
+#if !SILVERLIGHT
+using System.Runtime.Serialization;
+#endif
 
 namespace StatLight.Core.Common
 {
@@ -18,5 +21,9 @@ namespace StatLight.Core.Common
         public StatLightException(string message, Exception inner) : base(message, inner)
         {
         }
-    }
+
+#if !SILVERLIGHT
+		protected StatLightException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+#endif
+	}
 }
