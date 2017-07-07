@@ -24,7 +24,7 @@ namespace StatLight.IntegrationTests.Silverlight.CustomTestProvider
             var another = SomeTestTask.DoSomethingAsync();
             yield return another;
 
-            yield return Delay(100);
+            //yield return SomeTestTask.DoSomethingAsync().Wait(100);
 
             Assert.AreEqual(42, another.Result);
         }

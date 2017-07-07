@@ -10,7 +10,6 @@ using StatLight.Core.Configuration;
 using StatLight.Core.Events;
 using StatLight.Core.Runners;
 using StatLight.Core.WebServer.XapHost;
-using System.Collections.Generic;
 
 namespace StatLight.Core.Tests
 {
