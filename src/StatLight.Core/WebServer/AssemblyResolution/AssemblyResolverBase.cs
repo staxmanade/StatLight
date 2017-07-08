@@ -10,6 +10,7 @@ namespace StatLight.Core.WebServer.AssemblyResolution
 
         private readonly List<string> _pathsTriedAndFailed = new List<string>();
         protected abstract string ResolveAssemblyPath(AssemblyName assemblyName);
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:Identifiers should be spelled correctly")]
         protected string OriginalAssemblyDir { get; private set; }
 
         public IEnumerable<string> ResolveAllDependentAssemblies(string path)

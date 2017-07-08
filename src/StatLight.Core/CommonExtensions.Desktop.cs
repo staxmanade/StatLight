@@ -78,6 +78,7 @@ namespace StatLight
 
 
         private static IEventSubscriptionManager _eventSubscriptionManager;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:Identifiers should be spelled correctly")]
         public static TinyIoCContainer ResolveAndAddToEventAggregator<T>(this TinyIoCContainer ioc) where T : class
         {
             if (ioc == null)
